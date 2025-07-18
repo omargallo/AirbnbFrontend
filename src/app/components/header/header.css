@@ -7,8 +7,8 @@
   left: 0;
   width: 100%;
   z-index: 1030;
-  /* padding-top: 1rem; */
-  /* padding-bottom: 1rem; */
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .airbnb-logo svg {
