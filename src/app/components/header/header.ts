@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, QueryList, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -9,7 +9,7 @@ import { RouterModule } from '@angular/router';
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
-export class HeaderComponent {
+export class HeaderComponent implements AfterViewInit {
   isSearchModalOpen = false;
   navItems = [
     {
@@ -47,6 +47,20 @@ export class HeaderComponent {
     }
   ];
 
+  @ViewChildren('navVideo') videoElements!: QueryList<ElementRef<HTMLVideoElement>>;
+
+  ngAfterViewInit() {
+    // this.videoElements.forEach(video => {
+    //   video.nativeElement.play().catch(error => {
+    //     console.error('Error playing video:', error);
+    //   });
+    //   video.nativeElement.loop = true;
+    // });
+    this.videoElements.forEach(video => {
+      video.nativeElement.loop = true;
+    });
+  }
+
   openSearchModal() {
     this.isSearchModalOpen = true;
   }
@@ -64,10 +78,15 @@ export class HeaderComponent {
   playVideo(event: MouseEvent) {
     const video = (event.currentTarget as HTMLElement).querySelector('video');
     if (video) {
-      video.play();
+      video.play().catch(error => {
+        console.warn('Autoplay blocked until user interaction:', error);
+      });
       video.loop = true;
+      video.style.transform = 'scale(1.1)';
+      video.style.transition = 'transform 0.3s ease-in-out';
     }
   }
+
 
   pauseVideo(event: MouseEvent) {
     const video = (event.currentTarget as HTMLElement).querySelector('video');
