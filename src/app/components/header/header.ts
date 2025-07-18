@@ -356,7 +356,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       isNew: true
     }
   ];
-
+  
   @ViewChildren('navVideo') videoElements!: QueryList<ElementRef<HTMLVideoElement>>;
 
   ngAfterViewInit() {
@@ -457,5 +457,32 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       video.pause();
       video.currentTime = 0;
     }
+  }
+@ViewChild('container') containerRef!: ElementRef;
+
+   movingStyles = {
+    position: 'absolute',
+    top: '0px',
+    left: '0px',
+    width: '0px',
+    height: '0px',
+    transition: 'all 0.3s ease' // Optional: Smooth animation
+  };
+
+  moveTo( target: HTMLElement) {
+    // console.log("FromMoveTO",event)
+    const rect = target.getBoundingClientRect();
+    const containerRect = this.containerRef.nativeElement?.getBoundingClientRect();
+
+    console.log(this.movingStyles)
+    this.movingStyles = {
+      ...this.movingStyles,
+     top: `${rect.top - containerRect.top}px`,
+      left: `${rect.left - containerRect.left}px`,
+      width: rect.width + 'px',
+      height: rect.height + 'px'
+    };
+    console.log(this.movingStyles)
+
   }
 }
