@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, QueryList, ViewChildren, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -9,8 +9,16 @@ import { RouterModule } from '@angular/router';
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
-export class HeaderComponent implements AfterViewInit {
+export class HeaderComponent implements AfterViewInit{
   isSearchModalOpen = false;
+  searchLocationActive = false;
+  searchDateActive = false
+  searchGuestActive = false
+
+  // @ViewChild("searchSection") serachSection!: ElementRef<HTMLDivElement>;
+  // @ViewChild("serachDate") serachDate!: ElementRef<HTMLDivElement>;
+  // @ViewChild("serachGuest") serachGuest!: ElementRef<HTMLDivElement>;
+  @ViewChild("floatDiv") floadDiv!: ElementRef<HTMLDivElement>;
   navItems = [
     {
       label: 'Homes',
@@ -46,7 +54,7 @@ export class HeaderComponent implements AfterViewInit {
       isNew: true
     }
   ];
-
+  
   @ViewChildren('navVideo') videoElements!: QueryList<ElementRef<HTMLVideoElement>>;
 
   ngAfterViewInit() {
@@ -59,10 +67,16 @@ export class HeaderComponent implements AfterViewInit {
     this.videoElements.forEach(video => {
       video.nativeElement.loop = true;
     });
+
+    // this.serachSection.nativeElement?.addEventListener("click",(event)=>{
+    //   console.log(event)
+    // });
+    // this.serachDate.nativeElement?.addEventListener("click",()=>{});
+    // this.serachGuest.nativeElement?.addEventListener("click",()=>{});
   }
 
   openSearchModal() {
-    this.isSearchModalOpen = true;
+    // this.isSearchModalOpen = true;
   }
 
   closeSearchModal() {
@@ -94,5 +108,32 @@ export class HeaderComponent implements AfterViewInit {
       video.pause();
       video.currentTime = 0;
     }
+  }
+@ViewChild('container') containerRef!: ElementRef;
+
+   movingStyles = {
+    position: 'absolute',
+    top: '0px',
+    left: '0px',
+    width: '0px',
+    height: '0px',
+    transition: 'all 0.3s ease' // Optional: Smooth animation
+  };
+
+  moveTo( target: HTMLElement) {
+    // console.log("FromMoveTO",event)
+    const rect = target.getBoundingClientRect();
+    const containerRect = this.containerRef.nativeElement?.getBoundingClientRect();
+
+    console.log(this.movingStyles)
+    this.movingStyles = {
+      ...this.movingStyles,
+     top: `${rect.top - containerRect.top}px`,
+      left: `${rect.left - containerRect.left}px`,
+      width: rect.width + 'px',
+      height: rect.height + 'px'
+    };
+    console.log(this.movingStyles)
+
   }
 }

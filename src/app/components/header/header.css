@@ -178,7 +178,7 @@
   opacity: 0;
 }
 .search-filter-item:hover {
-  background-color: var(--light-grey-bg);
+  /* background-color: var(--light-grey-bg); */
 }
 
 /* .search-filter-item.border-right {
@@ -335,3 +335,37 @@
   fill: none;
   stroke: currentColor;
 }
+
+#float-div{
+  height: inherit;
+  
+  background-color: red;
+  position: absolute;;
+}
+
+
+
+
+/* .container {
+  position: relative;
+  height: 100vh;
+  padding: 2rem;
+}
+
+.box {
+  background-color: #90caf9;
+  border: 2px solid #1976d2;
+  padding: 1rem;
+  margin: 1rem;
+  width: 150px;
+  height: 100px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.moving {
+  background-color: #a5d6a7;
+  z-index: 1000;
+  position: absolute;
+  pointer-events: none;
+} */
