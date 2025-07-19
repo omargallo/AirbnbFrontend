@@ -1,4 +1,7 @@
-<header class="airbnb-header">
+<header
+  class="airbnb-header"
+  [ngClass]="{ 'search-bar-sticky': isSearchBarSticky }"
+>
   <nav class="navbar navbar-expand-lg">
     <div
       class="container-fluid d-flex align-items-center justify-content-between px-4 position-relative"
@@ -33,7 +36,7 @@
             (mouseleave)="pauseVideo($event)"
             routerLink="/{{item.label.toLowerCase()}}"
           >
-            <img [alt]="item.label + ' Icon'" [src]="item.imgSrc" />
+            <img [alt]="item.label + ' Icon'" [src]="item.imgSrc" width="100"  />
             <video
               class="s1kxodx6 atm_jp_1f51e7f atm_jr_1h6ojuz atm_vy_1osqo2v atm_e2_1osqo2v atm_tr_18ws4an atm_mj_glywfm s1y8p483 atm_mk_stnw88 atm_tk_idpfg4 atm_fq_idpfg4 stz1the atm_k4_kb7nvz dir dir-ltr"
               playsinline
@@ -49,7 +52,8 @@
                 [type]="source.type"
               />
             </video>
-            {{ item.label }}
+            {{ item.label| translate }}
+
             <!-- <span *ngIf="item.isNew" class="new-badge">NEW</span> -->
           </a>
         </div>
@@ -60,7 +64,7 @@
       <!-- Right-aligned items -->
       <div class="d-flex align-items-center position-relative">
         <a class="switch-to-hosting-btn d-none d-lg-block" routerLink="/hosting"
-          >Switch to hosting</a
+          >{{ 'HEADER.SWITCH_TO_HOSTING' | translate }}</a
         >
         <div class="dropdown" [ngClass]="{ show: dropdownOpen }">
           <button
@@ -90,13 +94,98 @@
     }"
             (animationend)="onAnimationEnd()"
           >
-            <li><a class="dropdown-item" routerLink="/signup">Sign up</a></li>
-            <li><a class="dropdown-item" routerLink="/login">Log in</a></li>
-            <li><hr class="dropdown-divider" /></li>
             <li>
-              <a class="dropdown-item" routerLink="/host">Airbnb your home</a>
+              <a
+                class="dropdown-item d-flex align-items-center gap-2"
+                routerLink="/signup"
+              >
+                <i class="bi bi-person-plus"></i> {{ 'HEADER.SIGN_UP' |
+                translate }}
+              </a>
             </li>
-            <li><a class="dropdown-item" routerLink="/help">Help</a></li>
+
+            <li>
+              <a
+                class="dropdown-item d-flex align-items-center gap-2"
+                routerLink="/login"
+              >
+                <i class="bi bi-box-arrow-in-right"></i> {{ 'HEADER.LOGIN' |
+                translate }}
+              </a>
+            </li>
+
+            <li><hr class="dropdown-divider" /></li>
+
+            <li
+              class="dropdown-item d-flex align-items-center gap-2"
+              style="cursor: pointer;"
+              (click)="toggleTheme()"
+            >
+              <i class="bi" [ngClass]="isDarkMode ? 'bi-sun' : 'bi-moon'"></i>
+              {{ isDarkMode ? ('HEADER.DARK_MODE' | translate) :
+              ('HEADER.LIGHT_MODE' | translate) }}
+            </li>
+
+            <li
+              class="dropdown-item d-flex align-items-center gap-2 dropdown-center"
+              style="padding: 0px !important;"
+            >
+              <!-- Dropstart Language Switcher -->
+
+              <div
+                type="button"
+                class="dropdown-toggle dropdown-item d-flex align-items-center gap-2 menu-dropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-globe"></i>
+                {{ 'HEADER.LANGUAGE' | translate }}
+              </div>
+              <ul
+                class="dropdown-menu"
+                style="left: 10px; background-color: var(--active);"
+              >
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    [class.active]="lang.currentLang === 'en'"
+                    (click)="lang.switchLang('en')"
+                  >
+                    {{ 'HEADER.ENGLISH' | translate }}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    [class.active]="lang.currentLang === 'ar'"
+                    (click)="lang.switchLang('ar')"
+                  >
+                    {{ 'HEADER.ARABIC' | translate }}
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a
+                class="dropdown-item d-flex align-items-center gap-2"
+                routerLink="/host"
+              >
+                <i class="bi bi-house-door-fill"></i>{{
+                'HEADER.AIRBNB_YOUR_HOME' | translate }}
+              </a>
+            </li>
+
+            <li>
+              <a
+                class="dropdown-item d-flex align-items-center gap-2"
+                routerLink="/help"
+              >
+                <i class="bi bi-question-circle"></i> {{ 'HEADER.HELP' |
+                translate }}
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -113,56 +202,72 @@
         #filterGroupRef
       >
         <div
-          class="search-filter-item "
+          class="search-filter-item d-flex align-items-start justify-content-center flex-column"
           #whereRef
           [ngClass]="{ 'active': activeFilter === 'where' }"
           (click)="setActive('where')"
         >
-          <p class="label mb-0">Where</p>
+          @if (isSearchBarSticky) {
+          <p class="label mb-0">{{ 'HEADER.ANYWHERE' | translate }}</p>
+          }@else{
+          <p class="label mb-0">{{ 'HEADER.WHERE' | translate }}</p>
           <!-- <p class="value">Search destinations</p> -->
           <input
-            class="search-input dest "
+            class="search-input dest"
             type="text"
-            placeholder="Search destinations"
+            [placeholder]="'HEADER.SEARCH_DESTINATIONS' | translate"
           />
+          }
         </div>
         <div
-          class="search-filter-item"
+          class="search-filter-item d-flex align-items-start justify-content-center flex-column"
           #dateRef
           [ngClass]="{ 'active': activeFilter === 'date' }"
           (click)="setActive('date')"
         >
-          <p class="label">Date</p>
-          <p class="value">Add dates</p>
+          @if (isSearchBarSticky) {
+          <p class="label">
+            {{ 'HEADER.ADD_DATE' | translate }}
+          </p>
+          }@else{
+          <p class="label">{{ 'HEADER.DATE' | translate }}</p>
+          <p class="value">
+            {{ 'HEADER.ADD_DATES' | translate }}
+          </p>
+          }
         </div>
         <div
-          class="search-filter-item d-flex align-items-center justify-content-between"
+          class="search-filter-item d-flex align-items-center justify-content-center"
           #whoRef
           [ngClass]="{ 'active': activeFilter === 'who' }"
           (click)="setActive('who')"
         >
           <div>
-            <p class="label">Who</p>
+            @if (isSearchBarSticky) {
+            <p class="label">{{ 'HEADER.ADD_GUESTS' | translate }}</p>
+            }@else{
+            <p class="label">{{ 'HEADER.WHO' | translate }}</p>
             <p class="value">
               <ng-container *ngIf="getTotalGuests() > 0">
-                {{ getTotalGuests() }} guest<ng-container
-                  *ngIf="getTotalGuests() > 1"
-                  >s</ng-container
+                {{ getTotalGuests() }} {{ 'HEADER.GUEST' | translate
+                }}<ng-container *ngIf="getTotalGuests() > 1"
+                  >{{ 'HEADER.GUESTS' | translate }}</ng-container
                 >
               </ng-container>
               <ng-container *ngIf="getInfantsCount() > 0">
                 <ng-container *ngIf="getTotalGuests() > 0">, </ng-container>{{
-                getInfantsCount() }} infant<ng-container
-                  *ngIf="getInfantsCount() > 1"
-                  >s</ng-container
+                getInfantsCount() }} {{ 'HEADER.INFANT' | translate
+                }}<ng-container *ngIf="getInfantsCount() > 1"
+                  >{{ 'HEADER.INFANTS' | translate }}</ng-container
                 >
               </ng-container>
               <ng-container
                 *ngIf="getTotalGuests() === 0 && getInfantsCount() === 0"
               >
-                Add guests
+                {{ 'HEADER.ADD_GUESTS' | translate }}
               </ng-container>
             </p>
+            }
           </div>
           <div class="ms-auto">
             <div
@@ -218,7 +323,7 @@
             <div
               *ngSwitchCase="'where'"
               class="custom-scroll"
-              style="max-height: 420px; max-width: 350px;"
+              style="max-height: 420px; padding: 18px 0px 18px 12px;"
             >
               <div class="p-2">
                 <!-- <div class="mb-4">
@@ -235,7 +340,9 @@
                   />
                 </div> -->
                 <div>
-                  <h6 class="mb-3">Suggested destinations</h6>
+                  <h6 class="mb-3">
+                    {{ 'HEADER.SUGGESTED_DESTINATIONS' | translate }}
+                  </h6>
                   <ul class="list-unstyled">
                     <li
                       *ngFor="let destination of suggestedDestinations"
@@ -249,7 +356,7 @@
                       />
                       <div>
                         <p class="mb-0 fw-bold">{{ destination.name }}</p>
-                        <small class="text-muted"
+                        <small style="color: var(--secondary-text-color);"
                           >{{ destination.description }}</small
                         >
                       </div>
@@ -257,7 +364,9 @@
                   </ul>
                 </div>
                 <div class="mt-4">
-                  <h6 class="mb-3">Flexible search</h6>
+                  <h6 class="mb-3">
+                    {{ 'HEADER.FLEXIBLE_SEARCH' | translate }}
+                  </h6>
                   <div class="d-flex flex-wrap gap-2">
                     <button
                       *ngFor="let option of flexibleSearchOptions"
@@ -270,7 +379,15 @@
               </div>
             </div>
 
-            <div *ngSwitchCase="'date'">
+            <div
+              *ngSwitchCase="'date'"
+              style="
+                max-height: 351px;
+                max-width: 610px;
+                overflow-y: hidden;
+                padding: 20px;
+              "
+            >
               <div
                 class="d-flex flex-row custom-date-modal-content airbnb-calendar-wrapper"
               >
@@ -280,24 +397,26 @@
                     class="quick-option-card airbnb-option"
                     (click)="selectQuickDate('today')"
                   >
-                    <p class="fw-bold mb-0">Today</p>
-                    <small class="text-muted">{{ getTodayFormatted() }}</small>
+                    <p class="fw-bold mb-0">{{ 'HEADER.TODAY' | translate }}</p>
+                    <small>{{ getTodayFormatted() }}</small>
                   </div>
                   <div
                     class="quick-option-card airbnb-option"
                     (click)="selectQuickDate('tomorrow')"
                   >
-                    <p class="fw-bold mb-0">Tomorrow</p>
-                    <small class="text-muted"
-                      >{{ getTomorrowFormatted() }}</small
-                    >
+                    <p class="fw-bold mb-0">
+                      {{ 'HEADER.TOMORROW' | translate }}
+                    </p>
+                    <small>{{ getTomorrowFormatted() }}</small>
                   </div>
                   <div
                     class="quick-option-card airbnb-option"
                     (click)="selectQuickDate('thisWeekend')"
                   >
-                    <p class="fw-bold mb-0">This weekend</p>
-                    <small class="text-muted">
+                    <p class="fw-bold mb-0">
+                      {{ 'HEADER.THIS_WEEKEND' | translate }}
+                    </p>
+                    <small>
                       {{ getFridayDate() }} &ndash; {{ getSaturdayDate() }}
                     </small>
                   </div>
@@ -308,7 +427,7 @@
                   <ngx-daterangepicker-material
                     [locale]="locale"
                     [ranges]="{}"
-                    [linkedCalendars]="true"
+                    [linkedCalendars]="false"
                     [alwaysShowCalendars]="true"
                     [singleDatePicker]="false"
                     [showCustomRangeLabel]="false"
@@ -322,7 +441,7 @@
               </div>
             </div>
 
-            <div *ngSwitchCase="'who'">
+            <div *ngSwitchCase="'who'" style="padding: 0px 10px;">
               <div class="guest-options p-3">
                 <div
                   *ngFor="let guest of guests; let i = index"
@@ -334,8 +453,10 @@
                   >
                     <p class="mb-0 fw-bold">{{ guest.label }}</p>
                     <p
-                      class="text-muted"
-                      style="min-width: max-content;"
+                      style="
+                        min-width: max-content;
+                        color: var(--secondary-text-color);
+                      "
                       *ngIf="guest.subLabel"
                     >
                       {{ guest.subLabel }}

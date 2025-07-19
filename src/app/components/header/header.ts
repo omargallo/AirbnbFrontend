@@ -1,10 +1,13 @@
-import { Component, AfterViewInit, ElementRef, QueryList, ViewChildren, ViewChild, NgZone, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, QueryList, ViewChildren, ViewChild, NgZone, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import moment from 'moment';
 
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { FormsModule } from '@angular/forms';
+import { LangService } from '../../core/services/lang.service';
+import { ThemeService } from '../../core/services/theme.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 interface Guest {
@@ -27,11 +30,23 @@ interface FlexibleSearchOption {
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgxDaterangepickerMd, FormsModule],
+  imports: [CommonModule, RouterModule, NgxDaterangepickerMd, FormsModule,TranslateModule],
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
 export class HeaderComponent implements AfterViewInit, OnDestroy {
+  isDarkMode = false;
+
+  isSearchBarSticky = false;
+  wasFilterClicked = false;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    if (!this.wasFilterClicked) {
+      this.isSearchBarSticky = window.scrollY > 80;
+    }
+  }
+
 
   guests: Guest[] = [
     { label: 'Adults', subLabel: 'Ages 13 or above', count: 0, min: 0, max: 12 },
@@ -237,8 +252,12 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   setActive(filter: string) {
     this.activeFilter = filter;
     this.updateIndicator();
+
     this.openSearchModal(filter);
+    this.wasFilterClicked = true;
+    this.isSearchBarSticky = false;
   }
+
 
   get isAnyFilterActive(): boolean {
     return this.activeFilter !== '';
@@ -301,7 +320,9 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  constructor(private ngZone: NgZone) { }
+  constructor(private ngZone: NgZone, public lang: LangService, public theme: ThemeService
+
+  ) { }
 
   private boundHandleClick = this.handleClickOutside.bind(this);
 
@@ -323,7 +344,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
   navItems = [
     {
-      label: 'Homes',
+      label: 'HEADER.HOMES',
       active: true,
       imgSrc: 'https://a0.muscache.com/im/pictures/airbnb-platform-assets/AirbnbPlatformAssets-search-bar-icons/original/4aae4ed7-5939-4e76-b100-e69440ebeae4.png?im_w=240',
       videoSources: [
@@ -334,7 +355,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       isNew: false
     },
     {
-      label: 'Experiences',
+      label: 'HEADER.EXPERIENCES',
       active: false,
       imgSrc: 'https://a0.muscache.com/im/pictures/airbnb-platform-assets/AirbnbPlatformAssets-search-bar-icons/original/e47ab655-027b-4679-b2e6-df1c99a5c33d.png?im_w=240',
       videoSources: [
@@ -345,7 +366,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       isNew: true
     },
     {
-      label: 'Services',
+      label: 'HEADER.SERVICES',
       active: false,
       imgSrc: 'https://a0.muscache.com/im/pictures/airbnb-platform-assets/AirbnbPlatformAssets-search-bar-icons/original/3d67e9a9-520a-49ee-b439-7b3a75ea814d.png?im_w=240',
       videoSources: [
@@ -356,7 +377,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       isNew: true
     }
   ];
-  
+
   @ViewChildren('navVideo') videoElements!: QueryList<ElementRef<HTMLVideoElement>>;
 
   ngAfterViewInit() {
@@ -420,6 +441,11 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
         this.indicatorWidth = 0;
       });
     }, 500);
+
+    this.wasFilterClicked = false;
+    if (window.scrollY > 80) {
+      this.isSearchBarSticky = true;
+    }
   }
 
   onModalAnimationEnd() {
@@ -458,9 +484,9 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       video.currentTime = 0;
     }
   }
-@ViewChild('container') containerRef!: ElementRef;
+  @ViewChild('container') containerRef!: ElementRef;
 
-   movingStyles = {
+  movingStyles = {
     position: 'absolute',
     top: '0px',
     left: '0px',
@@ -469,7 +495,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     transition: 'all 0.3s ease' // Optional: Smooth animation
   };
 
-  moveTo( target: HTMLElement) {
+  moveTo(target: HTMLElement) {
     // console.log("FromMoveTO",event)
     const rect = target.getBoundingClientRect();
     const containerRect = this.containerRef.nativeElement?.getBoundingClientRect();
@@ -477,7 +503,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     console.log(this.movingStyles)
     this.movingStyles = {
       ...this.movingStyles,
-     top: `${rect.top - containerRect.top}px`,
+      top: `${rect.top - containerRect.top}px`,
       left: `${rect.left - containerRect.left}px`,
       width: rect.width + 'px',
       height: rect.height + 'px'
@@ -485,4 +511,20 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     console.log(this.movingStyles)
 
   }
+
+  ngOnInit() {
+    this.isDarkMode = document.body.classList.contains('dark');
+  }
+
+  changeLanguage(lang: string) {
+    this.lang.switchLang(lang);
+  }
+
+  toggleTheme() {
+    this.isDarkMode = !this.isDarkMode;
+
+    this.theme.toggleTheme();
+    console.log(this.theme)
+  }
+
 }
