@@ -1,4 +1,4 @@
-// COMPONENT: card.component.html
+<!-- 
 <div class="card">
   <div class="image-container">
     <img [src]="imageUrl" alt="listing image" />
@@ -10,6 +10,35 @@
     <div class="subtitle">{{ subtitle }}</div>
     <div class="price">{{ price }}</div>
     <div class="rating">⭐ {{ rating }}
+    </div>
+  </div>
+</div> -->
+
+<div class="card border-0 shadow-sm rounded rounded-2">
+  <div class="image-container position-relative">
+    <img [src]="imageUrl" alt="listing image" class="img-fluid rounded ratio-1x1">
+    <div class="favorite badge  fw-semibold position-absolute top-0 start-0 m-2" 
+      
+      *ngIf="isFavorite"
+    >
+      Guest favorite
+    </div>
+    <button class="heart position-absolute top-0 end-0 m-2">
+      <i class="bi bi-heart  fs-5"></i>
+    </button>
+  </div>
+
+  <div class="info px-2 pt-2 pb-3">
+    <div class="title fw-semibold">{{ title }}</div>
+    <div class="subtitle text-muted small">{{ subtitle }}</div>
+
+    <div class="d-flex justify-content-between align-items-center mt-1">
+      <div class="rating  small d-flex align-items-center">
+        <i class="bi bi-star-fill text-warning me-1"></i>{{ rating }}
+      </div>
+      <div class="price fw-semibold">
+        ${{ price }} <span class="small">night</span>
+      </div>
     </div>
   </div>
 </div>
