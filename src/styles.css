@@ -3,8 +3,7 @@
 
 } */
 
-
-:root {
+/* :root {
   --airbnb-red: #ff385c;
   --airbnb-dark-red: #e00050;
   --primary-text-color: #222222;
@@ -12,7 +11,7 @@
   --border-color: #ebebeb;
   --shadow-color: rgba(0, 0, 0, 0.08);
   --light-grey-bg: #ecebeb;
-}
+} */
 
 :host {
   font-family: "Inter", sans-serif;
@@ -26,20 +25,27 @@ body.light {
   --border-color: #ebebeb;
   --shadow-color: rgba(0, 0, 0, 0.08);
   --light-grey-bg: #ecebeb;
+  --bg-color: #fff;
+  --head: rgba(0, 0, 0, 0.02);
+  --active:white;
 }
 
 body.dark {
-  --airbnb-red: #ff385c;
+  --airbnb-red: #ff5a5f;
   --airbnb-dark-red: #e00050;
-  --primary-text-color: #000;
-  --secondary-text-color: #9f9f9f;
-  --border-color: #ebebeb;
-  --shadow-color: rgba(255, 255, 255, 0.08);
-  --light-grey-bg: #2d2c2c;
+  --primary-text-color: #f5f5f5;
+  --secondary-text-color: #a1a0a0;
+  --border-color: #3a3a3a;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --light-grey-bg: #2e2e2e;
+  --bg-color: #121212;
+  --head: rgba(255, 255, 255, 0.03);
+  --active:#3a3a3a;
 }
 
 body {
   background-color: var(--bg-color);
   color: var(--primary-text-color);
   transition: 0.3s ease;
+  min-height: 200vh;
 }

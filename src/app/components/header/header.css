@@ -1,5 +1,5 @@
 .airbnb-header {
-  background: linear-gradient(to bottom, white, rgba(0, 0, 0, 0.02));
+  background: linear-gradient(to bottom, var(--bg-color), var(--head));
   border-bottom: 1px solid var(--border-color);
   box-shadow: 0 2px 4px var(--shadow-color);
   position: fixed;
@@ -9,6 +9,11 @@
   z-index: 1030;
   padding-top: 1rem;
   padding-bottom: 1rem;
+  transition: all 0.5 ease-in-out;
+  -webkit-transition: all 0.5 ease-in-out;
+  -moz-transition: all 0.5 ease-in-out;
+  -ms-transition: all 0.5 ease-in-out;
+  -o-transition: all 0.5 ease-in-out;
 }
 
 .airbnb-logo svg {
@@ -23,12 +28,17 @@
   color: var(--secondary-text-color);
   position: relative;
   cursor: pointer;
-  transition: color 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
   display: flex;
   align-items: center;
   gap: 0.25rem;
   margin: 0 10px;
   text-decoration: none;
+}
+
+.top-nav-category img,
+video {
+  width: 64px !important;
 }
 
 .top-nav-category:hover {
@@ -41,8 +51,8 @@
   bottom: 0.6rem;
   left: 58%;
   transform: translateX(-50%) scaleX(0);
-  width: 70%;
-  height: 4px;
+  width: 72%;
+  height: 3px;
   background-color: var(--primary-text-color);
   border-radius: 2px;
   transition: transform 0.4s ease-in-out;
@@ -92,7 +102,7 @@
   border-radius: 9999px;
   padding: 6px 10px;
   transition: box-shadow 0.2s ease-in-out;
-  background-color: white;
+  background-color: var(--bg-color);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -108,7 +118,7 @@
 
 .user-menu-button .icon-user {
   background-color: var(--primary-text-color);
-  color: white;
+  color: var(--bg-color);
   border-radius: 50%;
   padding: 4px;
   height: 32px;
@@ -126,17 +136,27 @@
   min-width: 200px;
   max-width: calc(100vw - 16px);
   overflow: hidden;
+  background-color: var(--active);
 }
-
+.dropdown-item {
+  color: var(--primary-text-color);
+}
+.dropdown-item:hover{
+  color: #000;
+}
+.dropdown-item:active{
+  background-color: var(--airbnb-red);
+}
 .search-bar-container {
   border: 1px solid var(--border-color);
   border-radius: 9999px;
-  /* padding: 8px 16px; */
+  /*padding: 8px 16px;
+  */
   box-shadow: 0 1px 2px var(--shadow-color);
-  transition: box-shadow 0.2s ease-in-out;
+  transition: all 5s ease-in-out;
   cursor: pointer;
-  background-color: white;
-  max-width: 800px;
+  background-color: var(--bg-color);
+  max-width: 700px;
   width: 100%;
 }
 
@@ -150,38 +170,37 @@
   align-items: center;
   flex-grow: 1;
   justify-content: space-between;
-  /* background-color: rgba(0, 0, 0, 0.06); */
+  /*background-color: rgba(0, 0, 0, 0.06);
+  */
   border: 1px solid var(--border-color);
   border-radius: 9999px;
-  -webkit-border-radius: 9999px;
-  -moz-border-radius: 9999px;
-  -ms-border-radius: 9999px;
-  -o-border-radius: 9999px;
+  transition: all 0.5s ease-in-out;
 }
 
 .group-active-bg {
-  background-color: rgba(0, 0, 0, 0.06);
+  background-color: var(--shadow-color);
 }
 
 .group-default-bg {
-  background-color: white;
+  background-color: var(--bg-color);
 }
 
 .search-filter-item {
   position: relative;
-  padding: 12px 24px !important;
+  padding: 5px 24px !important;
   border-radius: 9999px;
   transition: all 0.2s ease-in-out;
   cursor: pointer;
   flex-shrink: 1;
   z-index: 1;
   flex-grow: 1 !important;
-  max-height: min-content !important;
+  height: 50px !important;
+  min-width: max-content;
 }
 
 .indicator-line {
   position: absolute;
-  background-color: white;
+  background-color: var(--active);
   border-radius: 9999px;
   z-index: 0;
   transition: all 0.5s ease;
@@ -202,8 +221,8 @@
   }
 }
 
-.search-filter-item:not(:first-child)::before,
-.search-filter-item:not(:last-child)::after {
+.search-filter-item:nth-child(2)::before,
+.search-filter-item:nth-child(2)::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -215,26 +234,32 @@
   transition: opacity 0.2s ease-in-out;
 }
 
-.search-filter-item:not(:first-child)::before {
+.search-filter-item:nth-child(2)::before {
   left: 0;
 }
 
-.search-filter-item:not(:last-child)::after {
+.search-filter-item:nth-child(2)::after {
   right: 0;
 }
 
-.search-filter-item:hover::before,
-.search-filter-item:hover::after {
+.search-filter-item:nth-child(1):hover
+  ~ .search-filter-item:nth-child(2)::before {
   opacity: 0;
 }
 
-.search-filter-group:hover .search-filter-item::before,
-.search-filter-group:hover .search-filter-item::after {
+.search-filter-group:hover
+  .search-filter-item:last-child:hover
+  .search-filter-item:nth-child(2)::after {
+  opacity: 0;
+}
+
+.search-filter-item:nth-child(2):hover::before,
+.search-filter-item:nth-child(2):hover::after {
   opacity: 0;
 }
 
 .search-filter-item:hover {
-  background-color: rgb(230, 228, 228);
+  background-color: var(--active);
 }
 
 .search-filter-item.active:hover {
@@ -380,25 +405,27 @@
     transform: scale(0.95) translateY(-10px);
   }
 }
+
 .custom-modal {
   position: absolute;
   z-index: 1;
-
-  padding: 20px;
-  margin-top: 0.8rem;
-  box-shadow: 0 1px 2px var(--shadow-color, rgba(0, 0, 0, 0.1));
+  /*padding: 20px;
+  */margin-top: 0.8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   min-width: 400px;
-  max-width: 500px;
-  border-radius: 12px;
+  width: min-content !important;
+  border-radius: 33px;
+  /*max-width: 500px;
+  */border-radius: 12px;
   overflow-x: hidden;
-  background-color: white;
+  background-color: var(--active);
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   opacity: 0;
   transition: all 0.5s ease-in-out;
   animation: fadeZoomIn 0.5s ease both;
   transform-origin: top center;
-  -webkit-animation: fadeZoomIn 0.5s ease both;
+
 }
 
 .fade-zoom-in {
@@ -419,12 +446,20 @@
 .custom-modal-content {
   width: 100%;
   transform: translateY(20px);
-  transition: all 0.5s ease-in-out;
+  transition: all 0.6s ease-in-out;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -ms-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
 }
 
 .custom-modal.d-flex .custom-modal-content {
   transform: translateY(0);
-  transition: all 0.5s ease-in-out;
+  transition: all 0.6s ease-in-out;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -ms-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
 }
 
 .close-button {
@@ -449,8 +484,8 @@
 
 .guest-item button {
   margin: 0 5px;
-  border: 1px solid #b0b0b0;
-  background-color: #fff;
+  border: 1px solid var(--light-grey-bg);
+  background-color: var(--bg-color);
   border-radius: 50%;
   width: 32px;
   height: 32px;
@@ -464,15 +499,15 @@
 }
 
 .guest-item button:hover {
-  border-color: #000;
-  color: #000;
+  border-color: var(--primary-text-color);
+  color: var(--primary-text-color);
 }
 
 .guest-item button.disabled,
 .guest-item button[disabled] {
-  border-color: #e0e0e0;
-  color: #e0e0e0;
-  background-color: #fff;
+  border-color: var(--active);
+  color: var(--light-grey-bg);
+  background-color: var(--bg-color);
   cursor: not-allowed;
   opacity: 1;
 }
@@ -494,6 +529,7 @@
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -505,6 +541,7 @@
     opacity: 0;
     -webkit-transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     -webkit-transform: scale(1);
@@ -516,6 +553,7 @@
     opacity: 1;
     transform: scale(1);
   }
+
   to {
     opacity: 0;
     transform: scale(0.95);
@@ -558,12 +596,14 @@
 .custom-scroll::-webkit-scrollbar-thumb:hover {
   background-color: #888;
 }
+
 .dest {
   border: none;
   outline: none;
   background-color: transparent !important;
   padding: 0px;
 }
+
 .dest:focus {
   border: none;
   outline: none;
@@ -592,18 +632,18 @@
 }
 
 .airbnb-option {
-  border: 1px solid #ddd;
+  border: 1px solid var(--shadow-color);
   border-radius: 12px;
   padding: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
-  background-color: #fff;
+  background-color: var(--active);
   width: 100%;
   /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */
 }
 
 .airbnb-option:hover {
-  border-color: #000;
+  border-color: var(--primary-text-color);
   /* background-color: #f7f7f7; */
   /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); */
 }
@@ -615,28 +655,35 @@
 
 .airbnb-option small {
   font-size: 14px;
-  color: #717171;
+  color: var(--secondary-text-color);
 }
 
 /* Calendar Container */
 .airbnb-calendar {
   position: relative;
-  min-height: 320px;
+  /* min-height: 320px; */
 }
 
+::ng-deep .md-drppicker {
+  background-color: var(--active) !important;
+}
 /* Reset daterangepicker styles */
 ::ng-deep .daterangepicker {
   box-shadow: none !important;
   border: none !important;
   margin: 0 !important;
   padding: 0 !important;
-  width: auto !important;
+  /* width: auto !important; */
   position: relative !important;
   display: block !important;
 }
+::ng-deep .md-drppicker .calendar-table {
+  border-color: var(--active) !important;
+  background-color: var(--active) !important;
+}
 
 ::ng-deep .daterangepicker.single {
-  width: 280px !important;
+  /* width: 380px !important; */
 }
 
 ::ng-deep .daterangepicker .drp-calendar {
@@ -654,8 +701,8 @@
 }
 
 ::ng-deep .daterangepicker {
-  width: 280px !important;
-  max-width: 280px !important;
+  /* width: 280px !important; */
+  /* max-width: 280px !important; */
 }
 
 /* Calendar header */
@@ -669,9 +716,9 @@
 ::ng-deep .daterangepicker .calendar-table th,
 ::ng-deep .daterangepicker .calendar-table td {
   border: none !important;
-  width: 42px !important;
-  height: 42px !important;
-  line-height: 42px !important;
+  width: 60px !important;
+  height: 50px !important;
+  line-height: 50px !important;
   text-align: center;
   font-weight: 400;
   position: relative;
@@ -718,6 +765,7 @@
 /* Date cells */
 ::ng-deep .daterangepicker td.available:hover {
   background-color: #f0f0f0 !important;
+  color: var(--bg-color) !important;
   border-radius: 50% !important;
 }
 
@@ -730,7 +778,7 @@
 ::ng-deep .daterangepicker td.active,
 ::ng-deep .daterangepicker td.active:hover {
   background-color: #222 !important;
-  color: #fff !important;
+  color: var(--bg-color) !important;
   border-radius: 50% !important;
   font-weight: 600 !important;
 }
@@ -755,7 +803,7 @@
 }
 
 ::ng-deep .daterangepicker td.off.available {
-  color: #ccc !important;
+  color: var(--bg-color) !important;
 }
 
 ::ng-deep .daterangepicker td.today {
@@ -797,27 +845,28 @@
     padding: 12px;
   }
 }
+
 .md-drppicker td.active,
 .md-drppicker td.active:hover {
   background-color: rgba(0, 0, 0, 0.1) !important;
   border-color: transparent;
-  color: #fff;
+  color: var(--bg-color) !important;
 }
 
 .active .available .end-date .start-date .today {
   background-color: rgba(0, 0, 0, 0.1) !important;
   border-color: transparent;
-  color: #fff;
+  color: var(--bg-color);
 }
 
-
-::ng-deep .md-drppicker td.active{
+::ng-deep .md-drppicker td.active {
   background-color: #000 !important;
-  color: white !important;
+  color: var(--bg-color) !important;
   border-color: transparent !important;
 }
+
 ::ng-deep .md-drppicker td.active:hover {
-  border: 1px solid #000 !important;
+  /* border: 1px solid #000 !important; */
 }
 
 ::ng-deep .md-drppicker td {
@@ -830,3 +879,66 @@
   color: white !important;
 }
 
+::ng-deep .daterangepicker .calendar.right {
+  display: none !important;
+}
+
+.airbnb-calendar[_ngcontent-ng-c120480673] {
+  min-width: fit-content;
+  max-height: 320px;
+  overflow: hidden;
+}
+
+::ng-deep .md-drppicker .calendar th,
+::ng-deep .md-drppicker .calendar td {
+  min-width: 50px !important;
+}
+
+::ng-deep .airbnb-calendar {
+  position: relative;
+  width: 554px !important;
+}
+
+::ng-deep .md-drppicker td.off,
+.md-drppicker td.off.in-range,
+.md-drppicker td.off.start-date,
+.md-drppicker td.off.end-date {
+  background-color: var(--active) !important;
+}
+
+::ng-deep .md-drppicker td:hover,
+.md-drppicker td.in-range:hover,
+.md-drppicker td.start-date:hover,
+.md-drppicker td.end-date:hover {
+  color: var(--airbnb-red) !important;
+}
+
+.airbnb-header.search-bar-sticky .search-bar-container {
+  margin-top: -55px;
+  transform: scale(0.8);
+  transition: all 0.5s ease-in-out;
+  z-index: 999;
+  height: fit-content !important;
+  max-width: fit-content !important;
+  flex-grow: 0 !important;
+  -webkit-transform: scale(0.8);
+  -moz-transform: scale(0.8);
+  -ms-transform: scale(0.8);
+  -o-transform: scale(0.8);
+}
+
+.airbnb-header .search-bar-container {
+  transform: scale(1);
+  transition: all 0.5s ease-in-out;
+  z-index: auto;
+}
+
+.top-nav-categories {
+  transition: all 0.5s ease;
+}
+
+.airbnb-header.search-bar-sticky .top-nav-categories {
+  opacity: 0;
+  margin-top: -11rem;
+  pointer-events: none;
+}
