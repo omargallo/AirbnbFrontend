@@ -1,0 +1,134 @@
+<!-- Loading State -->
+@if (isLoading) {
+<div class="loading-container">
+  <div class="loading-spinner"></div>
+  <p class="loading-text">Loading your properties...</p>
+</div>
+}
+
+@if (error && !isLoading) {
+<div class="error-container">
+  <div class="error-icon">⚠️</div>
+  <h3 class="error-title">Oops! Something went wrong</h3>
+  <p class="error-message">{{ error }}</p>
+  <button class="retry-button" (click)="refreshProperties()">
+    <span class="retry-icon">🔄</span>
+    Try again
+  </button>
+</div>
+}
+
+<!-- Main Content -->
+@if (!isLoading && !error) {
+<div class="host-properties-container">
+  <div class="header-section">
+    <div class="header-left">
+      <h1 class="page-title">Your listings</h1>
+    </div>
+    
+    <div class="header-controls">
+      <!-- View Toggle -->
+      <div class="view-toggle">
+        <button 
+          class="view-toggle-btn" 
+          (click)="toggleViewMode()"
+          [title]="viewMode === 'grid' ? 'Switch to table view' : 'Switch to grid view'">
+          {{ viewMode === 'grid' ? '⊞' : '☰' }}
+        </button>
+      </div>
+      
+      <button class="add-listing-btn">
+        +
+      </button>
+    </div>
+  </div>
+
+  @if (properties.length > 0) {
+  <div class="properties-grid" [class.table-view]="viewMode === 'table'">
+    @for (property of properties; track property.id) {
+    <div class="property-card">
+      <div class="property-image-container">
+        <div class="property-image">
+          <div class="image-placeholder">
+     <img src="https://images.pexels.com/photos/2079246/pexels-photo-2079246.jpeg?_gl=1*q24m0e*_ga*ODE1ODMyMjc2LjE3NTI5NTg5NTI.*_ga_8JE65Q40S6*czE3NTI5NTg5NTIkbzEkZzEkdDE3NTI5NTkxMjckajM2JGwwJGgw" alt="Property Image">
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Property Content -->
+      <div class="property-content">
+        <!-- Property Title/Description -->
+        <h3 class="property-title">{{ property.title }}</h3>
+        
+        <!-- Property Location -->
+        <p class="property-location">
+          Home in {{ property.city }}, {{ property.state }}, {{ property.country }}
+        </p>
+      </div>
+    </div>
+    }
+  </div>
+  
+  <!-- Properties Table View -->
+ <table class="properties-table" [class.active]="viewMode === 'table'">
+  <thead>
+    <tr>
+      <th>Listing</th>
+      <th>Type</th>
+      <th>Location</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (property of properties; track property.id) {
+    <tr>
+      <td>
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div class="table-property-image">
+            <!-- Show actual image instead of emoji -->
+            <img 
+              src="https://images.pexels.com/photos/2079246/pexels-photo-2079246.jpeg?_gl=1*q24m0e*_ga*ODE1ODMyMjc2LjE3NTI5NTg5NTI.*_ga_8JE65Q40S6*czE3NTI5NTg5NTIkbzEkZzEkdDE3NTI5NTkxMjckajM2JGwwJGgw" 
+              alt="Property Image"
+            
+            >
+            <!-- Fallback placeholder (hidden by default) -->
+            <div class="image-placeholder" style="display: none;">
+              🏠
+            </div>
+          </div>
+          <span class="table-property-title">{{ property.title }}</span>
+        </div>
+      </td>
+      <td>
+        <span class="table-property-type">Home</span>
+      </td>
+      <td>
+        <span class="table-property-location">
+          {{ property.city }}, {{ property.state }}, {{ property.country }}
+        </span>
+      </td>
+      <td>
+        <span class="status-badge" [class.active]="property.isActive" [class.inactive]="!property.isActive">
+          {{ property.isActive ? 'Active' : 'Inactive' }}
+        </span>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+  }
+
+  @if (properties.length === 0) {
+  <div class="empty-state">
+    <div class="empty-icon">🏡</div>
+    <h3 class="empty-title">No properties yet</h3>
+    <p class="empty-description">Start earning by listing your first property</p>
+    <button class="add-property-button">
+      <span class="plus-icon">+</span>
+      Add your first listing
+    </button>
+  </div>
+  }
+</div>
+}
