@@ -7,6 +7,7 @@ import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { FormsModule } from '@angular/forms';
 import { LangService } from '../../core/services/lang.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 interface Guest {
@@ -29,7 +30,7 @@ interface FlexibleSearchOption {
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgxDaterangepickerMd, FormsModule],
+  imports: [CommonModule, RouterModule, NgxDaterangepickerMd, FormsModule,TranslateModule],
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
@@ -343,7 +344,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
   navItems = [
     {
-      label: 'Homes',
+      label: 'HEADER.HOMES',
       active: true,
       imgSrc: 'https://a0.muscache.com/im/pictures/airbnb-platform-assets/AirbnbPlatformAssets-search-bar-icons/original/4aae4ed7-5939-4e76-b100-e69440ebeae4.png?im_w=240',
       videoSources: [
@@ -354,7 +355,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       isNew: false
     },
     {
-      label: 'Experiences',
+      label: 'HEADER.EXPERIENCES',
       active: false,
       imgSrc: 'https://a0.muscache.com/im/pictures/airbnb-platform-assets/AirbnbPlatformAssets-search-bar-icons/original/e47ab655-027b-4679-b2e6-df1c99a5c33d.png?im_w=240',
       videoSources: [
@@ -365,7 +366,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       isNew: true
     },
     {
-      label: 'Services',
+      label: 'HEADER.SERVICES',
       active: false,
       imgSrc: 'https://a0.muscache.com/im/pictures/airbnb-platform-assets/AirbnbPlatformAssets-search-bar-icons/original/3d67e9a9-520a-49ee-b439-7b3a75ea814d.png?im_w=240',
       videoSources: [

@@ -52,7 +52,8 @@
                 [type]="source.type"
               />
             </video>
-            {{ item.label }}
+            {{ item.label| translate }}
+
             <!-- <span *ngIf="item.isNew" class="new-badge">NEW</span> -->
           </a>
         </div>
@@ -63,7 +64,7 @@
       <!-- Right-aligned items -->
       <div class="d-flex align-items-center position-relative">
         <a class="switch-to-hosting-btn d-none d-lg-block" routerLink="/hosting"
-          >Switch to hosting</a
+          >{{ 'HEADER.SWITCH_TO_HOSTING' | translate }}</a
         >
         <div class="dropdown" [ngClass]="{ show: dropdownOpen }">
           <button
@@ -98,7 +99,8 @@
                 class="dropdown-item d-flex align-items-center gap-2"
                 routerLink="/signup"
               >
-                <i class="bi bi-person-plus"></i> Sign up
+                <i class="bi bi-person-plus"></i> {{ 'HEADER.SIGN_UP' |
+                translate }}
               </a>
             </li>
 
@@ -107,7 +109,8 @@
                 class="dropdown-item d-flex align-items-center gap-2"
                 routerLink="/login"
               >
-                <i class="bi bi-box-arrow-in-right"></i> Log in
+                <i class="bi bi-box-arrow-in-right"></i> {{ 'HEADER.LOGIN' |
+                translate }}
               </a>
             </li>
 
@@ -119,15 +122,58 @@
               (click)="toggleTheme()"
             >
               <i class="bi" [ngClass]="isDarkMode ? 'bi-sun' : 'bi-moon'"></i>
-              {{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}
+              {{ isDarkMode ? ('HEADER.DARK_MODE' | translate) :
+              ('HEADER.LIGHT_MODE' | translate) }}
             </li>
 
+            <li
+              class="dropdown-item d-flex align-items-center gap-2 dropdown-center"
+              style="padding: 0px !important;"
+            >
+              <!-- Dropstart Language Switcher -->
+
+              <div
+                type="button"
+                class="dropdown-toggle dropdown-item d-flex align-items-center gap-2 menu-dropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-globe"></i>
+                {{ 'HEADER.LANGUAGE' | translate }}
+              </div>
+              <ul
+                class="dropdown-menu"
+                style="left: 10px; background-color: var(--active);"
+              >
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    [class.active]="lang.currentLang === 'en'"
+                    (click)="lang.switchLang('en')"
+                  >
+                    {{ 'HEADER.ENGLISH' | translate }}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    [class.active]="lang.currentLang === 'ar'"
+                    (click)="lang.switchLang('ar')"
+                  >
+                    {{ 'HEADER.ARABIC' | translate }}
+                  </a>
+                </li>
+              </ul>
+            </li>
             <li>
               <a
                 class="dropdown-item d-flex align-items-center gap-2"
                 routerLink="/host"
               >
-                <i class="bi bi-house-door-fill"></i> Airbnb your home
+                <i class="bi bi-house-door-fill"></i>{{
+                'HEADER.AIRBNB_YOUR_HOME' | translate }}
               </a>
             </li>
 
@@ -136,7 +182,8 @@
                 class="dropdown-item d-flex align-items-center gap-2"
                 routerLink="/help"
               >
-                <i class="bi bi-question-circle"></i> Help
+                <i class="bi bi-question-circle"></i> {{ 'HEADER.HELP' |
+                translate }}
               </a>
             </li>
           </ul>
@@ -161,14 +208,14 @@
           (click)="setActive('where')"
         >
           @if (isSearchBarSticky) {
-          <p class="label mb-0">Any Where</p>
+          <p class="label mb-0">{{ 'HEADER.ANYWHERE' | translate }}</p>
           }@else{
-          <p class="label mb-0">Where</p>
+          <p class="label mb-0">{{ 'HEADER.WHERE' | translate }}</p>
           <!-- <p class="value">Search destinations</p> -->
           <input
             class="search-input dest"
             type="text"
-            placeholder="Search destinations"
+            [placeholder]="'HEADER.SEARCH_DESTINATIONS' | translate"
           />
           }
         </div>
@@ -179,10 +226,14 @@
           (click)="setActive('date')"
         >
           @if (isSearchBarSticky) {
-          <p class="label">Add Date</p>
+          <p class="label">
+            {{ 'HEADER.ADD_DATE' | translate }}
+          </p>
           }@else{
-          <p class="label">Date</p>
-          <p class="value">Add dates</p>
+          <p class="label">{{ 'HEADER.DATE' | translate }}</p>
+          <p class="value">
+            {{ 'HEADER.ADD_DATES' | translate }}
+          </p>
           }
         </div>
         <div
@@ -193,27 +244,27 @@
         >
           <div>
             @if (isSearchBarSticky) {
-            <p class="label">Add Guests</p>
+            <p class="label">{{ 'HEADER.ADD_GUESTS' | translate }}</p>
             }@else{
-            <p class="label">Who</p>
+            <p class="label">{{ 'HEADER.WHO' | translate }}</p>
             <p class="value">
               <ng-container *ngIf="getTotalGuests() > 0">
-                {{ getTotalGuests() }} guest<ng-container
-                  *ngIf="getTotalGuests() > 1"
-                  >s</ng-container
+                {{ getTotalGuests() }} {{ 'HEADER.GUEST' | translate
+                }}<ng-container *ngIf="getTotalGuests() > 1"
+                  >{{ 'HEADER.GUESTS' | translate }}</ng-container
                 >
               </ng-container>
               <ng-container *ngIf="getInfantsCount() > 0">
                 <ng-container *ngIf="getTotalGuests() > 0">, </ng-container>{{
-                getInfantsCount() }} infant<ng-container
-                  *ngIf="getInfantsCount() > 1"
-                  >s</ng-container
+                getInfantsCount() }} {{ 'HEADER.INFANT' | translate
+                }}<ng-container *ngIf="getInfantsCount() > 1"
+                  >{{ 'HEADER.INFANTS' | translate }}</ng-container
                 >
               </ng-container>
               <ng-container
                 *ngIf="getTotalGuests() === 0 && getInfantsCount() === 0"
               >
-                Add guests
+                {{ 'HEADER.ADD_GUESTS' | translate }}
               </ng-container>
             </p>
             }
@@ -289,7 +340,9 @@
                   />
                 </div> -->
                 <div>
-                  <h6 class="mb-3">Suggested destinations</h6>
+                  <h6 class="mb-3">
+                    {{ 'HEADER.SUGGESTED_DESTINATIONS' | translate }}
+                  </h6>
                   <ul class="list-unstyled">
                     <li
                       *ngFor="let destination of suggestedDestinations"
@@ -311,7 +364,9 @@
                   </ul>
                 </div>
                 <div class="mt-4">
-                  <h6 class="mb-3">Flexible search</h6>
+                  <h6 class="mb-3">
+                    {{ 'HEADER.FLEXIBLE_SEARCH' | translate }}
+                  </h6>
                   <div class="d-flex flex-wrap gap-2">
                     <button
                       *ngFor="let option of flexibleSearchOptions"
@@ -342,21 +397,25 @@
                     class="quick-option-card airbnb-option"
                     (click)="selectQuickDate('today')"
                   >
-                    <p class="fw-bold mb-0">Today</p>
+                    <p class="fw-bold mb-0">{{ 'HEADER.TODAY' | translate }}</p>
                     <small>{{ getTodayFormatted() }}</small>
                   </div>
                   <div
                     class="quick-option-card airbnb-option"
                     (click)="selectQuickDate('tomorrow')"
                   >
-                    <p class="fw-bold mb-0">Tomorrow</p>
+                    <p class="fw-bold mb-0">
+                      {{ 'HEADER.TOMORROW' | translate }}
+                    </p>
                     <small>{{ getTomorrowFormatted() }}</small>
                   </div>
                   <div
                     class="quick-option-card airbnb-option"
                     (click)="selectQuickDate('thisWeekend')"
                   >
-                    <p class="fw-bold mb-0">This weekend</p>
+                    <p class="fw-bold mb-0">
+                      {{ 'HEADER.THIS_WEEKEND' | translate }}
+                    </p>
                     <small>
                       {{ getFridayDate() }} &ndash; {{ getSaturdayDate() }}
                     </small>

@@ -1,6 +1,34 @@
 {
-  "HOME": {
-    "TITLE": "مرحبا",
-    "DESC": "هذه صفحة مترجمة."
+  "HEADER": {
+    "HOMES": "البيوت",
+    "EXPERIENCES": "التجارب",
+    "SERVICES": "الخدمات",
+    "SWITCH_TO_HOSTING": "التبديل إلى الاستضافة",
+    "SIGN_UP": "إنشاء حساب",
+    "LOGIN": "تسجيل الدخول",
+    "DARK_MODE": "الوضع الداكن",
+    "LIGHT_MODE": "الوضع الفاتح",
+    "LANGUAGE": "اللغة",
+    "ENGLISH": "الإنجليزية",
+    "ARABIC": "العربية",
+    "AIRBNB_YOUR_HOME": "الرئيسية",
+    "HELP": "مساعدة",
+    "WHERE": "أين",
+    "ANYWHERE": "أي مكان",
+    "SEARCH_DESTINATIONS": "ابحث عن وجهات",
+    "DATE": "التاريخ",
+    "ADD_DATE": "أضف التاريخ",
+    "ADD_DATES": "أضف تواريخ",
+    "WHO": "من",
+    "ADD_GUESTS": "أضف ضيوفًا",
+    "TODAY": "اليوم",
+    "TOMORROW": "غدًا",
+    "THIS_WEEKEND": "عطلة نهاية الأسبوع",
+    "SUGGESTED_DESTINATIONS": "الوجهات المقترحة",
+    "FLEXIBLE_SEARCH": "بحث مرن",
+    "GUEST": "ضيف",
+    "GUESTS": "ضيوف",
+    "INFANT": "رضيع",
+    "INFANTS": "رُضّع"
   }
 }

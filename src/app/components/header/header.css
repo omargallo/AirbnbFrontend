@@ -135,17 +135,30 @@ video {
   transform: translateX(0%) !important;
   min-width: 200px;
   max-width: calc(100vw - 16px);
-  overflow: hidden;
+  /* overflow: hidden; */
   background-color: var(--active);
+  min-height: 240px !important;
 }
+.menu-dropdown{
+ background-color: var(--active);
+ width: 100%;
+}
+.menu-dropdown:hover{
+  background-color: transparent !important;
+}
+
 .dropdown-item {
   color: var(--primary-text-color);
 }
-.dropdown-item:hover{
+.dropdown-item:hover {
   color: #000;
 }
-.dropdown-item:active{
+.dropdown-item:active {
   background-color: var(--airbnb-red);
+}
+.dropdown-item.active {
+  background-color: var(--airbnb-red) !important;
+  color: #f7f7f7;
 }
 .search-bar-container {
   border: 1px solid var(--border-color);
@@ -259,7 +272,7 @@ video {
 }
 
 .search-filter-item:hover {
-  background-color: var(--active);
+  background-color: var(--bg);
 }
 
 .search-filter-item.active:hover {
@@ -410,13 +423,15 @@ video {
   position: absolute;
   z-index: 1;
   /*padding: 20px;
-  */margin-top: 0.8rem;
+  */
+  margin-top: 0.8rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   min-width: 400px;
   width: min-content !important;
   border-radius: 33px;
   /*max-width: 500px;
-  */border-radius: 12px;
+  */
+  border-radius: 12px;
   overflow-x: hidden;
   background-color: var(--active);
   justify-content: center;
@@ -425,7 +440,6 @@ video {
   transition: all 0.5s ease-in-out;
   animation: fadeZoomIn 0.5s ease both;
   transform-origin: top center;
-
 }
 
 .fade-zoom-in {
