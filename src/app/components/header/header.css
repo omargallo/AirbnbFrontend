@@ -175,7 +175,8 @@
   cursor: pointer;
   flex-shrink: 1;
   z-index: 1;
-  flex-grow: 1;
+  flex-grow: 1 !important;
+  max-height: min-content !important;
 }
 
 .indicator-line {
@@ -561,6 +562,7 @@
   border: none;
   outline: none;
   background-color: transparent !important;
+  padding: 0px;
 }
 .dest:focus {
   border: none;
@@ -819,7 +821,7 @@
 }
 
 ::ng-deep .md-drppicker td {
-  padding: 0.6rem !important; 
+  padding: 0.6rem !important;
 }
 
 ::ng-deep .md-drppicker td.start-date,
