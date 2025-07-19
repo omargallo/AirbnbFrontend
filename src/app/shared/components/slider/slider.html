@@ -1,1 +1,17 @@
-<p>slider works!</p>
+<div class="slider-section">
+  <h2>{{ sectionTitle }}</h2>
+  <div class="slider-wrapper">
+    <button class="arrow left" (click)="scrollLeft()">❮</button>
+    <div class="scroll-container" #scrollContainer>
+      <app-slider-card *ngFor="let listing of listings"
+        [imageUrl]="listing.imageUrl"
+        [title]="listing.title"
+        [subtitle]="listing.subtitle"
+        [price]="listing.price"
+        [rating]="listing.rating"
+        [isFavorite]="listing.isFavorite">
+      </app-slider-card>
+    </div>
+    <button class="arrow right" (click)="scrollRight()">❯</button>
+  </div>
+</div>
