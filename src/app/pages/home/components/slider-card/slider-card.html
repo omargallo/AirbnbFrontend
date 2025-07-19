@@ -1,0 +1,15 @@
+// COMPONENT: card.component.html
+<div class="card">
+  <div class="image-container">
+    <img [src]="imageUrl" alt="listing image" />
+    <div class="favorite" *ngIf="isFavorite">Guest favorite</div>
+    <button class="heart">&#9825;</button>
+  </div>
+  <div class="info">
+    <div class="title">{{ title }}</div>
+    <div class="subtitle">{{ subtitle }}</div>
+    <div class="price">{{ price }}</div>
+    <div class="rating">⭐ {{ rating }}
+    </div>
+  </div>
+</div>
