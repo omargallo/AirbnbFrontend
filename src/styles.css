@@ -1,5 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
-:root {
+/* :root {
+
+} */
+
+:host {
+  font-family: "Inter", sans-serif;
+  color: var(--primary-text-color);
+}
+
+body.light {
   --airbnb-red: #ff385c;
   --airbnb-dark-red: #e00050;
   --primary-text-color: #222222;
@@ -9,8 +18,18 @@
   --light-grey-bg: #ecebeb;
 }
 
-:host {
-  font-family: "Inter", sans-serif;
-  color: var(--primary-text-color);
+body.dark {
+  --airbnb-red: #ff385c;
+  --airbnb-dark-red: #e00050;
+  --primary-text-color: #000;
+  --secondary-text-color: #9f9f9f;
+  --border-color: #ebebeb;
+  --shadow-color: rgba(255, 255, 255, 0.08);
+  --light-grey-bg: #2d2c2c;
 }
 
+body {
+  background-color: var(--bg-color);
+  color: var(--primary-text-color);
+  transition: 0.3s ease;
+}
