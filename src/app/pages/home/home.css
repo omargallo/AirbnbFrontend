@@ -1,0 +1,19 @@
+.list-container{
+    /* margin-top: 20rem; */
+}
+.transition-3ms {
+  transition: all 0.3s ease;
+}
+
+.transition-5ms {
+  transition: all 0.5s ease;
+}
+.transition-1s {
+  transition: all 1s ease;
+}
+
+/* .slider-card {
+  scroll-snap-align: start;
+  box-sizing: border-box;
+  padding-right: 1rem;
+} */

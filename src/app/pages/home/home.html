@@ -1,1 +1,48 @@
-<p>home works!</p>
+
+<div class="container col-12 col-md-12 col-xl-11 mx-auto list-container">
+    <app-slider class="col-12">
+            <app-loading-cards
+                    class="col-5 col-md-2 transition-1s" 
+                    [numberOfCards]="5">
+            </app-loading-cards>
+    </app-slider>
+    
+    <app-slider
+    [cardsPerView]="4"
+    class="d-flex "
+    >
+    <!-- <div class=" col-12"
+    > -->
+    <!-- [ngStyle]="{ 'flex': '0 0 ' + (100 / 6) + '%' }" -->
+    <app-slider-card
+
+        *ngFor="let item of listings"
+            style="scroll-snap-align: start;"
+            [imageUrl]="item.imageUrl"
+            [title]="item.title"
+            [subtitle]="item.subtitle"
+            [price]="item.price"
+            [rating]="item.rating"
+            [isFavorite]="item.isFavorite"
+        ></app-slider-card>
+    <!-- </div> -->
+</app-slider>
+
+
+<app-slider
+[cardsPerView]="5"
+>
+    <!-- style="scroll-snap-align: start;" -->
+    <!-- class="card-item" -->
+    <app-slider-card
+        *ngFor="let item of listings"
+            [imageUrl]="item.imageUrl"
+            [title]="item.title"
+            [subtitle]="item.subtitle"
+            [price]="item.price"
+            [rating]="item.rating"
+            [isFavorite]="item.isFavorite"
+        ></app-slider-card>        
+</app-slider>
+    
+</div>

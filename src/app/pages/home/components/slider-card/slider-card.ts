@@ -12,7 +12,7 @@ export class SliderCard {
   @Input() imageUrl!: string;
   @Input() title!: string;
   @Input() subtitle!: string;
-  @Input() price!: string;
+  @Input() price!: number;
   @Input() rating!: number;
   @Input() isFavorite: boolean = false;
 }
