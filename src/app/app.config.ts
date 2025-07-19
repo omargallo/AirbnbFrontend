@@ -1,4 +1,3 @@
-// src/app/app.config.ts
 import {
   ApplicationConfig,
   importProvidersFrom,
@@ -14,6 +13,7 @@ import {
 } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpLoaderFactory } from './translate-loader';
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,7 +29,9 @@ export const appConfig: ApplicationConfig = {
         },
       })
     ),
+    importProvidersFrom(NgxDaterangepickerMd.forRoot()),
+
     provideZoneChangeDetection(),
-    provideZonelessChangeDetection(),
+    // provideZonelessChangeDetection(),
   ],
 };

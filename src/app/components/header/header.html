@@ -113,21 +113,21 @@
         #filterGroupRef
       >
         <div
-          class="search-filter-item p-3"
+          class="search-filter-item "
           #whereRef
           [ngClass]="{ 'active': activeFilter === 'where' }"
           (click)="setActive('where')"
         >
-          <p class="label">Where</p>
+          <p class="label mb-0">Where</p>
           <!-- <p class="value">Search destinations</p> -->
           <input
-            class="search-input dest"
+            class="search-input dest "
             type="text"
             placeholder="Search destinations"
           />
         </div>
         <div
-          class="search-filter-item p-3"
+          class="search-filter-item"
           #dateRef
           [ngClass]="{ 'active': activeFilter === 'date' }"
           (click)="setActive('date')"
