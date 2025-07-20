@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Slider } from "../../shared/components/slider/slider";
 import { SliderCard } from "./components/slider-card/slider-card";
 import { LoadingCards } from "./components/loading-cards/loading-cards";
+import { Slider } from '../../shared/components/slider/slider';
 
 @Component({
   selector: 'app-home',
