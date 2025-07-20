@@ -1,9 +1,9 @@
-<div class="slider-wrapper">
-    <div class="d-flex justify-content-end">
+<div class="slider-wrapper col-12">
+    <div class="d-flex justify-content-end ">
         <button class="nav left" (click)="scrollLeft()" [disabled]="isAtStart">❮</button>
         <button class="nav right" (click)="scrollRight()" [disabled]="isAtEnd">❯</button>
     </div>
-    <div #scrollContainer class="card-container">
+    <div #scrollContainer class="col-12 card-container">
         <ng-content 
         >
         <!-- select=".card-item" -->

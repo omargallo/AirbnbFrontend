@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MainLayout } from "./layout/main-layout/main-layout";
 import { HostProperties } from "./components/host-properties/host-properties";
+import { Footer } from "./components/footer/footer";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MainLayout, HostProperties],
+  imports: [RouterOutlet, MainLayout, HostProperties, Footer],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
