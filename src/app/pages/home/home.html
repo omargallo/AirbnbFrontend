@@ -1,21 +1,14 @@
 
 <div class="container col-12 col-md-12 col-xl-11 mx-auto list-container">
-    <app-slider class="col-12">
-            <app-loading-cards
-                    class="col-5 col-md-2 transition-1s" 
-                    [numberOfCards]="5">
-            </app-loading-cards>
+    <app-slider [cardsPerView]="5" [cardPerSlide]="2">
+        <app-loading-cards [numberOfCards]="40"></app-loading-cards>
     </app-slider>
     
     <app-slider
-    [cardsPerView]="4"
-    class="d-flex "
+        [cardsPerView]="8"
+        class="d-flex  col-12"
     >
-    <!-- <div class=" col-12"
-    > -->
-    <!-- [ngStyle]="{ 'flex': '0 0 ' + (100 / 6) + '%' }" -->
     <app-slider-card
-
         *ngFor="let item of listings"
             style="scroll-snap-align: start;"
             [imageUrl]="item.imageUrl"
