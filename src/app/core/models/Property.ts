@@ -1,5 +1,5 @@
 export interface Property {
-    id: number;
+  id: number;
   title: string;
   description: string;
   city: string;
@@ -18,6 +18,9 @@ export interface Property {
   isDeleted: boolean;
   propertyTypeId: number;
   hostId: string;
-   mainImageUrl?: string;  // Main image URL
-  images?: Array<{url: string; alt?: string}>;
+  images: {
+    imageUrl: string;
+    isCover: boolean;
+    groupName: string;
+  }[];
 }

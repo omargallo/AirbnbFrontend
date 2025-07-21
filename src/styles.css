@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* You can add global styles to this file, and also import other style files */
 /* :root {
 
@@ -61,6 +65,17 @@ body {
   background-color: #f2f2f2;
   border-radius: 4px;
 }
+.shimmer-icon {
+  width: 32px;
+  height: 32px;
+  background-color: #ccc;
+}
+
+.shimmer-line {
+  height: 10px;
+  background-color: #ccc;
+  border-radius: 4px;
+}
 
 .shimmer::after {
   content: "";
@@ -77,4 +92,168 @@ body {
   100% {
     left: 100%;
   }
+}
+
+*{
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+  padding-right: 12px;
+  padding-left: 12px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+}
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+}
+
+/* === Row === */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -12px;
+  margin-left: -12px;
+}
+
+/* === Column Base === */
+[class^="col-"],
+[class*=" col-"] {
+  padding-right: 12px;
+  padding-left: 12px;
+  box-sizing: border-box;
+}
+
+/* === Column Widths === */
+:root {
+  --col-1: 8.333333%;
+  --col-2: 16.666667%;
+  --col-3: 25%;
+  --col-4: 33.333333%;
+  --col-5: 41.666667%;
+  --col-6: 50%;
+  --col-7: 58.333333%;
+  --col-8: 66.666667%;
+  --col-9: 75%;
+  --col-10: 83.333333%;
+  --col-11: 91.666667%;
+  --col-12: 100%;
+}
+
+/* === col-[1-12] (Extra small, default) === */
+.col-1  { width: var(8.333333%); }
+.col-2  { width: var(--col-12); }
+.col-3  { width: var(--col-3); }
+.col-4  { width: var(--col-4); }
+.col-5  { width: var(--col-5); }
+.col-6  { width: var(--col-6); }
+.col-7  { width: var(--col-7); }
+.col-8  { width: var(--col-8); }
+.col-9  { width: var(--col-9); }
+.col-10 { width: var(--col-10); }
+.col-11 { width: var(--col-11); }
+.col-12 { width: var(--col-12); }
+
+/* === col-sm-[1-12] === */
+@media (min-width: 576px) {
+  .col-sm-1  { width: var(--col-1); }
+  .col-sm-2  { width: var(--col-2); }
+  .col-sm-3  { width: var(--col-3); }
+  .col-sm-4  { width: var(--col-4); }
+  .col-sm-5  { width: var(--col-5); }
+  .col-sm-6  { width: var(--col-6); }
+  .col-sm-7  { width: var(--col-7); }
+  .col-sm-8  { width: var(--col-8); }
+  .col-sm-9  { width: var(--col-9); }
+  .col-sm-10 { width: var(--col-10); }
+  .col-sm-11 { width: var(--col-11); }
+  .col-sm-12 { width: var(--col-12); }
+}
+
+/* === col-md-[1-12] === */
+@media (min-width: 768px) {
+  .col-md-1  { width: var(--col-1); }
+  .col-md-2  { width: var(--col-2); }
+  .col-md-3  { width: var(--col-3); }
+  .col-md-4  { width: var(--col-4); }
+  .col-md-5  { width: var(--col-5); }
+  .col-md-6  { width: var(--col-6); }
+  .col-md-7  { width: var(--col-7); }
+  .col-md-8  { width: var(--col-8); }
+  .col-md-9  { width: var(--col-9); }
+  .col-md-10 { width: var(--col-10); }
+  .col-md-11 { width: var(--col-11); }
+  .col-md-12 { width: var(--col-12); }
+}
+
+/* === col-lg-[1-12] === */
+@media (min-width: 992px) {
+  .col-lg-1  { width: var(--col-1); }
+  .col-lg-2  { width: var(--col-2); }
+  .col-lg-3  { width: var(--col-3); }
+  .col-lg-4  { width: var(--col-4); }
+  .col-lg-5  { width: var(--col-5); }
+  .col-lg-6  { width: var(--col-6); }
+  .col-lg-7  { width: var(--col-7); }
+  .col-lg-8  { width: var(--col-8); }
+  .col-lg-9  { width: var(--col-9); }
+  .col-lg-10 { width: var(--col-10); }
+  .col-lg-11 { width: var(--col-11); }
+  .col-lg-12 { width: var(--col-12); }
+}
+
+/* === col-xl-[1-12] === */
+@media (min-width: 1200px) {
+  .col-xl-1  { width: var(--col-1); }
+  .col-xl-2  { width: var(--col-2); }
+  .col-xl-3  { width: var(--col-3); }
+  .col-xl-4  { width: var(--col-4); }
+  .col-xl-5  { width: var(--col-5); }
+  .col-xl-6  { width: var(--col-6); }
+  .col-xl-7  { width: var(--col-7); }
+  .col-xl-8  { width: var(--col-8); }
+  .col-xl-9  { width: var(--col-9); }
+  .col-xl-10 { width: var(--col-10); }
+  .col-xl-11 { width: var(--col-11); }
+  .col-xl-12 { width: var(--col-12); }
+}
+
+/* === col-xxl-[1-12] === */
+@media (min-width: 1400px) {
+  .col-xxl-1  { width: var(--col-1); }
+  .col-xxl-2  { width: var(--col-2); }
+  .col-xxl-3  { width: var(--col-3); }
+  .col-xxl-4  { width: var(--col-4); }
+  .col-xxl-5  { width: var(--col-5); }
+  .col-xxl-6  { width: var(--col-6); }
+  .col-xxl-7  { width: var(--col-7); }
+  .col-xxl-8  { width: var(--col-8); }
+  .col-xxl-9  { width: var(--col-9); }
+  .col-xxl-10 { width: var(--col-10); }
+  .col-xxl-11 { width: var(--col-11); }
+  .col-xxl-12 { width: var(--col-12); }
 }

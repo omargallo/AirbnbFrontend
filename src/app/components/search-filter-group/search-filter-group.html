@@ -1,0 +1,153 @@
+<div
+  class="search-filter-group"
+  [ngClass]="isAnyFilterActive ? 'group-active-bg' : 'group-default-bg'"
+  #filterGroupRef
+>
+  <div
+    class="search-filter-item d-flex align-items-start justify-content-center flex-column"
+    #whereRef
+    [ngClass]="{ 'active': activeFilter === 'where' }"
+    (click)="setActive('where')"
+  >
+    @if (isSearchBarSticky) {
+    <p class="label mb-0">{{ 'HEADER.ANYWHERE' | translate }}</p>
+    }@else{
+    <p class="label mb-0">{{ 'HEADER.WHERE' | translate }}</p>
+    <!-- <p class="value">Search destinations</p> -->
+    <input
+      class="search-input dest"
+      type="text"
+      [(ngModel)]="searchInputValue"
+      (input)="updateSearchValue($event)"
+      [placeholder]="'HEADER.SEARCH_DESTINATIONS' | translate"
+    />
+    }
+  </div>
+  <div
+    class="search-filter-item d-flex align-items-start justify-content-center flex-column"
+    #dateRef
+    [ngClass]="{ 'active': activeFilter === 'date' }"
+    (click)="setActive('date')"
+    style="min-width: 12rem !important;"
+  >
+    @if (isSearchBarSticky) {
+    <p class="label">
+      {{ 'HEADER.ADD_DATE' | translate }}
+    </p>
+    }@else{
+    <p class="label">{{ 'HEADER.DATE' | translate }}</p>
+    <p class="value">
+      {{ selectedDate || ('HEADER.ADD_DATES' | translate) }}
+    </p>
+    }
+  </div>
+  <div
+    class="search-filter-item d-flex align-items-center justify-content-center"
+    #whoRef
+    [ngClass]="{ 'active': activeFilter === 'who' }"
+    (click)="setActive('who')"
+    style="min-width: 15rem !important;"
+  >
+    <div>
+      @if (isSearchBarSticky) {
+      <p class="label">{{ 'HEADER.ADD_GUESTS' | translate }}</p>
+      }@else{
+      <p class="label">{{ 'HEADER.WHO' | translate }}</p>
+      <p class="value">
+        <ng-container *ngIf="getTotalGuests() > 0">
+          {{ getTotalGuests() }} {{ 'HEADER.GUEST' | translate }}
+        </ng-container>
+
+        <ng-container *ngIf="getInfantsCount() > 0">
+          <ng-container *ngIf="getTotalGuests() > 0">, </ng-container>{{
+          getInfantsCount() }} {{ 'HEADER.INFANT' | translate }}
+        </ng-container>
+
+        <ng-container *ngIf="getTotalGuests() === 0 && getInfantsCount() === 0">
+          {{ 'HEADER.ADD_GUESTS' | translate }}
+        </ng-container>
+      </p>
+      }
+    </div>
+    <div class="ms-auto cursor-pointer" (click)="onSearch()" >
+      <div
+        class="search-icon-button d-flex align-items-center justify-content-center"
+      >
+        <svg
+          viewBox="0 0 32 32"
+          style="
+            display: block;
+            fill: none;
+            height: 16px;
+            width: 16px;
+            stroke: currentColor;
+            stroke-width: 4;
+            overflow: visible;
+          "
+          aria-hidden="true"
+          role="presentation"
+          focusable="false"
+        >
+          <path
+            fill="none"
+            d="M13 24a11 11 0 1 0 0-22 11 11 0 0 0 0 22zm8-3 9 9"
+          ></path>
+        </svg>
+        <!-- <span class="search-label" *ngIf="isAnyFilterActive">
+                Search
+              </span> -->
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="indicator-line"
+    [ngStyle]="{ width: indicatorWidth + 'px',height:indicatorHeight+'px', left: indicatorLeft + 'px' ,}"
+  ></div>
+
+  <div
+    *ngIf="isModalVisible || isModalAnimatingOut"
+    [ngClass]="{ 'fade-out': isModalAnimatingOut }"
+    id="searchModal"
+    class="custom-modal"
+    [ngStyle]="{top:modalTop + 'px', left: modalLeft + 'px' ,}"
+    [ngClass]="{
+    'fade-zoom-in': isModalVisible && !isModalAnimatingOut,
+    'fade-zoom-out': isModalAnimatingOut,
+    'd-flex': true
+  }"
+    #modalRef
+    (animationend)="onModalAnimationEnd()"
+  >
+    <div class="custom-modal-content" [ngSwitch]="activeFilter">
+      <div
+        *ngSwitchCase="'where'"
+        class="custom-scroll"
+        style="max-height: 420px; padding: 18px 0px 18px 12px;"
+      >
+        <app-search-where-modal
+          [searchValue]="searchInputValue"
+          (destinationSelected)="onDestinationSelected($event)"
+        ></app-search-where-modal>
+      </div>
+
+      <div
+        *ngSwitchCase="'date'"
+        style="
+          max-height: 351px;
+          max-width: 610px;
+          overflow-y: hidden;
+          padding: 20px;
+        "
+      >
+        <app-search-date-modal
+          (dateSelected)="onDateSelected($event)"
+        ></app-search-date-modal>
+      </div>
+
+      <div *ngSwitchCase="'who'" style="padding: 0px 10px;">
+        <app-search-who-modal [guests]="guests"></app-search-who-modal>
+      </div>
+    </div>
+  </div>
+</div>

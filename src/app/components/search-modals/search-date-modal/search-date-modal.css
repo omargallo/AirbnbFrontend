@@ -1,0 +1,304 @@
+::ng-deep .daterangepicker {
+  position: relative !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: auto !important;
+  margin-top: 0 !important;
+  box-shadow: none !important;
+}
+
+.airbnb-calendar-wrapper {
+  /* gap: 24px; */
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.date-quick-options {
+  min-width: 180px;
+  flex-shrink: 0;
+}
+
+.airbnb-option {
+  border: 1px solid var(--shadow-color);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: var(--active);
+  width: 100%;
+  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */
+}
+
+.airbnb-option:hover {
+  border-color: var(--primary-text-color);
+  /* background-color: #f7f7f7; */
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); */
+}
+.airbnb-option.active {
+  border-color: var(--primary-text-color);
+}
+.airbnb-option p {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.airbnb-option small {
+  font-size: 14px;
+  color: var(--secondary-text-color);
+}
+
+/* Calendar Container */
+.airbnb-calendar {
+  position: relative;
+  /* min-height: 320px; */
+}
+
+::ng-deep .md-drppicker {
+  background-color: var(--active) !important;
+}
+/* Reset daterangepicker styles */
+::ng-deep .daterangepicker {
+  box-shadow: none !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  /* width: auto !important; */
+  position: relative !important;
+  display: block !important;
+}
+::ng-deep .md-drppicker .calendar-table {
+  border-color: var(--active) !important;
+  background-color: var(--active) !important;
+}
+
+::ng-deep .daterangepicker.single {
+  /* width: 380px !important; */
+}
+
+::ng-deep .daterangepicker .drp-calendar {
+  max-width: none !important;
+}
+
+/* Force single calendar view */
+::ng-deep .daterangepicker .drp-calendar.right {
+  display: none !important;
+}
+
+::ng-deep .daterangepicker .drp-calendar.left {
+  float: none !important;
+  width: 100% !important;
+}
+
+::ng-deep .daterangepicker {
+  /* width: 280px !important; */
+  /* max-width: 280px !important; */
+}
+
+/* Calendar header */
+::ng-deep .daterangepicker .calendar-table {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  color: #222;
+  border: none !important;
+}
+
+::ng-deep .daterangepicker .calendar-table th,
+::ng-deep .daterangepicker .calendar-table td {
+  border: none !important;
+  width: 60px !important;
+  height: 50px !important;
+  line-height: 50px !important;
+  text-align: center;
+  font-weight: 400;
+  position: relative;
+}
+
+::ng-deep .daterangepicker .calendar-table th {
+  color: #717171;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Month navigation */
+::ng-deep .daterangepicker .month {
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+::ng-deep .daterangepicker .prev,
+::ng-deep .daterangepicker .next {
+  border: none !important;
+  background: none !important;
+  color: #222 !important;
+  font-size: 18px;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+::ng-deep .daterangepicker .prev:hover,
+::ng-deep .daterangepicker .next:hover {
+  background-color: #f7f7f7 !important;
+}
+
+/* Date cells */
+::ng-deep .daterangepicker td.available:hover {
+  background-color: #f0f0f0 !important;
+  color: var(--bg-color) !important;
+  border-radius: 50% !important;
+}
+
+::ng-deep .daterangepicker td.available {
+  cursor: pointer;
+  border-radius: 50% !important;
+  transition: all 0.2s ease;
+}
+
+::ng-deep .daterangepicker td.active,
+::ng-deep .daterangepicker td.active:hover {
+  background-color: #222 !important;
+  color: var(--bg-color) !important;
+  border-radius: 50% !important;
+  font-weight: 600 !important;
+}
+
+::ng-deep .daterangepicker td.start-date {
+  background-color: #222 !important;
+  color: #fff !important;
+  border-radius: 50% !important;
+  font-weight: 600 !important;
+}
+
+::ng-deep .daterangepicker td.end-date {
+  background-color: #222 !important;
+  color: #fff !important;
+  border-radius: 50% !important;
+  font-weight: 600 !important;
+}
+
+::ng-deep .daterangepicker td.in-range {
+  background-color: #f0f0f0 !important;
+  border-radius: 0 !important;
+}
+
+::ng-deep .daterangepicker td.off.available {
+  color: var(--bg-color) !important;
+}
+
+::ng-deep .daterangepicker td.today {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* Hide buttons and ranges */
+::ng-deep .drp-buttons,
+::ng-deep .ranges {
+  display: none !important;
+}
+
+/* Remove box shadow */
+::ng-deep .md-drppicker {
+  box-shadow: none !important;
+}
+
+::ng-deep .md-drppicker.shown {
+  transition: none !important;
+  -moz-transition: none !important;
+  -ms-transition: none !important;
+  -o-transition: none !important;
+  -webkit-transition: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .airbnb-calendar-wrapper {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .date-quick-options {
+    min-width: 100%;
+  }
+
+  .airbnb-option {
+    padding: 12px;
+  }
+}
+
+.md-drppicker td.active,
+.md-drppicker td.active:hover {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  border-color: transparent;
+  color: var(--bg-color) !important;
+}
+
+.active .available .end-date .start-date .today {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  border-color: transparent;
+  color: var(--bg-color);
+}
+
+::ng-deep .md-drppicker td.active {
+  background-color: #000 !important;
+  color: var(--bg-color) !important;
+  border-color: transparent !important;
+}
+
+::ng-deep .md-drppicker td.active:hover {
+  /* border: 1px solid #000 !important; */
+}
+
+::ng-deep .md-drppicker td {
+  padding: 0.6rem !important;
+}
+
+::ng-deep .md-drppicker td.start-date,
+::ng-deep .md-drppicker td.end-date {
+  background-color: #000 !important;
+  color: white !important;
+}
+
+::ng-deep .daterangepicker .calendar.right {
+  display: none !important;
+}
+
+.airbnb-calendar[_ngcontent-ng-c120480673] {
+  min-width: fit-content;
+  max-height: 320px;
+  overflow: hidden;
+}
+
+::ng-deep .md-drppicker .calendar th,
+::ng-deep .md-drppicker .calendar td {
+  min-width: 50px !important;
+}
+
+::ng-deep .airbnb-calendar {
+  position: relative;
+  width: 554px !important;
+}
+
+::ng-deep .md-drppicker td.off,
+.md-drppicker td.off.in-range,
+.md-drppicker td.off.start-date,
+.md-drppicker td.off.end-date {
+  background-color: var(--active) !important;
+}
+
+::ng-deep .md-drppicker td:hover,
+.md-drppicker td.in-range:hover,
+.md-drppicker td.start-date:hover,
+.md-drppicker td.end-date:hover {
+  color: var(--airbnb-red) !important;
+}

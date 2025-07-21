@@ -1,0 +1,172 @@
+/* listing-wizard.component.css */
+
+/* Smooth animations for step transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Step content transitions */
+.step-content {
+  min-height: 400px;
+}
+
+/* Intro screen styles */
+.intro-content {
+  max-width: 500px;
+  margin: 0 auto;
+  padding-top: 2rem;
+}
+
+.intro-content h1 {
+  line-height: 1.2;
+}
+
+/* Animation for the intro screen */
+@keyframes fadeInIntro {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom button hover effects */
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Progress bar enhancements */
+.progress-container {
+  position: relative;
+}
+
+/* Step indicator hover effects */
+.step-indicator {
+  transition: all 0.3s ease-in-out;
+}
+
+.step-indicator:hover {
+  transform: scale(1.1);
+}
+
+/* Custom scrollbar for overflow content */
+.step-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.step-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.step-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.step-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Loading state for buttons */
+.btn-loading {
+  position: relative;
+  color: transparent;
+}
+
+.btn-loading::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .step-content {
+    min-height: 350px;
+  }
+  
+  /* Adjust button spacing on mobile */
+  footer .flex {
+    gap: 0.5rem;
+  }
+  
+  /* Smaller progress indicators on mobile */
+  .step-indicator {
+    width: 12px;
+    height: 12px;
+  }
+
+  .intro-content {
+    padding-top: 1rem;
+  }
+}
+
+/* Focus states for accessibility */
+button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Disabled state styling */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+button:disabled:hover {
+  transform: none;
+}

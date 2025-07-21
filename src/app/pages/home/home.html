@@ -38,4 +38,79 @@
         ></app-slider-card>        
 </app-slider>
     
+<button class="btn btn-primary" (click)="toggleShow()">{{show? "hide":"show"}}</button>
+<!-- <app-modal 
+    [title]="'Modal'"
+    [isVisible]="false"
+    [modalContentClass]="'rounded rounded-5 border-0'"
+    (close)="toggleShow()"
+    >
+        <app-slider
+            [cardsPerView]="5"
+            >
+            <app-slider-card
+                *ngFor="let item of listings"
+                    [imageUrl]="item.imageUrl"
+                    [title]="item.title"
+                    [subtitle]="item.subtitle"
+                    [price]="item.price"
+                    [rating]="item.rating"
+                    [isFavorite]="item.isFavorite"
+            ></app-slider-card>        
+        </app-slider>
+        <app-slider
+            [cardsPerView]="5"
+            >
+            <app-slider-card
+                *ngFor="let item of listings"
+                    [imageUrl]="item.imageUrl"
+                    [title]="item.title"
+                    [subtitle]="item.subtitle"
+                    [price]="item.price"
+                    [rating]="item.rating"
+                    [isFavorite]="item.isFavorite"
+            ></app-slider-card>        
+        </app-slider>
+        <app-slider
+            [cardsPerView]="5"
+            >
+            <app-slider-card
+                *ngFor="let item of listings"
+                    [imageUrl]="item.imageUrl"
+                    [title]="item.title"
+                    [subtitle]="item.subtitle"
+                    [price]="item.price"
+                    [rating]="item.rating"
+                    [isFavorite]="item.isFavorite"
+            ></app-slider-card>        
+        </app-slider>
+        <app-slider
+            [cardsPerView]="5"
+            >
+            <app-slider-card
+                *ngFor="let item of listings"
+                    [imageUrl]="item.imageUrl"
+                    [title]="item.title"
+                    [subtitle]="item.subtitle"
+                    [price]="item.price"
+                    [rating]="item.rating"
+                    [isFavorite]="item.isFavorite"
+            ></app-slider-card>        
+        </app-slider>
+        <div class="modal-footer">
+            <p class="me-auto">this is footer</p>
+        </div>
+</app-modal> -->
 </div>
+
+<app-wish-list-modal 
+        *ngIf="show"
+        (close)="toggleShow()" 
+        [show]="show" 
+        [userId]="'2'"
+        class="col-12"
+        >    
+</app-wish-list-modal>
+
+
+<app-property-swiper></app-property-swiper>
