@@ -1,7 +1,16 @@
-<div class="space-y-12">
-  
-  <!-- Essential Amenities -->
-  <div>
+<div class="space-y-8">
+  <!-- Step 2 Intro -->
+  <div *ngIf="currentSubStep === 0">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-4">Step 2</h1>
+    <h2 class="text-3xl font-semibold text-gray-900 mb-4">Make your place stand out</h2>
+    <p class="text-lg text-gray-600">
+      In this step, you'll add some of the amenities your place offers, plus 5 or more photos. 
+      Then, you'll create a title and description.
+    </p>
+  </div>
+
+  <!-- Amenities Section -->
+  <div *ngIf="currentSubStep === 1">
     <h2 class="text-xl font-semibold text-gray-900 mb-2">Tell guests what your place has to offer</h2>
     <p class="text-gray-600 mb-6">You can add more amenities after you publish your listing.</p>
     
@@ -56,7 +65,7 @@
   </div>
 
   <!-- Photo Upload Section -->
-  <div>
+  <div *ngIf="currentSubStep === 2">
     <h2 class="text-xl font-semibold text-gray-900 mb-2">Add some photos of your place</h2>
     <p class="text-gray-600 mb-6">You'll need 5 photos to get started. You can add more or make changes later.</p>
     
@@ -74,7 +83,7 @@
       <div class="space-y-4">
         <div class="mx-auto w-12 h-12 text-gray-400">
           <svg fill="none" stroke="currentColor" viewBox="0 0 48 48">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"></path>
           </svg>
         </div>
         
@@ -119,7 +128,7 @@
   </div>
 
   <!-- Title Section -->
-  <div>
+  <div *ngIf="currentSubStep === 3">
     <h2 class="text-xl font-semibold text-gray-900 mb-2">Now, let's give your place a title</h2>
     <p class="text-gray-600 mb-6">Short titles work best. Have fun with it—you can always change it later.</p>
     
@@ -127,16 +136,35 @@
       [value]="form.get('title')?.value"
       (input)="updateTitle($event)"
       placeholder="e.g. Peaceful studio in the heart of the city"
-      maxlength="50"
+      maxlength="32"
       class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-gray-900 focus:outline-none transition-colors duration-200 text-lg resize-none"
       rows="2"></textarea>
     <div class="flex justify-end mt-2 text-sm text-gray-500">
-      {{form.get('title')?.value?.length || 0}}/50
+      {{form.get('title')?.value?.length || 0}}/32
+    </div>
+  </div>
+
+  <!-- Highlights Section -->
+  <div *ngIf="currentSubStep === 4">
+    <h2 class="text-xl font-semibold text-gray-900 mb-2">Next, let's describe your place</h2>
+    <p class="text-gray-600 mb-6">Choose up to 2 highlights. We'll use these to get your description started.</p>
+    
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div 
+        *ngFor="let highlight of highlights"
+        (click)="toggleHighlight(highlight)"
+        class="p-3 border-2 rounded-lg cursor-pointer text-center transition-all duration-200"
+        [ngClass]="{
+          'border-gray-900 bg-gray-50': isHighlightSelected(highlight),
+          'border-gray-300': !isHighlightSelected(highlight)
+        }">
+        {{highlight}}
+      </div>
     </div>
   </div>
 
   <!-- Description Section -->
-  <div>
+  <div *ngIf="currentSubStep === 5">
     <h2 class="text-xl font-semibold text-gray-900 mb-2">Create your description</h2>
     <p class="text-gray-600 mb-6">Share what makes your place special.</p>
     
@@ -151,5 +179,4 @@
       {{form.get('description')?.value?.length || 0}}/500
     </div>
   </div>
-
 </div>

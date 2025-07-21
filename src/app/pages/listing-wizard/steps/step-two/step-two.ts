@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 })
 export class WizardStepTwoComponent {
   @Input() form!: FormGroup;
+  @Input() currentSubStep!: number;
 
   amenities = [
     { id: 'wifi', name: 'Wifi', icon: '📶', essential: true },
@@ -32,6 +33,17 @@ export class WizardStepTwoComponent {
     { id: 'ski_access', name: 'Ski-in/Ski-out', icon: '⛷️', essential: false }
   ];
 
+  highlights = [
+    'Peaceful',
+    'Unique',
+    'Family-friendly',
+    'Stylish',
+    'Central',
+    'Spacious',
+    'Modern',
+    'Cozy'
+  ];
+
   uploadedPhotos: any[] = [];
   dragActive = false;
 
@@ -48,9 +60,29 @@ export class WizardStepTwoComponent {
     this.form.patchValue({ amenities: updatedAmenities });
   }
 
+  toggleHighlight(highlight: string): void {
+    const currentHighlights = this.form.get('highlights')?.value || [];
+    let updatedHighlights;
+
+    if (currentHighlights.includes(highlight)) {
+      updatedHighlights = currentHighlights.filter((h: string) => h !== highlight);
+    } else if (currentHighlights.length < 2) {
+      updatedHighlights = [...currentHighlights, highlight];
+    } else {
+      updatedHighlights = currentHighlights;
+    }
+
+    this.form.patchValue({ highlights: updatedHighlights });
+  }
+
   isAmenitySelected(amenityId: string): boolean {
     const selectedAmenities = this.form.get('amenities')?.value || [];
     return selectedAmenities.includes(amenityId);
+  }
+
+  isHighlightSelected(highlight: string): boolean {
+    const selectedHighlights = this.form.get('highlights')?.value || [];
+    return selectedHighlights.includes(highlight);
   }
 
   onDragOver(event: DragEvent): void {

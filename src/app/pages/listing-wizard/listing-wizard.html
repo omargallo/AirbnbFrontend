@@ -4,7 +4,15 @@
     <div class="max-w-2xl mx-auto px-6 py-4">
       <div class="flex items-center justify-between">
         <div class="text-xl font-semibold text-rose-500">airbnb</div>
-        <button class="text-sm underline hover:no-underline text-gray-700">
+        <button 
+          *ngIf="showIntro"
+          (click)="skipIntro()"
+          class="text-sm underline hover:no-underline text-gray-700">
+          Skip
+        </button>
+        <button 
+          *ngIf="!showIntro"
+          class="text-sm underline hover:no-underline text-gray-700">
           Save & exit
         </button>
       </div>
@@ -13,46 +21,111 @@
 
   <!-- Main Content -->
   <main class="flex-1 flex flex-col">
-    <!-- Step Content -->
     <div class="flex-1 max-w-2xl mx-auto w-full px-6 py-8">
-      <!-- Step Header -->
-      <div class="mb-8">
-        <div class="text-sm text-gray-500 mb-2">Step {{currentStep}} of {{totalSteps}}</div>
-        <h1 class="text-3xl font-semibold text-gray-900 mb-2">
-          {{stepTitles[currentStep - 1]}}
+      <!-- Intro Screen -->
+      <div *ngIf="showIntro" class="intro-content animate-fade-in">
+        <h1 class="text-3xl font-semibold text-gray-900 mb-8 text-center">
+          It's easy to get started on Airbnb
         </h1>
-        <p class="text-lg text-gray-600">
-          {{stepSubtitles[currentStep - 1]}}
-        </p>
+        
+        <div class="space-y-8">
+          <!-- Step 1 -->
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center">
+              1
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Tell us about your place</h2>
+              <p class="text-gray-600 mt-1">
+                Share some basic info, like where it is and how many guests can stay.
+              </p>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="border-l-2 border-gray-200 h-6 ml-4"></div>
+
+          <!-- Step 2 -->
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 text-gray-900 flex items-center justify-center">
+              2
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Make it stand out</h2>
+              <p class="text-gray-600 mt-1">
+                Add 5 or more photos plus a title and description—we'll help you out.
+              </p>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="border-l-2 border-gray-200 h-6 ml-4"></div>
+
+          <!-- Step 3 -->
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 text-gray-900 flex items-center justify-center">
+              3
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Finish up and publish</h2>
+              <p class="text-gray-600 mt-1">
+                Choose a starting price, verify a few details, then publish your listing.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Dynamic Step Content -->
-      <div class="step-content transition-all duration-300 ease-in-out">
-        <!-- Step 1: Basic Info -->
-        <div *ngIf="currentStep === 1" class="step-1 animate-fade-in">
-          <app-wizard-step-one [form]="wizardForm"></app-wizard-step-one>
+      <!-- Wizard Steps -->
+      <div *ngIf="!showIntro" class="step-content transition-all duration-300 ease-in-out">
+        <!-- Step Header -->
+        <div class="mb-8">
+          <div class="text-sm text-gray-500 mb-2">Step {{currentStep}} of {{totalSteps}}</div>
+          <h1 class="text-3xl font-semibold text-gray-900 mb-2">
+            {{stepTitles[currentStep - 1]}}
+          </h1>
+          <p class="text-lg text-gray-600">
+            {{stepSubtitles[currentStep - 1]}}
+          </p>
         </div>
 
-        <!-- Step 2: Make it stand out -->
-        <div *ngIf="currentStep === 2" class="step-2 animate-fade-in">
-          <app-wizard-step-two [form]="wizardForm"></app-wizard-step-two>
-        </div>
+        <!-- Dynamic Step Content -->
+        <div class="step-content transition-all duration-300 ease-in-out">
+          <!-- Step 1: Basic Info -->
+          <div *ngIf="currentStep === 1" class="step-1 animate-fade-in">
+            <app-wizard-step-one 
+              [form]="wizardForm" 
+              [currentSubStep]="currentSubStep">
+            </app-wizard-step-one>
+          </div>
 
-        <!-- Step 3: Finish up -->
-        <div *ngIf="currentStep === 3" class="step-3 animate-fade-in">
-          <app-wizard-step-three [form]="wizardForm"></app-wizard-step-three>
+          <!-- Step 2: Make it stand out -->
+          <div *ngIf="currentStep === 2" class="step-2 animate-fade-in">
+            <app-wizard-step-two 
+              [form]="wizardForm" 
+              [currentSubStep]="stepTwoSubStep">
+            </app-wizard-step-two>
+          </div>
+
+          <!-- Step 3: Finish up -->
+          <div *ngIf="currentStep === 3" class="step-3 animate-fade-in">
+            <app-wizard-step-three 
+              [form]="wizardForm" 
+              [currentSubStep]="stepThreeSubStep">
+            </app-wizard-step-three>
+          </div>
         </div>
       </div>
     </div>
   </main>
 
   <!-- Bottom Navigation Bar -->
-  <footer class="border-t border-gray-200 bg-white sticky bottom-0">
+  <footer *ngIf="!showIntro" class="border-t border-gray-200 bg-white sticky bottom-0">
     <div class="max-w-2xl mx-auto px-6 py-4">
       <div class="flex items-center justify-between">
         <!-- Back Button -->
         <button 
-          *ngIf="!isFirstStep()"
+          *ngIf="!isFirstStep() || currentSubStep > 0"
           (click)="prevStep()"
           class="flex items-center px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200">
           <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,7 +135,7 @@
         </button>
         
         <!-- Empty div to maintain spacing when no back button -->
-        <div *ngIf="isFirstStep()"></div>
+        <div *ngIf="isFirstStep() && currentSubStep === 0"></div>
 
         <!-- Progress Bar -->
         <div class="flex-1 mx-8">
@@ -102,6 +175,17 @@
           </svg>
         </button>
       </div>
+    </div>
+  </footer>
+
+  <!-- Intro Screen Footer -->
+  <footer *ngIf="showIntro" class="border-t border-gray-200 bg-white sticky bottom-0">
+    <div class="max-w-2xl mx-auto px-6 py-4">
+      <button 
+        (click)="nextStep()"
+        class="w-full px-6 py-3 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors duration-200">
+        Get started
+      </button>
     </div>
   </footer>
 </div>

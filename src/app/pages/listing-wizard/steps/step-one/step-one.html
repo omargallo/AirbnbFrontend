@@ -1,8 +1,13 @@
-<!-- wizard-step-one.component.html -->
 <div class="space-y-8 step-content">
+  <!-- Welcome Message -->
+  <div *ngIf="currentSubStep === 0">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Tell us about your place</h2>
+    <p class="text-lg text-gray-600 mb-8">Share some basic info, like where it is and how many guests can stay.</p>
+  </div>
+
   <!-- Property Type Selection -->
-  <div>
-    <h2 class="text-xl font-semibold text-gray-900 mb-4 section-title">Which of these best describes your place?</h2>
+  <div *ngIf="currentSubStep === 1">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">Which of these best describes your place?</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div 
         *ngFor="let type of propertyTypes"
@@ -27,8 +32,8 @@
   </div>
 
   <!-- Location Input -->
-  <div>
-    <h2 class="text-xl font-semibold text-gray-900 mb-4 section-title">Where's your place located?</h2>
+  <div *ngIf="currentSubStep === 2">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">Where's your place located?</h2>
     <div class="location-input relative">
       <input
         type="text"
@@ -46,8 +51,8 @@
   </div>
 
   <!-- Guest and Room Details -->
-  <div class="space-y-6">
-    <h2 class="text-xl font-semibold text-gray-900 section-title">Share some basics about your place</h2>
+  <div *ngIf="currentSubStep === 3" class="space-y-6">
+    <h2 class="text-xl font-semibold text-gray-900">Share some basics about your place</h2>
     
     <!-- Guests -->
     <div class="room-detail flex items-center justify-between border-b border-gray-200">
