@@ -3,14 +3,22 @@ import { Component } from '@angular/core';
 import { SliderCard } from "./components/slider-card/slider-card";
 import { LoadingCards } from "./components/loading-cards/loading-cards";
 import { Slider } from '../../shared/components/slider/slider';
+import { SingleLoadingCard } from "./components/single-loading-card/single-loading-card";
+import { Modal } from "../../shared/components/modal/modal";
+import { WishListModal } from "../../components/wish-list-modal/wish-list-modal";
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, Slider, SliderCard, LoadingCards],
+  imports: [CommonModule, Slider, SliderCard, LoadingCards, Modal, WishListModal],
+
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
 export class Home {
+  show=false;
+  toggleShow(){
+    this.show=!this.show;
+  }
    listings:{
         imageUrl: string
         title:string,
