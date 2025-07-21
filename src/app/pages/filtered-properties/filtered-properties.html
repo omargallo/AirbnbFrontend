@@ -1,0 +1,56 @@
+<div class="properties-container container-fluid">
+  <div class="properties-panel ml-16">
+    <div class="d-flex justify-content-between items-center mb-4">
+      <p class="font-semibold">Over {{properties?.length}} homes</p>
+      <div class="d-flex justify-content-between items-center gap-2">
+        <img alt="fees" src="assets/images/fees.svg" width="40" height="40" />
+        Prices include all fees
+      </div>
+    </div>
+    <div class="properties-grid">
+      <app-slider-card
+        *ngFor="let property of properties; trackBy: trackByPropertyId"
+        [imageUrl]="getPropertyImage(property)"
+        [title]="property.title"
+        [subtitle]="getLocationSubtitle(property)"
+        [price]="property.pricePerNight"
+        [rating]="property.averageRating"
+        [night]="5"
+        [isFavorite]="false"
+        (click)="selectProperty(property)"
+      >
+      </app-slider-card>
+    </div>
+    <div class="pagination-container" *ngIf="totalPages > 1">
+      <nav class="pagination">
+        <button
+          class="pagination-btn"
+          [disabled]="currentPage===1"
+          (click)="goToPage(currentPage-1)"
+        >
+          ←
+        </button>
+        <button
+          *ngFor="let page of getVisiblePages()"
+          class="pagination-btn"
+          [class.active]="page===currentPage"
+          [disabled]="page==='...'"
+          (click)="page!=='...' && goToPage(+page)"
+        >
+          {{ page }}
+        </button>
+        <button
+          class="pagination-btn"
+          [disabled]="currentPage===totalPages"
+          (click)="goToPage(currentPage+1)"
+        >
+          →
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <div class="map-panel">
+    <div id="leaflet-map" class="leaflet-map"></div>
+  </div>
+</div>

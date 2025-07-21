@@ -1,1 +1,62 @@
-<p>property-info works!</p>
+<app-propertImage-galary [propertyId]="propertyId"></app-propertImage-galary>
+<div class="property-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading property information...</p>
+  </div>
+  <p>Property ID: {{ propertyId }}</p>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-state">
+    <p>{{ error }}</p>
+    <button (click)="showPropertyDetails(propertyId)">Retry</button>
+  </div>
+
+  <!-- Property Content -->
+  <div *ngIf="propertyId && !isLoading" class="property-content">
+    <h1>{{ property.title }}</h1>
+    <p>{{ property.description }}</p>
+    
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+      <button 
+        [class.active]="activeTab === 'gallery'"
+        (click)="changeTab('gallery')">
+        Gallery
+      </button>
+      <button 
+        [class.active]="activeTab === 'reviews'"
+        (click)="changeTab('reviews')">
+        Reviews
+      </button>
+      <button 
+        [class.active]="activeTab === 'amenities'"
+        (click)="changeTab('amenities')">
+        Amenities
+      </button>
+    </div>
+    
+    <!-- Tab Content -->
+    <div >
+      <app-propertImage-galary
+        *ngIf="activeTab === 'gallery'"
+        [propertyId]="propertyId">
+      </app-propertImage-galary>
+      
+      <!-- <app-property-reviews 
+        *ngIf="activeTab === 'reviews'"
+        [proper]="propertyId">
+      </app-property-reviews>
+      
+      <app-property-amenities 
+        *ngIf="activeTab === 'amenities'"
+        [property]="property">
+      </app-property-amenities> -->
+    </div>
+  </div>
+</div>
+
+<app-propertImage-galary
+  [propertyId]="propertyId">
+</app-propertImage-galary>

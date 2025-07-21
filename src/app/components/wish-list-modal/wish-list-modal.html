@@ -1,0 +1,64 @@
+<app-modal
+    (close)="onClose()" 
+    
+    [isVisible]="show" 
+    [modalDialogClass]="'mx-auto col-10 col-sm-10 col-md-8 col-lg-7 col-xl-5 rounded-5'"
+    [modalContentClass]="'col-12 rounded-5'"
+    >
+    <div class="row row-cols-1 row-cols-sm-2 p-0 pt-4 overflow-x-hidden col-12">
+        @for(item of lists; track $index){
+            <div class="mb-3 ">
+                <img class="wishlist-image rounded-5 col-12" 
+                        src="https://a0.muscache.com/im/pictures/hosting/Hosting-1412438800329137974/original/0bdb1558-bddb-4824-8e3a-6767a94e26fe.jpeg?im_w=1200" alt="">
+                        <p class="my-0 ms-3">{{item.name}}</p>
+                        <p class="secondary-text small ms-3 my-0">{{item.propertyIds.length}} saved</p>
+                        
+            </div>
+        }
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary bg-black  primary-text text-light me-auto"
+            (click)="showNewModal()"
+        >Create new wishlist</button>
+    </div>
+</app-modal>
+
+<app-modal
+    title="New Withlist"
+    *ngIf="isNewModalVisible"
+    (close)="onNewModalClose()"
+    [modalDialogClass]="'mx-auto rounded-5'"
+    [modalContentClass]="'col-12 rounded-5'"
+>
+    <form [formGroup]="form" (ngSubmit)="onCreateNewWishlist()">
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input
+        type="text"
+        id="name"
+        class="form-control"
+        formControlName="name"
+        [ngClass]="{'is-invalid': form.get('name')?.touched && form.get('name')?.invalid}"
+      >
+      <div class="invalid-feedback" *ngIf="form.get('name')?.touched && form.get('name')?.errors?.['required']">
+        Name is required.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="note" class="form-label">Note</label>
+      <textarea
+        id="note"
+        class="form-control"
+        formControlName="note"
+        rows="3"
+        [ngClass]="{'is-invalid': form.get('note')?.touched && form.get('note')?.invalid}"
+      ></textarea>
+      <div class="invalid-feedback" *ngIf="form.get('note')?.touched && form.get('note')?.errors?.['required']">
+        Note is required.
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Submit</button>
+  </form>
+</app-modal>

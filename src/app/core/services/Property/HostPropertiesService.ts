@@ -2,6 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment.development';
+
+export interface PropertyImageDisplayDTO {
+  id: number;
+  groupName: string;
+  propertyId: number;
+  imageUrl: string;
+  isCover: boolean;
+  isDeleted: boolean;
+}
 
 export interface PropertyDisplayDTO {
   id: number;
@@ -23,8 +33,7 @@ export interface PropertyDisplayDTO {
   isDeleted: boolean;
   propertyTypeId: number;
   hostId: string;
-   mainImageUrl?: string;  // Main image URL
-  images?: Array<{url: string; alt?: string}>;
+  images?: PropertyImageDisplayDTO[];
 }
 
 interface ApiResponse<T> {
@@ -38,14 +47,13 @@ interface ApiResponse<T> {
   providedIn: 'root'
 })
 export class HostPropertiesService {
-  private apiUrl = 'https://localhost:7024/api/Property';
-  
+  private readonly apiUrl = `${environment.baseUrl}/Property`;
+
   constructor(private http: HttpClient) { }
 
   getPropertiesByHostId(hostId: string): Observable<PropertyDisplayDTO[]> {
-    return this.http.get<ApiResponse<PropertyDisplayDTO[]>>(`${this.apiUrl}/host/${hostId}`)
-      .pipe(
-        map(response => response.data) 
-      );
+    return this.http
+      .get<ApiResponse<PropertyDisplayDTO[]>>(`${this.apiUrl}/host/cover/${hostId}`)
+      .pipe(map(response => response.data));
   }
 }

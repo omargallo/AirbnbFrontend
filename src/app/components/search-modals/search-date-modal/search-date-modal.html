@@ -1,0 +1,55 @@
+<div class="d-flex flex-row custom-date-modal-content airbnb-calendar-wrapper">
+  <!-- Quick Select -->
+  <div
+    class="d-flex flex-column gap-3 date-quick-options"
+    style="margin-right: 1rem !important;"
+  >
+    <div
+      class="quick-option-card airbnb-option"
+      (click)="selectQuickDate('today')"
+      [ngClass]="{ 'active': activeQuickOption === 'today' }"
+    >
+      <p class="fw-bold mb-0">{{ 'HEADER.TODAY' | translate }}</p>
+      <small>{{ getTodayFormatted() }}</small>
+    </div>
+    <div
+      class="quick-option-card airbnb-option"
+      (click)="selectQuickDate('tomorrow')"
+      [ngClass]="{ 'active': activeQuickOption === 'tomorrow' }"
+    >
+      <p class="fw-bold mb-0">
+        {{ 'HEADER.TOMORROW' | translate }}
+      </p>
+      <small>{{ getTomorrowFormatted() }}</small>
+    </div>
+    <div
+      class="quick-option-card airbnb-option"
+      (click)="selectQuickDate('thisWeekend')"
+      [ngClass]="{ 'active': activeQuickOption === 'thisWeekend' }"
+    >
+      <p class="fw-bold mb-0">
+        {{ 'HEADER.THIS_WEEKEND' | translate }}
+      </p>
+      <small>
+        {{ getFridayDate() }} &ndash; {{ getSaturdayDate() }}
+      </small>
+    </div>
+  </div>
+
+  <!-- Calendar -->
+  <div class="flex-grow-1 airbnb-calendar">
+    <ngx-daterangepicker-material
+      [locale]="locale"
+      [ranges]="{}"
+      [linkedCalendars]="false"
+      [alwaysShowCalendars]="true"
+      [singleDatePicker]="false"
+      [showCustomRangeLabel]="false"
+      [showClearButton]="false"
+      [autoApply]="true"
+      [(ngModel)]="selectedDateRange"
+      (datesUpdated)="datesUpdated($event)"
+    >
+    </ngx-daterangepicker-material>
+  </div>
+</div>

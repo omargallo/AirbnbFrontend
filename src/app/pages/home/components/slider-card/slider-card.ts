@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-slider-card',
@@ -14,5 +14,13 @@ export class SliderCard {
   @Input() subtitle!: string;
   @Input() price!: number;
   @Input() rating!: number;
+  @Input() night!: number;
   @Input() isFavorite: boolean = false;
+
+
+  @Output() cardClick = new EventEmitter<void>();
+  
+  onCardClick() {
+    this.cardClick.emit();
+  }
 }

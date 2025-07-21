@@ -14,9 +14,9 @@
   </div>
 </div> -->
 
-<div class="card border-0 shadow-sm rounded rounded-2">
+<div class="card border-0  rounded rounded-2" (click)="onCardClick()">
   <div class="image-container position-relative">
-    <img [src]="imageUrl" alt="listing image" class="img-fluid rounded ratio-1x1">
+    <img [src]="imageUrl" alt="listing image" class="img-fluid rounded-4 ratio-1x1">
     <div class="favorite badge  fw-semibold position-absolute top-0 start-0 m-2" 
       
       *ngIf="isFavorite"
@@ -29,15 +29,15 @@
   </div>
 
   <div class="info px-2 pt-2 pb-3">
-    <div class="title fw-semibold">{{ title }}</div>
+    <div class="title fw-semibold ">{{ title }}</div>
     <div class="subtitle text-muted small">{{ subtitle }}</div>
 
-    <div class="d-flex justify-content-between align-items-center mt-1">
+    <div class="d-flex justify-content-between align-items-center mt-1 flex-row-reverse">
       <div class="rating  small d-flex align-items-center">
-        <i class="bi bi-star-fill text-warning me-1"></i>{{ rating }}
+        <i class="bi bi-star-fill text-warning me-1 rating" ></i>{{ rating }}
       </div>
-      <div class="price fw-semibold">
-        ${{ price }} <span class="small">night</span>
+      <div class="price">
+        ${{ price }} <span class="small">for {{night}} night</span>
       </div>
     </div>
   </div>
