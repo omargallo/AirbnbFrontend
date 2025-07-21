@@ -5,6 +5,7 @@ import { PropertyInfo } from './pages/property-info/property-info';
 import { ListingWizardComponent } from './pages/listing-wizard/listing-wizard';
 import { MainLayout } from './layout/main-layout/main-layout';
 import { FilteredProperties } from './pages/filtered-properties/filtered-properties';
+import { HostProperties } from './components/host-properties/host-properties';
 
 export const routes: Routes = [
 
@@ -18,7 +19,8 @@ export const routes: Routes = [
        { path: 'property/:propertyId', component: PropertyInfo }
     ]
   },
-  { path: 'listing-wizard', component: ListingWizardComponent }
+  { path: 'listing-wizard', component: ListingWizardComponent },
+  { path: 'host', component:HostProperties}
 
 
 ];

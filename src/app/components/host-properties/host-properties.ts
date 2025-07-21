@@ -1,24 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { HostPropertiesService } from '../../core/services/Property/HostPropertiesService';
 import { PropertyDisplayDTO } from '../../core/services/Property/HostPropertiesService';
+import { environment } from '../../../environments/environment.development';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-host-properties',
+  standalone: true,
   templateUrl: './host-properties.html',
-  styleUrls: ['./host-properties.css']
+  styleUrls: ['./host-properties.css'],
+  imports: [CommonModule]
 })
 export class HostProperties implements OnInit {
   properties: PropertyDisplayDTO[] = [];
   isLoading = true;
   error: string | null = null;
   viewMode: 'grid' | 'table' = 'grid';
+  private hostId = '5a6c3d4f-9ca1-4b58-bdf6-a6e19b62218f';
 
-  private hostId = '1d1afe4d-301c-4f72-9e41-5773d0d27fa2';
-
-  constructor(private hostPropertiesService: HostPropertiesService) { }
+  constructor(private hostPropertiesService: HostPropertiesService) {}
 
   ngOnInit(): void {
-    // this.loadHostProperties();
+    this.loadHostProperties();
   }
 
   loadHostProperties(): void {
@@ -63,4 +66,72 @@ export class HostProperties implements OnInit {
     }
   }
 
+  getCoverImageUrl(property: PropertyDisplayDTO): string {
+    if (!property.images || property.images.length === 0) {
+      return '';
+    }
+
+    const localCoverImage = property.images.find(img =>
+      img.isCover && !img.isDeleted && (img.imageUrl.startsWith('/uploads/') || (!img.imageUrl.startsWith('http')))
+    );
+
+    if (localCoverImage) {
+      return this.buildImageUrl(localCoverImage.imageUrl);
+    }
+
+    const coverImage = property.images.find(img => img.isCover && !img.isDeleted);
+    if (coverImage) {
+      return this.buildImageUrl(coverImage.imageUrl);
+    }
+
+    const firstLocalImage = property.images.find(img =>
+      !img.isDeleted && (img.imageUrl.startsWith('/uploads/') || (!img.imageUrl.startsWith('http')))
+    );
+
+    if (firstLocalImage) {
+      return this.buildImageUrl(firstLocalImage.imageUrl);
+    }
+
+    const firstImage = property.images.find(img => !img.isDeleted);
+    if (firstImage) {
+      return this.buildImageUrl(firstImage.imageUrl);
+    }
+
+    return '';
+  }
+
+  private buildImageUrl(imageUrl: string): string {
+    if (!imageUrl) return '';
+
+    let staticBaseUrl = environment.baseUrl;
+    if (staticBaseUrl.endsWith('/api')) {
+      staticBaseUrl = staticBaseUrl.slice(0, -4);
+    }
+
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+
+    if (imageUrl.startsWith('/uploads/')) {
+      const cleanImageUrl = imageUrl.startsWith('/') ? imageUrl.substring(1) : imageUrl;
+      const baseUrl = staticBaseUrl.endsWith('/') ? staticBaseUrl : staticBaseUrl + '/';
+      return `${baseUrl}${cleanImageUrl}`;
+    }
+
+    if (!imageUrl.startsWith('/')) {
+      const baseUrl = staticBaseUrl.endsWith('/') ? staticBaseUrl : staticBaseUrl + '/';
+      return `${baseUrl}uploads/${imageUrl}`;
+    }
+
+    const baseUrl = staticBaseUrl.endsWith('/') ? staticBaseUrl.slice(0, -1) : staticBaseUrl;
+    return `${baseUrl}${imageUrl}`;
+  }
+
+  hasValidImage(property: PropertyDisplayDTO): boolean {
+    return this.getCoverImageUrl(property) !== '';
+  }
+  trackById(index: number, property: any): string | number {
+  return property.id;
 }
+}
+
