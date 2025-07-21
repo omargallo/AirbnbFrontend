@@ -1,4 +1,5 @@
-import { Component, input, Input, OnInit } from '@angular/core';
+import { Url } from './../../../../../node_modules/lightningcss/node/ast.d';
+import { ChangeDetectorRef, Component, input, Input, OnInit } from '@angular/core';
 import { PropertyImageService } from '../../../core/services/PropertyImage/property-image.service';
 import { CommonModule } from '@angular/common';
 
@@ -10,58 +11,56 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./propertImage-galary.component.css']
 })
 export class PropertImageGalaryComponent implements OnInit {
+  @Input() propertyId: number = 0; // Default property ID, can be set from outside
 
-
-      images: any[] = [];
+      images: string[] = [];
       isLoading: boolean = true;
       error: string | null = null;
       activeImageIndex: number = 0;
-      @Input() propertyId: number = 1; // Default property ID, can be set from outside
+      img: any;
 
-  constructor(private propertyImageService: PropertyImageService) { }
+  constructor(private propertyImageService: PropertyImageService ,private cdr: ChangeDetectorRef) { }
 
-  ngOnInit() {
-    console.log('come inside property image galary');
-    this.loadPropertyImages();
-  }
-
-loadPropertyImages() {
-    const propertyId = this.propertyId;
-
-    if (!propertyId) {
+  ngOnInit(): void {
+    if (!this.propertyId) {
       this.error = 'Property ID is required';
       this.isLoading = false;
       return;
     }
 
+    this.loadPropertyImages();
+  }
+
+  private loadPropertyImages(): void {
     this.isLoading = true;
     this.error = null;
 
-    this.propertyImageService.getAllImagesByPropertyId(propertyId).subscribe({
-      next: (images) => {
-        this.images = images;
+    this.propertyImageService.getAllImagesByPropertyId(this.propertyId).subscribe({
+      next: (response) => {
+        console.log('API response:', response);
+        this.images = response.map((img: any) =>
+          this.getFullImageUrl(img.imageUrl)
+        );
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.error = 'Failed to load images. Please try again later.';
         this.isLoading = false;
-        console.error('Error loading images:', err);
+        console.error(err);
+        this.cdr.detectChanges();
       }
     });
-}
+  }
 
+  private getFullImageUrl(url: string): string {
+    if (!url) return '';
+    return url.startsWith('http') ? url : `https://localhost:7025${url}`;
+  }
 
+  // getFullImageUrl(url: string): string {
+  //   return `https://localhost:7025${url}`;
 
-getFullImageUrl(url: string): string {
-  return `https://localhost:7025${url}`; // or use environment.baseUrl
-}
-      setActiveImage(index: number) {
-        this.activeImageIndex = index;
-      }
-      nextImage() {
-        this.activeImageIndex = (this.activeImageIndex + 1) % this.images.length;
-      }
-      prevImage() {
-        this.activeImageIndex = (this.activeImageIndex - 1 + this.images.length) % this.images.length;
-      }
+  // }
+
 }

@@ -1,4 +1,4 @@
-<!-- <app-propertImage-galary></app-propertImage-galary> -->
+<app-propertImage-galary></app-propertImage-galary>
 <div class="property-container">
   <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-state">
@@ -10,7 +10,7 @@
   <!-- Error State -->
   <div *ngIf="error" class="error-state">
     <p>{{ error }}</p>
-    <button (click)="showPropertyDetails(1)">Retry</button>
+    <button (click)="showPropertyDetails(propertyId)">Retry</button>
   </div>
 
   <!-- Property Content -->
@@ -38,7 +38,7 @@
     </div>
     
     <!-- Tab Content -->
-    <div class="tab-content">
+    <div >
       <app-propertImage-galary
         *ngIf="activeTab === 'gallery'"
         [propertyId]="propertyId">
@@ -56,3 +56,7 @@
     </div>
   </div>
 </div>
+
+<app-propertImage-galary
+  [propertyId]="propertyId">
+</app-propertImage-galary>
