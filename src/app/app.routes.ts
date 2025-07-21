@@ -10,14 +10,14 @@ export const routes: Routes = [
 
   {
     path: '', component: MainLayout,
-    children: [
-      { path: '', component: Home },
-      { path: 'experiences', component: Home },
-      { path: 'services', component: Home },
-      { path: "FilteredProperties", component: FilteredProperties },
-       { path: 'property/:propertyId', component: PropertyInfo }
-    ]
-  },
+        children: [
+          { path: '', component: Home },
+          { path: 'experiences', component: Home },
+          { path: 'services', component: Home },
+          { path: "FilteredProperties", component: FilteredProperties },
+          { path: 'property/:propertyId', component: PropertyInfo }
+        ]
+      },
   { path: 'listing-wizard', component: ListingWizardComponent }
 
 

@@ -9,7 +9,7 @@ import { WishListModal } from "../../components/wish-list-modal/wish-list-modal"
 import {  PropertySwiperComponent } from "../../components/mainswiper/mainswiper";
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, Slider, SliderCard, LoadingCards, WishListModal, PropertySwiperComponent],
+  imports: [CommonModule, Slider, SliderCard, WishListModal, PropertySwiperComponent],
 
   templateUrl: './home.html',
   styleUrl: './home.css'
