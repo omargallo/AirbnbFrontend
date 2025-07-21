@@ -5,6 +5,13 @@ import { Observable } from 'rxjs';
 import { Property } from '../../models/Property';
 import { environment } from '../../../../environments/environment.development';
 
+interface ApiResponse<T> {
+  data: T;
+  isSuccess: boolean;
+  message: string;
+  statusCode: number;
+}
+
 export interface Result<T> {
   data: T;
   isSuccess: boolean;
@@ -32,17 +39,40 @@ export interface SearchParams {
   page?: number;
   pageSize?: number;
   maxDistanceKm?: number;
+
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class PropertyService {
+
+  // private readonly baseUrl = environment.baseUrl;
+  // private readonly propertyUrl = `${this.baseUrl}/api/Property`;
+  private readonly propertyUrl = 'https://localhost:7025/api/property';
+
+
   private baseUrl = `${environment.baseUrl}/Property`;
   private countriesApiUrl = 'https://countriesnow.space/api/v0.1/countries';
 
 
   constructor(private http: HttpClient) { }
+
+  getAllProperties(): Observable<Property[]> {
+    return this.http.get<ApiResponse<Property[]>>(this.propertyUrl)
+    .pipe(
+      map(response => response.data)
+    );
+  }
+
+  getPropertyById(propertyId: number): Observable<Property> {
+    const url = `${this.propertyUrl}/${propertyId}`;
+    return this.http.get<ApiResponse<Property>>(url)
+    .pipe(
+      map(response => response.data)
+    );
+  }
+  
 
   getNearestProperties(page: number = 1, pageSize: number = 10, maxDistanceKm: number = 10): Observable<Result<{ items: Property[] }>> {
     const headers = new HttpHeaders()
@@ -75,5 +105,6 @@ export class PropertyService {
       params: queryParams
     });
   }
+
 
 }

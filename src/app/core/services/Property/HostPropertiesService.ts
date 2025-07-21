@@ -38,6 +38,7 @@ interface ApiResponse<T> {
 @Injectable({
   providedIn: 'root',
 })
+
 export class HostPropertiesService {
   private apiUrl = environment.baseUrl;
 
@@ -48,4 +49,6 @@ export class HostPropertiesService {
       .get<ApiResponse<PropertyDisplayDTO[]>>(`${this.apiUrl}/host/${hostId}`)
       .pipe(map((response) => response.data));
   }
+  
 }
+
