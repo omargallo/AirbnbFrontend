@@ -1,0 +1,232 @@
+/* wizard-step-one.component.css */
+
+/* Property type cards */
+.property-card {
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.property-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.property-card.selected {
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  border-color: #111827;
+  box-shadow: 0 0 0 1px #111827;
+}
+
+.property-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #111827 0%, #374151 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.property-card.selected::before {
+  transform: scaleX(1);
+}
+
+/* Property type icons animation */
+.property-icon {
+  transition: transform 0.2s ease-in-out;
+}
+
+.property-card:hover .property-icon {
+  transform: scale(1.1);
+}
+
+/* Location input styling */
+.location-input {
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+.location-input input {
+  padding-right: 48px;
+  transition: all 0.2s ease-in-out;
+}
+
+.location-input input:focus {
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
+  transform: translateY(-1px);
+}
+
+.location-input::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #111827 0%, #6b7280 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.location-input input:focus + .location-input::after {
+  transform: scaleX(1);
+}
+
+/* Room counter buttons */
+.counter-btn {
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  background: white;
+}
+
+.counter-btn:hover:not(:disabled) {
+  border-color: #111827;
+  background: #f9fafb;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.counter-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.counter-btn:disabled {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.counter-btn svg {
+  transition: transform 0.2s ease-in-out;
+}
+
+.counter-btn:hover:not(:disabled) svg {
+  transform: scale(1.1);
+}
+
+/* Counter number display */
+.counter-number {
+  font-weight: 600;
+  font-size: 1rem;
+  min-width: 2rem;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Room detail rows */
+.room-detail {
+  transition: all 0.2s ease-in-out;
+  padding: 1rem 0;
+}
+
+.room-detail:hover {
+  background: rgba(249, 250, 251, 0.5);
+  margin: 0 -1rem;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+/* Section headers */
+.section-title {
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #111827 0%, transparent 100%);
+  transform: scaleX(0);
+  animation: slideInLeft 0.6s ease-out 0.2s forwards;
+}
+
+@keyframes slideInLeft {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .property-card {
+    margin-bottom: 0.5rem;
+  }
+  
+  .property-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .counter-btn {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .counter-btn:hover:not(:disabled) {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .room-detail:hover {
+    background: none;
+    margin: 0;
+    padding: 1rem 0;
+    border-radius: 0;
+  }
+}
+
+/* Loading states */
+.loading-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Focus states for accessibility */
+.property-card:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.counter-btn:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-color: #3b82f6;
+}
+
+/* Animation for step entry */
+.step-content {
+  animation: slideInUp 0.4s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom selection colors */
+::selection {
+  background: #111827;
+  color: white;
+}
