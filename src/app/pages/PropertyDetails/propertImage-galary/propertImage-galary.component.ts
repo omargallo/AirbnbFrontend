@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./propertImage-galary.component.css']
 })
 export class PropertImageGalaryComponent implements OnInit {
-  @Input() propertyId: number = 0; // Default property ID, can be set from outside
+  @Input() propertyId!: number ; // Default property ID, can be set from outside
 
       images: string[] = [];
       isLoading: boolean = true;
@@ -35,22 +35,24 @@ export class PropertImageGalaryComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    this.propertyImageService.getAllImagesByPropertyId(this.propertyId).subscribe({
-      next: (response) => {
-        console.log('API response:', response);
-        this.images = response.map((img: any) =>
-          this.getFullImageUrl(img.imageUrl)
-        );
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        this.error = 'Failed to load images. Please try again later.';
-        this.isLoading = false;
-        console.error(err);
-        this.cdr.detectChanges();
-      }
-    });
+    this.propertyImageService
+                .getAllImagesByPropertyId(this.propertyId)
+                .subscribe({
+                      next: (response) => {
+                        console.log('API response:', response);
+                        this.images = response.data.map((img: any) =>
+                          this.getFullImageUrl(img.imageUrl)
+                        );
+                        this.isLoading = false;
+                        this.cdr.detectChanges();
+                      },
+                      error: (err) => {
+                        this.error = 'Failed to load images. Please try again later.';
+                        this.isLoading = false;
+                        console.error(err);
+                        this.cdr.detectChanges();
+                      }
+                    });
   }
 
   private getFullImageUrl(url: string): string {
