@@ -30,7 +30,7 @@ body.light {
   --shadow-color: rgba(0, 0, 0, 0.08);
   --light-grey-bg: #ecebeb;
   --bg-color: #fff;
-  --head: rgba(0, 0, 0, 0.02);
+  --head: #fefefe;
   --active: white;
   --bg: rgba(0, 0, 0, 0.1);
 }
@@ -44,7 +44,7 @@ body.dark {
   --shadow-color: rgba(0, 0, 0, 0.3);
   --light-grey-bg: #2e2e2e;
   --bg-color: #121212;
-  --head: rgba(255, 255, 255, 0.03);
+  --head: rgb(6, 6, 6);
   --active: #3a3a3a;
   --bg: rgba(255, 255, 255, 0.1);
 }

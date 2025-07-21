@@ -28,7 +28,14 @@ export interface CountriesResponse {
   msg: string;
   data: Country[];
 }
-
+interface SearchPropertiesResponse {
+  items: Property[];
+  metaData: {
+    page: number;
+    pageSize: number;
+    total: number;
+  };
+}
 export interface SearchParams {
   country?: string;
   longitude?: number;
@@ -88,7 +95,7 @@ export class PropertyService {
     return this.http.get<CountriesResponse>(this.countriesApiUrl);
   }
 
-  searchProperties(params: SearchParams): Observable<Result<{ items: Property[] }>> {
+searchProperties(params: SearchParams): Observable<Result<SearchPropertiesResponse>> {
     const queryParams: any = {};
 
     if (params.country) queryParams.Country = params.country;
@@ -101,7 +108,7 @@ export class PropertyService {
     if (params.pageSize) queryParams.PageSize = params.pageSize;
     if (params.maxDistanceKm != null) queryParams.maxDistanceKm = params.maxDistanceKm;
 
-    return this.http.get<Result<{ items: Property[] }>>(`${this.baseUrl}/search`, {
+    return this.http.get<Result<SearchPropertiesResponse>>(`${this.baseUrl}/search`, {
       params: queryParams
     });
   }
