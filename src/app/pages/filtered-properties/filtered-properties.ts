@@ -178,7 +178,7 @@ export class FilteredProperties implements OnInit {
 
   getPropertyImage(property: Property): string {
     return property.images?.[0]?.imageUrl
-      ? `${environment.base}/uploads/${property.images[0].imageUrl}`
+      ? `${environment.base}/${property.images[0].imageUrl}`
       : 'assets/images/placeholder.jpg';
   }
 
