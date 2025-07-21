@@ -1,7 +1,7 @@
 // src/app/shared/services/property.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Property } from '../../models/Property';
 import { environment } from '../../../../environments/environment.development';
 

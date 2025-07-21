@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {PropertySwiperComponent} from "./mainswiper";
 
-import { Mainswiper } from './mainswiper';
-
-describe('Mainswiper', () => {
-  let component: Mainswiper;
-  let fixture: ComponentFixture<Mainswiper>;
+describe('PropertySwiperComponent', () => {
+  let component: PropertySwiperComponent;
+  let fixture: ComponentFixture<PropertySwiperComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Mainswiper]
+      imports: [PropertySwiperComponent],
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Mainswiper);
+    fixture = TestBed.createComponent(PropertySwiperComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
