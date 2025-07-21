@@ -4,6 +4,15 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment.development';
 
+export interface PropertyImageDisplayDTO {
+  id: number;
+  groupName: string;
+  propertyId: number;
+  imageUrl: string;
+  isCover: boolean;
+  isDeleted: boolean;
+}
+
 export interface PropertyDisplayDTO {
   id: number;
   title: string;
@@ -24,8 +33,7 @@ export interface PropertyDisplayDTO {
   isDeleted: boolean;
   propertyTypeId: number;
   hostId: string;
-   mainImageUrl?: string;  // Main image URL
-  images?: Array<{url: string; alt?: string}>;
+  images?: PropertyImageDisplayDTO[];
 }
 
 interface ApiResponse<T> {
@@ -36,19 +44,16 @@ interface ApiResponse<T> {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-
 export class HostPropertiesService {
-  private apiUrl = environment.baseUrl;
+  private readonly apiUrl = `${environment.baseUrl}/Property`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getPropertiesByHostId(hostId: string): Observable<PropertyDisplayDTO[]> {
     return this.http
-      .get<ApiResponse<PropertyDisplayDTO[]>>(`${this.apiUrl}/host/${hostId}`)
-      .pipe(map((response) => response.data));
+      .get<ApiResponse<PropertyDisplayDTO[]>>(`${this.apiUrl}/host/cover/${hostId}`)
+      .pipe(map(response => response.data));
   }
-  
 }
-
