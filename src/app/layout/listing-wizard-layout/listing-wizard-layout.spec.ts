@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddProperty } from './add-property';
+import { ListingWizardLayout } from './listing-wizard-layout';
 
-describe('AddProperty', () => {
-  let component: AddProperty;
-  let fixture: ComponentFixture<AddProperty>;
+describe('ListingWizardLayout', () => {
+  let component: ListingWizardLayout;
+  let fixture: ComponentFixture<ListingWizardLayout>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddProperty]
+      imports: [ListingWizardLayout]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AddProperty);
+    fixture = TestBed.createComponent(ListingWizardLayout);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

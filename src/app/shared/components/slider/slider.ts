@@ -36,12 +36,12 @@ export class Slider implements AfterViewInit {
 
   }
 
-  
+
   @HostListener('window:resize')
   onResize() {
     this.calculateCardWidth();
   }
-  
+
   handleWheelScroll(event: WheelEvent) {
   const container = this.scrollContainer.nativeElement;
 
@@ -49,13 +49,14 @@ export class Slider implements AfterViewInit {
   if (event.deltaY !== 0) {
     event.preventDefault(); // prevent vertical scroll of the page
     container.scrollBy({
-      left: event.deltaY,
+      left: event.deltaY * this.cardPerSlide,
       behavior: 'smooth'
     });
+    this.updateButtonStates();
   }
 }
 
-  
+
   private calculateGap(){
     const cardElems = this.scrollContainer.nativeElement.querySelectorAll('.card-item');
     if (cardElems.length >= 2) {
@@ -69,7 +70,7 @@ export class Slider implements AfterViewInit {
     const containerWidth = this.scrollContainer.nativeElement.offsetWidth;
     this.cardWidth = Math.floor(containerWidth / this.cardsPerView);
 
-    
+
     const cards = this.scrollContainer.nativeElement.querySelectorAll(':scope >*');
 
     cards.forEach((card: HTMLElement) => {
@@ -83,7 +84,7 @@ export class Slider implements AfterViewInit {
     const rootFontSizeStr = getComputedStyle(document.documentElement).fontSize;
     const rootFontSizePx = parseFloat(rootFontSizeStr);
 
-    return rootFontSizePx; 
+    return rootFontSizePx;
   }
   calcSpaceToMove():number{
     this.calculateGap()
@@ -95,17 +96,17 @@ export class Slider implements AfterViewInit {
     console.log("totalGap ", totalGap)
     console.log("totalCardWidth", totalCardWidth)
     // const leftoverSpace = clientWidth % (this.cardWidth + this.cardGap);
-    
+
     const visibleCardArea = this.cardsPerView * this.cardWidth + (this.cardsPerView - 1) * this.cardGap;
     const leftoverSpace = visibleCardArea -clientWidth ;
-    
+
     const scrollDistance = totalCardWidth +totalGap + leftoverSpace;
-    
-  
+
+
     return scrollDistance
 }
   scrollLeft() {
-     
+
     this.scrollContainer.nativeElement.scrollBy({
       left: -this.calcSpaceToMove(),
       behavior: 'smooth'

@@ -1,0 +1,66 @@
+<div class="properties-container container">
+  <!-- Header -->
+  <div class="header">
+    <h2 class="title">Available for similar dates</h2>
+    <div class="navigation-arrows">
+      <button
+        class="nav-btn prev-btn"
+        (click)="slidePrev()"
+        [disabled]="isBeginning"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M15 18L9 12L15 6"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+      <button class="nav-btn next-btn" (click)="slideNext()" [disabled]="isEnd">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M9 18L15 12L9 6"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Swiper Container -->
+  <swiper-container
+    #swiperEl
+    slides-per-view="3"
+    space-between="16"
+    
+    grab-cursor="true"
+    mousewheel="false"
+    keyboard="true"
+    breakpoints='{
+          "320": {"slidesPerView": 1, "spaceBetween": 12},
+          "640": {"slidesPerView": 2, "spaceBetween": 16},
+          "768": {"slidesPerView": 3, "spaceBetween": 16},
+          "1024": {"slidesPerView": 4, "spaceBetween": 16},
+          "1280": {"slidesPerView": 7, "spaceBetween": 16}
+        }'
+  >
+    <swiper-slide
+      *ngFor="let property of properties; trackBy: trackByPropertyId"
+    >
+      <app-slider-card
+        title="{{property.title}}"
+        imageUrl="{{property.image}}"
+        [price]="property.price"
+        description="{{property.location}}"
+        [rating]="property.rating"
+        [isFavorite]="property.isFavorite"
+        [night]="property.nights"
+      ></app-slider-card>
+    </swiper-slide>
+  </swiper-container>
+</div>

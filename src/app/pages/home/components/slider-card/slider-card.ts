@@ -14,5 +14,6 @@ export class SliderCard {
   @Input() subtitle!: string;
   @Input() price!: number;
   @Input() rating!: number;
+  @Input() night!: number;
   @Input() isFavorite: boolean = false;
 }
