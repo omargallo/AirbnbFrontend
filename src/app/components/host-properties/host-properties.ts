@@ -18,7 +18,7 @@ export class HostProperties implements OnInit {
   constructor(private hostPropertiesService: HostPropertiesService) { }
 
   ngOnInit(): void {
-    this.loadHostProperties();
+    // this.loadHostProperties();
   }
 
   loadHostProperties(): void {

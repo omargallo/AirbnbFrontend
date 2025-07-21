@@ -37,6 +37,7 @@ interface ApiResponse<T> {
 @Injectable({
   providedIn: 'root'
 })
+
 export class HostPropertiesService {
   private apiUrl = 'https://localhost:7024/api/Property';
   
@@ -48,4 +49,5 @@ export class HostPropertiesService {
         map(response => response.data) 
       );
   }
+  
 }
