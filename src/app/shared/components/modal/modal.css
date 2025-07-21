@@ -1,88 +1,57 @@
-/* You can add global styles to this file, and also import other style files */
-/* :root {
-
+.modal {
+  display: block;
+  /* color: var(--primary-text-color); */
+}
+.modal-content{
+    background-color: var(--bg-color);
+}
+.modal-dialog{
+    width: 0;
+}
+.modal-content{
+    min-width: 400px
+}
+.primary-text{
+    color: var(--primary-text-color);
+}
+.secondary-text{
+    color: var(--secondary-text-color);
+}
+/* .modal .modal-dialog {
+  max-width: 600px;
 } */
 
-/* :root {
-  --airbnb-red: #ff385c;
-  --airbnb-dark-red: #e00050;
-  --primary-text-color: #222222;
-  --secondary-text-color: #717171;
-  --border-color: #ebebeb;
-  --shadow-color: rgba(0, 0, 0, 0.08);
-  --light-grey-bg: #ecebeb;
-} */
 
-:host {
-  font-family: "Inter", sans-serif;
-  color: var(--primary-text-color);
+.left-0{
+    left: 0;
 }
-body.light {
-  --airbnb-red: #ff385c;
-  --airbnb-dark-red: #e00050;
-  --primary-text-color: #222222;
-  --secondary-text-color: #717171;
-  --border-color: #ebebeb;
-  --shadow-color: rgba(0, 0, 0, 0.08);
-  --light-grey-bg: #ecebeb;
-  --bg-color: #fff;
-  --head: rgba(0, 0, 0, 0.02);
-  --active: white;
-  --bg: rgba(0, 0, 0, 0.1);
+.left-5{
+    left: 5%;
 }
-
-body.dark {
-  --airbnb-red: #ff5a5f;
-  --airbnb-dark-red: #e00050;
-  --primary-text-color: #f5f5f5;
-  --secondary-text-color: #a1a0a0;
-  --border-color: #3a3a3a;
-  --shadow-color: rgba(0, 0, 0, 0.3);
-  --light-grey-bg: #2e2e2e;
-  --bg-color: #121212;
-  --head: rgba(255, 255, 255, 0.03);
-  --active: #3a3a3a;
-  --bg: rgba(255, 255, 255, 0.1);
+.left-10{
+    left: 10%;
 }
-
-body {
-  background-color: var(--bg-color);
-  color: var(--primary-text-color);
-  transition: 0.3s ease;
-  min-height: 200vh;
-  --primary-bg-transition-time: 0.4s;
-
+.vmax-75{
+    max-height: 75vh ;
+}
+.vmax-80{
+    max-height: 80vh ;
+}
+.vmax-85{
+    max-height: 85vh ;
+}
+.vmax-90{
+    max-height: 90vh ;
+}
+.vmax-95{
+    max-height: 95vh ;
+}
+.vmax-100{
+    max-height: 100vh ;
 }
 
 
-.shimmer {
-  position: relative;
-  overflow: hidden;
-  background-color: #f2f2f2;
-  border-radius: 4px;
-}
-
-.shimmer::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -150%;
-  height: 100%;
-  width: 150%;
-  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.08), transparent);
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  100% {
-    left: 100%;
-  }
-}
-
-*{
-  box-sizing: border-box;
-}
-
+/* === Container === */
 .container {
   width: 100%;
   padding-right: 12px;

@@ -49,9 +49,10 @@ export class Slider implements AfterViewInit {
   if (event.deltaY !== 0) {
     event.preventDefault(); // prevent vertical scroll of the page
     container.scrollBy({
-      left: event.deltaY,
+      left: event.deltaY * this.cardPerSlide,
       behavior: 'smooth'
     });
+    this.updateButtonStates();
   }
 }
 
