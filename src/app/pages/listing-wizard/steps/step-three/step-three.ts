@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -11,68 +11,162 @@ import { ReactiveFormsModule } from '@angular/forms';
   imports: [CommonModule, ReactiveFormsModule]
 })
 export class WizardStepThreeComponent {
+  // Address field getters for template type safety
+  get apartmentControl(): FormControl {
+    const control = this.addressGroup.get('apartment');
+    if (!control) throw new Error('apartment control not found');
+    return control as FormControl;
+  }
+  get streetControl(): FormControl {
+    const control = this.addressGroup.get('street');
+    if (!control) throw new Error('street control not found');
+    return control as FormControl;
+  }
+  get cityControl(): FormControl {
+    const control = this.addressGroup.get('city');
+    if (!control) throw new Error('city control not found');
+    return control as FormControl;
+  }
+  get governorateControl(): FormControl {
+    const control = this.addressGroup.get('governorate');
+    if (!control) throw new Error('governorate control not found');
+    return control as FormControl;
+  }
+  get postalCodeControl(): FormControl {
+    const control = this.addressGroup.get('postalCode');
+    if (!control) throw new Error('postalCode control not found');
+    return control as FormControl;
+  }
   @Input() form!: FormGroup;
+  @Input() currentSubStep!: number;
 
-  suggestedPrice = 75; // This would come from your pricing service
+  suggestedPrice = 55;
   showPricingDetails = false;
   
-  pricingBreakdown = {
-    basePrice: 0,
-    cleaningFee: 25,
-    serviceFee: 0,
-    taxes: 0
-  };
-
   guestPreferences = [
     {
       id: 'experienced',
       title: 'An experienced guest',
-      description: 'After your first guest, anyone can book',
+      description: 'For your first guest, welcome someone with a good track record on Airbnb',
       selected: true
     },
     {
       id: 'anyone',
-      title: 'Anyone',
-      description: 'Your place is ready for all guests',
+      title: 'Any Airbnb guest',
+      description: 'Get reservations faster when you welcome anyone from the Airbnb community',
       selected: false
     }
   ];
 
+  bookingOptions = [
+    {
+      id: 'approve',
+      title: 'Approve your first 5 bookings',
+      description: 'Start by reviewing reservation requests, then switch to Instant Book',
+      recommended: true,
+      selected: true
+    },
+    {
+      id: 'instant',
+      title: 'Use Instant Book',
+      description: 'Let guests book automatically',
+      recommended: false,
+      selected: false
+    }
+  ];
+
+  safetyItems = [
+    { id: 'securityCamera', name: 'Exterior security camera present' },
+    { id: 'noiseMonitor', name: 'Noise decibel monitor present' },
+    { id: 'weaponsOnProperty', name: 'Weapon(s) on the property' }
+  ];
+
+  // Getter methods for form controls with proper typing and null checks
+  get weekdayPriceControl(): FormControl {
+    const control = this.form.get('weekdayPrice');
+    if (!control) throw new Error('weekdayPrice control not found');
+    return control as FormControl;
+  }
+
+  get weekendPriceControl(): FormControl {
+    const control = this.form.get('weekendPrice');
+    if (!control) throw new Error('weekendPrice control not found');
+    return control as FormControl;
+  }
+
+  get weekendPremiumControl(): FormControl {
+    const control = this.form.get('weekendPremium');
+    if (!control) throw new Error('weekendPremium control not found');
+    return control as FormControl;
+  }
+
+  get instantBookControl(): FormControl {
+    const control = this.form.get('instantBook');
+    if (!control) throw new Error('instantBook control not found');
+    return control as FormControl;
+  }
+
+  get guestPreferenceControl(): FormControl {
+    const control = this.form.get('guestPreference');
+    if (!control) throw new Error('guestPreference control not found');
+    return control as FormControl;
+  }
+
+  get addressGroup(): FormGroup {
+    const group = this.form.get('address');
+    if (!group) throw new Error('address group not found');
+    return group as FormGroup;
+  }
+
   constructor() {}
 
-  updatePrice(event: any): void {
-    const price = parseFloat(event.target.value) || 0;
-    this.form.patchValue({ price: price });
-    this.calculatePricingBreakdown(price);
+  updatePrice(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const price = parseFloat(input.value) || 0;
+    this.weekdayPriceControl.setValue(price);
   }
 
-  calculatePricingBreakdown(basePrice: number): void {
-    this.pricingBreakdown.basePrice = basePrice;
-    this.pricingBreakdown.serviceFee = Math.round(basePrice * 0.03); // 3% service fee
-    this.pricingBreakdown.taxes = Math.round((basePrice + this.pricingBreakdown.serviceFee) * 0.12); // 12% taxes
+  updateWeekendPrice(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const price = parseFloat(input.value) || 0;
+    this.weekendPriceControl.setValue(price);
   }
 
-  getTotalPrice(): number {
-    return this.pricingBreakdown.basePrice + 
-           this.pricingBreakdown.cleaningFee + 
-           this.pricingBreakdown.serviceFee + 
-           this.pricingBreakdown.taxes;
+  updateWeekendPremium(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const premium = parseFloat(input.value) || 0;
+    this.weekendPremiumControl.setValue(premium);
   }
 
-  toggleInstantBook(): void {
-    const currentValue = this.form.get('instantBook')?.value;
-    this.form.patchValue({ instantBook: !currentValue });
+  toggleInstantBook(optionId: string): void {
+    this.bookingOptions.forEach(option => {
+      option.selected = option.id === optionId;
+    });
+    this.instantBookControl.setValue(optionId === 'instant');
   }
 
   selectGuestPreference(preferenceId: string): void {
     this.guestPreferences.forEach(pref => {
       pref.selected = pref.id === preferenceId;
     });
+    this.guestPreferenceControl.setValue(preferenceId);
+  }
+
+  toggleSafetyItem(itemId: string): void {
+    const control = this.form.get(itemId) as FormControl;
+    if (control) {
+      control.setValue(!control.value);
+    }
   }
 
   useSuggestedPrice(): void {
-    this.form.patchValue({ price: this.suggestedPrice });
-    this.calculatePricingBreakdown(this.suggestedPrice);
+    this.weekdayPriceControl.setValue(this.suggestedPrice);
+  }
+
+  getTotalPrice(): number {
+    const basePrice = this.weekdayPriceControl.value || 0;
+    const weekendPremium = this.weekendPremiumControl.value || 0;
+    return basePrice + (basePrice * (weekendPremium / 100));
   }
 
   getFormSummary(): any {
@@ -82,7 +176,7 @@ export class WizardStepThreeComponent {
       location: formValue.location || 'Not specified',
       capacity: `${formValue.guests} guests • ${formValue.bedrooms} bedrooms • ${formValue.bathrooms} bathrooms`,
       amenities: formValue.amenities?.length || 0,
-      price: formValue.price || 0
+      price: formValue.weekdayPrice || 0
     };
   }
 }

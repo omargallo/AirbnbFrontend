@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 })
 export class WizardStepOneComponent {
   @Input() form!: FormGroup;
+  @Input() currentSubStep!: number;
 
   propertyTypes = [
     { id: 'house', name: 'House', description: 'A place that\'s usually 1-2 stories', icon: '🏠' },
