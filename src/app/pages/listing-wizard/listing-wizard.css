@@ -36,6 +36,29 @@
   min-height: 400px;
 }
 
+/* Intro screen styles */
+.intro-content {
+  max-width: 500px;
+  margin: 0 auto;
+  padding-top: 2rem;
+}
+
+.intro-content h1 {
+  line-height: 1.2;
+}
+
+/* Animation for the intro screen */
+@keyframes fadeInIntro {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Custom button hover effects */
 button {
   transition: all 0.2s ease-in-out;
@@ -124,6 +147,10 @@ button:active {
   .step-indicator {
     width: 12px;
     height: 12px;
+  }
+
+  .intro-content {
+    padding-top: 1rem;
   }
 }
 
