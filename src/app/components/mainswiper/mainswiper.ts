@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { register } from 'swiper/element/bundle';
+import {register} from 'swiper/element/bundle';
 import { SliderCard } from "../../pages/home/components/slider-card/slider-card";
 
 register();
