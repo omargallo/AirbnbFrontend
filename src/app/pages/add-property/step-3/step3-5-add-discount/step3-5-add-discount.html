@@ -1,0 +1,55 @@
+<div class="page-container">
+  <main class="content-wrapper">
+    <header class="page-header">
+      <h1 class="page-title">Add discounts</h1>
+      <p class="page-subtitle">
+        Help your place stand out to get booked faster and earn your first reviews.
+      </p>
+    </header>
+
+    <div class="discounts-list">
+      <div
+        *ngFor="let discount of discounts; let i = index"
+        class="discount-card"
+        [class.active]="discount.enabled"
+      >
+        <div class="discount-info">
+          <ng-container *ngIf="!discount.editable">
+            <div class="discount-badge">{{ discount.percent }}%</div>
+          </ng-container>
+          <ng-container *ngIf="discount.editable">
+            <div class="discount-input-wrapper">
+              <input
+                type="text"
+                class="discount-input"
+                maxlength="2"
+                [value]="discount.percent"
+                [disabled]="!discount.enabled"
+                (input)="onPercentInput(i, $event)"
+              />
+              <span class="percent-symbol">%</span>
+            </div>
+          </ng-container>
+          <div class="discount-text">
+            <h2 class="discount-title">{{ discount.title }}</h2>
+            <p class="discount-description">{{ discount.description }}</p>
+          </div>
+        </div>
+        <label class="toggle-switch">
+          <input
+            type="checkbox"
+            class="discount-toggle"
+            [checked]="discount.enabled"
+            (change)="toggleDiscount(i)"
+          />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+    <p class="footer-note">
+      Only one discount will be applied per stay.
+      <a href="#" class="learn-more-link">Learn more</a>
+    </p>
+  </main>
+</div>
+<app-footer></app-footer>

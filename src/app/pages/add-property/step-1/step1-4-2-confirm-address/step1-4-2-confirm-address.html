@@ -1,0 +1,111 @@
+<div class="page-container">
+  <main class="content-container">
+    <header class="page-header">
+      <h1 class="page-title">Confirm your address</h1>
+      <p class="page-subtitle">
+        Your address is only shared with guests after they’ve made a reservation.
+      </p>
+    </header>
+
+    <form class="address-form" autocomplete="off">
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <select id="country" class="form-select" required [(ngModel)]="country" (ngModelChange)="onCountryChange($event)" name="country">
+            <option value="EG">Egypt</option>
+            <!-- Add other countries as needed -->
+          </select>
+          <label for="country" class="form-label">Country / region</label>
+        </div>
+        <div class="form-field full-width">
+          <input
+            type="text"
+            id="street"
+            class="form-input"
+            placeholder=" "
+            required
+            [(ngModel)]="street"
+            (ngModelChange)="onStreetChange($event)"
+            name="street"
+          />
+          <label for="street" class="form-label">Street address</label>
+        </div>
+        <div class="form-field full-width">
+          <input
+            type="text"
+            id="apt"
+            class="form-input"
+            placeholder=" "
+            [(ngModel)]="apt"
+            (ngModelChange)="onAptChange($event)"
+            name="apt"
+          />
+          <label for="apt" class="form-label">Apt, room, etc. (if applicable)</label>
+        </div>
+        <div class="form-field">
+          <input
+            type="text"
+            id="city"
+            class="form-input"
+            placeholder=" "
+            required
+            [(ngModel)]="city"
+            (ngModelChange)="onCityChange($event)"
+            name="city"
+          />
+          <label for="city" class="form-label">City / markaz</label>
+        </div>
+        <div class="form-field">
+          <input
+            type="text"
+            id="state"
+            class="form-input"
+            placeholder=" "
+            required
+            [(ngModel)]="state"
+            (ngModelChange)="onStateChange($event)"
+            name="state"
+          />
+          <label for="state" class="form-label">Governorate</label>
+        </div>
+        <div class="form-field full-width">
+          <input
+            type="text"
+            id="zipcode"
+            class="form-input"
+            placeholder=" "
+            [(ngModel)]="zipcode"
+            (ngModelChange)="onZipcodeChange($event)"
+            name="zipcode"
+          />
+          <label for="zipcode" class="form-label">Postal code</label>
+        </div>
+      </div>
+    </form>
+
+    <div class="location-preference">
+      <div class="preference-text">
+        <h2 class="preference-title">Show your specific location</h2>
+        <p class="preference-description">
+          Make it clear to guests where your place is located. We'll only share your address after they've made a reservation.
+          <a href="#" class="learn-more-link">Learn more</a>
+        </p>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" [(ngModel)]="showSpecificLocation" (ngModelChange)="onLocationPreferenceChange($event)" name="showSpecificLocation" />
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="map-display">
+      <div class="map-pin">
+         <svg viewBox="0 0 102 102" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="51" cy="51" r="51" fill="#D92545" fill-opacity="0.16"/>
+            <circle cx="51" cy="51" r="27" fill="url(#pin-gradient)" stroke="rgba(0,0,0,0.04)"/>
+            <path d="M51 76.5C51 76.5 55.25 69.9 51 65C46.75 69.9 51 76.5 51 76.5Z" fill="url(#pin-shadow-gradient)"/>
+            <path d="M51 40.5C51 40.5 41 41.25 41 51.5C41 61.75 51 68 51 68C51 68 61 61.75 61 51.5C61 41.25 51 40.5 51 40.5Z" fill="#fff"/>
+        </svg>
+      </div>
+    </div>
+  </main>
+</div>
+<app-footer></app-footer>

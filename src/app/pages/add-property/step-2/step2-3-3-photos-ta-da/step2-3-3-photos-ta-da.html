@@ -1,0 +1,44 @@
+<div class="page-container">
+  <main class="content-wrapper">
+    <header class="page-header">
+      <h1 class="page-title">Ta-da! How does this look?</h1>
+      <p class="page-subtitle">Drag to reorder</p>
+    </header>
+
+    <!-- Hidden file input for adding more photos -->
+    <input
+      type="file"
+      id="add-photos-input"
+      multiple
+      accept="image/jpeg,image/png,image/heic"
+      hidden
+      (change)="addPhotos($event)"
+    />
+
+    <div class="photo-grid">
+      <ng-container *ngFor="let photo of photosService.photos; let i = index">
+        <div
+          class="photo-item"
+          [class.cover-photo]="i === 0"
+          [draggable]="true"
+          (dragstart)="onDragStart(i)"
+          (dragover)="$event.preventDefault()"
+          (drop)="onDrop(i)"
+        >
+          <img [src]="photo" alt="Property photo" />
+          <div *ngIf="i === 0" class="photo-caption">Cover Photo</div>
+          <button class="photo-options-btn" aria-label="Photo options">
+            <svg viewBox="0 0 16 16"><path d="m3 9.5c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm5 0c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm5 0c.828 0 1.5-.672 1.5-1.5s-.671-1.5-1.5-1.5-1.5.672-1.5 1.5.671 1.5 1.5 1.5z"></path></svg>
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- Add More Photos Button -->
+      <label for="add-photos-input" class="add-photo-button">
+        <svg viewBox="0 0 32 32"><path d="M2 16h28M16 2v28"></path></svg>
+        <span>Add more</span>
+      </label>
+    </div>
+  </main>
+</div>
+<app-footer></app-footer>

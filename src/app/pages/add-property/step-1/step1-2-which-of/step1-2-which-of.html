@@ -1,0 +1,16 @@
+<div role="radiogroup" class="property-selector">
+  <div *ngFor="let type of propertyTypes; let i = index" class="property-item" [style.animation-delay]="(0.05 + i * 0.05) + 's'">
+    <button
+      type="button"
+      role="radio"
+      class="property-button"
+      [attr.aria-checked]="selectedType === type ? 'true' : 'false'"
+      (click)="selectType(type)"
+    >
+      <!-- Placeholder for SVG icon, you can customize per type if needed -->
+      <svg viewBox="0 0 45 45" class="property-icon"></svg>
+      <div class="property-label">{{ type }}</div>
+    </button>
+  </div>
+</div>
+<app-footer></app-footer>

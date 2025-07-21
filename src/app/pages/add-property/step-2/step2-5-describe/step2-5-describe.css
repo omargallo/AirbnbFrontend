@@ -1,0 +1,94 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Airbnb Cereal VF", Circular, -apple-system, BlinkMacSystemFont,
+    Roboto, "Helvetica Neue", sans-serif;
+  color: #222;
+  background-color: #fff;
+}
+
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 88px 24px;
+  box-sizing: border-box;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 630px;
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-title {
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+  font-size: 18px;
+  line-height: 24px;
+  color: #6a6a6a;
+  margin: 0;
+}
+
+.highlights-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.highlight-card {
+  flex: 1 1 auto;
+  padding: 0 16px;
+  height: 56px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 32px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.highlight-card:hover {
+  border-color: #222;
+}
+
+.highlight-card.selected {
+  background-color: #f7f7f7;
+  border-color: #222;
+  border-width: 2px;
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.card-content svg {
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  fill: #222;
+}
+
+.shake {
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}

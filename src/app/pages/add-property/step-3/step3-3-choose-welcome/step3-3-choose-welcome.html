@@ -1,0 +1,38 @@
+<div class="page-container">
+  <main class="content-wrapper">
+    <header class="page-header">
+      <h1 class="page-title">
+        Choose who to welcome for your first reservation
+      </h1>
+      <p class="page-subtitle">
+        After your first guest, anyone can book your place.
+        <a href="#" class="learn-more-link">Learn more</a>
+      </p>
+    </header>
+
+    <div role="radiogroup" class="welcome-options">
+      <div
+        *ngFor="let option of options"
+        class="option-card"
+        [class.selected]="isSelected(option.key)"
+        (click)="selectOption(option.key)"
+      >
+        <div class="option-content">
+          <h2 class="option-title">{{ option.title }}</h2>
+          <p class="option-description">{{ option.description }}</p>
+        </div>
+        <div class="radio-custom-input">
+          <input
+            type="radio"
+            name="guest-type"
+            [value]="option.key"
+            [checked]="isSelected(option.key)"
+            readonly
+          />
+          <span class="radio-dot"></span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<app-footer></app-footer>

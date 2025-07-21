@@ -1,0 +1,40 @@
+<div class="location-page">
+  <main class="location-content">
+    <header class="location-header">
+      <h1 class="location-title">Where's your place located?</h1>
+      <p class="location-subtitle">
+        Your address is only shared with guests after they’ve made a reservation.
+      </p>
+    </header>
+
+    <div class="map-container">
+      <div class="address-card">
+        <form class="address-form" autocomplete="off">
+          <div class="address-input-wrapper">
+            <div class="address-input-icon">
+              <svg viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M8 .5C4.96.5 2.5 3 2.5 6s1.83 6.08 5.5 9.25C11.67 12.08 13.5 9 13.5 6A5.5 5.5 0 0 0 8 .5zM8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"
+                ></path>
+              </svg>
+            </div>
+            <input
+              class="address-input"
+              type="text"
+              placeholder="Enter your address"
+              aria-label="Enter your address"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded="false"
+              autocomplete="off"
+              [(ngModel)]="address"
+              (ngModelChange)="onAddressChange($event)"
+              name="address"
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+<app-footer></app-footer>

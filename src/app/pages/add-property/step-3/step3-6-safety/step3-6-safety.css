@@ -1,0 +1,146 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Airbnb Cereal VF", Circular, -apple-system, BlinkMacSystemFont,
+    Roboto, "Helvetica Neue", sans-serif;
+  color: #222;
+  background-color: #fff;
+}
+
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 88px 24px;
+  box-sizing: border-box;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 630px;
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-title {
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.safety-section {
+  margin-bottom: 48px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  margin: 0 0 16px 0;
+}
+
+.safety-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.safety-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.safety-item:hover {
+  border-color: #b0b0b0;
+}
+
+.safety-item.selected {
+  background-color: #f7f7f7;
+  border-color: #222;
+}
+
+.item-label {
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.hidden-checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkbox-container {
+  position: relative;
+  height: 24px;
+  width: 24px;
+}
+
+.custom-checkbox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 24px;
+  width: 24px;
+  background-color: #fff;
+  border: 1px solid #b0b0b0;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.safety-item:hover .custom-checkbox {
+  border-color: #222;
+}
+
+.hidden-checkbox:checked + .custom-checkbox {
+  background-color: #222;
+  border-color: #222;
+}
+
+.custom-checkbox::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 8px;
+  top: 4px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.hidden-checkbox:checked + .custom-checkbox::after {
+  display: block;
+}
+
+.safety-footer {
+  padding-top: 32px;
+  border-top: 1px solid #ebebeb;
+}
+
+.footer-text {
+  font-size: 16px;
+  line-height: 24px;
+  color: #6a6a6a;
+  margin: 0;
+}
+
+.info-link {
+  color: #222;
+  font-weight: 500;
+  text-decoration: underline;
+}

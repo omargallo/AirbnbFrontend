@@ -1,0 +1,111 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Airbnb Cereal VF", Circular, -apple-system, BlinkMacSystemFont,
+    Roboto, "Helvetica Neue", sans-serif;
+  color: #222;
+  background-color: #fff;
+}
+
+.location-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 24px;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+.location-content {
+  width: 100%;
+  max-width: 630px;
+  text-align: center;
+}
+
+.location-header {
+  margin-bottom: 32px;
+}
+
+.location-title {
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+}
+
+.location-subtitle {
+  font-size: 18px;
+  line-height: 24px;
+  color: #6a6a6a;
+  margin: 0;
+}
+
+.map-container {
+  width: 100%;
+  height: 500px;
+  border-radius: 16px;
+  background-image: url("https://maps.googleapis.com/maps/api/staticmap?size=630x500&zoom=12&center=26.82055,30.8025&scale=1&key=AIzaSyC73L89dBLortoWF1LI1cgvxmpROFVd5TI&signature=5IjZ05WrYDLVAjpLB5TBhZWWVvY=");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 40px;
+  box-sizing: border-box;
+}
+
+.address-card {
+  width: 100%;
+  max-width: 566px;
+  background-color: #fff;
+  border-radius: 78px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.address-form {
+  width: 100%;
+}
+
+.address-input-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 68px;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.address-input-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 16px;
+  color: #222;
+}
+
+.address-input-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.address-input {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #222;
+  font-family: inherit;
+  padding: 0;
+}
+
+.address-input::placeholder {
+  color: #6a6a6a;
+  font-weight: 400;
+}

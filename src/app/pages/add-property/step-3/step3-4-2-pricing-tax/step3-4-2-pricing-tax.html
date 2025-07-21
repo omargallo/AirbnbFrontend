@@ -1,0 +1,84 @@
+<div class="page-container">
+  <main class="content-wrapper">
+    <header class="page-header">
+      <h1 class="page-title">Set a weekend price</h1>
+      <p class="page-subtitle">
+        Add a premium for Fridays and Saturdays.
+      </p>
+    </header>
+
+    <div class="pricing-editor">
+      <div class="price-display">${{ weekendPrice }}</div>
+
+      <div class="price-breakdown">
+        <div class="breakdown-card" [class.active]="view === 'guest'">
+          <div class="breakdown-details">
+            <div class="detail-row">
+              <span>Base price</span><span>${{ weekendPrice }}</span>
+            </div>
+            <div class="detail-row">
+              <span>Guest service fee</span>
+              <span>${{ guestServiceFee }}</span>
+            </div>
+          </div>
+          <div class="breakdown-total">
+            <strong>Guest price before taxes</strong>
+            <strong>${{ guestTotal }}</strong>
+          </div>
+        </div>
+        <div class="breakdown-card" [class.active]="view === 'host'">
+          <div class="breakdown-details">
+            <div class="detail-row">
+              <span>Base price</span><span>${{ weekendPrice }}</span>
+            </div>
+            <div class="detail-row">
+              <span>Host service fee</span>
+              <span>-${{ hostServiceFee }}</span>
+            </div>
+          </div>
+          <div class="breakdown-total">
+            <strong>You earn</strong>
+            <strong>${{ hostTotal }}</strong>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="toggle-view-button" (click)="toggleView()">
+        {{ view === 'guest' ? "Show what you'll earn" : 'Show guest price' }}
+      </button>
+    </div>
+
+    <div class="premium-controls">
+      <div class="premium-header">
+        <div>
+          <h2 class="premium-title">Weekend premium</h2>
+          <p class="premium-subtitle">Tip: Try 10%</p>
+        </div>
+        <div class="premium-input-wrapper">
+          <input
+            type="text"
+            class="premium-input"
+            maxlength="2"
+            [value]="premiumPercent"
+            (input)="onPremiumInput($event)"
+          />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <div class="slider-container">
+        <input
+          type="range"
+          min="0"
+          [max]="maxPremium"
+          [value]="premiumPercent"
+          class="premium-slider"
+          (input)="onPremiumSlider($event)"
+        />
+        <div class="slider-labels">
+          <span>0%</span>
+          <span>{{ maxPremium }}%</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<app-footer></app-footer>

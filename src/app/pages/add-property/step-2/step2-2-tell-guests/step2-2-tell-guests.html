@@ -1,0 +1,68 @@
+<div class="page-container">
+  <main class="content-wrapper">
+    <header class="page-header">
+      <h1 class="page-title">Tell guests what your place has to offer</h1>
+      <p class="page-subtitle">
+        You can add more amenities after you publish your listing.
+      </p>
+    </header>
+
+    <!-- Guest Favorites Section -->
+    <section class="amenity-section">
+      <h2 class="section-title">What about these guest favorites?</h2>
+      <div class="amenities-grid">
+        <button
+          *ngFor="let amenity of guestFavorites"
+          type="button"
+          role="checkbox"
+          [attr.aria-checked]="isAmenitySelected(amenity)"
+          class="amenity-card"
+          [class.selected]="isAmenitySelected(amenity)"
+          (click)="toggleAmenity(amenity)"
+        >
+          <div class="amenity-icon"></div>
+          <span class="amenity-label">{{ amenity }}</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Standout Amenities Section -->
+    <section class="amenity-section">
+      <h2 class="section-title">Do you have any standout amenities?</h2>
+      <div class="amenities-grid">
+        <button
+          *ngFor="let amenity of standoutAmenities"
+          type="button"
+          role="checkbox"
+          [attr.aria-checked]="isAmenitySelected(amenity)"
+          class="amenity-card"
+          [class.selected]="isAmenitySelected(amenity)"
+          (click)="toggleAmenity(amenity)"
+        >
+          <div class="amenity-icon"></div>
+          <span class="amenity-label">{{ amenity }}</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Safety Items Section -->
+    <section class="amenity-section">
+      <h2 class="section-title">Do you have any of these safety items?</h2>
+      <div class="amenities-grid">
+        <button
+          *ngFor="let amenity of safetyItems"
+          type="button"
+          role="checkbox"
+          [attr.aria-checked]="isAmenitySelected(amenity)"
+          class="amenity-card"
+          [class.selected]="isAmenitySelected(amenity)"
+          (click)="toggleAmenity(amenity)"
+        >
+          <div class="amenity-icon"></div>
+          <span class="amenity-label">{{ amenity }}</span>
+        </button>
+      </div>
+    </section>
+  </main>
+</div>
+<app-footer></app-footer>

@@ -1,0 +1,139 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: "Airbnb Cereal VF", Circular, -apple-system, BlinkMacSystemFont,
+    Roboto, "Helvetica Neue", sans-serif;
+  color: #222;
+  background-color: #fff;
+}
+
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 88px 24px;
+  box-sizing: border-box;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 700px;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 26px;
+  margin: 0;
+}
+
+.page-subtitle {
+  font-size: 16px;
+  color: #6a6a6a;
+  margin: 4px 0 0 0;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.photo-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: grab;
+  transition: transform 0.2s ease-in-out;
+}
+
+.photo-item.cover-photo {
+  grid-column: 1 / -1;
+  grid-row: 1 / 3;
+  aspect-ratio: 3 / 2;
+}
+
+.photo-item:not(.cover-photo) {
+  aspect-ratio: 1 / 1;
+}
+
+.photo-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-item.drag-over {
+  border: 2px dashed #222;
+}
+
+.photo-caption {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.photo-options-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.photo-options-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: #222;
+}
+
+.add-photo-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+  cursor: pointer;
+  color: #717171;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.add-photo-button:hover {
+  border-color: #b0b0b0;
+  background-color: #f7f7f7;
+}
+
+.add-photo-button svg {
+  width: 32px;
+  height: 32px;
+  stroke: #717171;
+  stroke-width: 2px;
+  margin-bottom: 8px;
+}
+
+.add-photo-button span {
+  font-size: 14px;
+  font-weight: 500;
+}

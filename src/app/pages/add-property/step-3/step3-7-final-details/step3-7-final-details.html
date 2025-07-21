@@ -1,0 +1,72 @@
+<div class="page-container">
+  <main class="content-wrapper">
+    <header class="page-header">
+      <h1 class="page-title">Provide a few final details</h1>
+    </header>
+
+    <form class="details-form">
+      <section class="form-section">
+        <h2 class="section-title">What’s your residential address?</h2>
+        <p class="section-subtitle">Guests won’t see this information.</p>
+        <div class="address-grid">
+          <div class="form-field full-width">
+            <select class="form-input" [(ngModel)]="address.country" name="country">
+              <option value="EG">Egypt</option>
+              <!-- Add other countries here -->
+            </select>
+            <label class="form-label">Country / region</label>
+          </div>
+          <div class="form-field full-width">
+            <input type="text" class="form-input" placeholder=" " [(ngModel)]="address.street" name="street" />
+            <label class="form-label">Street address</label>
+          </div>
+          <div class="form-field full-width">
+            <input type="text" class="form-input" placeholder=" " [(ngModel)]="address.apt" name="apt" />
+            <label class="form-label">Apt, room, etc. (if applicable)</label>
+          </div>
+          <div class="form-field">
+            <input type="text" class="form-input" placeholder=" " [(ngModel)]="address.city" name="city" />
+            <label class="form-label">City / markaz</label>
+          </div>
+          <div class="form-field">
+            <input type="text" class="form-input" placeholder=" " [(ngModel)]="address.state" name="state" />
+            <label class="form-label">Governorate</label>
+          </div>
+          <div class="form-field full-width">
+            <input type="text" class="form-input" placeholder=" " [(ngModel)]="address.zipcode" name="zipcode" />
+            <label class="form-label">Postal code</label>
+          </div>
+        </div>
+      </section>
+
+      <hr class="section-divider" />
+
+      <section class="form-section">
+        <h2 class="section-title">Are you hosting as a business?</h2>
+        <p class="section-subtitle">
+          This means your business is most likely registered with your state or government.
+          <a href="#" class="learn-more-link">Get details</a>
+        </p>
+        <div class="radio-group">
+          <label
+            class="radio-card"
+            [class.selected]="hostingType === 'yes'"
+            (click)="setHostingType('yes')"
+          >
+            <input type="radio" name="hosting-type" value="yes" class="hidden-radio" [checked]="hostingType === 'yes'" />
+            <span class="radio-label">Yes</span>
+          </label>
+          <label
+            class="radio-card"
+            [class.selected]="hostingType === 'no'"
+            (click)="setHostingType('no')"
+          >
+            <input type="radio" name="hosting-type" value="no" class="hidden-radio" [checked]="hostingType === 'no'" />
+            <span class="radio-label">No</span>
+          </label>
+        </div>
+      </section>
+    </form>
+  </main>
+</div>
+<app-footer></app-footer>

@@ -1,0 +1,42 @@
+<div class="page-container">
+  <main class="content-wrapper">
+    <header class="page-header">
+      <h1 class="page-title">Share safety details</h1>
+    </header>
+
+    <section class="safety-section">
+      <h2 class="section-title">Does your place have any of these?</h2>
+      <div class="safety-items-list">
+        <label
+          *ngFor="let item of safetyItems; let i = index"
+          class="safety-item"
+          [class.selected]="item.checked"
+        >
+          <span class="item-label">{{ item.label }}</span>
+          <div class="checkbox-container">
+            <input
+              type="checkbox"
+              class="hidden-checkbox"
+              [checked]="item.checked"
+              (change)="toggleItem(i)"
+            />
+            <span class="custom-checkbox"></span>
+          </div>
+        </label>
+      </div>
+    </section>
+
+    <footer class="safety-footer">
+      <h2 class="section-title">Important things to know</h2>
+      <p class="footer-text">
+        Security cameras that monitor indoor spaces are not allowed even if they're turned off. All exterior security cameras must be disclosed.
+        <br /><br />
+        Be sure to comply with your
+        <a href="#" class="info-link">local laws</a> and review Airbnb's
+        <a href="#" class="info-link">anti-discrimination policy</a> and
+        <a href="#" class="info-link">guest and Host fees</a>.
+      </p>
+    </footer>
+  </main>
+</div>
+<app-footer></app-footer>

@@ -1,0 +1,44 @@
+<div class="page-container">
+  <main class="content-wrapper">
+    <header class="page-header">
+      <h1 class="page-title">Add some photos of your house</h1>
+      <p class="page-subtitle">
+        You'll need 5 photos to get started. You can add more or make changes later.
+      </p>
+    </header>
+
+    <section class="photo-uploader">
+      <!-- Visible dropzone and upload trigger -->
+      <div
+        class="uploader-dropzone"
+        (click)="openPhotosModal()"
+        (dragover)="$event.preventDefault(); dropzoneHighlight = true"
+        (dragleave)="dropzoneHighlight = false"
+        (drop)="handleDrop($event)"
+        [class.highlight]="dropzoneHighlight"
+      >
+        <div class="uploader-icon">
+          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <path d="M42 20.24V14a2 2 0 0 0-2-2H10a2 2 0 0 0-2 2v36a2 2 0 0 0 2 2h30a2 2 0 0 0 2-2V30.87l10.4 10.39a1 1 0 0 0 1.4-1.42L43.4 28.44a4 4 0 0 0-5.67-5.67l-5.3 5.3-5.5-5.5a1 1 0 0 0-1.4 0l-11 11V14a2 2 0 0 0-2-2H2v36a2 2 0 0 0 2 2h38a2 2 0 0 0 2-2V20.24zM16 22a4 4 0 1 1-4-4 4 4 0 0 1 4 4z" fill="#717171"></path>
+            <path d="M54 12V4a2 2 0 0 0-2-2H16a2 2 0 0 0-2 2v2h2V6h32v20h-2v2h4a2 2 0 0 0 2-2V14a2 2 0 0 0-2-2z" fill="#717171"></path>
+          </svg>
+        </div>
+        <h2 class="uploader-title">Drag your photos here</h2>
+        <p class="uploader-text">Choose at least 5 photos</p>
+        <button type="button" class="uploader-button" (click)="openPhotosModal()">Upload from your device</button>
+      </div>
+
+      <!-- Container for photo previews -->
+      <div class="photo-previews-grid" *ngIf="photosService.photos.length > 0" style="display:grid;">
+        <div class="photo-preview-item" *ngFor="let photo of photosService.photos; let i = index">
+          <img [src]="photo" alt="Photo preview" />
+          <button class="remove-photo-btn" (click)="photosService.removePhoto(i)">&times;</button>
+        </div>
+      </div>
+
+      <!-- Photos Modal Component -->
+      <app-step2-3-2-photos-modal #photosModal></app-step2-3-2-photos-modal>
+    </section>
+  </main>
+</div>
+<app-footer></app-footer>

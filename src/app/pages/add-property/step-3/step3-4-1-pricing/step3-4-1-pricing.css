@@ -1,0 +1,129 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Airbnb Cereal VF", Circular, -apple-system, BlinkMacSystemFont,
+    Roboto, "Helvetica Neue", sans-serif;
+  color: #222;
+  background-color: #fff;
+}
+
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 88px 24px;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 630px;
+  text-align: center;
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-title {
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+  font-size: 18px;
+  line-height: 24px;
+  color: #6a6a6a;
+  margin: 0;
+}
+
+.pricing-editor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.price-input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #222;
+}
+
+.currency-symbol {
+  font-size: 80px;
+  line-height: 1;
+  margin-right: 4px;
+}
+
+.price-input {
+  font-family: inherit;
+  font-size: 120px;
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 240px; /* Adjust width as needed */
+  text-align: left;
+  line-height: 1;
+  padding: 0;
+  letter-spacing: -3px;
+}
+
+.price-breakdown {
+  width: 100%;
+  max-width: 320px;
+  margin-top: 32px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.breakdown-card {
+  display: none;
+  padding: 16px;
+  text-align: left;
+}
+
+.breakdown-card.active {
+  display: block;
+}
+
+.breakdown-details {
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  line-height: 24px;
+  color: #222;
+}
+
+.breakdown-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.toggle-view-button {
+  margin-top: 24px;
+  background: none;
+  border: none;
+  color: #222;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+}
