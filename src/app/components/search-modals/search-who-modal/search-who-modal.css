@@ -1,0 +1,45 @@
+.guest-option {
+  padding-bottom: 0.8rem;
+}
+
+.guest-item button {
+  margin: 0 5px;
+  border: 1px solid var(--light-grey-bg);
+  background-color: var(--bg-color);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.guest-item button:hover {
+  border-color: var(--primary-text-color);
+  color: var(--primary-text-color);
+}
+
+.guest-item button.disabled,
+.guest-item button[disabled] {
+  border-color: var(--active);
+  color: var(--light-grey-bg);
+  background-color: var(--bg-color);
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.guest-options {
+}
+
+.guest-item .form-label {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.guest-item .text-muted {
+  font-size: 0.9rem;
+}

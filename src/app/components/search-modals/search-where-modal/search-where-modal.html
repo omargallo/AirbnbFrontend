@@ -1,0 +1,39 @@
+<div class="p-2">
+  <div>
+    <h6 class="mb-3">
+      {{ 'HEADER.SUGGESTED_DESTINATIONS' | translate }}
+    </h6>
+    <ul class="list-unstyled">
+      <li
+        *ngFor="let destination of suggestedDestinations"
+        class="d-flex align-items-center py-2"
+      >
+        <img
+          [src]="destination.iconSrc"
+          alt=""
+          class="me-3"
+          style="width: 32px; height: 32px;"
+        />
+        <div>
+          <p class="mb-0 fw-bold">{{ destination.name }}</p>
+          <small style="color: var(--secondary-text-color);"
+            >{{ destination.description }}</small
+          >
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="mt-4">
+    <h6 class="mb-3">
+      {{ 'HEADER.FLEXIBLE_SEARCH' | translate }}
+    </h6>
+    <div class="d-flex flex-wrap gap-2">
+      <button
+        *ngFor="let option of flexibleSearchOptions"
+        class="btn btn-outline-secondary rounded-pill px-4 py-2"
+      >
+        {{ option.label }}
+      </button>
+    </div>
+  </div>
+</div>

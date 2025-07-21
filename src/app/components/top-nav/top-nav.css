@@ -1,0 +1,80 @@
+
+.top-nav-category {
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  color: var(--secondary-text-color);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+.top-nav-category img,
+video {
+  width: 64px !important;
+}
+
+.top-nav-category:hover {
+  color: var(--primary-text-color);
+}
+
+.top-nav-category::after {
+  content: "";
+  position: absolute;
+  bottom: 0.6rem;
+  left: 58%;
+  transform: translateX(-50%) scaleX(0);
+  width: 72%;
+  height: 3px;
+  background-color: var(--primary-text-color);
+  border-radius: 2px;
+  transition: transform 0.4s ease-in-out;
+  transform-origin: center;
+  opacity: 0;
+}
+
+.top-nav-category.active {
+  color: var(--primary-text-color);
+}
+
+.top-nav-category.active::after {
+  transform: translateX(-50%) scaleX(1);
+  opacity: 1;
+}
+
+.top-nav-category .new-badge {
+  background-color: var(--airbnb-red);
+  color: white;
+  font-size: 0.6rem;
+  font-weight: bold;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  white-space: nowrap;
+}
+
+.top-nav-category img {
+  display: block;
+  width: 80px;
+  height: auto;
+}
+
+.top-nav-category video {
+  display: none;
+  width: 80px;
+  height: auto;
+}
+
+.top-nav-category:hover img {
+  display: none;
+}
+
+.top-nav-category:hover video {
+  display: block;
+}

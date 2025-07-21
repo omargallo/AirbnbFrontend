@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment.development';
 
 export interface PropertyDisplayDTO {
   id: number;
@@ -35,17 +36,16 @@ interface ApiResponse<T> {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HostPropertiesService {
-  private apiUrl = 'https://localhost:7024/api/Property';
-  
-  constructor(private http: HttpClient) { }
+  private apiUrl = environment.baseUrl;
+
+  constructor(private http: HttpClient) {}
 
   getPropertiesByHostId(hostId: string): Observable<PropertyDisplayDTO[]> {
-    return this.http.get<ApiResponse<PropertyDisplayDTO[]>>(`${this.apiUrl}/host/${hostId}`)
-      .pipe(
-        map(response => response.data) 
-      );
+    return this.http
+      .get<ApiResponse<PropertyDisplayDTO[]>>(`${this.apiUrl}/host/${hostId}`)
+      .pipe(map((response) => response.data));
   }
 }
