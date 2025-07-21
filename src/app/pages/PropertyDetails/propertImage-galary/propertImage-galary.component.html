@@ -1,18 +1,10 @@
-<div *ngIf="isLoading">Loading...</div>
-<div *ngIf="error">{{ error }}</div>
 
-<div *ngIf="!isLoading && images.length > 0" class="image-gallery">
-  <div class="main-image">
-    <img [src]="getFullImageUrl(images[activeImageIndex].imageUrl)" alt="Active Property Image" />
+
+<div class="row g-3">
+  <div class="col-6 col-md-4 col-lg-3" *ngFor="let img of images">
+    <div class="image-box shadow-sm p-2 bg-white rounded text-center">
+<h1>hi rawan </h1>
+      <img [src]="img" class="img-fluid" alt="Property Image" />
+    </div>
   </div>
-
-  <div class="thumbnails">
-    <img *ngFor="let img of images; index as i"
-         [src]="getFullImageUrl(img.imageUrl)"
-         (click)="setActiveImage(i)"
-         [class.active]="i === activeImageIndex" />
-  </div>
-
-  <button (click)="prevImage()">Prev</button>
-  <button (click)="nextImage()">Next</button>
 </div>

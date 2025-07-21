@@ -2,7 +2,7 @@ import { Property } from './../../core/models/Property';
 import { Component, OnInit } from '@angular/core';
 import { PropertyService } from '../../core/services/Property/property.service';
 import { CommonModule } from '@angular/common';
-import { Routes } from '@angular/router';
+import { ActivatedRoute, Routes } from '@angular/router';
 import { PropertImageGalaryComponent } from "../PropertyDetails/propertImage-galary/propertImage-galary.component";
 
 @Component({
@@ -13,20 +13,28 @@ import { PropertImageGalaryComponent } from "../PropertyDetails/propertImage-gal
 })
 export class PropertyInfo implements OnInit {
   // properties: Property[] = [];
-  propertyid=1;
   selectedProperty: Property | null = null;
   isLoading = true;
   error: string | null = null;
 
   // State for child components
   activeTab: 'gallery' | 'reviews' | 'amenities' = 'gallery';
-  propertyId: number = 1; // Should come from out
+  propertyId: number =0; // Should come from out
   property: any;
 
-  constructor(private propertyService: PropertyService) {}
+  constructor(private propertyService: PropertyService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.showPropertyDetails(1);
+    this.route.params.subscribe(params => {
+      this.propertyId = +params['propertyId']; // Get propertyId from route params
+      if(this.propertyId <= 0) {
+        this.error = 'Invalid property ID';
+        this.isLoading = false;
+        return;
+      }
+      console.log('Property ID from route:', this.propertyId);
+      this.showPropertyDetails(this.propertyId);
+    });
   }
 
   // onChange(event: any): void {
@@ -36,7 +44,7 @@ export class PropertyInfo implements OnInit {
 
 
   showPropertyDetails(id: number): void {
-    this.propertyService.getPropertyById(1).subscribe({
+    this.propertyService.getPropertyById(id).subscribe({
       next: (property) => {
         this.selectedProperty = property;
         console.log('Selected property:', this.selectedProperty);

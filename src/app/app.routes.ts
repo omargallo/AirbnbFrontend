@@ -15,7 +15,7 @@ export const routes: Routes = [
       { path: 'experiences', component: Home },
       { path: 'services', component: Home },
       { path: "FilteredProperties", component: FilteredProperties },
-       { path: 'property/1', component: PropertyInfo }
+       { path: 'property/:propertyId', component: PropertyInfo }
     ]
   },
   { path: 'listing-wizard', component: ListingWizardComponent }
