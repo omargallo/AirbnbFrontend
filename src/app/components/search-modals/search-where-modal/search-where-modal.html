@@ -6,7 +6,8 @@
     <ul class="list-unstyled">
       <li
         *ngFor="let destination of suggestedDestinations"
-        class="d-flex align-items-center py-2"
+        class="d-flex align-items-center p-2 rounded-4"
+        (click)="onDestinationSelect({ country: destination.country,city: destination.city, state: destination.state, latitude: destination.latitude, longitude: destination.longitude })"
       >
         <img
           [src]="destination.iconSrc"
@@ -15,25 +16,27 @@
           style="width: 32px; height: 32px;"
         />
         <div>
-          <p class="mb-0 fw-bold">{{ destination.name }}</p>
+          <p class="mb-0 fw-bold">
+            {{ destination.country }} {{destination.city}} {{destination.state}}
+          </p>
           <small style="color: var(--secondary-text-color);"
             >{{ destination.description }}</small
           >
         </div>
       </li>
-    </ul>
-  </div>
-  <div class="mt-4">
-    <h6 class="mb-3">
-      {{ 'HEADER.FLEXIBLE_SEARCH' | translate }}
-    </h6>
-    <div class="d-flex flex-wrap gap-2">
-      <button
-        *ngFor="let option of flexibleSearchOptions"
-        class="btn btn-outline-secondary rounded-pill px-4 py-2"
+
+      @if (isLoading) {
+      <li
+        class="d-flex align-items-center p-2 shimmer rounded-4 mb-2"
+        *ngFor="let x of [1,2,3,4,5,6,7,8,9]"
       >
-        {{ option.label }}
-      </button>
-    </div>
+        <div class="me-3 rounded-circle shimmer-icon"></div>
+        <div style="flex: 1;">
+          <div class="shimmer-line w-75 mb-2"></div>
+          <div class="shimmer-line w-50"></div>
+        </div>
+      </li>
+      }
+    </ul>
   </div>
 </div>

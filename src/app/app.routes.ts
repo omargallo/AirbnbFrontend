@@ -3,6 +3,7 @@ import { Home } from './pages/home/home';
 
 import { ListingWizardComponent } from './pages/listing-wizard/listing-wizard';
 import { MainLayout } from './layout/main-layout/main-layout';
+import { FilteredProperties } from './pages/filtered-properties/filtered-properties';
 
 export const routes: Routes = [
   {
@@ -11,6 +12,7 @@ export const routes: Routes = [
       { path: '', component: Home },
       { path: 'experiences', component: Home },
       { path: 'services', component: Home },
+      { path: "FilteredProperties", component: FilteredProperties }
     ]
   },
   { path: 'listing-wizard', component: ListingWizardComponent }
