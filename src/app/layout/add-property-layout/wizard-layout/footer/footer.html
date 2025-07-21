@@ -1,0 +1,47 @@
+<div class="footer-container">
+  <div class="progress-and-nav">
+    <div class="progress-bar-container">
+      <span class="sr-only">Your progress: step {{currentStep}} out of {{totalSteps}}.</span>
+      <div class="progress-bar">
+        <div *ngFor="let segment of progressSegments; let i = index" class="progress-segment">
+          <div 
+            class="progress-segment-fill"
+            [style.width]="getSegmentFill(i) + '%'"
+            [class.completed]="getSegmentFill(i) === 100"
+            [class.active]="isCurrentSegment(i)"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-buttons-container">
+      <div class="back-button-wrapper">
+        <button 
+          *ngIf="currentStep > 0 && !showGetStarted" 
+          (click)="onBackClick()" 
+          type="button" 
+          class="back-button"
+          [disabled]="currentStep === 0">
+          &#8592; Back
+        </button>
+        
+        <button 
+          *ngIf="!showGetStarted && !isLastStep" 
+          (click)="onNextClick()" 
+          type="button" 
+          class="next-button"
+          [disabled]="!canProceed">
+          Next &#8594;
+        </button>
+        
+        <button 
+          *ngIf="isLastStep" 
+          (click)="onGetStartedClick()" 
+          type="button" 
+          class="next-button">
+          Complete Listing
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

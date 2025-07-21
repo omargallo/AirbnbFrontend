@@ -1,0 +1,24 @@
+<div class="page-container">
+  <main class="content-wrapper">
+    <header class="page-header">
+      <h1 class="page-title">Create your description</h1>
+      <p class="page-subtitle">Share what makes your place special.</p>
+    </header>
+
+    <div class="description-editor">
+      <textarea
+        #descriptionInput
+        class="description-textarea"
+        rows="7"
+        maxlength="500"
+        placeholder=" "
+        [(ngModel)]="description"
+        (input)="onInput()"
+      ></textarea>
+      <div class="character-counter" [class.limit-reached]="limitReached">
+        <span>{{ charCount }}</span>/{{ maxLength }}
+      </div>
+    </div>
+  </main>
+</div>
+<app-footer></app-footer>

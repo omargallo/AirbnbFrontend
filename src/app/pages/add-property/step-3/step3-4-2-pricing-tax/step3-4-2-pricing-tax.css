@@ -1,0 +1,203 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Airbnb Cereal VF", Circular, -apple-system, BlinkMacSystemFont,
+    Roboto, "Helvetica Neue", sans-serif;
+  color: #222;
+  background-color: #fff;
+}
+
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align to top to see header first */
+  padding: 88px 24px;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 630px;
+  text-align: center;
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-title {
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+  font-size: 18px;
+  line-height: 24px;
+  color: #6a6a6a;
+  margin: 0;
+}
+
+.pricing-editor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.price-display {
+  font-size: 120px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -3px;
+}
+
+.price-breakdown {
+  width: 100%;
+  max-width: 320px;
+  margin-top: 32px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.breakdown-card {
+  display: none;
+  padding: 16px;
+  text-align: left;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+}
+
+.breakdown-card.active {
+  display: block;
+  border: 2px solid #222;
+  padding: 15px;
+}
+
+.breakdown-details {
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.breakdown-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.toggle-view-button {
+  margin-top: 24px;
+  background: none;
+  border: none;
+  color: #222;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.premium-controls {
+  width: 100%;
+  margin-top: 64px;
+  text-align: left;
+}
+
+.premium-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.premium-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 4px 0;
+}
+
+.premium-subtitle {
+  font-size: 14px;
+  color: #6a6a6a;
+  margin: 0;
+}
+
+.premium-input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #b0b0b0;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.premium-input {
+  width: 40px;
+  border: none;
+  outline: none;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: right;
+  font-family: inherit;
+}
+
+.percent-symbol {
+  font-size: 24px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.slider-container {
+  width: 100%;
+}
+
+.premium-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: #ddd;
+  outline: none;
+  border-radius: 2px;
+  margin: 8px 0;
+}
+
+.premium-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: #222;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  box-shadow: 0 0 0 1px #b0b0b0;
+}
+
+.premium-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background: #222;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  box-shadow: 0 0 0 1px #b0b0b0;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #6a6a6a;
+}

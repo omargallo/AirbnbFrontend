@@ -1,0 +1,113 @@
+<div class="page-container">
+  <main class="content-wrapper">
+    <header class="page-header">
+      <h1 class="page-title">Share some basics about your place</h1>
+      <p class="page-subtitle">
+        You'll add more details later, like bed types.
+      </p>
+    </header>
+
+    <div class="counter-list">
+      <!-- Guests Counter -->
+      <div class="counter-item">
+        <span class="counter-label">Guests</span>
+        <div class="counter-controls">
+          <button
+            type="button"
+            class="control-button"
+            aria-label="Decrease guests"
+            (click)="decreaseCounter('guests')"
+            [disabled]="guests <= minGuests"
+          >
+            <svg viewBox="0 0 12 12"><path d="m.75 6.75h10.5v-1.5h-10.5z"></path></svg>
+          </button>
+          <span class="counter-value">{{ guests }}</span>
+          <button
+            type="button"
+            class="control-button"
+            aria-label="Increase guests"
+            (click)="increaseCounter('guests')"
+          >
+            <svg viewBox="0 0 12 12"><path d="m6.75.75v4.5h4.5v1.5h-4.5v4.5h-1.5v-4.5h-4.5v-1.5h4.5v-4.5z"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bedrooms Counter -->
+      <div class="counter-item">
+        <span class="counter-label">Bedrooms</span>
+        <div class="counter-controls">
+          <button
+            type="button"
+            class="control-button"
+            aria-label="Decrease bedrooms"
+            (click)="decreaseCounter('bedrooms')"
+            [disabled]="bedrooms <= minBedrooms"
+          >
+            <svg viewBox="0 0 12 12"><path d="m.75 6.75h10.5v-1.5h-10.5z"></path></svg>
+          </button>
+          <span class="counter-value">{{ bedrooms }}</span>
+          <button
+            type="button"
+            class="control-button"
+            aria-label="Increase bedrooms"
+            (click)="increaseCounter('bedrooms')"
+          >
+            <svg viewBox="0 0 12 12"><path d="m6.75.75v4.5h4.5v1.5h-4.5v4.5h-1.5v-4.5h-4.5v-1.5h4.5v-4.5z"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Beds Counter -->
+      <div class="counter-item">
+        <span class="counter-label">Beds</span>
+        <div class="counter-controls">
+          <button
+            type="button"
+            class="control-button"
+            aria-label="Decrease beds"
+            (click)="decreaseCounter('beds')"
+            [disabled]="beds <= minBeds"
+          >
+            <svg viewBox="0 0 12 12"><path d="m.75 6.75h10.5v-1.5h-10.5z"></path></svg>
+          </button>
+          <span class="counter-value">{{ beds }}</span>
+          <button
+            type="button"
+            class="control-button"
+            aria-label="Increase beds"
+            (click)="increaseCounter('beds')"
+          >
+            <svg viewBox="0 0 12 12"><path d="m6.75.75v4.5h4.5v1.5h-4.5v4.5h-1.5v-4.5h-4.5v-1.5h4.5v-4.5z"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bathrooms Counter -->
+      <div class="counter-item">
+        <span class="counter-label">Bathrooms</span>
+        <div class="counter-controls">
+          <button
+            type="button"
+            class="control-button"
+            aria-label="Decrease bathrooms"
+            (click)="decreaseCounter('bathrooms')"
+            [disabled]="bathrooms <= minBathrooms"
+          >
+            <svg viewBox="0 0 12 12"><path d="m.75 6.75h10.5v-1.5h-10.5z"></path></svg>
+          </button>
+          <span class="counter-value">{{ bathrooms }}</span>
+          <button
+            type="button"
+            class="control-button"
+            aria-label="Increase bathrooms"
+            (click)="increaseCounter('bathrooms')"
+          >
+            <svg viewBox="0 0 12 12"><path d="m6.75.75v4.5h4.5v1.5h-4.5v4.5h-1.5v-4.5h-4.5v-1.5h4.5v-4.5z"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<app-footer></app-footer>

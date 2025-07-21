@@ -1,0 +1,78 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Airbnb Cereal VF", Circular, -apple-system, BlinkMacSystemFont,
+    Roboto, "Helvetica Neue", sans-serif;
+  color: #222;
+  background-color: #fff;
+}
+
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 88px 24px;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 630px;
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-title {
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+  font-size: 18px;
+  line-height: 24px;
+  color: #6a6a6a;
+  margin: 0;
+}
+
+.title-editor {
+  width: 100%;
+}
+
+.title-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 24px;
+  border: 1px solid #b0b0b0;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 22px;
+  line-height: 26px;
+  resize: none;
+  overflow: hidden; /* Prevents scrollbar from showing */
+  transition: border-color 0.2s ease;
+}
+
+.title-textarea:focus {
+  outline: none;
+  border-color: #222;
+  box-shadow: 0 0 0 1px #222;
+}
+
+.character-counter {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6a6a6a;
+  text-align: left;
+}
+
+.character-counter.limit-reached {
+  color: #c13515;
+}

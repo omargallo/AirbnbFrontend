@@ -1,0 +1,191 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Airbnb Cereal VF", Circular, -apple-system, BlinkMacSystemFont,
+    Roboto, "Helvetica Neue", sans-serif;
+  color: #222;
+  background-color: #fff;
+}
+
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 88px 24px;
+  box-sizing: border-box;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 630px;
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-title {
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+  font-size: 18px;
+  line-height: 24px;
+  color: #6a6a6a;
+  margin: 0;
+}
+
+.discounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.discount-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px 24px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background-color: #f7f7f7;
+  transition: background-color 0.2s ease;
+}
+
+.discount-card.active {
+  background-color: #fff;
+}
+
+.discount-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.discount-badge,
+.discount-input-wrapper {
+  flex-shrink: 0;
+  width: 60px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.discount-badge {
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.discount-input-wrapper {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  transition: border-color 0.2s ease;
+}
+
+.discount-card.active .discount-input-wrapper {
+  border-color: #222;
+}
+
+.discount-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: right;
+  padding-right: 2px;
+  font-family: inherit;
+}
+
+.discount-input:disabled {
+  color: #ddd;
+}
+
+.percent-symbol {
+  padding-right: 8px;
+}
+
+.discount-card:not(.active) .percent-symbol {
+  color: #ddd;
+}
+
+.discount-title {
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0 0 4px 0;
+}
+
+.discount-description {
+  font-size: 14px;
+  color: #6a6a6a;
+  margin: 0;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 32px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  border-radius: 32px;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 28px;
+  width: 28px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+input:checked + .slider {
+  background-color: #222;
+}
+
+input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+.footer-note {
+  margin-top: 24px;
+  font-size: 12px;
+  color: #6a6a6a;
+  text-align: center;
+}
+
+.learn-more-link {
+  color: #222;
+  font-weight: 500;
+  text-decoration: underline;
+}

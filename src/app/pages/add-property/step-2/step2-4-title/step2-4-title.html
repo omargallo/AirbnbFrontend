@@ -1,0 +1,26 @@
+<div class="page-container">
+  <main class="content-wrapper">
+    <header class="page-header">
+      <h1 class="page-title">Now, let's give your house a title</h1>
+      <p class="page-subtitle">
+        Short titles work best. Have fun with it—you can always change it later.
+      </p>
+    </header>
+
+    <div class="title-editor">
+      <textarea
+        #titleInput
+        class="title-textarea"
+        rows="3"
+        maxlength="32"
+        placeholder=" "
+        [(ngModel)]="title"
+        (input)="onInput()"
+      ></textarea>
+      <div class="character-counter" [class.limit-reached]="limitReached">
+        <span>{{ charCount }}</span>/{{ maxLength }}
+      </div>
+    </div>
+  </main>
+</div>
+<app-footer></app-footer>

@@ -1,0 +1,65 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  color: #222;
+  font-family: "Airbnb Cereal VF", Circular, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  background-color: #fff;
+  padding: 88px 80px 82px;
+  min-height: 100vh;
+}
+
+.intro-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 1206px;
+  gap: 58px; /* Replaces margin on child elements */
+}
+
+.intro-section__content {
+  max-width: 575px;
+  flex-grow: 1;
+}
+
+.intro-section__step-label {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.intro-section__title {
+  font-size: 48px;
+  line-height: 54px;
+  font-weight: 500;
+  letter-spacing: -0.64px;
+  margin: 0 0 24px 0;
+}
+
+.intro-section__description {
+  font-size: 18px;
+  line-height: 28px;
+  margin: 0;
+}
+
+.intro-section__video-container {
+  max-width: 473px;
+  max-height: 414px;
+  overflow: hidden;
+  border-radius: 12px; /* Added for softer edges */
+  flex-shrink: 0;
+}
+
+.intro-section__video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}

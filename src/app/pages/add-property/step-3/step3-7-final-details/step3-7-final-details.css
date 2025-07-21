@@ -1,0 +1,210 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Airbnb Cereal VF", Circular, -apple-system, BlinkMacSystemFont,
+    Roboto, "Helvetica Neue", sans-serif;
+  color: #222;
+  background-color: #fff;
+}
+
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 88px 24px;
+  box-sizing: border-box;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 630px;
+}
+
+@media (max-width: 768px) {
+  .address-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-field::before {
+    display: none;
+  }
+
+  .form-field:not(:last-child)::after {
+    display: block;
+  }
+
+  .page-container {
+    padding: 24px 16px;
+  }
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-title {
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.details-form {
+  width: 100%;
+}
+
+.form-section {
+  margin-bottom: 48px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  margin: 0 0 8px 0;
+}
+
+.section-subtitle {
+  font-size: 14px;
+  line-height: 18px;
+  color: #6a6a6a;
+  margin: 0 0 24px 0;
+}
+
+.address-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.form-field {
+  position: relative;
+  padding: 8px;
+  background-color: #fff;
+}
+
+.form-field::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 8px;
+  right: 8px;
+  height: 1px;
+  background-color: #ddd;
+}
+
+.form-field::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 0;
+  bottom: 8px;
+  width: 1px;
+  background-color: #ddd;
+}
+
+.form-field:nth-child(2n)::before {
+  display: none;
+}
+
+.address-grid .form-field:last-child::after,
+.address-grid .form-field:nth-last-child(2):nth-child(odd)::after {
+  display: none;
+}
+
+.form-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-field.full-width::before {
+  display: none;
+}
+
+.form-input {
+  width: 100%;
+  padding: 24px 12px 8px;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-size: 16px;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: background-color 0.2s;
+}
+
+.form-input:focus {
+  background-color: #f7f7f7;
+}
+
+.form-label {
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  font-size: 12px;
+  color: #717171;
+  font-size: 16px;
+  color: #6a6a6a;
+  pointer-events: none;
+  transition: all 0.15s ease-out;
+}
+
+.form-input:focus + .form-label,
+.form-input:not(:placeholder-shown) + .form-label,
+.form-input:valid + .form-label {
+  transform: translateY(-8px) scale(0.75);
+  transform-origin: top left;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 0 0 48px 0;
+}
+
+.learn-more-link {
+  color: #222;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.radio-group {
+  display: flex;
+  gap: 12px;
+}
+
+.radio-card {
+  flex: 1;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.radio-card:hover {
+  border-color: #b0b0b0;
+}
+
+.radio-card.selected {
+  background-color: #f7f7f7;
+  border-color: #222;
+  border-width: 2px;
+  padding: 15px;
+}
+
+.hidden-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.radio-label {
+  font-size: 16px;
+  font-weight: 500;
+}
