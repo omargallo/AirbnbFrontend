@@ -10,6 +10,7 @@ import { WishListModal } from "../../components/wish-list-modal/wish-list-modal"
 @Component({
   selector: 'app-home',
   imports: [CommonModule, Slider, SliderCard, LoadingCards, Modal, WishListModal],
+
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
