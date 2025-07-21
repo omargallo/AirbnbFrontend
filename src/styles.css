@@ -65,6 +65,17 @@ body {
   background-color: #f2f2f2;
   border-radius: 4px;
 }
+.shimmer-icon {
+  width: 32px;
+  height: 32px;
+  background-color: #ccc;
+}
+
+.shimmer-line {
+  height: 10px;
+  background-color: #ccc;
+  border-radius: 4px;
+}
 
 .shimmer::after {
   content: "";

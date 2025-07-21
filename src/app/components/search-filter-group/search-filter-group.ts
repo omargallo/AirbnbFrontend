@@ -10,7 +10,7 @@ import {
   OnDestroy
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import moment from 'moment';
@@ -41,11 +41,28 @@ export interface Guest {
     SearchWhoModal,
   ],
   templateUrl: './search-filter-group.html',
-  styleUrls: ['./search-filter-group.css','../header/header.css'],
+  styleUrls: ['./search-filter-group.css', '../header/header.css'],
 })
 export class SearchFilterGroupComponent implements AfterViewInit, OnDestroy {
   isSearchBarSticky = false;
+  country: string = '';
+  longitude: number = 0;
+  latitude: number = 0;
+  selectedDate: string = '';
 
+  searchInputValue: string = '';
+  updateSearchValue(event: Event) {
+    this.searchInputValue = (event.target as HTMLInputElement).value;
+  }
+
+  onDestinationSelected(destination: { country: string, city: string, state: string, latitude: number, longitude: number }) {
+    this.searchInputValue = ` ${destination.country},${destination.city}, ${destination.state}`;
+    this.country = destination.country;
+    this.latitude = destination.latitude;
+    this.longitude = destination.longitude;
+
+    this.closeSearchModal();
+  }
   selectedDateRange = {
     startDate: null as moment.Moment | null,
     endDate: null as moment.Moment | null,
@@ -71,7 +88,7 @@ export class SearchFilterGroupComponent implements AfterViewInit, OnDestroy {
   @ViewChild('dateRef') dateRef!: ElementRef;
   @ViewChild('whoRef') whoRef!: ElementRef;
 
-  constructor(private ngZone: NgZone) { }
+  constructor(private ngZone: NgZone, private router: Router) { }
 
   get isAnyFilterActive(): boolean {
     return this.activeFilter !== '';
@@ -231,4 +248,58 @@ export class SearchFilterGroupComponent implements AfterViewInit, OnDestroy {
   getInfantsCount(): number {
     return this.guests[2].count;
   }
+
+
+
+onDateSelected(date: string | { start: string, end: string }) {
+  if (typeof date === 'string') {
+    const day = moment(date).local();
+    this.selectedDateRange = {
+      startDate: day,
+      endDate: day
+    };
+    this.selectedDate = day.format('MMM DD');
+  } else if (typeof date === 'object' && date.start && date.end) {
+    const start = moment(date.start).local();
+    const end = moment(date.end).local();
+    this.selectedDateRange = {
+      startDate: start,
+      endDate: end
+    };
+    this.selectedDate = `${start.format('MMM DD')} - ${end.format('MMM DD')}`;
+  }
+}
+
+
+
+
+  onSearch() {
+    const queryParams: any = {};
+
+    if (this.country) {
+      queryParams.country = this.country;
+    }
+
+
+    if (this.latitude) {
+      queryParams.latitude = this.latitude;
+    }
+    if (this.longitude) { queryParams.longitude = this.longitude; }
+    //
+    if (this.selectedDateRange.startDate && this.selectedDateRange.endDate) {
+      queryParams.startDate = this.selectedDateRange.startDate.toISOString();
+      queryParams.endDate = this.selectedDateRange.endDate.add(1, 'day').toISOString();
+    }
+
+    const guests = this.getTotalGuests();
+    if (guests > 0) {
+      queryParams.guestsCount = guests;
+    }
+
+    this.router.navigate(['/FilteredProperties'], { queryParams });
+    console.log(queryParams)
+  }
+
+
+
 }
