@@ -1,3 +1,5 @@
+import { PropertyImage } from "./PropertyImage";
+
 export interface Property {
   id: number;
   title: string;
@@ -18,9 +20,5 @@ export interface Property {
   isDeleted: boolean;
   propertyTypeId: number;
   hostId: string;
-  images: {
-    imageUrl: string;
-    isCover: boolean;
-    groupName: string;
-  }[];
+  images:PropertyImage[];
 }

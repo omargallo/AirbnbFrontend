@@ -14,6 +14,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { HttpLoaderFactory } from '../translate-loader';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,6 +33,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(NgxDaterangepickerMd.forRoot()),
 
     provideZoneChangeDetection(),
+    //  importProvidersFrom(GoogleMapsModule)
     // provideZonelessChangeDetection(),
   ],
 };
