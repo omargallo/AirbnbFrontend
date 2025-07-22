@@ -1,4 +1,4 @@
-<!-- 
+<!--
 <div class="card">
   <div class="image-container">
     <img [src]="imageUrl" alt="listing image" />
@@ -14,11 +14,11 @@
   </div>
 </div> -->
 
-<div class="card border-0  rounded rounded-2" (click)="onCardClick()">
+<div class="card border-0  rounded rounded-2 cursor-pointer" (click)="onCardClick()">
   <div class="image-container position-relative">
-    <img [src]="imageUrl" alt="listing image" class="img-fluid rounded-4 ratio-1x1">
-    <div class="favorite badge  fw-semibold position-absolute top-0 start-0 m-2" 
-      
+    <img [src]="imageUrl" alt="listing image" class="img-fluid rounded-4 ratio-1x1 ">
+    <div class="favorite badge  fw-semibold position-absolute top-0 start-0 m-2"
+
       *ngIf="isFavorite"
     >
       Guest favorite
@@ -30,7 +30,7 @@
 
   <div class="info px-2 pt-2 pb-3">
     <div class="title fw-semibold ">{{ title }}</div>
-    <div class="subtitle text-muted small">{{ subtitle }}</div>
+    <div class="subtitle small">{{ subtitle }}</div>
 
     <div class="d-flex justify-content-between align-items-center mt-1 flex-row-reverse">
       <div class="rating  small d-flex align-items-center">
