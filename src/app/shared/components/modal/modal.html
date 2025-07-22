@@ -1,49 +1,45 @@
-<div 
-  class="modal fade show d-block col-12" 
-  tabindex="-1" 
+<div
+  class="modal fade show d-block"
+  tabindex="-1"
   [ngClass]="{ 'd-none': !isVisible }"
-  style="background-color: rgba(0, 0, 0, 0.5);"
   [ngStyle]="modalStyle"
   [ngClass]="modalClass"
   (click)="onClose()"
   (wheel)="$event.stopPropagation()"
 >
-  <div 
-    class="modal-dialog modal-dialog-centered " 
+  <div
+    class="modal-dialog modal-dialog-centered p-2"
     (click)="$event.stopPropagation()"
     [ngStyle]="modalDialogStyle"
     [ngClass]="modalDialogClass"
-    style="max-width: 100%;"
-
+  >
+    <div
+      class="modal-content"
+      [ngStyle]="modalContentStyle"
+      [ngClass]="modalContentClass"
     >
-    
-    <div class="modal-content vmax-90"
-        [ngStyle]="modalContentStyle"   
-        [ngClass]="modalContentClass"
-    >
-
-      <!-- Modal Header -->
-      <div class="modal-header d-flex justify-content-center primary-text  align-items-center position-relative">
-        <button type="button" 
-                *ngIf="showCloseBtn"
-                class="primary-text border-0 bg-transparent position-absolute me-auto left-5 " 
-                aria-label="Close" (click)="onClose()">
-            <i class="bi bi-x"></i>
+      <!-- Header -->
+      <div class="modal-header primary-text position-relative">
+        <button
+          *ngIf="showCloseBtn"
+          class="primary-text border-0 bg-transparent position-absolute start-0 ms-3"
+          aria-label="Close"
+          (click)="onClose()"
+        >
+          <i class="bi bi-x fs-4"></i>
         </button>
-        <h5 class="modal-title  mx-auto">{{ title }}gdsa</h5>
-        <!-- <span style="width: 1rem;"></span> Spacer for symmetry -->
+        <h5 class="modal-title mx-auto">{{ title }}</h5>
       </div>
 
-      <!-- Modal Body -->
-      <div class="modal-body overflow-y-auto p-0 ">
+      <!-- Body -->
+      <div class="modal-body overflow-y-auto">
         <ng-content></ng-content>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer footer">
+        <ng-content select="[modalFooter]"></ng-content>
+      </div>
     </div>
-        
-        <!-- Modal Footer -->
-         
-            
-    <ng-content select=".modal-footer"></ng-content>
-    
-    
   </div>
 </div>

@@ -33,6 +33,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(NgxDaterangepickerMd.forRoot()),
 
     provideZoneChangeDetection(),
+    
     //  importProvidersFrom(GoogleMapsModule)
     // provideZonelessChangeDetection(),
   ],
