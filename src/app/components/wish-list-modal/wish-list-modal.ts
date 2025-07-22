@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Loader } from "../../shared/components/loader/loader";
 import { ConfirmService } from '../../core/services/confirm.service';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-wish-list-modal',
@@ -73,40 +74,44 @@ export class WishListModal implements OnInit {
   }
 
   onCreateNewWishlist() {
-    // if (!this.form.get('name')?.valid || !this.form.get('note')?.valid)
-    //   return
+    if (this.form.invalid) return;
 
-    this.onNewModalClose()
+    this.onNewModalClose();
     this.isLoading = true;
-    this.form.reset()
-    this.wishlistService
-      .createNewWishlist(
-        {
-          name: this.form.get('name')?.value ?? '',
-          notes: this.form.get('note')?.value ?? ''
-        })
-      .subscribe(
-        {
-          next: (response) => {
-            this.lists.push(response.data)
-            this.isLoading = false
-          },
-          error: (error) => {
-            this.isLoading = false
-            console.log("couldn't create new wishlist", error)
-            this.confirmService.show(
-              "Fail",
-              "Something went wrong, try again!",
-              () => { },
-              {
-                okText: 'Ok',
-                isPrompt: true,
-                isSuccess: false
-              }
-            )
-          }
-        }
-      )
 
+    const payload = {
+      name: this.form.get('name')?.value ?? '',
+      notes: this.form.get('note')?.value ?? '',
+      propertyIds: [this.propertyId]
+    };
+
+    this.form.reset();
+
+    this.wishlistService.createNewWishlist(payload).subscribe({
+      next: (response) => {
+        this.lists.push(response);
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.isLoading = false;
+        console.log("couldn't create new wishlist", error);
+        this.confirmService.show(
+          "Fail",
+          "Something went wrong, try again!",
+          () => { },
+          {
+            okText: 'Ok',
+            isPrompt: true,
+            isSuccess: false
+          }
+        );
+      }
+    });
   }
+
+
+    getPropertyImage(imgUrl: string): string {
+      return `${environment.base}${imgUrl}`;
+    }
+
 }

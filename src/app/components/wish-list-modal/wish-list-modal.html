@@ -1,47 +1,55 @@
-
 <app-modal
-    (close)="onClose()" 
-    
-    [isVisible]="show" 
-    class="vh-min-60"
-    [modalDialogClass]="'mx-auto col-10 col-sm-10 col-md-8 col-lg-7 col-xl-5 rounded-5'"
-    [modalContentClass]="'col-12 rounded-5 vh-min-75'"
-    >
-    <app-loader 
-        [containerClass]="'vh-min-60'"
-        *ngIf="isLoading"
-        [showText]="true"
-        >
-    </app-loader>
+  (close)="onClose()"
+  [isVisible]="show"
+  class="vh-min-60"
+  [modalDialogClass]="'mx-auto col-10 col-sm-10 col-md-8 col-lg-7 col-xl-5 rounded-5'"
+  [modalContentClass]="'col-12 rounded-5 vh-min-75'"
+>
+  <app-loader
+    [containerClass]="'vh-min-60'"
+    *ngIf="isLoading"
+    [showText]="true"
+  >
+  </app-loader>
 
-    <div *ngIf="!isLoading" class="row row-cols-1 row-cols-sm-2 p-0 pt-4 overflow-x-hidden col-12">
-        @for(item of lists; track $index){
-            <div class="mb-3 ">
-                <img class="wishlist-image rounded-5 col-12" 
-                        src="https://a0.muscache.com/im/pictures/hosting/Hosting-1412438800329137974/original/0bdb1558-bddb-4824-8e3a-6767a94e26fe.jpeg?im_w=1200" alt="">
-                        <p class="my-0 ms-3">{{item.name}}</p>
-                        <p class="secondary-text small ms-3 my-0">{{item.propertyIds.length}} saved</p>
-                        
-            </div>
-        }
+  <div
+    *ngIf="!isLoading"
+    class="row row-cols-1 row-cols-sm-2 p-0 pt-4 overflow-x-hidden col-12"
+  >
+    @for(item of lists; track $index){
+    <div class="mb-3 cursor-pointer">
+      <img
+        class="wishlist-image col-12"
+        style="border-radius: 50px;"
+        [src]="getPropertyImage(item.coverImageUrl)"
+        alt=""
+      />
+      <p class="my-0 ms-3">{{item.name}}</p>
+      <p class="secondary-text small ms-3 my-0">
+        {{item.propertyIds.length}} saved
+      </p>
     </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary bg-black  primary-text text-light me-auto"
-            (click)="showNewModal()"
-        >Create new wishlist</button>
-    </div>
+    }
+  </div>
+  <div class="modal-footer">
+    <button
+      class="btn btn-primary bg-black primary-text text-light me-auto"
+      (click)="showNewModal()"
+    >
+      Create new wishlist
+    </button>
+  </div>
 </app-modal>
 
 <app-modal
-    title="New Withlist"
-    *ngIf="isNewModalVisible"
-
-    (close)="onNewModalClose()"
-    [modalDialogClass]="'mx-auto col-12 rounded-5'"
-    [modalClass]="'col-12'"
-    [modalContentClass]="'col-8 col-sm-6 col-md-4 col-lg-3 mx-auto rounded-5'"
+  title="New Withlist"
+  *ngIf="isNewModalVisible"
+  (close)="onNewModalClose()"
+  [modalDialogClass]="'mx-auto col-12 rounded-5'"
+  [modalClass]="'col-12'"
+  [modalContentClass]="'col-8 col-sm-6 col-md-4 col-lg-3 mx-auto rounded-5'"
 >
-    <form [formGroup]="form" (ngSubmit)="onCreateNewWishlist()">
+  <form [formGroup]="form" (ngSubmit)="onCreateNewWishlist()">
     <div class="mb-3">
       <label for="name" class="form-label">Name</label>
       <input
@@ -50,8 +58,11 @@
         class="form-control"
         formControlName="name"
         [ngClass]="{'is-invalid': form.get('name')?.touched && form.get('name')?.invalid}"
+      />
+      <div
+        class="invalid-feedback"
+        *ngIf="form.get('name')?.touched && form.get('name')?.errors?.['required']"
       >
-      <div class="invalid-feedback" *ngIf="form.get('name')?.touched && form.get('name')?.errors?.['required']">
         Name is required.
       </div>
     </div>
@@ -61,24 +72,33 @@
         <label for="note" class="form-label">Note</label>
         <textarea
           id="note"
-          class="form-control "
+          class="form-control"
           formControlName="note"
           maxlength="250"
           rows="3"
           [ngClass]="{'is-invalid': form.get('note')?.touched && form.get('note')?.invalid}"
-
         >
         </textarea>
-        <span class="ms-auto note-maxLength">{{form.get("note")?.value?.length ??0}}/250</span>
+        <span class="ms-auto note-maxLength"
+          >{{form.get("note")?.value?.length ??0}}/250</span
+        >
       </div>
-      <div class="invalid-feedback" *ngIf="form.get('note')?.touched && form.get('note')?.errors?.['required']">
+      <div
+        class="invalid-feedback"
+        *ngIf="form.get('note')?.touched && form.get('note')?.errors?.['required']"
+      >
         Note is required.
       </div>
     </div>
 
     <div class="modal-footer d-flex justify-content-start">
-      <button type="submit" class="btn btn-primary mb-3" [disabled]="form.invalid">Submit</button>
+      <button
+        type="submit"
+        class="btn btn-primary mb-3"
+        [disabled]="form.invalid"
+      >
+        Submit
+      </button>
     </div>
   </form>
-
 </app-modal>
