@@ -29,6 +29,7 @@ import { PropertyInfo } from './pages/property-info/property-info';
 import { FilteredProperties } from './pages/filtered-properties/filtered-properties';
 import { HostProperties } from './components/host-properties/host-properties';
 import { Wishlists } from './pages/wishlist/wishlist';
+import { WishListProperties } from './pages/wishlist-properties/wishlist-properties';
 
 export const routes: Routes = [
   {
@@ -41,6 +42,7 @@ export const routes: Routes = [
       { path: "FilteredProperties", component: FilteredProperties },
       { path: 'property/:propertyId', component: PropertyInfo },
       { path: 'WishLists', component: Wishlists },
+      { path: "wishlist/:wishlistId/properties", component: WishListProperties }
     ]
   },
   {
