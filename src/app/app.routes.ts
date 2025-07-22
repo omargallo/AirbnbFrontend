@@ -30,6 +30,8 @@ import { FilteredProperties } from './pages/filtered-properties/filtered-propert
 import { HostProperties } from './components/host-properties/host-properties';
 import { Wishlists } from './pages/wishlist/wishlist';
 import { WishListProperties } from './pages/wishlist-properties/wishlist-properties';
+import { NotFound } from './components/not-found/not-found';
+import { UserBookings } from './pages/booking/userbookings/userbookings';
 
 export const routes: Routes = [
   {
@@ -75,4 +77,11 @@ export const routes: Routes = [
     ]
   },
   { path: 'host', component: HostProperties }
+   ,{ path: 'booking', component:UserBookings },
+    { path: '404', component: NotFound },
+{ path: '**', redirectTo: '/404' }
+
+
+
+  
 ];
