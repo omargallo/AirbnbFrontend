@@ -1,6 +1,6 @@
 <div class="properties-container container">
   <!-- Header -->
-  <div class="header">
+  <div class="header mt-3">
     <h2 class="title">Available for similar dates</h2>
     <div class="navigation-arrows">
       <button
@@ -54,12 +54,10 @@
     >
       <app-slider-card
         title="{{property.title}}"
-        imageUrl="{{property.image}}"
-        [price]="property.price"
-        description="{{property.location}}"
-        [rating]="property.rating"
-        [isFavorite]="property.isFavorite"
-        [night]="property.nights"
+        imageUrl="{{property.images[0].imageUrl}}"
+        [price]="property.pricePerNight"
+        description="{{property.description}}"
+        [rating]="property.averageRating"
       ></app-slider-card>
     </swiper-slide>
   </swiper-container>
