@@ -62,6 +62,7 @@ export class WishListModal implements OnInit {
           }
         }
       )
+
   }
 
   onClose() {
@@ -77,8 +78,8 @@ export class WishListModal implements OnInit {
   }
 
   onCreateNewWishlist() {
-    if (!this.form.get('name')?.valid || !this.form.get('note')?.valid)
-      return
+    // if (!this.form.get('name')?.valid || !this.form.get('note')?.valid)
+    //   return
 
     this.onNewModalClose()
     this.isLoading= true;
@@ -111,5 +112,6 @@ export class WishListModal implements OnInit {
           }
         }
       )
+
   }
 }

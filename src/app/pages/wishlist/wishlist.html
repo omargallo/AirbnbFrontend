@@ -1,1 +1,119 @@
-<p>wishlist works!</p>
+<div class="wishlists-container">
+  <div class="header">
+    <h1 class="title">Wishlists</h1>
+  </div>
+
+  <div *ngIf="isLoading" class="wishlists-grid">
+    <div class="wishlist-card" *ngFor="let i of [1,2,3,4]">
+      <div class="wishlist-image shimmer"></div>
+      <div class="wishlist-content p-3">
+        <div class="shimmer-line mb-2" style="width: 60%; height: 16px;"></div>
+        <div class="shimmer-line mb-1" style="width: 40%; height: 10px;"></div>
+        <div class="shimmer-line" style="width: 70%; height: 10px;"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <div class="error-message">
+      <i class="error-icon">⚠️</i>
+      <p>{{ error }}</p>
+      <button class="retry-btn" (click)="loadWishlists()">Try Again</button>
+    </div>
+  </div>
+
+  <!-- Wishlists Grid -->
+  <div *ngIf="!isLoading && !error" class="wishlists-grid">
+    <!-- Empty State -->
+    <div *ngIf="wishlists.length === 0" class="empty-state">
+      <div class="empty-content">
+        <div class="empty-icon">💝</div>
+        <h3>No wishlists yet</h3>
+        <p>
+          Create your first wishlist to start saving your favorite properties
+        </p>
+        <!-- <button class="create-btn">Create Wishlist</button> -->
+      </div>
+    </div>
+
+    <!-- Wishlist Cards -->
+    <div
+      *ngFor="let wishlist of wishlists"
+      class="wishlist-card"
+      (click)="onWishlistClick(wishlist)"
+      [attr.data-testid]="'wishlist-' + wishlist.id"
+    >
+      <div class="wishlist-image">
+        <img
+          [src]="getPropertyImage(wishlist.coverImageUrl)"
+          [alt]="wishlist.name"
+          class="cover-image"
+          loading="lazy"
+        />
+        <div class="image-overlay">
+          <button
+            class="delete-btn"
+            (click)="confirmDelete(wishlist, $event)"
+            aria-label="Delete"
+          >
+            <i class="bi bi-x"></i>
+          </button>
+          <div class="property-count-badge">
+            {{ getPropertyCount(wishlist.propertyIds) }}
+          </div>
+        </div>
+      </div>
+
+      <div class="wishlist-content">
+        <h3 class="wishlist-name">{{ wishlist.name }}</h3>
+        <p class="wishlist-info">
+          {{ getPropertyCount(wishlist.propertyIds) }} saved
+        </p>
+        <div class="wishlist-meta">
+          <span class="created-date"
+            >Created {{ formatDate(wishlist.createdAt) }}</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="modal-backdrop" *ngIf="showModal">
+    <div class="modal">
+      <h2>Delete this wishlist?</h2>
+      <p>
+        "{{ selectedWishlist?.name }}" will be permanently deleted
+      </p>
+      <div class="modal-actions">
+        <button class="delete-confirm" (click)="deleteSelectedWishlist()">
+          Delete
+        </button>
+        <button class="cancel" (click)="cancelDelete()">Cancel</button>
+      </div>
+    </div>
+  </div> -->
+
+  <app-modal
+    title="Delete this wishlist?"
+    *ngIf="showModal"
+    (close)="cancelDelete()"
+    [modalDialogClass]="'mx-auto rounded-4'"
+    [modalContentClass]="'col-12 rounded-5'"
+  >
+    <ng-content>
+      <p class="px-4" style="min-width: max-content;">
+        "{{ selectedWishlist?.name }}" will be permanently deleted
+      </p>
+    </ng-content>
+
+    <div
+      modalFooter
+      class="modal-actions d-flex justify-content-between align-items-center "
+    >
+      <button class="cancel" (click)="cancelDelete()">Cancel</button>
+      <button class="delete-confirm" (click)="deleteSelectedWishlist()">
+        Delete
+      </button>
+    </div>
+  </app-modal>
+</div>
