@@ -37,7 +37,6 @@
     #swiperEl
     slides-per-view="3"
     space-between="16"
-    
     grab-cursor="true"
     mousewheel="false"
     keyboard="true"
@@ -53,6 +52,8 @@
       *ngFor="let property of properties; trackBy: trackByPropertyId"
     >
       <app-slider-card
+        (cardClick)="onCardClicked($event)"
+        [propertyId]="property.id"
         title="{{property.title}}"
         imageUrl="{{property.images[0].imageUrl}}"
         [price]="property.pricePerNight"
