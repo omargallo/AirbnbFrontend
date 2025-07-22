@@ -37,10 +37,6 @@ export class PropertyInfo implements OnInit {
     });
   }
 
-  // onChange(event: any): void {
-  //   console.log('Change event:', event);
-  // }
-
 
 
   showPropertyDetails(id: number): void {

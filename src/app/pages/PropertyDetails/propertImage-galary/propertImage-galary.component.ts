@@ -1,3 +1,5 @@
+import { Property } from './../../../../../node_modules/acorn/dist/acorn.d';
+import { PropertyService } from './../../../core/services/Property/property.service';
 import { Url } from './../../../../../node_modules/lightningcss/node/ast.d';
 import { ChangeDetectorRef, Component, input, Input, OnInit } from '@angular/core';
 import { PropertyImageService } from '../../../core/services/PropertyImage/property-image.service';
@@ -18,8 +20,9 @@ export class PropertImageGalaryComponent implements OnInit {
       error: string | null = null;
       activeImageIndex: number = 0;
       img: any;
+      Property: any;
 
-  constructor(private propertyImageService: PropertyImageService ,private cdr: ChangeDetectorRef) { }
+  constructor(private propertyImageService: PropertyImageService ,private cdr: ChangeDetectorRef, private PropertyService: PropertyService) { }
 
   ngOnInit(): void {
     if (!this.propertyId) {
@@ -27,7 +30,12 @@ export class PropertImageGalaryComponent implements OnInit {
       this.isLoading = false;
       return;
     }
-
+    this.PropertyService.getPropertyById(this.propertyId).subscribe({
+      next: (response) => {
+        this.Property = response;
+      }
+    });
+    
     this.loadPropertyImages();
   }
 
@@ -60,9 +68,14 @@ export class PropertImageGalaryComponent implements OnInit {
     return url.startsWith('http') ? url : `https://localhost:7025${url}`;
   }
 
-  // getFullImageUrl(url: string): string {
-  //   return `https://localhost:7025${url}`;
+ 
 
-  // }
+  onShare() {
+  alert('Share clicked!'); // replace with modal or copy link logic
+}
+
+onSave() {
+  alert('Save clicked!'); // replace with actual save/favorite logic
+}
 
 }
