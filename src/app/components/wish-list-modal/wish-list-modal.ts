@@ -1,90 +1,90 @@
 import { WishlistService } from './../../core/services/Wishlist/wishlist.service';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Modal } from "../../shared/components/modal/modal";
-import { Wishlist } from '../../core/models/Wishlist'; 
+import { Wishlist } from '../../core/models/Wishlist';
 import { CommonModule } from '@angular/common';
-import { FormControl,  FormGroup,  ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-wish-list-modal',
-  imports: [Modal,CommonModule, ReactiveFormsModule],
+  imports: [Modal, CommonModule, ReactiveFormsModule],
   templateUrl: './wish-list-modal.html',
-  styleUrl: './wish-list-modal.css'
+  styleUrls: ['./wish-list-modal.css']
 })
 export class WishListModal implements OnInit {
-  @Input() show:boolean= false
-  @Input() userId?:string;
-  @Output() close= new EventEmitter<void>()
+  @Input() propertyId!: number;
+  @Input() show: boolean = false
+  @Input() userId?: string;
+  @Output() close = new EventEmitter<void>()
 
- form = new FormGroup({
+  form = new FormGroup({
     name: new FormControl('', Validators.required),
     note: new FormControl('', Validators.required)
   });
-  isNewModalVisible:boolean = false;
+  isNewModalVisible: boolean = false;
 
 
-  lists:Wishlist[] = []
+  lists: Wishlist[] = []
   constructor(
-      private wishlistService: WishlistService,
-      private cdr: ChangeDetectorRef
-  )
-  {
+    private wishlistService: WishlistService,
+    private cdr: ChangeDetectorRef
+  ) {
   }
 
-  ngOnInit(){
+  ngOnInit() {
     console.log(this.isNewModalVisible)
-    if(!this.userId)
+    if (!this.userId)
       return
     this.wishlistService.getByUserIdWithCover(this.userId)
-                        .subscribe(
-                          {
-                            next:(response)=>{
-                              console.log("loaded", response)
-                              this.lists = response.data;
-                              this.cdr.detectChanges();
-    console.log(this.isNewModalVisible)
+      .subscribe(
+        {
+          next: (response) => {
+            console.log("loaded", response)
+            this.lists = response.data;
+            this.cdr.detectChanges();
+            console.log(this.isNewModalVisible)
 
-                              
-                            },
-                            error:(error)=>{
-                              console.log(error)
-                            }
-                          }
-                        )
+
+          },
+          error: (error) => {
+            console.log(error)
+          }
+        }
+      )
   }
-  
-  onClose(){
+
+  onClose() {
     this.close.emit()
   }
-  onNewModalClose(){
+  onNewModalClose() {
     this.isNewModalVisible = false
     this.show = true
   }
-  showNewModal(){
+  showNewModal() {
     this.isNewModalVisible = true
     this.show = false
   }
 
-  onCreateNewWishlist(){
-    if(!this.form.get('name')?.valid || !this.form.get('note')?.valid)
+  onCreateNewWishlist() {
+    if (!this.form.get('name')?.valid || !this.form.get('note')?.valid)
       return
 
     this.onNewModalClose()
     this.wishlistService
-          .createNewWishlist(
-                    {
-                      name:this.form.get('name')?.value??'',
-                      notes:this.form.get('note')?.value??''
-                    })
-          .subscribe(
-            {
-              next:(response)=>{
-                this.lists.push(response.data)
-              },
-              error:(error)=>{
-                console.log("couldn't create new wishlist",error)
-              }
-            }
-          )                  
-  }       
+      .createNewWishlist(
+        {
+          name: this.form.get('name')?.value ?? '',
+          notes: this.form.get('note')?.value ?? ''
+        })
+      .subscribe(
+        {
+          next: (response) => {
+            this.lists.push(response.data)
+          },
+          error: (error) => {
+            console.log("couldn't create new wishlist", error)
+          }
+        }
+      )
+  }
 }

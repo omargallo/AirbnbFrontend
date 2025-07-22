@@ -17,9 +17,13 @@ export class SliderCard {
   @Input() isFavorite: boolean = false;
 
 
-  @Output() cardClick = new EventEmitter<void>();
-  
+
+  @Input() propertyId!: number;
+
+  @Output() cardClick = new EventEmitter<number>();
+
   onCardClick() {
-    this.cardClick.emit();
+    this.cardClick.emit(this.propertyId);
   }
+
 }

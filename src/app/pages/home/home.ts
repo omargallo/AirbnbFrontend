@@ -8,18 +8,28 @@ import { Modal } from "../../shared/components/modal/modal";
 import { WishListModal } from "../../components/wish-list-modal/wish-list-modal";
 import { PropertySwiperComponent } from "../../components/mainswiper/mainswiper";
 import { Property } from '../../core/models/Property';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, Slider, SliderCard, WishListModal, PropertySwiperComponent],
+  imports: [CommonModule, Slider, SliderCard, WishListModal, PropertySwiperComponent,FormsModule],
 
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
 export class Home {
+
+  selectedPropertyId!: number;
   show = false;
-  toggleShow() {
+
+  onPropertyClick(id: number) {
+    this.selectedPropertyId = id;
     this.show = !this.show;
   }
+
+  // toggleShow() {
+  //   this.show = !this.show;
+  // }
+
   listings: {
     imageUrl: string
     title: string,
