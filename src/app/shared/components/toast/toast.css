@@ -1,0 +1,49 @@
+.toast {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: var(--active);
+  color: var(--primary-text-color);
+  font-size: 1.2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: 0.3s ease;
+  z-index: 10000000;
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+.toast.show.success {
+  background-color: var(--airbnb-dark-green);
+}
+
+.toast.show.error {
+  background-color: var(--airbnb-dark-red);
+}
+
+.toast.show.info {
+  background-color: var(--airbnb-dark-blue);
+}
+
+.toast.show.warning {
+  background-color: var(--airbnb-dark-yellow);
+}
+
+.toast .icon {
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
+
+.toast .message {
+  margin-right: 10px;
+}
+
+.toast .close-btn {
+  cursor: pointer;
+  font-size: 1.5rem;
+  margin-left: 10px;
+}

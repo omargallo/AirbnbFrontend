@@ -1,1 +1,13 @@
-<p>toast works!</p>
+<div
+  *ngIf="visible"
+  class="toast"
+  [ngClass]="[
+    'show',
+    type,
+    isDark ? 'dark-mode' : ''
+  ]"
+>
+  <span class="icon">{{ icon }}</span>
+  <span class="message">{{ message }}</span>
+  <button class="close-btn" (click)="close()">×</button>
+</div>
