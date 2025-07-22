@@ -4,7 +4,7 @@
         <app-loading-cards [numberOfCards]="40"></app-loading-cards>
     </app-slider> -->
 
-    <app-slider
+    <!-- <app-slider
         [cardsPerView]="8"
         class="d-flex  col-12"
     >
@@ -17,17 +17,17 @@
             [price]="item.price"
             [rating]="item.rating"
             [isFavorite]="item.isFavorite"
-        ></app-slider-card>
+        ></app-slider-card> -->
     <!-- </div> -->
-</app-slider>
+<!-- </app-slider> -->
 
 
-<app-slider
+<!-- <app-slider
 [cardsPerView]="5"
->
+> -->
     <!-- style="scroll-snap-align: start;" -->
     <!-- class="card-item" -->
-    <app-slider-card
+    <!-- <app-slider-card
         *ngFor="let item of listings"
             [imageUrl]="item.imageUrl"
             [title]="item.title"
@@ -38,7 +38,7 @@
         ></app-slider-card>
 </app-slider>
 
-<button class="btn btn-primary" (click)="toggleShow()">{{show? "hide":"show"}}</button>
+<button class="btn btn-primary" (click)="toggleShow()">{{show? "hide":"show"}}</button> -->
 <!-- <app-modal
     [title]="'Modal'"
     [isVisible]="false"
@@ -113,4 +113,4 @@
 </app-wish-list-modal>
 
 
-<app-property-swiper></app-property-swiper>
+<app-property-swiper [properties]="properties"></app-property-swiper>
