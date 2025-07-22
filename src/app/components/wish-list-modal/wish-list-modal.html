@@ -1,11 +1,20 @@
+
 <app-modal
     (close)="onClose()" 
     
     [isVisible]="show" 
+    class="vh-min-60"
     [modalDialogClass]="'mx-auto col-10 col-sm-10 col-md-8 col-lg-7 col-xl-5 rounded-5'"
-    [modalContentClass]="'col-12 rounded-5'"
+    [modalContentClass]="'col-12 rounded-5 vh-min-75'"
     >
-    <div class="row row-cols-1 row-cols-sm-2 p-0 pt-4 overflow-x-hidden col-12">
+    <app-loader 
+        [containerClass]="'vh-min-60'"
+        *ngIf="isLoading"
+        [showText]="true"
+        >
+    </app-loader>
+
+    <div *ngIf="!isLoading" class="row row-cols-1 row-cols-sm-2 p-0 pt-4 overflow-x-hidden col-12">
         @for(item of lists; track $index){
             <div class="mb-3 ">
                 <img class="wishlist-image rounded-5 col-12" 
@@ -26,9 +35,11 @@
 <app-modal
     title="New Withlist"
     *ngIf="isNewModalVisible"
+
     (close)="onNewModalClose()"
-    [modalDialogClass]="'mx-auto rounded-5'"
-    [modalContentClass]="'col-12 rounded-5'"
+    [modalDialogClass]="'mx-auto col-12 rounded-5'"
+    [modalClass]="'col-12'"
+    [modalContentClass]="'col-8 col-sm-6 col-md-4 col-lg-3 mx-auto rounded-5'"
 >
     <form [formGroup]="form" (ngSubmit)="onCreateNewWishlist()">
     <div class="mb-3">
@@ -45,20 +56,29 @@
       </div>
     </div>
 
-    <div class="mb-3">
-      <label for="note" class="form-label">Note</label>
-      <textarea
-        id="note"
-        class="form-control"
-        formControlName="note"
-        rows="3"
-        [ngClass]="{'is-invalid': form.get('note')?.touched && form.get('note')?.invalid}"
-      ></textarea>
+    <div class="mb-3 position-relative">
+      <div class="d-flex flex-column">
+        <label for="note" class="form-label">Note</label>
+        <textarea
+          id="note"
+          class="form-control "
+          formControlName="note"
+          maxlength="250"
+          rows="3"
+          [ngClass]="{'is-invalid': form.get('note')?.touched && form.get('note')?.invalid}"
+
+        >
+        </textarea>
+        <span class="ms-auto note-maxLength">{{form.get("note")?.value?.length ??0}}/250</span>
+      </div>
       <div class="invalid-feedback" *ngIf="form.get('note')?.touched && form.get('note')?.errors?.['required']">
         Note is required.
       </div>
     </div>
 
-    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Submit</button>
+    <div class="modal-footer d-flex justify-content-start">
+      <button type="submit" class="btn btn-primary mb-3" [disabled]="form.invalid">Submit</button>
+    </div>
   </form>
+
 </app-modal>

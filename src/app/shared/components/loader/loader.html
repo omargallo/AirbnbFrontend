@@ -1,1 +1,29 @@
-<p>loader works!</p>
+<div 
+    class="loader-container d-flex justify-content-center align-items-center"
+    [style.height]="containerHeight"
+    [ngClass]="containerClass"
+     >
+    
+     <div class="position-relative">
+        <!-- Bootstrap Spinner -->
+        <div
+            class="spinner-border" 
+            [class]="'text-' + color + ' ' + sizeClass" role="status" 
+            [style.width]="customSize"
+            [style.height]="customSize" 
+            [style.border-width]="borderWidth">
+            
+            <span class="visually-hidden">{{ loadingText }}</span>
+        </div>
+
+        <!-- Optional text below spinner -->
+        <div 
+            *ngIf="showText" 
+            class="text-center mt-2" 
+            [class]="'text-' + textColor"
+            >
+            
+            <small>{{ loadingText }}</small>
+        </div>
+    </div>
+</div>
