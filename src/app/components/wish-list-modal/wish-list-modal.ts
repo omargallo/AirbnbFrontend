@@ -33,24 +33,24 @@ export class WishListModal implements OnInit {
 
   ngOnInit() {
     console.log(this.isNewModalVisible)
-    if (!this.userId)
-      return
-    this.wishlistService.getByUserIdWithCover(this.userId)
-      .subscribe(
-        {
-          next: (response) => {
-            console.log("loaded", response)
-            this.lists = response.data;
-            this.cdr.detectChanges();
-            console.log(this.isNewModalVisible)
+    // if (!this.userId)
+    //   return
+    // this.wishlistService.getByUserIdWithCover(this.userId)
+    //   .subscribe(
+    //     {
+    //       next: (response) => {
+    //         console.log("loaded", response)
+    //         this.lists = response.data;
+    //         this.cdr.detectChanges();
+    //         console.log(this.isNewModalVisible)
 
 
-          },
-          error: (error) => {
-            console.log(error)
-          }
-        }
-      )
+    //       },
+    //       error: (error) => {
+    //         console.log(error)
+    //       }
+    //     }
+    //   )
   }
 
   onClose() {
@@ -66,25 +66,25 @@ export class WishListModal implements OnInit {
   }
 
   onCreateNewWishlist() {
-    if (!this.form.get('name')?.valid || !this.form.get('note')?.valid)
-      return
+    // if (!this.form.get('name')?.valid || !this.form.get('note')?.valid)
+    //   return
 
-    this.onNewModalClose()
-    this.wishlistService
-      .createNewWishlist(
-        {
-          name: this.form.get('name')?.value ?? '',
-          notes: this.form.get('note')?.value ?? ''
-        })
-      .subscribe(
-        {
-          next: (response) => {
-            this.lists.push(response.data)
-          },
-          error: (error) => {
-            console.log("couldn't create new wishlist", error)
-          }
-        }
-      )
+    // this.onNewModalClose()
+    // this.wishlistService
+    //   .createNewWishlist(
+    //     {
+    //       name: this.form.get('name')?.value ?? '',
+    //       notes: this.form.get('note')?.value ?? ''
+    //     })
+    //   .subscribe(
+    //     {
+    //       next: (response) => {
+    //         this.lists.push(response.data)
+    //       },
+    //       error: (error) => {
+    //         console.log("couldn't create new wishlist", error)
+    //       }
+    //     }
+    //   )
   }
 }
