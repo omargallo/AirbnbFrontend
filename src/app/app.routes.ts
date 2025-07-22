@@ -31,7 +31,7 @@ import { HostProperties } from './components/host-properties/host-properties';
 
 export const routes: Routes = [
   {
-    path: '', 
+    path: '',
     component: MainLayout,
     children: [
       { path: '', component: Home },

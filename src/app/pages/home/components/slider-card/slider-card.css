@@ -63,7 +63,7 @@
   overflow: hidden;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   transition: transform 0.2s ease-in-out;
-  /* background-color: var(--active); */
+  background-color: var(--bg-color);
   color: var(--primary-text-color);
 }
 .card:hover {
@@ -92,6 +92,7 @@
 }
 .subtitle {
   font-size: 12px;
+  color: var(--secondary-text-color) !important;
 }
 .price {
   font-size: 12px;
