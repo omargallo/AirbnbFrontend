@@ -28,6 +28,7 @@ import { Step37FinalDetails } from './pages/add-property/step-3/step3-7-final-de
 import { PropertyInfo } from './pages/property-info/property-info';
 import { FilteredProperties } from './pages/filtered-properties/filtered-properties';
 import { HostProperties } from './components/host-properties/host-properties';
+import { Wishlists } from './pages/wishlist/wishlist';
 
 export const routes: Routes = [
   {
@@ -38,7 +39,8 @@ export const routes: Routes = [
       { path: 'experiences', component: Home },
       { path: 'services', component: Home },
       { path: "FilteredProperties", component: FilteredProperties },
-      { path: 'property/:propertyId', component: PropertyInfo }
+      { path: 'property/:propertyId', component: PropertyInfo },
+      { path: 'WishLists', component: Wishlists },
     ]
   },
   {

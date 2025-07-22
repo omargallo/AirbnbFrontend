@@ -108,32 +108,32 @@ export class FilteredProperties implements OnInit {
         console.log('📍 Search Params:', this.searchParams);
 
         if (response.isSuccess) {
-          // this.properties = response.data.items;
+          this.properties = response.data.items;
 
           //test 
-          const originalItems = response.data.items;
-          this.properties = [
-            ...originalItems,
-            ...originalItems,
-            ...originalItems
-          ];
+          // const originalItems = response.data.items;
+          // this.properties = [
+          //   ...originalItems,
+          //   ...originalItems,
+          //   ...originalItems
+          // ];
 
 
-          this.totalItems = 100;
-          this.totalPages = 10;
-          this.currentPage = 1;
-          this.pageSize = 9;
-          // this.totalItems = response.data.metaData.total;
-          // this.totalPages = Math.ceil(this.totalItems / this.pageSize);
-          // this.currentPage = response.data.metaData.page;
-          // this.pageSize = response.data.metaData.pageSize;
+          // this.totalItems = 100;
+          // this.totalPages = 10;
+          // this.currentPage = 1;
+          // this.pageSize = 9;
+          this.totalItems = response.data.metaData.total;
+          this.totalPages = Math.ceil(this.totalItems / this.pageSize);
+          this.currentPage = response.data.metaData.page;
+          this.pageSize = response.data.metaData.pageSize;
 
           if (!this.map) {
             this.initializeLeafletMap();
           }
-          //  else {
-          //   this.updateMapMarkers();
-          // }
+           else {
+            this.updateMapMarkers();
+          }
         }
       },
       error: err => console.error('❌ API Error:', err)
@@ -227,7 +227,7 @@ export class FilteredProperties implements OnInit {
 
     // Add event listeners for map changes
     this.setupMapEventListeners();
-    // this.updateMapMarkers();
+    this.updateMapMarkers();
 
     this.properties.forEach(p => {
       const customIcon = this.createCustomMarkerIcon(p.pricePerNight);
@@ -451,11 +451,17 @@ export class FilteredProperties implements OnInit {
     });
   }
 
-  getPropertyImage(property: Property): string {
-    return property.images?.[0]?.imageUrl
-      ? `${environment.base}${property.images[0].imageUrl}`
-      : 'assets/images/placeholder.jpg';
+getPropertyImage(property: Property): string {
+  const cover = property.images?.find(img => img.isCover && !img.isDeleted);
+
+  if (cover?.imageUrl) {
+    return `${environment.base}${cover.imageUrl}`;
   }
+
+  // fallback image
+  return 'assets/images/deafult.png';
+}
+
 
   getLocationSubtitle(property: Property): string {
     return `${property.city}, ${property.state}`;

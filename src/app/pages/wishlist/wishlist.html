@@ -1,1 +1,59 @@
-<p>wishlist works!</p>
+<div class="wishlists-container">
+  <div class="header">
+    <h1 class="title">Wishlists</h1>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <div class="error-message">
+      <i class="error-icon">⚠️</i>
+      <p>{{ error }}</p>
+      <button class="retry-btn" (click)="loadWishlists()">Try Again</button>
+    </div>
+  </div>
+
+  <!-- Wishlists Grid -->
+  <div *ngIf="!isLoading && !error" class="wishlists-grid">
+    <!-- Empty State -->
+    <div *ngIf="wishlists.length === 0" class="empty-state">
+      <div class="empty-content">
+        <div class="empty-icon">💝</div>
+        <h3>No wishlists yet</h3>
+        <p>Create your first wishlist to start saving your favorite properties</p>
+        <!-- <button class="create-btn">Create Wishlist</button> -->
+      </div>
+    </div>
+
+    <!-- Wishlist Cards -->
+    <div 
+      *ngFor="let wishlist of wishlists" 
+      class="wishlist-card" 
+      (click)="onWishlistClick(wishlist)"
+      [attr.data-testid]="'wishlist-' + wishlist.id"
+    >
+      <div class="wishlist-image">
+        <img 
+          [src]="getPropertyImage(wishlist.coverImageUrl)" 
+          [alt]="wishlist.name"
+          class="cover-image"
+          loading="lazy"
+        />
+        <div class="image-overlay">
+          <div class="property-count-badge">
+            {{ getPropertyCount(wishlist.propertyIds) }}
+          </div>
+        </div>
+      </div>
+      
+      <div class="wishlist-content">
+        <h3 class="wishlist-name">{{ wishlist.name }}</h3>
+        <p class="wishlist-info">
+          {{ getPropertyCount(wishlist.propertyIds) }} saved
+        </p>
+        <div class="wishlist-meta">
+          <span class="created-date">Created {{ formatDate(wishlist.createdAt) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
