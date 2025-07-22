@@ -4,6 +4,7 @@ import {
   HostListener,
   OnDestroy,
   inject,
+  ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -40,15 +41,30 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   constructor(
     public lang: LangService,
     public theme: ThemeService,
+    private elementRef: ElementRef
+
   ) { }
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
+    if (this.dropdownOpen) {
+      this.closeDropdown();
+    }
+
     if (!this.wasFilterClicked) {
       this.isSearchBarSticky = window.scrollY > 80;
     }
   }
 
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    const target = event.target as HTMLElement;
+    const dropdown = this.elementRef.nativeElement.querySelector('.dropdown');
+
+    if (this.dropdownOpen && dropdown && !dropdown.contains(target)) {
+      this.closeDropdown();
+    }
+  }
   ngAfterViewInit(): void { }
   ngOnDestroy(): void { }
 
@@ -120,6 +136,16 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
     this.dropdownClosing = !this.dropdownOpen;
+  }
+
+  openDropdown() {
+    this.dropdownOpen = true;
+    this.dropdownClosing = false;
+  }
+
+  closeDropdown() {
+    this.dropdownClosing = true;
+    this.dropdownOpen = false;
   }
 
   onAnimationEnd() {

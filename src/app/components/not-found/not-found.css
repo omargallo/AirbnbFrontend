@@ -1,0 +1,206 @@
+/* not-found.component.css */
+
+/* Container and layout styles */
+.not-found-container {
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #484848;
+  background-color: #fff;
+}
+
+.page-container {
+  margin: 0 auto;
+  position: relative;
+}
+
+.page-container-responsive {
+  max-width: 1128px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -12px;
+  margin-right: -12px;
+}
+
+.col-5 {
+  flex: 0 0 41.66667%;
+  max-width: 41.66667%;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.col-middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Spacing utilities */
+.space-top-4 {
+  padding-top: 32px;
+}
+
+.space-top-8 {
+  padding-top: 64px;
+}
+
+.space-8 {
+  padding-bottom: 64px;
+}
+
+/* Airbnb logo styles */
+.icon-airbnb {
+  display: inline-block;
+  text-decoration: none;
+  color: #222222;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 32px;
+}
+
+.icon-airbnb .screen-reader-only {
+  position: static !important;
+  height: auto;
+  width: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+.icon-airbnb:hover {
+  color: #484848;
+  transition: color 0.2s ease;
+}
+
+.h2 {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 26px;
+  margin: 0;
+}
+
+.screen-reader-only {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+}
+
+/* Typography styles */
+.text-jumbo {
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 52px;
+}
+
+.text-ginormous {
+  font-size: 64px;
+  font-weight: 800;
+  line-height: 68px;
+  margin: 0 0 16px 0;
+  color: #484848;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 26px;
+  margin: 0 0 16px 0;
+  color: #484848;
+}
+
+h6 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  margin: 0 0 24px 0;
+  color: #767676;
+}
+
+/* List styles */
+.list-unstyled {
+  padding-left: 0;
+  list-style: none;
+  margin: 0;
+}
+
+.list-unstyled li {
+  margin-bottom: 8px;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.list-unstyled li:first-child {
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.list-unstyled a {
+  color: #008489;
+  text-decoration: none;
+}
+
+.list-unstyled a:hover {
+  text-decoration: underline;
+}
+
+/* Image styles */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive design */
+@media (max-width: 743px) {
+  .col-5 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    margin-bottom: 32px;
+  }
+  
+  .row {
+    flex-direction: column;
+  }
+  
+  .text-ginormous {
+    font-size: 48px;
+    line-height: 52px;
+  }
+  
+  .page-container-responsive {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  .space-top-8 {
+    padding-top: 32px;
+  }
+  
+  .space-8 {
+    padding-bottom: 32px;
+  }
+}
+
+@media (max-width: 550px) {
+  .text-ginormous {
+    font-size: 32px;
+    line-height: 36px;
+  }
+  
+  h2 {
+    font-size: 18px;
+    line-height: 22px;
+  }
+}

@@ -79,10 +79,10 @@
 
 .favorite {
   font-size: 14px;
-  padding: 4px10px;
+  padding: 4px 10px;
   border-radius: 999px;
   color: white;
-  background-color: var(--bg-color);
+  background-color: rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease-in-out;
 }
 
