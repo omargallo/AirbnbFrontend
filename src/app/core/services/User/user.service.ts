@@ -1,8 +1,52 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../../../environments/environment.development';
+import { Observable, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../auth.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-  
+  private baseUrl = `${environment.baseUrl}/User`;
+
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
+
+  login(payload: { email: string; password: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/login`, payload).pipe(
+      tap((response: any) => {
+        this.authService.setAccessToken(response.accessToken);
+        this.authService.setRefreshToken(response.refreshToken);
+        this.authService.setUserId(response.userId);
+        this.authService.setRole(response.role.name);
+      })
+    );
+  }
+
+  register(payload: { email: string; password: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/register`, payload).pipe(
+      tap((response: any) => {
+        console.log(response)
+      })
+    );
+  }
+
+  logout(): void {
+    this.authService.clear();
+  }
+
+  refreshToken(): Observable<any> {
+    const refreshToken = this.authService.refreshToken;
+    return this.http.post(`${this.baseUrl}/refresh-token`, {
+      refreshToken: refreshToken,
+    }).pipe(
+      tap((response: any) => {
+        this.authService.setAccessToken(response.accessToken);
+        this.authService.setRefreshToken(response.refreshToken);
+      })
+    );
+  }
 }

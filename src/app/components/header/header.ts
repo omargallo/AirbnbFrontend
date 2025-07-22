@@ -3,6 +3,7 @@ import {
   AfterViewInit,
   HostListener,
   OnDestroy,
+  inject,
   ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -14,6 +15,7 @@ import { ThemeService } from '../../core/services/theme.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { TopNavComponent } from "../top-nav/top-nav";
 import { SearchFilterGroupComponent } from "../search-filter-group/search-filter-group";
+import { DialogService } from '../../core/services/dialog.service';
 
 @Component({
   selector: 'app-header',
@@ -34,6 +36,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   isDarkMode = false;
   isSearchBarSticky = false;
   wasFilterClicked = false;
+  dialogService = inject(DialogService);
 
   constructor(
     public lang: LangService,
@@ -162,5 +165,13 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   toggleTheme() {
     this.isDarkMode = !this.isDarkMode;
     this.theme.toggleTheme();
+  }
+
+  openLoginDialog() {
+    this.dialogService.openDialog('login');
+  }
+
+  openRegisterDialog() {
+    this.dialogService.openDialog('register');
   }
 }

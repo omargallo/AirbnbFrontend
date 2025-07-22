@@ -30,5 +30,13 @@
     "GUESTS": "guests",
     "INFANT": "infant",
     "INFANTS": "infants"
+  },
+  "login": {
+    "welcome": "Welcome back",
+    "goTOForgotPassword": "Are you forgetting your password?",
+    "notYou": "Not you?",
+    "goToRegister": "Use another account",
+    "email": "Email",
+    "password": "Password"
   }
 }
