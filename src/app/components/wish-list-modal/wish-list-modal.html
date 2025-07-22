@@ -39,9 +39,13 @@
     (close)="onNewModalClose()"
     [modalDialogClass]="'mx-auto col-12 rounded-5'"
     [modalClass]="'col-12'"
-    [modalContentClass]="'col-8 col-sm-6 col-md-4 col-lg-3 mx-auto rounded-5'"
+    [modalContentClass]="'col-8 col-sm-6 col-md-4 col-lg-3 mx-auto rounded-5 vh-max-60'"
 >
-    <form [formGroup]="form" (ngSubmit)="onCreateNewWishlist()">
+    <form 
+      [formGroup]="form" 
+      (ngSubmit)="onCreateNewWishlist()"
+      class="text-start"  
+    >
     <div class="mb-3">
       <label for="name" class="form-label">Name</label>
       <input
@@ -75,10 +79,10 @@
         Note is required.
       </div>
     </div>
-
     <div class="modal-footer d-flex justify-content-start">
       <button type="submit" class="btn btn-primary mb-3" [disabled]="form.invalid">Submit</button>
     </div>
-  </form>
 
+  </form>
+  
 </app-modal>

@@ -25,12 +25,12 @@ export class WishlistService {
         map(response => response.data)
       );
   }
+  getByUserIdWithCover(id:string): Observable<Result<Wishlist[]>> {
+    return this.http.get<Result<Wishlist[]>>(this.baseUrl)
+  }
 
-  createNewWishlist(wishlist: { name: string, notes: string }): Observable<Wishlist> {
+  createNewWishlist(wishlist: { name: string, notes: string }): Observable<Result<Wishlist>> {
     return this.http.post<Result<Wishlist>>(`${this.baseUrl}/create`, wishlist)
-      .pipe(
-        map(response => response.data)
-      );
   }
 
   deleteWishlist(id: number): Observable<boolean> {
