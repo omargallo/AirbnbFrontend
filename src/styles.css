@@ -154,6 +154,79 @@ body {
   box-sizing: border-box;
 }
 
+.vh-min-50{
+    min-height: 50vh ;
+}
+
+.vh-min-55{
+    min-height: 55vh ;
+}
+.vh-min-60{
+    min-height: 60vh ;
+}
+.vh-min-65{
+    min-height: 65vh ;
+}
+.vh-min-70{
+    min-height: 70vh ;
+}
+.vh-min-75{
+    min-height: 75vh ;
+}
+.vh-min-80{
+    min-height: 80vh ;
+}
+.vh-min-85{
+    min-height: 85vh ;
+}
+.vh-min-90{
+    min-height: 90vh ;
+}
+.vh-min-95{
+    min-height: 95vh ;
+}
+.vh-min-100{
+    min-height: 100vh ;
+}
+
+ 
+.vh-max-50{
+    max-height: 50vh ;
+}
+
+.vh-max-55{
+    max-height: 55vh ;
+}
+.vh-max-60{
+    max-height: 60vh ;
+}
+.vh-max-65{
+    max-height: 65vh ;
+}
+.vh-max-70{
+    max-height: 70vh ;
+}
+.vh-max-75{
+    max-height: 75vh ;
+}
+.vh-max-80{
+    max-height: 80vh ;
+}
+.vh-max-85{
+    max-height: 85vh ;
+}
+.vh-max-90{
+    max-height: 90vh ;
+}
+.vh-max-95{
+    max-height: 95vh ;
+}
+.vh-max-100{
+    max-height: 100vh ;
+}
+
+
+
 /* === Column Widths === */
 :root {
   --col-1: 8.333333%;
