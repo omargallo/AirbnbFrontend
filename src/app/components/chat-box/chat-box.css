@@ -101,7 +101,7 @@
 /* Message bubbles */
 .message-bubble {
   display: inline-block;
-  max-width: 70%;
+  max-width: 60%;
   padding: 12px 16px;
   border-radius: 20px;
   font-size: 15px;
@@ -125,30 +125,30 @@
 /* Message reaction */
 .message-reaction {
   position: absolute;
-  bottom: -8px;
+  bottom: -16px;
   right: 8px;
-  background-color: #ffffff;
+  background: #eee;
   border: 1px solid #e5e5e5;
   border-radius: 12px;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 14px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Emoji reaction button */
 .emoji-button {
   position: absolute;
-  right: 12px;
+  /* right: 65px; */
   top: 50%;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border: none;
-  background: rgba(255, 255, 255, 0.9);
+  background: #eee;
   border-radius: 50%;
   cursor: pointer;
   opacity: 0;
@@ -156,8 +156,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
   z-index: 2;
 }
 
@@ -168,7 +167,7 @@
 /* Emoji picker */
 .emoji-picker {
   position: absolute;
-  right: 0;
+  /* right: 0; */
   top: -45px;
   background: white;
   border: 1px solid #e5e5e5;

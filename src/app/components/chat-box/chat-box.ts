@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 interface ChatItem {
@@ -13,7 +13,7 @@ interface ChatItem {
   status?: string;
   link?: string;
   linkText?: string;
-  action?:string;
+  action?: string;
 }
 
 @Component({
@@ -26,10 +26,10 @@ export class ChatBoxComponent {
   hostProfileImage =
     'https://a0.muscache.com/im/pictures/user/a2e486a2-4167-42d1-87c7-58e97e912627.jpg?aki_policy=profile_medium';
   hostName = 'Leanna';
-  
+
   messageInput = '';
   showEmojiPicker: number | null = null;
-  
+
   emojiOptions = ['😀', '❤️', '👍', '👏', '⚡'];
 
   chatItems: ChatItem[] = [
@@ -37,7 +37,7 @@ export class ChatBoxComponent {
     {
       type: 'status',
       content: 'Your inquiry for 1 guest on Nov 7 – 9 has been sent.',
-      action:'show listting'
+      action: 'show listting'
     },
     {
       type: 'message',
@@ -57,9 +57,20 @@ export class ChatBoxComponent {
     {
       type: 'status',
       content: 'Unfortunately, this stay isn\'t available for your trip.',
-      action:'Explore other places to stay'
+      action: 'Explore other places to stay'
     },
   ];
+
+  @ViewChild('chatContainer') chatContainer!: ElementRef;
+
+  scrollToBottom() {
+    setTimeout(() => {
+      if (this.chatContainer) {
+        this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+      }
+    }, 0);
+  }
+
 
   constructor() { }
 
@@ -77,6 +88,7 @@ export class ChatBoxComponent {
         }),
       });
       this.messageInput = '';
+       this.scrollToBottom();
     }
   }
 

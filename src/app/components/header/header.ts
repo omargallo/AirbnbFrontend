@@ -7,7 +7,7 @@ import {
   ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { FormsModule } from '@angular/forms';
 import { LangService } from '../../core/services/lang.service';
@@ -37,11 +37,13 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   isSearchBarSticky = false;
   wasFilterClicked = false;
   dialogService = inject(DialogService);
+  isMessagesRoute = false;
 
   constructor(
     public lang: LangService,
     public theme: ThemeService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private router: Router
 
   ) { }
 
@@ -65,7 +67,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       this.closeDropdown();
     }
   }
-  ngAfterViewInit(): void { }
   ngOnDestroy(): void { }
 
   navItems = [
@@ -156,6 +157,22 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.isDarkMode = document.body.classList.contains('dark');
+    this.checkIfMessagesRoute();
+
+  }
+
+  checkIfMessagesRoute() {
+    this.isMessagesRoute =
+      this.router.url.startsWith('/Messages') ||
+      this.router.url.startsWith('/WishLists')||
+      this.router.url.startsWith('/wishlist')
+      ;
+  }
+
+  ngAfterViewInit(): void {
+    this.router.events.subscribe(() => {
+      this.checkIfMessagesRoute();
+    });
   }
 
   changeLanguage(lang: string) {

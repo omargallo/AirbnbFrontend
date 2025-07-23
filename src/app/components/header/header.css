@@ -207,3 +207,7 @@
   pointer-events: none;
 }
 
+
+.relative-header {
+  position: relative !important;
+}

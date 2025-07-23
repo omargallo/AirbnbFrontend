@@ -100,4 +100,29 @@ export class MessagesBoxComponent implements OnInit {
   getUnreadCount(): number {
     return this.getUnreadMessages().length;
   }
+
+
+
+
+  searchActive = false;
+  closing = false;
+
+  openSearch() {
+    this.searchActive = true;
+  }
+
+  closeSearch() {
+    this.closing = true;
+    this.searchActive = false;
+
+    setTimeout(() => {
+    this.closing = false;
+  }, 300);
+  }
+
+  onAnimationDone() {
+    this.closing = false;
+  }
+
+
 }
