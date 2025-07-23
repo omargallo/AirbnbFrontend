@@ -1,12 +1,13 @@
 import { Observable } from 'rxjs';
 import { ConfirmService } from './../../core/services/confirm.service';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, resource } from '@angular/core';
 import { WishListModal } from "../../components/wish-list-modal/wish-list-modal";
 import { PropertySwiperComponent } from "../../components/mainswiper/mainswiper";
 import { Property } from '../../core/models/Property';
 import { FormsModule } from '@angular/forms';
 import { PropertyService } from '../../core/services/Property/property.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-home',
   imports: [CommonModule, WishListModal, PropertySwiperComponent, FormsModule],
@@ -20,7 +21,12 @@ export class Home {
   show = false;
   isLoading = false;
 
-  constructor(private confirm: ConfirmService, private propertyService: PropertyService) {
+  constructor(
+      private confirm: ConfirmService,
+      private propertyService: PropertyService,
+      private router: Router
+
+  ) {
 
   }
 
@@ -29,6 +35,10 @@ export class Home {
   }
 
   onPropertyClick(id: number) {
+      this.router.navigate(['/property',id])
+  }
+  onWishlistClick(id:number){
+    
     this.selectedPropertyId = id;
     this.show = !this.show;
   }

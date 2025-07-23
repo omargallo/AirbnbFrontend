@@ -21,9 +21,16 @@ export class SliderCard {
   @Input() propertyId!: number;
 
   @Output() cardClick = new EventEmitter<number>();
+  @Output() wishlistClick = new EventEmitter<number>();
 
   onCardClick() {
     this.cardClick.emit(this.propertyId);
+  }
+
+  onWishlistClick(event:MouseEvent){
+    event.stopPropagation()
+    console.log("event orm slider-card ",event)
+    this.wishlistClick.emit(this.propertyId)
   }
 
 }

@@ -16,7 +16,7 @@
 
 <div
   class="card border-0 rounded rounded-2 cursor-pointer"
-
+ (click)="onCardClick()" 
 >
   <div class="image-container position-relative">
     <img
@@ -30,7 +30,7 @@
     >
       Guest favorite
     </div>
-    <button class="heart position-absolute top-0 end-0 m-2"   (click)="onCardClick()">
+    <button class="heart position-absolute top-0 end-0 m-2"   (click)="onWishlistClick($event)">
       <div
       >
         <svg

@@ -53,6 +53,7 @@
     >
       <app-slider-card
         (cardClick)="onCardClicked($event)"
+        (wishlistClick)="onWishListClick($event)"
         [propertyId]="property.id"
         title="{{property.title}}"
         imageUrl="{{getPropertyImage(property)}}"
