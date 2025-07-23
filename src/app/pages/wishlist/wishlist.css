@@ -326,6 +326,11 @@
   padding: 8px 16px;
   cursor: pointer;
   border-radius: 6px;
+
+  background-color: #ccc;
+  color: #333;
+
+
 }
 .cancel:hover {
   background-color: #f2f2f2;

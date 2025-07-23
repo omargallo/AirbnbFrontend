@@ -47,7 +47,7 @@ export class Wishlists implements OnInit {
   }
 
   getPropertyCount(propertyIds: number[]): number {
-    return propertyIds ? propertyIds.length : 0;
+    return propertyIds ? propertyIds?.length : 0;
   }
 
   getPropertyImage(imgUrl: string): string {

@@ -11,7 +11,7 @@
       <i class="icon-close" (click)="close()">×</i>
     </div>
     <div class="last-info">
-      <img *ngif="img" [src]="img" alt="user-img" />
+      <img *ngIf="img" [src]="img" alt="user-img" />
       <h1 *ngIf="img!==''">{{ user.charAt(0).toLocaleUpperCase() }}</h1>
       <p>{{ maskEmail(lastLoginEmail) }}</p>
     </div>

@@ -1,11 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { PropertyService } from '../../core/services/Property/property.service';
+import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 
 export interface Property {
   id: string;
   title: string;
+  hostId:string;
   description: string;
   propertyType: string;
   price: number;
@@ -48,6 +51,9 @@ export class UpdateList implements OnInit, OnDestroy {
   propertyForm!: FormGroup;
   isLoading = false;
   hasUnsavedChanges = false;
+  selectedFiles:File[] =[]
+  uploadProgress:number = 0
+  uploading:boolean= false
 
   menuSections: MenuSection[] = [
     { id: 'photos', label: 'Photos', icon: '📸', isActive: true, hasChanges: false, isSaving: false },
@@ -91,7 +97,12 @@ export class UpdateList implements OnInit, OnDestroy {
   'https://a0.muscache.com/im/pictures/mediaverse/MYS%20Number%20of%20Guests/original/701cd29e-3c5e-4055-b54f-2ced17b792d6.png',
   'https://a0.muscache.com/im/pictures/mediaverse/MYS%20Number%20of%20Guests/original/50f7cb91-d0fe-4726-963c-7242660b1db3.png'
 ];
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private propService:PropertyService,
+    private cdr: ChangeDetectorRef
+
+  ) {
     this.initializeForm();
   }
 
@@ -142,7 +153,11 @@ export class UpdateList implements OnInit, OnDestroy {
 
   private updateSectionChangeStatus(sectionId: string): void {
     const section = this.menuSections.find(s => s.id === sectionId);
-    if (section && this.property) {
+    if(section?.id == "photos")
+    {
+      section.hasChanges = this.selectedFiles.length > 0
+    }
+    else if (section && this.property) {
       const formValue = this.propertyForm.get(sectionId)?.value;
       const originalValue = this.property[sectionId as keyof Property];
       
@@ -162,6 +177,7 @@ export class UpdateList implements OnInit, OnDestroy {
     setTimeout(() => {
       this.property = {
         id: '1',
+        hostId: "5a6c3d4f-9ca1-4b58-bdf6-a6e19b62218f",
         title: 'Cozy and good',
         description: 'A beautiful space with all the amenities you need for a comfortable stay.',
         propertyType: 'Apartment',
@@ -209,12 +225,15 @@ export class UpdateList implements OnInit, OnDestroy {
   onSaveSection(section: MenuSection): void {
     if (!section.hasChanges || section.isSaving) return;
 
+    console.log("onSaveSection");
     section.isSaving = true;
     const sectionData = this.getSectionData(section.id as string);
 
     setTimeout(() => {
-      this.saveSectionToAPI(section.id as string, sectionData)
-        .then(() => {
+      let promise =  this.saveSectionToAPI(section.id as string, sectionData)
+        if(!promise)
+          return
+        promise.then(() => {
           section.hasChanges = false;
           section.isSaving = false;
           section.lastSaved = new Date();
@@ -234,7 +253,7 @@ export class UpdateList implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  private getSectionData(sectionId: string): any {
+  private getSectionData( sectionId: string): any {
     return this.propertyForm.get(sectionId)?.value;
   }
 
@@ -249,24 +268,295 @@ export class UpdateList implements OnInit, OnDestroy {
       amenities: '/api/properties/amenities',
       location: '/api/properties/location'
     };
-
+    if(sectionId == "photos"){
+      this.uploadSelectedPhotos()
+      return
+    }
     console.log(`Saving ${sectionId} to ${endpoints[sectionId as keyof typeof endpoints]}:`, data);
     
     return new Promise((resolve) => {
       resolve();
     });
   }
+// Add this property to your component
+private previewUrls: Map<File, string> = new Map();
 
-  onPhotoAdd(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const currentPhotos = this.propertyForm.get('photos')?.value || [];
-      const newPhotoUrl = `https://via.placeholder.com/400x300/FFE0B2/F57C00?text=New+Photo+${currentPhotos.length + 1}`;
-      this.propertyForm.patchValue({
-        photos: [...currentPhotos, newPhotoUrl]
-      });
+// Replace the getPreviewUrl method with this cached version
+getPreviewUrl(file: File): string {
+  if (!this.previewUrls.has(file)) {
+    this.previewUrls.set(file, URL.createObjectURL(file));
+  }
+  return this.previewUrls.get(file)!;
+}
+
+// Update the file selection method
+onFilesSelected(event: any) {
+  console.log("Host and prop Id",this.property?.id, this.property?.hostId)
+
+  const files = Array.from(event.target.files) as File[];
+  
+  // Filter only image files
+  const imageFiles = files.filter(file => file.type.startsWith('image/'));
+  
+  // Add to existing selection
+  this.selectedFiles = [...this.selectedFiles, ...imageFiles];
+  
+  // Pre-generate URLs for new files
+  imageFiles.forEach(file => {
+    if (!this.previewUrls.has(file)) {
+      this.previewUrls.set(file, URL.createObjectURL(file));
+    }
+  });
+  
+  // Optional: Limit total photos
+  const maxPhotos = 20;
+  const currentPhotos = this.propertyForm.get('photos')?.value?.length || 0;
+  const totalPhotos = currentPhotos + this.selectedFiles.length;
+  
+  if (totalPhotos > maxPhotos) {
+    const allowedNew = maxPhotos - currentPhotos;
+    const removedFiles = this.selectedFiles.splice(allowedNew);
+    
+    // Clean up URLs for removed files
+    removedFiles.forEach(file => {
+      const url = this.previewUrls.get(file);
+      if (url) {
+        URL.revokeObjectURL(url);
+        this.previewUrls.delete(file);
+      }
+    });
+    
+    console.warn(`Maximum ${maxPhotos} photos allowed`);
+  }
+
+  if(this.selectedFiles.length>0){
+    let section  = this.menuSections.find(s=> s.id == "photos")
+    if(section)
+      section.hasChanges = true
+  }
+  
+  // Clear the input
+  event.target.value = '';
+}
+
+// Update the remove selected file method
+removeSelectedFile(index: number) {
+  const file = this.selectedFiles[index];
+  
+  // Clean up blob URL
+  const url = this.previewUrls.get(file);
+  if (url) {
+    URL.revokeObjectURL(url);
+    this.previewUrls.delete(file);
+  }
+  
+  this.selectedFiles.splice(index, 1);
+}
+
+// Update the clear selected files method
+clearSelectedFiles() {
+  // Clean up all blob URLs
+  this.selectedFiles.forEach(file => {
+    const url = this.previewUrls.get(file);
+    if (url) {
+      URL.revokeObjectURL(url);
+      this.previewUrls.delete(file);
+    }
+  });
+  this.selectedFiles = [];
+}
+
+// Update the upload method to clean up URLs after successful upload
+// Updated upload method with better error handling and debugging
+uploadSelectedPhotos() {
+  if (this.selectedFiles.length === 0) return;
+
+  const formData = new FormData();
+  
+  // Debug: Log what we're about to send
+  console.log('Uploading files:', this.selectedFiles.map(f => ({
+    name: f.name,
+    size: f.size,
+    type: f.type
+  })));
+
+  // Append each file with validation
+  this.selectedFiles.forEach((fileObj, index) => {
+    const file = fileObj;
+    
+    // Validate file before adding
+    if (file.size === 0) {
+      console.error(`File ${file.name} is empty`);
+      return;
+    }
+    
+    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      console.error(`File ${file.name} is too large: ${file.size} bytes`);
+      return;
+    }
+    
+    if (!file.type.startsWith('image/')) {
+      console.error(`File ${file.name} is not an image: ${file.type}`);
+      return;
+    }
+    
+    // Server might expect specific parameter names - try different variations:
+    formData.append('Files', file, file.name); // Note capital 'F'
+    // OR try: formData.append('files', file, file.name);
+    // OR try: formData.append('images', file, file.name);
+  });
+
+  // Add required parameters - check what your API expects
+  // Common parameter names:
+  formData.append('HostId', this.property?.hostId  || ''); // Make sure this exists and is valid
+  formData.append('PropertyId', this.property?.id || '1');
+  formData.append('GroupName', 'dsah');
+  formData.append('CoverIndex', '2');
+
+  
+  // Debug: Log FormData contents
+  console.log('FormData contents:');
+  for (let [key, value] of formData.entries()) {
+    if (value instanceof File) {
+      console.log(`${key}: File(${value.name}, ${value.size} bytes, ${value.type})`);
+    } else {
+      console.log(`${key}: ${value}`);
     }
   }
+
+  this.uploading = true;
+  this.uploadProgress = 0;
+  // Updated API call with better error handling
+  this.propService.uploadPhotos(formData).subscribe({
+    next: (event) => {
+      if (event.type === HttpEventType.UploadProgress && event.total) {
+        this.uploadProgress = Math.round(100 * event.loaded / event.total);
+      } else if (event.type === HttpEventType.Response) {
+        console.log('Upload successful!', event.body);
+        const uploadedUrls = event.body as string[];
+        console.log(uploadedUrls,event)
+        console.log("success")
+        
+        this.clearSelectedFiles();
+        this.uploading = false;
+        this.uploadProgress = 0;
+      }
+    },
+    error: (error: HttpErrorResponse) => {
+      console.error('Upload failed:', error);
+      
+      // Enhanced error handling
+      if (error.status === 400 && error.error) {
+        const validationErrors = error.error.errors;
+        console.error('Validation errors:', validationErrors);
+        
+        // Show specific error messages to user
+        let errorMessage = 'Upload failed:\n';
+        
+        if (validationErrors.Files) {
+          errorMessage += `Files: ${validationErrors.Files.join(', ')}\n`;
+        }
+        
+        if (validationErrors.HostId) {
+          errorMessage += `HostId: ${validationErrors.HostId.join(', ')}\n`;
+        }
+        
+        // Display error to user (replace with your notification system)
+        alert(errorMessage);
+        // Or use: this.showErrorMessage(errorMessage);
+      } else {
+        // Generic error handling
+        alert(`Upload failed: ${error.message}`);
+      }
+      
+      this.uploading = false;
+      this.uploadProgress = 0;
+    }
+  });
+}
+
+// Alternative method to check server requirements first
+// async checkServerRequirements() {
+//   try {
+//     // If your API has an endpoint to check upload requirements
+//     const response = await this.http.get('/api/Property/upload-requirements').toPromise();
+//     console.log('Server upload requirements:', response);
+//   } catch (error) {
+//     console.log('Could not fetch server requirements');
+//   }
+// }
+
+// Method to validate files before upload
+validateFilesBeforeUpload(): boolean {
+  const errors: string[] = [];
+  
+  // Check if we have files
+  if (this.selectedFiles.length === 0) {
+    errors.push('No files selected');
+  }
+  
+  // Check required parameters
+  if (!this.property?.id && !this.property?.hostId) {
+    errors.push('Property ID or Host ID is required');
+  }
+  
+  // Validate each file
+  this.selectedFiles.forEach((fileObj, index) => {
+    const file = fileObj;
+    
+    if (file.size === 0) {
+      errors.push(`File ${index + 1} (${file.name}) is empty`);
+    }
+    
+    if (file.size > 10 * 1024 * 1024) {
+      errors.push(`File ${index + 1} (${file.name}) is too large (max 10MB)`);
+    }
+    
+    if (!file.type.startsWith('image/')) {
+      errors.push(`File ${index + 1} (${file.name}) is not an image`);
+    }
+    
+    // Check supported formats
+    const supportedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!supportedTypes.includes(file.type)) {
+      errors.push(`File ${index + 1} (${file.name}) format not supported. Use JPG, PNG, or WebP`);
+    }
+  });
+  
+  if (errors.length > 0) {
+    console.error('Validation errors:', errors);
+    alert('Validation errors:\n' + errors.join('\n'));
+    return false;
+  }
+  
+  return true;
+}
+
+// Updated upload method with validation
+uploadSelectedPhotosWithValidation() {
+  if (!this.validateFilesBeforeUpload()) {
+    return;
+  }
+  
+  this.uploadSelectedPhotos();
+}
+
+// Remove existing photo from form
+// onPhotoRemove(index: number) {
+//   const currentPhotos = this.propertyForm.get('photos')?.value || [];
+//   currentPhotos.splice(index, 1);
+//   this.propertyForm.patchValue({ photos: currentPhotos });
+// }
+
+// Get total photo count (existing + selected)
+getTotalPhotoCount(): number {
+  const existingPhotos = this.propertyForm.get('photos')?.value?.length || 0;
+
+  const selectedPhotos = this.selectedFiles.length;
+  console.log("from getTotalPhotoCount ", existingPhotos+ selectedPhotos)
+  return existingPhotos + selectedPhotos;
+}
+  // oH
 
   onPhotoRemove(index: number): void {
     const currentPhotos = this.propertyForm.get('photos')?.value || [];
@@ -314,6 +604,7 @@ export class UpdateList implements OnInit, OnDestroy {
 
   hasChangesInActiveSection(): boolean {
     const activeSection = this.getActiveSectionObject();
+    console.log("from hasChangesInActiveSection",activeSection)
     return activeSection?.hasChanges || false;
   }
 
