@@ -1,7 +1,7 @@
 
 <!-- <h1 class="first">{{ Property?.title }}</h1> -->
 
-
+<div class="section" >
 <div class="property-header">
   <h1 class="property-title">{{ Property?.title }}</h1>
 
@@ -22,13 +22,14 @@
 <div class="property-gallery" *ngIf="images?.length">
   <!-- Large left image -->
   <div class="main-image">
-    <img [src]="images[0]" alt="Main Image" />
+    <!-- <img [src]="images[0]" alt="Main Image" /> -->
+     <img [src]="images[0]" alt="Main Image" *ngIf="images.length > 0" />
   </div>
 
   <!-- Right-side grid of 4 images -->
   <div class="grid-images">
     <div class="grid-image" *ngFor="let img of images.slice(1, 5); let i = index">
-      <img [src]="img" alt="Image {{ i + 2 }}" />
+       <img [src]="img" alt="Image {{ i + 2 }}" />
       <!-- Show button on last image -->
       <!-- <button
         class="show-all-btn"
@@ -41,75 +42,41 @@
   </div>
 </div>
 
-<!-- Property Details Section -->
- <!-- <div class="property-details-container">
-  <div class="property-main-details">
-    <div class="property-info">
-      <h2 class="property-type-location">
-        {{Property.description}} {{ Property?.city }}, {{ Property?.country }}
-      </h2>
-      <div class="property-specs">
-        <span>{{ Property?.maxGuests }} guests</span>
-        <span>·</span>
-        <span>{{ Property?.bedrooms }} bedroom{{ Property?.bedrooms !== 1 ? 's' : '' }}</span>
-        <span>·</span>
-        <span>{{ Property?.beds }} bed{{ Property?.beds !== 1 ? 's' : '' }}</span>
-        <span>·</span>
-        <span>{{ Property?.bathrooms }} bath{{ Property?.bathrooms !== 1 ? 's' : '' }}</span>
-      </div>
-
-      <div class="rare-find-badge" *ngIf="Property?.averageRating >= 4.5">
-        <div class="rare-find-content">
-          <i class="bi bi-gem rare-find-icon"></i>
-          <div class="rare-find-text">
-            <span class="rare-find-title">Rare find! This place is usually booked</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
-
-
-
-
-
-
-
-
-
-
 
 
    <!-- Property Details with Rare Find Badge -->
-<div class="container mt-4">
+<div class="property-details-container mt-4">
   <div class="row align-items-center">
     <!-- Left: Title and specs -->
-    <div class="col-md-8">
+    <div class="col-md-12">
       <h2 class="property-type-location mb-2">
         {{Property?.description}} {{ Property?.city }},{{ Property?.country }}
       </h2>
 
       <div class="property-specs  ">
-        <span>{{ Property?.maxGuests }}guests</span>
+        <span>{{ Property?.maxGuests}}guests</span>
         <span>·</span>
-        <span>{{ Property?.bedrooms }}bedroom{{ Property?.bedrooms !== 1 ? 's' : '' }}</span>
+        <span>{{ Property?.bedrooms}}bedroom{{ Property?.bedrooms !== 1 ? 's' : '' }}</span>
         <span>·</span>
-        <span>{{ Property?.beds }}bed{{ Property?.beds !== 1 ? 's' : '' }}</span>
+        <span>{{ Property?.beds}}bed{{Property?.beds !== 1 ? 's' : '' }}</span>
         <span>·</span>
-        <span>{{ Property?.bathrooms }}bath{{ Property?.bathrooms !== 1 ? 's' : '' }}</span>
+        <span>{{ Property?.bathrooms}}bath{{Property?.bathrooms !== 1 ? 's' : '' }}</span>
       </div>
     </div>
 
     <!-- Right: Rare find badge -->
-    <div class="col-md-4" *ngIf="Property?.averageRating >= 4.5">
+    <!-- <div class="col-md-4" *ngIf="Property?.averageRating >= 4.5">
       <div class="rare-find-badge">
         <div class="rare-find-content d-flex align-items-center">
           <i class="bi bi-gem rare-find-icon me-2"></i>
           <span class="rare-find-title">Rare find! This place is usually booked</span>
         </div>
       </div>
-    </div>
+    </div> -->
+
   </div>
 </div>
 
+
+</div>
 
