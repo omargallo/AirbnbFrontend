@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { register } from 'swiper/element/bundle';
 import { SliderCard } from "../../pages/home/components/slider-card/slider-card";
@@ -18,7 +18,11 @@ register();
 export class PropertySwiperComponent implements OnInit {
 
   @Output() propertyClicked = new EventEmitter<number>();
+  @Output() wishlistIconClick = new EventEmitter<number>();
 
+  onWishListClick(id:number){
+    this.wishlistIconClick.emit(id)
+  }
   onCardClicked(id: number) {
     this.propertyClicked.emit(id);
   }

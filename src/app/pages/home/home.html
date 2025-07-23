@@ -113,6 +113,7 @@
 </app-wish-list-modal>
 
 <app-property-swiper
+  (wishlistIconClick)="onWishlistClick($event)"
   (propertyClicked)="onPropertyClick($event)"
   [properties]="properties"
 ></app-property-swiper>
