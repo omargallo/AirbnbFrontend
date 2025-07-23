@@ -1,0 +1,74 @@
+<!-- amenities-section.component.html -->
+<div class="section">
+  <hr>
+  <h2 class="mt-3 mb-3">What this place offers</h2>
+
+
+  <!-- Amenities Container -->
+  <div class="amenities-container mb-4">
+      <!-- First column -->
+      <div class="amenities-column mt-3">
+        <div *ngFor="let amenity of firstColumnAmenities; trackBy: trackByAmenityId" class="amenity-item">
+          <img [src]="amenity.iconUrl" 
+              [alt]="amenity.name" 
+              class="amenity-icon"
+              (error)="onImageError($event)"
+              loading="lazy">
+          <span class="amenity-name">{{ amenity.name }}</span>
+        </div>
+      </div>
+      
+      <!-- Second column -->
+      <div class="amenities-column mt-3">
+        <div *ngFor="let amenity of secondColumnAmenities; trackBy: trackByAmenityId" class="amenity-item">
+          <img [src]="amenity.iconUrl" 
+              [alt]="amenity.name" 
+              class="amenity-icon"
+              (error)="onImageError($event)"
+              loading="lazy">
+          <span class="amenity-name">{{ amenity.name }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Show All Button -->
+    <button *ngIf="shouldShowToggle && amenities.length > 5" 
+            class="show-all-btn" 
+            (click)="toggleShowAll()"
+            [attr.aria-expanded]="showAllAmenities"
+            [attr.aria-label]="showAllAmenities ? 'Show fewer amenities' : 'Show all ' + amenities.length + ' amenities'">
+      {{ showAllAmenities ? 'Show less' : 'Show all ' + amenities.length + ' amenities' }}
+    </button>
+
+    <!-- Empty State -->
+    <div *ngIf="amenities.length === 0" class="empty-state">
+      <div class="empty-state-icon">🏠</div>
+      <h3>No amenities listed</h3>
+      <p>This property doesn't have any amenities listed at the moment.</p>
+    </div>
+
+    <hr class="mt-4">
+    <!-- Airbnb-style calendar -->
+<div class="calendar-section mt-4">
+  <h2 class="mb-3">Check availability</h2>
+
+  <ngx-daterangepicker-material
+    [(ngModel)]="selected"
+    [locale]="{ applyLabel: 'Check', format: 'YYYY-MM-DD' }"
+    [autoApply]="true"
+    [linkedCalendars]="false"
+    [showClearButton]="true"
+    [showDropdowns]="true"
+    [customRangeDirection]="true"
+    [opens]="'center'"
+    class="airbnb-calendar">
+  </ngx-daterangepicker-material>
+
+  <div class="calendar-msg mt-2">
+    <p *ngIf="availabilityMessage" class="text-danger">{{ availabilityMessage }}</p>
+    <p *ngIf="totalPrice">Total price: <strong>{{ totalPrice | currency }}</strong></p>
+  </div>
+</div>
+
+
+</div>

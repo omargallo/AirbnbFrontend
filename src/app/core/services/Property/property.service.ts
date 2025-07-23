@@ -56,7 +56,7 @@ export class PropertyService {
 
   // private readonly baseUrl = environment.baseUrl;
   // private readonly propertyUrl = `${this.baseUrl}/api/Property`;
-  private readonly propertyUrl = 'https://localhost:7025/api/property';
+  private readonly propertyUrl = `${environment.baseUrl}/property`;
 
 
   private baseUrl = `${environment.baseUrl}/Property`;
@@ -65,6 +65,12 @@ export class PropertyService {
 
   constructor(private http: HttpClient) { }
 
+  uploadPhotos(formData:FormData){
+    return this.http.post(`${this.baseUrl}/property-images/upload`, formData, {
+      reportProgress: true,
+      observe: 'events'
+    })
+  }
   getAllProperties(): Observable<Property[]> {
     return this.http.get<ApiResponse<Property[]>>(this.propertyUrl)
       .pipe(
@@ -106,7 +112,7 @@ export class PropertyService {
     if (params.endDate) queryParams.EndDate = params.endDate;
     if (params.page) queryParams.Page = params.page;
     // if (params.pageSize) queryParams.PageSize = params.pageSize;
-    queryParams.PageSize = 9;
+    queryParams.PageSize = 12;
     if (params.maxDistanceKm != null) queryParams.maxDistanceKm = params.maxDistanceKm;
 
     return this.http.get<Result<SearchPropertiesResponse>>(`${this.baseUrl}/search`, {

@@ -36,13 +36,27 @@ export class UserBookingService {
   getBookingsByUserId(userId: string): Observable<BookingDetailsDTO[]> {
     return this.http.get<ApiResponse>(`${this.apiUrl}/UserBooking/${userId}`).pipe(
       map(response => {
-        if (!response.isSuccess || !response.data) {
-          throw new Error(response.message || 'No bookings found');
+
+        if (!response.isSuccess) {
+          if (response.message && response.message.toLowerCase().includes('no bookings found')) {
+            return [];
+          }
+          throw new Error(response.message || 'Failed to load bookings');
         }
+        
+        if (!response.data) {
+          return [];
+        }
+        
         return response.data;
       }),
       catchError(error => {
         console.error('API Error:', error);
+        
+        if (error.status === 404) {
+          return [];
+        }
+        
         return throwError(() => new Error(
           error.error?.message ||
           error.message ||

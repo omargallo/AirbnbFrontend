@@ -16,7 +16,7 @@ export class UserBookings implements OnInit {
   isLoading = true;
   error: string | null = null;
   private readonly currentDate = new Date();
-  private readonly userId = '1a03e58e-535d-4dfb-918f-e27e5e3b4907';
+  private readonly userId = '9a4e2846-8058-4458-badd-6cf601405ae2';
 
   constructor(
     private userBookingService: UserBookingService,
@@ -91,11 +91,13 @@ export class UserBookings implements OnInit {
 
   getBookingStatusClass(status: string): string {
     const statusMap: { [key: string]: string } = {
-      'completed': 'status-completed',
-      'confirmed': 'status-confirmed',
-      'pending': 'status-pending',
-      'cancelled': 'status-cancelled'
+      '3': 'status-completed',
+      '1': 'status-confirmed',
+      '0': 'status-pending',
+      '2': 'status-cancelled'
     };
+    console.log(typeof(status))
+    // status = String(status)
     return statusMap[status.toLowerCase()] || 'status-default';
   }
 
@@ -106,6 +108,8 @@ export class UserBookings implements OnInit {
       'pending': 'bi-clock-fill',
       'cancelled': 'bi-x-circle-fill'
     };
+    // status = String(status)
+
     return iconMap[status.toLowerCase()] || 'bi-circle-fill';
   }
 

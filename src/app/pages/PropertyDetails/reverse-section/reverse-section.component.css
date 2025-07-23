@@ -1,0 +1,112 @@
+.reserve-box {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 370px;
+  position: relative;
+  transition: top 0.3s ease;
+
+
+  position: sticky;
+  top: 100px; 
+  z-index: 10;
+
+
+   }  
+
+  .price-info {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 16px;
+
+    span {
+      color: #717171;
+      font-size: 14px;
+    }
+  }
+
+  .date-picker {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+
+    label {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      font-size: 12px;
+      font-weight: 600;
+      color: #222;
+
+      input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .guest-selector {
+    margin-top: 16px;
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+  }
+
+  .check-btn {
+    margin-top: 20px;
+    width: 100%;
+    background-color: #ff385c;
+    color: white;
+    border: none;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background-color: #e61e4d;
+    }
+  }
+
+
+
+/* Rare Find Badge */
+.rare-find-badge {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 10px;
+  margin-left: 20px;
+  text-align: center;
+}
+
+.rare-find-icon {
+  font-size: 20px;
+  color: #ff385c;
+}
+
+.rare-find-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.rare-find-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: #222;
+}
+
+.rare-find-description {
+  font-size: 14px;
+  color: #171616;
+} 
+

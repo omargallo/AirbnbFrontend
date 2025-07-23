@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PropertyService, SearchParams } from '../../core/services/Property/property.service';
 import { Property } from '../../core/models/Property';
 import * as L from 'leaflet';
@@ -11,18 +11,22 @@ import { debounceTime, Subject } from 'rxjs';
 @Component({
   selector: 'app-filtered-properties',
   standalone: true,
-  imports: [CommonModule, SliderCard],
+  imports: [CommonModule, SliderCard, RouterModule],
   templateUrl: './filtered-properties.html',
   styleUrls: ['./filtered-properties.css']
 })
 export class FilteredProperties implements OnInit {
+  private isFirstLoad = true;
+  isLoading = true;
+  isMapLoading = false;
   properties: Property[] = [];
   selectedProperty: Property | null = null;
+  selectedMarker: L.Marker | null = null;
 
   currentPage = 1;
   totalPages = 1;
   totalItems = 0;
-  pageSize = 10;
+  pageSize = 12;
 
   map: L.Map | null = null;
   markers: L.Marker[] = [];
@@ -33,6 +37,7 @@ export class FilteredProperties implements OnInit {
   private isMapInitialized = false;
   private shouldFitBounds = true;
   private isUserInteraction = false;
+  private isSelectingFromUI = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -98,19 +103,28 @@ export class FilteredProperties implements OnInit {
 
       this.shouldFitBounds = !this.isMapInitialized;
       this.loadProperties();
+
+      this.isFirstLoad = false;
+
     });
   }
 
   loadProperties() {
+    this.isLoading = true;
+    if (!this.isFirstLoad && this.searchParams.country) {
+      delete this.searchParams.country;
+    }
     this.propertyService.searchProperties(this.searchParams).subscribe({
       next: response => {
         console.log('🔍 Search Response:', response);
         console.log('📍 Search Params:', this.searchParams);
 
         if (response.isSuccess) {
+          this.isLoading = false;
+
           this.properties = response.data.items;
 
-          //test 
+          //test
           // const originalItems = response.data.items;
           // this.properties = [
           //   ...originalItems,
@@ -129,9 +143,13 @@ export class FilteredProperties implements OnInit {
           this.pageSize = response.data.metaData.pageSize;
 
           if (!this.map) {
+            this.isLoading = false;
+
             this.initializeLeafletMap();
           }
-           else {
+          else {
+            this.isLoading = false;
+
             this.updateMapMarkers();
           }
         }
@@ -145,10 +163,57 @@ export class FilteredProperties implements OnInit {
   }
 
   selectProperty(property: Property) {
+    this.isSelectingFromUI = true;
     this.selectedProperty = property;
-    if (this.map) {
-      this.map.setView([property.latitude, property.longitude], 14);
+
+    // const targetMarker = this.markers.find(marker => {
+    //   const latLng = marker.getLatLng();
+    //   return latLng.lat === property.latitude && latLng.lng === property.longitude;
+    // });
+
+    const targetMarker = this.markers.find(marker => {
+      return (marker as any).propertyId === property.id;
+    });
+
+    if (this.map && targetMarker) {
+      this.updateSelectedMarker(targetMarker);
+
+      // this.map.flyTo([property.latitude, property.longitude], 15, {
+      //   animate: true,
+      //   duration: 1.5,
+      //   easeLinearity: 0.25
+      // });
+
+      // setTimeout(() => {
+      targetMarker.openPopup();
+      // }, 1000);
+
+      setTimeout(() => {
+        this.isSelectingFromUI = false;
+      }, 100);
     }
+  }
+
+  private updateSelectedMarker(newSelectedMarker: L.Marker) {
+    if (this.selectedMarker) {
+      const prevProperty = this.getPropertyByMarker(this.selectedMarker);
+      if (prevProperty) {
+        const normalIcon = this.createCustomMarkerIcon(prevProperty.pricePerNight, false);
+        this.selectedMarker.setIcon(normalIcon);
+      }
+    }
+
+    this.selectedMarker = newSelectedMarker;
+    const selectedProperty = this.getPropertyByMarker(newSelectedMarker);
+    if (selectedProperty) {
+      const selectedIcon = this.createCustomMarkerIcon(selectedProperty.pricePerNight, true);
+      newSelectedMarker.setIcon(selectedIcon);
+    }
+  }
+
+  private getPropertyByMarker(marker: L.Marker): Property | undefined {
+    const propertyId = (marker as any).propertyId;
+    return this.properties.find(p => p.id === propertyId);
   }
 
   goToPage(page: number) {
@@ -181,20 +246,28 @@ export class FilteredProperties implements OnInit {
     return pages.filter((v, i, a) => i === 0 || v !== a[i - 1]);
   }
 
-  private createCustomMarkerIcon(price: number): L.DivIcon {
+  private createCustomMarkerIcon(price: number, isSelected: boolean = false): L.DivIcon {
+    const bgColor = isSelected ? '#ff385c' : 'var(--bg-color)';
+    const textColor = isSelected ? '#ffffff' : 'var(--primary-text-color)';
+    const borderColor = isSelected ? '#ff385c' : 'var(--bg-color)';
+    const scale = isSelected ? 'scale(1)' : 'scale(1)';
+
     return L.divIcon({
       className: 'custom-marker',
       html: `
         <div style="
-          background: var(--bg-color) !important;
-          color: var(--primary-text-color);
+          background: ${bgColor} !important;
+          color: ${textColor};
           padding: 6px 12px;
           border-radius: 20px;
           font-size: 12px;
           font-weight: bold;
           text-align: center;
-          border: 2px solid var(--bg-color) !important;
+          border: 2px solid ${borderColor} !important;
           position: relative;
+          transform: ${scale};
+          transition: all 0.3s ease;
+          box-shadow: ${isSelected ? '0 4px 12px rgba(255, 56, 92, 0.3)' : '0 2px 8px rgba(0,0,0,0.1)'};
         ">
           ${price}
           <div style="
@@ -206,7 +279,7 @@ export class FilteredProperties implements OnInit {
             height: 0;
             border-left: 10px solid transparent;
             border-right: 10px solid transparent;
-            border-top: 10px solid var(--bg-color);
+            border-top: 10px solid ${borderColor};
           "></div>
         </div>
       `,
@@ -219,8 +292,14 @@ export class FilteredProperties implements OnInit {
     const lat = this.searchParams.latitude || 25.7617;
     const lng = this.searchParams.longitude || -80.1918;
 
-    this.map = L.map('leaflet-map').setView([lat, lng], 10);
+    this.map = L.map('leaflet-map', {
+      zoomAnimation: true,
+      fadeAnimation: true,
+      markerZoomAnimation: true,
+      zoomAnimationThreshold: 4
+    }).setView([lat, lng], 10);
 
+    
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap'
     }).addTo(this.map!);
@@ -235,7 +314,7 @@ export class FilteredProperties implements OnInit {
       const marker = L.marker([p.latitude, p.longitude], { icon: customIcon })
         .addTo(this.map!)
         .bindPopup(`
-          <div class="card border-0 rounded rounded-2 popup-card" style="width: 200px; cursor: pointer; background-color: var(--bg-color);" onclick="this.selectProperty(${p.id})">
+          <div class=" border-0  popup-card" style="width: 200px; border-radius: 50px !important;cursor: pointer; background-color:transparent !important;">
             <div class="image-container position-relative">
               <img src="${this.getPropertyImage(p)}"
                    alt="listing image"
@@ -267,7 +346,10 @@ export class FilteredProperties implements OnInit {
             </div>
           </div>
         `)
-        .on('click', () => this.selectProperty(p));
+        .on('click', () => {
+          this.selectProperty(p);
+          this.updateSelectedMarker(marker);
+        });
       this.markers.push(marker);
     });
 
@@ -288,14 +370,60 @@ export class FilteredProperties implements OnInit {
   private updateMapMarkers() {
     this.markers.forEach(marker => marker.remove());
     this.markers = [];
+    this.selectedMarker = null;
 
     this.properties.forEach(p => {
-      const customIcon = this.createCustomMarkerIcon(p.pricePerNight);
+      const isSelected = this.selectedProperty?.id === p.id;
+      const customIcon = this.createCustomMarkerIcon(p.pricePerNight, isSelected);
       const marker = L.marker([p.latitude, p.longitude], { icon: customIcon })
         .addTo(this.map!)
-        .on('click', () => this.selectProperty(p));
+        .bindPopup(`
+          <div class="card border-0 rounded rounded-2 popup-card" style="width: 200px; cursor: pointer; background-color: var(--bg-color);">
+            <div class="image-container position-relative">
+              <img src="${this.getPropertyImage(p)}"
+                   alt="listing image"
+                   class="img-fluid rounded-4"
+                   style="width: 100%; height: 120px; object-fit: cover;">
+              ${false ? `
+              <div class="favorite badge fw-semibold position-absolute top-0 start-0 m-2"
+                   style="font-size: 10px; padding: 2px 6px; border-radius: 999px; color: var(--primary-text-color) !important; background-color: var(--bg-color);">
+                Guest favorite
+              </div>` : ''}
+              <button class="heart position-absolute top-0 end-0 m-2"
+                      style="background: none; border: none; cursor: pointer;">
+                <i class="bi bi-heart fs-6"></i>
+              </button>
+            </div>
+
+            <div class="info px-2 pt-2 pb-3">
+              <div class="title fw-semibold" style="font-size: 12px; color: var(--primary-text-color); !important">${p.title}</div>
+              <div class="subtitle small" style="font-size: 10px; color: var(--secondary-text-color) !important;">${this.getLocationSubtitle(p)}</div>
+
+              <div class="d-flex justify-content-between align-items-center mt-1 flex-row-reverse">
+                <div class="rating small d-flex align-items-center" style="font-size: 10px; color: var(--secondary-text-color) !important;">
+                  <i class="bi bi-star-fill text-warning me-1"></i>${p.averageRating}
+                </div>
+                <div class="price" style="font-size: 10px; color: var(--secondary-text-color) !important;">
+                  $${p.pricePerNight} <span class="small">for 5 night</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `)
+        .on('click', () => {
+          this.selectProperty(p);
+          this.updateSelectedMarker(marker);
+        });
+      (marker as any).propertyId = p.id;
 
       this.markers.push(marker);
+
+      if (isSelected) {
+        this.selectedMarker = marker;
+        setTimeout(() => {
+          marker.openPopup();
+        }, 500);
+      }
     });
 
     if (this.markers.length && this.shouldFitBounds && !this.isUserInteraction) {
@@ -321,52 +449,67 @@ export class FilteredProperties implements OnInit {
     };
 
     this.map.on('movestart', () => {
-      if (this.isMapInitialized) {
+      if (this.isMapInitialized && !this.isSelectingFromUI) {
         this.isUserInteraction = true;
         this.shouldFitBounds = false;
+        this.isMapLoading = true;
       }
     });
 
-    this.map.on('moveend', updateMapInfo);
+    this.map.on('moveend', () => {
+      if (!this.isSelectingFromUI) {
+        this.isMapLoading = false;
+      }
+      updateMapInfo();
+    });
 
     this.map.on('zoomstart', () => {
-      if (this.isMapInitialized) {
+      if (this.isMapInitialized && !this.isSelectingFromUI) {
         this.isUserInteraction = true;
         this.shouldFitBounds = false;
+        this.isMapLoading = true;
       }
     });
 
-    this.map.on('zoomend', updateMapInfo);
+    this.map.on('zoomend', () => {
+      if (!this.isSelectingFromUI) {
+        this.isMapLoading = false;
+      }
+      updateMapInfo();
+    });
   }
 
   private async handleMapChange(lat: number, lng: number, zoom: number) {
+    if (this.isSelectingFromUI) {
+      return;
+    }
     console.log('🔄 Map changed:', {
       lat: lat.toFixed(4),
       lng: lng.toFixed(4),
       zoom,
       // distance: this.calculateDistanceFromZoom(zoom)
-      distance: 1000000000
+      distance: 10000
     });
 
     // Update search parameters with new location and distance
     this.searchParams.latitude = lat;
     this.searchParams.longitude = lng;
     // this.searchParams.maxDistanceKm = this.calculateDistanceFromZoom(zoom);
-    this.searchParams.maxDistanceKm = 1000000000;
+    this.searchParams.maxDistanceKm = 1000;
     this.searchParams.page = 1; // Reset to first page when location changes
     this.currentPage = 1;
 
     // Get country from coordinates using reverse geocoding
-    try {
-      const country = await this.getCountryFromCoordinates(lat, lng);
-      if (country) {
-        this.searchParams.country = country;
-        console.log('🌍 Country detected:', country);
-      }
-    } catch (error) {
-      console.warn('⚠️ Failed to get country from coordinates:', error);
-      // Keep existing country or remove it if coordinates changed significantly
-    }
+    // try {
+    //   const country = await this.getCountryFromCoordinates(lat, lng);
+    //   if (country) {
+    //     this.searchParams.country = country;
+    //     console.log('🌍 Country detected:', country);
+    //   }
+    // } catch (error) {
+    //   console.warn('⚠️ Failed to get country from coordinates:', error);
+    //   // Keep existing country or remove it if coordinates changed significantly
+    // }
 
     // Update URL parameters
     this.updateUrlParams(zoom);
@@ -375,29 +518,29 @@ export class FilteredProperties implements OnInit {
     this.loadProperties();
   }
 
-  private async getCountryFromCoordinates(lat: number, lng: number): Promise<string | null> {
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=3&addressdetails=1`
-      );
+  // private async getCountryFromCoordinates(lat: number, lng: number): Promise<string | null> {
+  //   try {
+  //     const response = await fetch(
+  //       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=3&addressdetails=1`
+  //     );
 
-      if (!response.ok) {
-        throw new Error('Geocoding request failed');
-      }
+  //     if (!response.ok) {
+  //       throw new Error('Geocoding request failed');
+  //     }
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      const country =
-        data?.name ||
-        data.address?.country ||
-        data.display_name?.split(',').pop()?.trim() || data?.address?.country_code;
+  //     const country =
+  //       data?.name ||
+  //       data.address?.country ||
+  //       data.display_name?.split(',').pop()?.trim() || data?.address?.country_code;
 
-      return country || null;
-    } catch (error) {
-      console.error('❌ Error in reverse geocoding:', error);
-      return null;
-    }
-  }
+  //     return country || null;
+  //   } catch (error) {
+  //     console.error('❌ Error in reverse geocoding:', error);
+  //     return null;
+  //   }
+  // }
 
   private calculateDistanceFromZoom(zoom: number): number {
 
@@ -421,9 +564,9 @@ export class FilteredProperties implements OnInit {
       maxDistanceKm: this.searchParams.maxDistanceKm
     };
 
-    if (this.searchParams.country) {
-      queryParams.country = this.searchParams.country;
-    }
+    // if (this.searchParams.country) {
+    //   queryParams.country = this.searchParams.country;
+    // }
 
     if (zoom !== undefined) {
       queryParams.zoom = zoom;
@@ -451,16 +594,16 @@ export class FilteredProperties implements OnInit {
     });
   }
 
-getPropertyImage(property: Property): string {
-  const cover = property.images?.find(img => img.isCover && !img.isDeleted);
+  getPropertyImage(property: Property): string {
+    const cover = property.images?.find(img => img.isCover && !img.isDeleted);
 
-  if (cover?.imageUrl) {
-    return `${environment.base}${cover.imageUrl}`;
+    if (cover?.imageUrl) {
+      return `${environment.base}${cover.imageUrl}`;
+    }
+
+    // fallback image
+    return 'assets/images/deafult.png';
   }
-
-  // fallback image
-  return 'assets/images/deafult.png';
-}
 
 
   getLocationSubtitle(property: Property): string {
