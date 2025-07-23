@@ -106,7 +106,7 @@ export class PropertyService {
     if (params.endDate) queryParams.EndDate = params.endDate;
     if (params.page) queryParams.Page = params.page;
     // if (params.pageSize) queryParams.PageSize = params.pageSize;
-    queryParams.PageSize = 9;
+    queryParams.PageSize = 12;
     if (params.maxDistanceKm != null) queryParams.maxDistanceKm = params.maxDistanceKm;
 
     return this.http.get<Result<SearchPropertiesResponse>>(`${this.baseUrl}/search`, {

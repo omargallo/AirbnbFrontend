@@ -1,7 +1,7 @@
 .wishlists-container {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: 0 auto;
-  padding: 24px 20px;
+  padding: 0px 20px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -299,6 +299,8 @@
   justify-content: space-between !important;
   align-items: center !important;
   gap: 15rem;
+  padding: 0.5rem;
+
   /* border-top: 1px solid #ccc; */
   /* padding-top: 0.7rem; */
 }
@@ -313,7 +315,9 @@
 
   border-radius: 6px;
 }
-
+.delete-confirm:hover {
+  background-color: #3f3e3e;
+}
 .cancel {
   /*background-color: #f2f2f2;
   */

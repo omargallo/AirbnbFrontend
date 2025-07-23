@@ -37,6 +37,9 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+    /* aspect-ratio: 1 / 1;  */
+
+
 }
 
 .modal-header,
@@ -44,6 +47,10 @@
 .modal-footer {
   padding: 1rem;
   /* text-align: center; */
+
+}
+.modal-body{
+  min-width: fit-content !important;
 }
 
 .modal-header {
