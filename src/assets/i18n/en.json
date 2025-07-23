@@ -37,6 +37,22 @@
     "notYou": "Not you?",
     "goToRegister": "Use another account",
     "email": "Email",
-    "password": "Password"
+    "password": "Password",
+    "showPass": "Show",
+    "login": "Login"
+  },
+  "register": {
+    "welcome": "Welcome to Airbnb",
+    "email": "Email",
+    "password": "Password",
+    "showPass": "Show",
+    "register": "Register",
+    "hi": "Login or Sign up"
+  },
+  "confirmOtp": {
+    "welcome": "Your OTP is valid for 1 minute",
+    "confirmOtp": "Confirm OTP",
+    "confirm": "Confirm",
+    "resendOtp": "Resend OTP"
   }
 }

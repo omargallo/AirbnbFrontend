@@ -7,10 +7,11 @@ import { HostProperties } from "./components/host-properties/host-properties";
 import { Footer } from "./components/footer/footer";
 import { Loader } from "./shared/components/loader/loader";
 import { Confirm } from "./shared/components/confirm/confirm";
+import { ConfirmOtp } from "./pages/confirm-otp/confirm-otp";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Confirm ,Login, Register],
+  imports: [RouterOutlet, Confirm, Login, Register, ConfirmOtp],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

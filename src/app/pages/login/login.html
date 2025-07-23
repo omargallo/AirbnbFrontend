@@ -12,30 +12,37 @@
     </div>
     <div class="last-info">
       <img *ngif="img" [src]="img" alt="user-img" />
-      <h1 *ngIf="img!==''">{{ user.charAt(0).toLocaleUpperCase() }}</h1>
+      <h1 *ngIf="img !== ''">{{ user.charAt(0).toLocaleUpperCase() }}</h1>
       <p>{{ maskEmail(lastLoginEmail) }}</p>
     </div>
     <div class="dialog-content">
       <form (ngSubmit)="onLogin()" #loginForm="ngForm">
         <div class="form-group">
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="{{ 'login.email' | translate }}"
-            required
-            [(ngModel)]="email"
-          />
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="{{ 'login.password' | translate }}"
-            required
-            [(ngModel)]="password"
-          />
+          <div class="email">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="{{ 'login.email' | translate }}"
+              required
+              [(ngModel)]="email"
+            />
+          </div>
+          <div class="pass">
+            <input
+              [type]="togglePass ? 'text' : 'password'"
+              id="password"
+              name="password"
+              placeholder="{{ 'login.password' | translate }}"
+              required
+              [(ngModel)]="password"
+            />
+            <a href="#" (click)="showPass()">{{
+              "login.showPass" | translate
+            }}</a>
+          </div>
         </div>
-          <button type="submit" [disabled]="loginForm.invalid">Login</button>
+        <button type="submit" [disabled]="loginForm.invalid">{{ "login.login" | translate }}</button>
       </form>
     </div>
     <div class="dialog-footer">

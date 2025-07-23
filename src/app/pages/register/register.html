@@ -1,1 +1,46 @@
-<p>register works!</p>
+<div
+  class="overlay"
+  *ngIf="dialogService.isDialogOpen('register')"
+  (click)="close()"
+>
+  <div class="dialog" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <span>{{ "register.hi" | translate }}</span>
+      <i class="icon-close" (click)="close()">×</i>
+    </div>
+    <div class="dialog-content">
+      <form (ngSubmit)="onRegister()" #registerForm="ngForm">
+        <h1>{{ "register.welcome" | translate }}</h1>
+        <div class="form-group">
+          <div class="email">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="{{ 'register.email' | translate }}"
+              required
+              [(ngModel)]="email"
+            />
+          </div>
+          <div class="pass">
+            <input
+              [type]="togglePass ? 'text' : 'password'"
+              id="password"
+              name="password"
+              placeholder="{{ 'register.password' | translate }}"
+              required
+              [(ngModel)]="password"
+            />
+            <a href="#" (click)="showPass()">{{
+              "register.showPass" | translate
+            }}</a>
+          </div>
+        </div>
+        <button type="submit" [disabled]="registerForm.invalid">
+          {{ "register.register" | translate }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+<app-confirm-otp></app-confirm-otp>
