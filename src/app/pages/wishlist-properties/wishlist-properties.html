@@ -1,4 +1,4 @@
-<div class="container py-4">
+<div class="container">
   <div
     *ngIf="!isLoading && properties.length > 0"
     class="d-flex align-items-center gap-4 mb-4"
@@ -17,7 +17,7 @@
         />
       </svg>
     </button>
-    <h2 class="mb-0 text-black">{{ wishlistName }}</h2>
+    <h2 class="mb-0 fs-4 text-black">{{ wishlistName }}</h2>
   </div>
   <!-- Loading shimmer -->
   <div class="row" *ngIf="isLoading">
@@ -40,6 +40,7 @@
       <a
         [routerLink]="['/property', property.id]"
         style="text-decoration: none;"
+        target="_blank"
       >
         <app-slider-card
           [imageUrl]="getPropertyImage(property)"
