@@ -28,7 +28,7 @@ export class WishListModal implements OnInit {
 
   form = new FormGroup({
     name: new FormControl('', Validators.required),
-    note: new FormControl('', )
+    note: new FormControl('',)
   });
 
 
@@ -54,7 +54,7 @@ export class WishListModal implements OnInit {
         {
           next: (response) => {
             console.log("loaded", response)
-            this.lists = response?.data??[];
+            this.lists = response?.data ?? [];
             this.cdr.detectChanges();
             this.isLoading = false
             console.log(this.isNewModalVisible)
@@ -85,19 +85,18 @@ export class WishListModal implements OnInit {
         }
       });
   }
-  onWishListClicik(wishlistId:number){
-    console.log("wishlist and property id ",wishlistId, this.propertyId)
-    if(!wishlistId || !this.propertyId)
-    {
-      this.confirmService.fail("Failed","Something went wrong, try again!");
+  onWishListClicik(wishlistId: number) {
+    console.log("wishlist and property id ", wishlistId, this.propertyId)
+    if (!wishlistId || !this.propertyId) {
+      this.confirmService.fail("Failed", "Something went wrong, try again!");
       return
     }
-      let obj = this.wishlistService
-          .addPropertyToWishlist(wishlistId,this.propertyId)
-      this.onResponse(obj)
-      this.close.emit()
-}
-        
+    let obj = this.wishlistService
+      .addPropertyToWishlist(wishlistId, this.propertyId)
+    this.onResponse(obj)
+    this.close.emit()
+  }
+
 
 
   onClose() {
@@ -111,46 +110,18 @@ export class WishListModal implements OnInit {
     this.show = false
   }
 
+
+  onResponse(obj: Observable<boolean>) {
+    console.log("from wishlist modal on response")
+    this.finish.emit(obj)
+  }
+  getPropertyImage(imgUrl: string): string {
+    return `${environment.base}${imgUrl}`;
+  }
+
+
   onCreateNewWishlist() {
-    if (!this.form.get('name')?.valid )
-      return
-
-    this.onNewModalClose()
-    this.isLoading= true;
-    this.form.reset()
-    this.wishlistService
-      .createNewWishlist(
-        {
-          name: this.form.get('name')?.value ?? '',
-          notes: this.form.get('note')?.value ?? '',
-          propertyIds:[this.propertyId]
-        })
-      .subscribe(
-        {
-          next: (response) => {
-            this.lists.push(response.data)
-            this.isLoading = false
-            this.confirmService.success("","property added")
-          },
-          error: (error) => {
-            this.isLoading = false
-            console.log("couldn't create new wishlist", error)
-            this.confirmService.show(
-              "Fail",
-              "Something went wrong, try again!",
-              ()=>{},
-              {
-                okText:'Ok',
-                isPrompt:true,
-                isSuccess:false
-              }
-            )
-          }
-        }
-      )
-
-    this.onNewModalClose();
-    this.isLoading = true;
+    if (!this.form.get('name')?.valid) return;
 
     const payload = {
       name: this.form.get('name')?.value ?? '',
@@ -158,12 +129,14 @@ export class WishListModal implements OnInit {
       propertyIds: [this.propertyId]
     };
 
-    this.form.reset();
+    this.onNewModalClose();
+    this.isLoading = true;
 
     this.wishlistService.createNewWishlist(payload).subscribe({
       next: (response) => {
-        this.lists.push(response?.data);
+        this.lists.push(response.data);
         this.isLoading = false;
+        this.confirmService.success("", "property added");
       },
       error: (error) => {
         this.isLoading = false;
@@ -180,16 +153,8 @@ export class WishListModal implements OnInit {
         );
       }
     });
+
+    this.form.reset();
   }
-
-
-  onResponse(obj:Observable<boolean>){
-    console.log("from wishlist modal on response")
-    this.finish.emit(obj)
-  }
-    getPropertyImage(imgUrl: string): string {
-      return `${environment.base}${imgUrl}`;
-    }
-
 
 }
