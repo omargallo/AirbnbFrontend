@@ -34,6 +34,7 @@ import { NotFound } from './components/not-found/not-found';
 import { UserBookings } from './pages/booking/userbookings/userbookings';
 import { UpdateList } from './pages/update-list/update-list';
 import { Messages } from './pages/messages/messages';
+import { PropertyBookings } from './pages/booking/property-bookings/property-bookings';
 
 export const routes: Routes = [
   {
@@ -80,7 +81,10 @@ export const routes: Routes = [
     ]
   },
   { path: 'host', component: HostProperties }
-  , { path: 'booking', component: UserBookings },
+  , { path: 'userbooking', component: UserBookings },
+
+    { path: 'propbooking', component:PropertyBookings },
+
 
   { path: 'updatelist', component: UpdateList },
 

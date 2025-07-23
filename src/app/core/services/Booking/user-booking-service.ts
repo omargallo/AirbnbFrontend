@@ -45,7 +45,7 @@ export class UserBookingService {
         console.error('API Error:', error);
         
         if (error.status === 404) {
-          return of([]); // ✅ Use `of([])` here
+          return of([]);
         }
 
         return throwError(() => new Error(

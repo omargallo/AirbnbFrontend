@@ -7,6 +7,10 @@ import { environment } from '../../../../environments/environment.development';
 export interface BookingDetailsDTO {
   id: number;
   userId: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+  userCountry?: string;
   checkInDate: string;
   checkOutDate: string;
   numberOfGuests: number;
@@ -28,7 +32,7 @@ interface ApiResponse {
 @Injectable({
   providedIn: 'root'
 })
-export class PropertyService {
+export class PropertyBookingService {
   private readonly apiUrl = `${environment.baseUrl}/Booking`;
 
   constructor(private http: HttpClient) {}
@@ -45,13 +49,13 @@ export class PropertyService {
         console.error('API Error:', error);
 
         if (error.status === 404) {
-          return of([]); // ✅ This is the correct way
+          return of([]);
         }
 
         return throwError(() => new Error(
           error.error?.message ||
           error.message ||
-          'Failed to load bookings. Please try again later.'
+          'Failed to load property bookings. Please try again later.'
         ));
       })
     );
