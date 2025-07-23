@@ -4,19 +4,25 @@ import { Wishlist } from './../../core/models/Wishlist';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment.development';
 import { Modal } from "../../shared/components/modal/modal";
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-wishlists',
   templateUrl: './wishlist.html',
   styleUrls: ['./wishlist.css'],
-  imports: [CommonModule, Modal]
+  imports: [CommonModule, Modal, RouterModule]
 })
 export class Wishlists implements OnInit {
   wishlists: Wishlist[] = [];
   isLoading = true;
   error: string | null = null;
 
-  constructor(private wishlistService: WishlistService) { }
+  constructor(private wishlistService: WishlistService, private router: Router) { }
+
+
+  goToWishlist(id: number) {
+    this.router.navigate(['/wishlist', id, 'properties']);
+  }
 
   ngOnInit(): void {
     this.loadWishlists();
@@ -57,11 +63,19 @@ export class Wishlists implements OnInit {
     });
   }
 
-  onWishlistClick(wishlist: Wishlist): void {
-    console.log('Clicked wishlist:', wishlist.name);
-    // Navigate to wishlist details page
-    // this.router.navigate(['/wishlist', wishlist.id]);
+  handleCardClick(event: MouseEvent, wishlistId: number): void {
+    const target = event.target as HTMLElement;
+    if (target.closest('.delete-btn')) {
+      return;
+    }
+
+    this.goToWishlist(wishlistId);
   }
+  // onWishlistClick(wishlist: Wishlist): void {
+  //   console.log('Clicked wishlist:', wishlist.name);
+  //   // Navigate to wishlist details page
+  //   // this.router.navigate(['/wishlist', wishlist.id]);
+  // }
 
 
 

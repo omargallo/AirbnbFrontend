@@ -7,6 +7,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Loader } from "../../shared/components/loader/loader";
 import { ConfirmService } from '../../core/services/confirm.service';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-wish-list-modal',
@@ -21,28 +22,28 @@ export class WishListModal implements OnInit {
   @Output() close = new EventEmitter<void>()
   @Output() finish = new EventEmitter<Observable<boolean>>()
 
-  isLoading:boolean = true
+  isLoading: boolean = true
   isNewModalVisible: boolean = false;
   lists: Wishlist[] = []
 
   form = new FormGroup({
     name: new FormControl('', Validators.required),
-    note: new FormControl('', Validators.required)
+    note: new FormControl('', )
   });
 
 
   constructor(
     private wishlistService: WishlistService,
     private cdr: ChangeDetectorRef,
-    private confirmService:ConfirmService
-  ) 
-  {
+    private confirmService: ConfirmService
+  ) {
   }
 
 
 
 
   ngOnInit() {
+
     this.userId = "1";
     console.log(this.isNewModalVisible)
     if (!this.userId)
@@ -67,6 +68,22 @@ export class WishListModal implements OnInit {
         }
       )
 
+
+    this.isLoading = true;
+
+    this.wishlistService.getAllWishlists()
+      .subscribe({
+        next: (response) => {
+          console.log("All wishlists loaded", response);
+          this.lists = response;
+          this.cdr.detectChanges();
+          this.isLoading = false;
+        },
+        error: (error) => {
+          this.isLoading = false;
+          console.error("Error loading wishlists:", error);
+        }
+      });
   }
   onWishListClicik(wishlistId:number){
     console.log("wishlist and property id ",wishlistId, this.propertyId)
@@ -82,6 +99,7 @@ export class WishListModal implements OnInit {
 }
         
 
+
   onClose() {
     this.close.emit()
   }
@@ -94,8 +112,8 @@ export class WishListModal implements OnInit {
   }
 
   onCreateNewWishlist() {
-    // if (!this.form.get('name')?.valid || !this.form.get('note')?.valid)
-    //   return
+    if (!this.form.get('name')?.valid )
+      return
 
     this.onNewModalClose()
     this.isLoading= true;
@@ -131,6 +149,37 @@ export class WishListModal implements OnInit {
         }
       )
 
+    this.onNewModalClose();
+    this.isLoading = true;
+
+    const payload = {
+      name: this.form.get('name')?.value ?? '',
+      notes: this.form.get('note')?.value ?? '',
+      propertyIds: [this.propertyId]
+    };
+
+    this.form.reset();
+
+    this.wishlistService.createNewWishlist(payload).subscribe({
+      next: (response) => {
+        this.lists.push(response);
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.isLoading = false;
+        console.log("couldn't create new wishlist", error);
+        this.confirmService.show(
+          "Fail",
+          "Something went wrong, try again!",
+          () => { },
+          {
+            okText: 'Ok',
+            isPrompt: true,
+            isSuccess: false
+          }
+        );
+      }
+    });
   }
 
 
@@ -138,4 +187,9 @@ export class WishListModal implements OnInit {
     console.log("from wishlist modal on response")
     this.finish.emit(obj)
   }
+    getPropertyImage(imgUrl: string): string {
+      return `${environment.base}${imgUrl}`;
+    }
+
+
 }

@@ -4,7 +4,7 @@
   </div>
 
   <div *ngIf="isLoading" class="wishlists-grid">
-    <div class="wishlist-card" *ngFor="let i of [1,2,3,4]">
+    <div class="wishlist-card " *ngFor="let i of [1,2,3,4]">
       <div class="wishlist-image shimmer"></div>
       <div class="wishlist-content p-3">
         <div class="shimmer-line mb-2" style="width: 60%; height: 16px;"></div>
@@ -40,16 +40,18 @@
     <div
       *ngFor="let wishlist of wishlists"
       class="wishlist-card"
-      (click)="onWishlistClick(wishlist)"
       [attr.data-testid]="'wishlist-' + wishlist.id"
+  (click)="handleCardClick($event, wishlist.id)"
     >
       <div class="wishlist-image">
-        <img
-          [src]="getPropertyImage(wishlist.coverImageUrl)"
-          [alt]="wishlist.name"
-          class="cover-image"
-          loading="lazy"
-        />
+        <div>
+          <img
+            [src]="getPropertyImage(wishlist.coverImageUrl)"
+            [alt]="wishlist.name"
+            class="cover-image"
+            loading="lazy"
+          />
+        </div>
         <div class="image-overlay">
           <button
             class="delete-btn"
@@ -64,7 +66,7 @@
         </div>
       </div>
 
-      <div class="wishlist-content">
+      <div class="wishlist-content" >
         <h3 class="wishlist-name">{{ wishlist.name }}</h3>
         <p class="wishlist-info">
           {{ getPropertyCount(wishlist.propertyIds) }} saved
@@ -108,7 +110,7 @@
 
     <div
       modalFooter
-      class="modal-actions d-flex justify-content-between align-items-center "
+      class="modal-actions d-flex justify-content-between align-items-center"
     >
       <button class="cancel" (click)="cancelDelete()">Cancel</button>
       <button class="delete-confirm" (click)="deleteSelectedWishlist()">

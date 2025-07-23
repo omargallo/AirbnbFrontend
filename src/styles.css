@@ -71,12 +71,12 @@ body {
 
 .shimmer-line {
   height: 10px;
-  background-color: #ccc;
+  background-color: #f2f2f2;
   border-radius: 4px;
 }
 .shimmer-card {
   height: 180px !important;
-  background-color: #e0e0e0;
+  background-color: #f2f2f2;
 }
 .shimmer::after {
   content: "";

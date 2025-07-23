@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment.development';
 import { Observable, map } from 'rxjs';
 import { Wishlist } from '../../models/Wishlist';
+import { Property } from '../../models/Property';
 
 export interface Result<T> {
   data: T;
@@ -10,14 +11,20 @@ export interface Result<T> {
   message: string;
   statusCode: number;
 }
+export interface WishlistWithPropertiesDTO {
+  id: number;
+  name: string;
+  notes?: string;
+  properties: Property[];
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class WishlistService {
-  private readonly   baseUrl = environment.baseUrl+"/wishlist";
+  private readonly baseUrl = environment.baseUrl + "/wishlist";
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllWishlists(): Observable<Wishlist[]> {
     return this.http.get<Result<Wishlist[]>>(this.baseUrl)
@@ -53,4 +60,13 @@ export class WishlistService {
         map(response => response.isSuccess)
       );
   }
+
+
+  getPropertiesInWishlist(wishlistId: number): Observable<WishlistWithPropertiesDTO> {
+    return this.http.get<Result<WishlistWithPropertiesDTO>>(`${this.baseUrl}/${wishlistId}/properties`)
+      .pipe(
+        map(response => response.data)
+      );
+  }
+
 }
