@@ -47,7 +47,6 @@ export class UserBookings implements OnInit {
 
   private sortBookings(bookings: BookingDetailsDTO[]): BookingDetailsDTO[] {
     return bookings.sort((a, b) => {
-      // Sort by check-in date, newest first
       return new Date(b.checkInDate).getTime() - new Date(a.checkInDate).getTime();
     });
   }

@@ -28,13 +28,13 @@ interface ApiResponse {
 @Injectable({
   providedIn: 'root'
 })
-export class UserBookingService {
+export class PropertyService {
   private readonly apiUrl = `${environment.baseUrl}/Booking`;
 
   constructor(private http: HttpClient) {}
 
-  getBookingsByUserId(userId: string): Observable<BookingDetailsDTO[]> {
-    return this.http.get<ApiResponse>(`${this.apiUrl}/UserBooking/${userId}`).pipe(
+  getBookingsByPropertyId(propertyId: number): Observable<BookingDetailsDTO[]> {
+    return this.http.get<ApiResponse>(`${this.apiUrl}/PropertyBooking/${propertyId}`).pipe(
       map(response => {
         if (!response.isSuccess || !response.data) {
           return [];
@@ -43,9 +43,9 @@ export class UserBookingService {
       }),
       catchError(error => {
         console.error('API Error:', error);
-        
+
         if (error.status === 404) {
-          return of([]); // ✅ Use `of([])` here
+          return of([]); // ✅ This is the correct way
         }
 
         return throwError(() => new Error(
