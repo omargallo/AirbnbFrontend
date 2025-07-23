@@ -116,6 +116,9 @@ export class UpdateList implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  loadPropertyImages(){
+
+  }
   trackBySection(index: number, section: MenuSection): string {
     return section.id as string;
   }
