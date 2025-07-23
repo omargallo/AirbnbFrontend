@@ -33,6 +33,8 @@ import { WishListProperties } from './pages/wishlist-properties/wishlist-propert
 import { NotFound } from './components/not-found/not-found';
 import { UserBookings } from './pages/booking/userbookings/userbookings';
 import { UpdateList } from './pages/update-list/update-list';
+import { Messages } from './pages/messages/messages';
+import { Secondary } from './layout/secondary/secondary';
 
 export const routes: Routes = [
   {
@@ -43,9 +45,7 @@ export const routes: Routes = [
       { path: 'experiences', component: Home },
       { path: 'services', component: Home },
       { path: "FilteredProperties", component: FilteredProperties },
-      { path: 'property/:propertyId', component: PropertyInfo },
-      { path: 'WishLists', component: Wishlists },
-      { path: "wishlist/:wishlistId/properties", component: WishListProperties }
+      { path: 'property/:propertyId', component: PropertyInfo }
     ]
   },
   {
@@ -77,20 +77,27 @@ export const routes: Routes = [
       { path: 'step3-7-final-details', component: Step37FinalDetails }
     ]
   },
+  {
+    path: '', component: Secondary, children: [
+      { path: 'WishLists', component: Wishlists },
+      { path: "wishlist/:wishlistId/properties", component: WishListProperties },
+      { path: "Messages", component: Messages }
+    ]
+  },
   { path: 'host', component: HostProperties }
-   ,{ path: 'booking', component:UserBookings },
+  , { path: 'booking', component: UserBookings },
 
-    { path: 'updatelist', component:UpdateList },
-
-
+  { path: 'updatelist', component: UpdateList },
 
 
 
-   
-    { path: '404', component: NotFound },
-{ path: '**', redirectTo: '/404' }
 
 
 
-  
+  { path: '404', component: NotFound },
+  { path: '**', redirectTo: '/404' }
+
+
+
+
 ];
