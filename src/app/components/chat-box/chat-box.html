@@ -8,7 +8,7 @@
   </div>
 
   <!-- Messages -->
-  <div class="chat-messages">
+  <div #chatContainer class="chat-messages">
     <ng-container *ngFor="let item of chatItems; let i = index">
       <!-- Date separator -->
       <div *ngIf="item.type === 'date'" class="date-separator">
@@ -56,25 +56,27 @@
             class="emoji-button"
             (click)="toggleEmojiPicker(i, $event)"
             type="button"
+            [ngStyle]="item.sender === 'host' ? {'left': '105%'} : {'right': '105%'}"
           >
             😊
-          </button>
 
-          <!-- Emoji picker -->
-          <div
-            *ngIf="showEmojiPicker === i"
-            class="emoji-picker"
-            (click)="$event.stopPropagation()"
-          >
-            <button
-              *ngFor="let emoji of emojiOptions"
-              class="emoji-option"
-              (click)="addReaction(i, emoji, $event)"
-              type="button"
+            <!-- Emoji picker -->
+            <div
+              *ngIf="showEmojiPicker === i"
+              class="emoji-picker"
+              (click)="$event.stopPropagation()"
+              [ngStyle]="item.sender === 'host' ? {'left': '110%'} : {'right': '110%'}"
             >
-              {{emoji}}
-            </button>
-          </div>
+              <button
+                *ngFor="let emoji of emojiOptions"
+                class="emoji-option"
+                (click)="addReaction(i, emoji, $event)"
+                type="button"
+              >
+                {{emoji}}
+              </button>
+            </div>
+          </button>
 
           <!-- Reaction -->
           <div *ngIf="item.reaction" class="message-reaction">

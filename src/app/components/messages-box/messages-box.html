@@ -1,15 +1,32 @@
 <div class="component-container">
   <!-- Header -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fs-3 fw-bold mb-0">Messages</h2>
-    <div class="d-flex gap-2">
-      <button class="icon-btn">
-        <i class="bi bi-search"></i>
-      </button>
-      <!-- <button class="icon-btn">
-        <i class="bi bi-gear"></i>
-      </button> -->
+  <div class="d-flex justify-content-between align-items-center">
+    <h2 class="fs-3 fw-bold mb-1" *ngIf="!searchActive">Messages</h2>
+
+    <div
+      class="search-bar-container"
+      [ngClass]="{
+        'active': searchActive,
+        'animate-open': searchActive,
+        'animate-close': closing
+      }"
+    >
+      <i class="bi bi-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input "
+        placeholder="Search all messages"
+        *ngIf="searchActive || closing"
+      />
     </div>
+
+    <button class="icon-btn" *ngIf="!searchActive" (click)="openSearch()">
+      <i class="bi bi-search"></i>
+    </button>
+
+    <button class="cancel-btn p-2" *ngIf="searchActive" (click)="closeSearch()">
+      Cancel
+    </button>
   </div>
 
   <!-- Filter Buttons -->

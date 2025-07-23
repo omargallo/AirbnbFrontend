@@ -1,6 +1,15 @@
-<app-header></app-header>
-<!-- <app-host-properties> </app-host-properties> -->
-<main style="margin-top: 12rem;">
-  <router-outlet></router-outlet>
-</main>
-<app-footer></app-footer>
+<div [ngClass]="{'noscroll':isMessagesRoute}">
+  <app-header></app-header>
+  <!-- <app-host-properties> </app-host-properties> -->
+  <main
+    [ngClass]="{
+    'mt': !(isMessagesRoute || isSecondRoute),
+    'nomt':isSecondRoute
+  }"
+  >
+    <router-outlet></router-outlet>
+  </main>
+  <div *ngIf="!isMessagesRoute">
+    <app-footer></app-footer>
+  </div>
+</div>

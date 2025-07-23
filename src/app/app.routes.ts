@@ -34,7 +34,6 @@ import { NotFound } from './components/not-found/not-found';
 import { UserBookings } from './pages/booking/userbookings/userbookings';
 import { UpdateList } from './pages/update-list/update-list';
 import { Messages } from './pages/messages/messages';
-import { Secondary } from './layout/secondary/secondary';
 
 export const routes: Routes = [
   {
@@ -45,7 +44,10 @@ export const routes: Routes = [
       { path: 'experiences', component: Home },
       { path: 'services', component: Home },
       { path: "FilteredProperties", component: FilteredProperties },
-      { path: 'property/:propertyId', component: PropertyInfo }
+      { path: 'property/:propertyId', component: PropertyInfo },
+      { path: 'WishLists', component: Wishlists },
+      { path: "wishlist/:wishlistId/properties", component: WishListProperties },
+      { path: "Messages", component: Messages }
     ]
   },
   {
@@ -75,13 +77,6 @@ export const routes: Routes = [
       { path: 'step3-5-add-discount', component: Step35AddDiscount },
       { path: 'step3-6-safety', component: Step36Safety },
       { path: 'step3-7-final-details', component: Step37FinalDetails }
-    ]
-  },
-  {
-    path: '', component: Secondary, children: [
-      { path: 'WishLists', component: Wishlists },
-      { path: "wishlist/:wishlistId/properties", component: WishListProperties },
-      { path: "Messages", component: Messages }
     ]
   },
   { path: 'host', component: HostProperties }

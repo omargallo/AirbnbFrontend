@@ -1,6 +1,9 @@
 <header
   class="airbnb-header"
-  [ngClass]="{ 'search-bar-sticky': isSearchBarSticky }"
+  [ngClass]="{
+    'search-bar-sticky': isSearchBarSticky,
+    'relative-header': isMessagesRoute
+  }"
 >
   <nav class="navbar navbar-expand-lg">
     <div
@@ -27,6 +30,7 @@
 
       <!-- Centralized container for top nav and search bar -->
       <div
+        *ngIf="!isMessagesRoute"
         class="d-flex align-items-center justify-content-center flex-column ms-5"
       >
         <!-- Top Navigation Categories -->
@@ -210,7 +214,7 @@
     </div>
   </nav>
 
-  <div class="container-fluid d-flex justify-content-center">
+  <div class="container-fluid d-flex justify-content-center"   *ngIf="!isMessagesRoute">
     <div
       class="search-bar-container d-flex align-items-center justify-content-center"
     >
