@@ -16,6 +16,8 @@ import { debounceTime, Subject } from 'rxjs';
   styleUrls: ['./filtered-properties.css']
 })
 export class FilteredProperties implements OnInit {
+  private isFirstLoad = true;
+
   properties: Property[] = [];
   selectedProperty: Property | null = null;
 
@@ -98,10 +100,16 @@ export class FilteredProperties implements OnInit {
 
       this.shouldFitBounds = !this.isMapInitialized;
       this.loadProperties();
+
+      this.isFirstLoad = false;
+
     });
   }
 
   loadProperties() {
+    if (!this.isFirstLoad && this.searchParams.country) {
+      delete this.searchParams.country;
+    }
     this.propertyService.searchProperties(this.searchParams).subscribe({
       next: response => {
         console.log('🔍 Search Response:', response);
@@ -110,7 +118,7 @@ export class FilteredProperties implements OnInit {
         if (response.isSuccess) {
           this.properties = response.data.items;
 
-          //test 
+          //test
           // const originalItems = response.data.items;
           // this.properties = [
           //   ...originalItems,
@@ -131,7 +139,7 @@ export class FilteredProperties implements OnInit {
           if (!this.map) {
             this.initializeLeafletMap();
           }
-           else {
+          else {
             this.updateMapMarkers();
           }
         }
@@ -357,16 +365,16 @@ export class FilteredProperties implements OnInit {
     this.currentPage = 1;
 
     // Get country from coordinates using reverse geocoding
-    try {
-      const country = await this.getCountryFromCoordinates(lat, lng);
-      if (country) {
-        this.searchParams.country = country;
-        console.log('🌍 Country detected:', country);
-      }
-    } catch (error) {
-      console.warn('⚠️ Failed to get country from coordinates:', error);
-      // Keep existing country or remove it if coordinates changed significantly
-    }
+    // try {
+    //   const country = await this.getCountryFromCoordinates(lat, lng);
+    //   if (country) {
+    //     this.searchParams.country = country;
+    //     console.log('🌍 Country detected:', country);
+    //   }
+    // } catch (error) {
+    //   console.warn('⚠️ Failed to get country from coordinates:', error);
+    //   // Keep existing country or remove it if coordinates changed significantly
+    // }
 
     // Update URL parameters
     this.updateUrlParams(zoom);
@@ -375,29 +383,29 @@ export class FilteredProperties implements OnInit {
     this.loadProperties();
   }
 
-  private async getCountryFromCoordinates(lat: number, lng: number): Promise<string | null> {
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=3&addressdetails=1`
-      );
+  // private async getCountryFromCoordinates(lat: number, lng: number): Promise<string | null> {
+  //   try {
+  //     const response = await fetch(
+  //       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=3&addressdetails=1`
+  //     );
 
-      if (!response.ok) {
-        throw new Error('Geocoding request failed');
-      }
+  //     if (!response.ok) {
+  //       throw new Error('Geocoding request failed');
+  //     }
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      const country =
-        data?.name ||
-        data.address?.country ||
-        data.display_name?.split(',').pop()?.trim() || data?.address?.country_code;
+  //     const country =
+  //       data?.name ||
+  //       data.address?.country ||
+  //       data.display_name?.split(',').pop()?.trim() || data?.address?.country_code;
 
-      return country || null;
-    } catch (error) {
-      console.error('❌ Error in reverse geocoding:', error);
-      return null;
-    }
-  }
+  //     return country || null;
+  //   } catch (error) {
+  //     console.error('❌ Error in reverse geocoding:', error);
+  //     return null;
+  //   }
+  // }
 
   private calculateDistanceFromZoom(zoom: number): number {
 
@@ -421,9 +429,9 @@ export class FilteredProperties implements OnInit {
       maxDistanceKm: this.searchParams.maxDistanceKm
     };
 
-    if (this.searchParams.country) {
-      queryParams.country = this.searchParams.country;
-    }
+    // if (this.searchParams.country) {
+    //   queryParams.country = this.searchParams.country;
+    // }
 
     if (zoom !== undefined) {
       queryParams.zoom = zoom;
@@ -451,16 +459,16 @@ export class FilteredProperties implements OnInit {
     });
   }
 
-getPropertyImage(property: Property): string {
-  const cover = property.images?.find(img => img.isCover && !img.isDeleted);
+  getPropertyImage(property: Property): string {
+    const cover = property.images?.find(img => img.isCover && !img.isDeleted);
 
-  if (cover?.imageUrl) {
-    return `${environment.base}${cover.imageUrl}`;
+    if (cover?.imageUrl) {
+      return `${environment.base}${cover.imageUrl}`;
+    }
+
+    // fallback image
+    return 'assets/images/deafult.png';
   }
-
-  // fallback image
-  return 'assets/images/deafult.png';
-}
 
 
   getLocationSubtitle(property: Property): string {
