@@ -9,7 +9,7 @@ export class ConfirmService {
   oKText: string = 'Confirm';
   cancelText: string = 'Cancel';
   isSuccess: boolean = true;
-  callback: () => void = () => {};
+  callback?:   (() => void)  = undefined;
 
   show(
     title: string,
@@ -26,7 +26,8 @@ export class ConfirmService {
       isPrompt?: boolean;
       cancelText?: string;
     } = {}
-  ) {
+  ) 
+  {
     this.isPrompt = isPrompt ?? false;
     this.oKText = okText ?? 'Confirm';
     this.cancelText = cancelText ?? 'Cancel';
@@ -37,12 +38,42 @@ export class ConfirmService {
     this.visible.set(true);
   }
 
+  fail( title: string = "Failed",
+    message: string = "Something went wrong.",
+    onConfirm?:  () => void ,
+    okText:string = "Ok"
+  ){
+    this.set(true,okText,false,title,message,true,onConfirm)
+  }
+
+  success(
+    title: string ,
+    message: string ,
+    onConfirm?:  () => void ,
+    okText:string = "Ok"
+  ){
+
+    this.set(true,okText,true,title,message,true,onConfirm)
+  }
+
   confirm() {
-    this.callback();
+    if(this.callback)
+      this.callback();
     this.visible.set(false);
   }
 
   cancel() {
     this.visible.set(false);
+  }
+
+
+  set(isPrompt:boolean,okText:string,isSuccess:boolean,title:string,message:string,isVisible:boolean,onConfirm?:()=>void){
+    this.isPrompt = isPrompt;
+    this.oKText = okText ;
+    this.isSuccess = isSuccess;
+    this.title = title;
+    this.message = message;
+    this.callback = onConfirm ;
+    this.visible.set(isVisible);
   }
 }

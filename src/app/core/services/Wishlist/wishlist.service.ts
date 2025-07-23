@@ -29,15 +29,15 @@ export class WishlistService {
   getAllWishlists(): Observable<Wishlist[]> {
     return this.http.get<Result<Wishlist[]>>(this.baseUrl)
       .pipe(
-        map(response => response.data)
+        map(response =>response?.data ?? [])
       );
   }
+  getByUserIdWithCover(id:string): Observable<Result<Wishlist[]>> {
+    return this.http.get<Result<Wishlist[]>>(this.baseUrl)
+  }
 
-  createNewWishlist(wishlist: { name: string, notes: string }): Observable<Wishlist> {
+  createNewWishlist(wishlist: { name: string, notes: string, propertyIds:number[] }): Observable<Result<Wishlist>> {
     return this.http.post<Result<Wishlist>>(`${this.baseUrl}/create`, wishlist)
-      .pipe(
-        map(response => response.data)
-      );
   }
 
   deleteWishlist(id: number): Observable<boolean> {
@@ -48,7 +48,7 @@ export class WishlistService {
   }
 
   addPropertyToWishlist(wishlistId: number, propertyId: number): Observable<boolean> {
-    return this.http.post<Result<boolean>>(`${this.baseUrl}/${wishlistId}/property/${propertyId}`, {})
+    return this.http.post<Result<boolean>>(`${this.baseUrl}/add/${wishlistId}/${propertyId}`, {})
       .pipe(
         map(response => response.isSuccess)
       );

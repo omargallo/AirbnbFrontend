@@ -18,6 +18,7 @@
   border-radius: 10px;
   width: 90%;
   max-width: fit-content;
+  min-width: 400px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   text-align: center;
   animation: fadeInUp 0.3s ease;

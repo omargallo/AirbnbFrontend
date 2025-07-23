@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Loader } from "../../shared/components/loader/loader";
 import { ConfirmService } from '../../core/services/confirm.service';
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 
 @Component({
@@ -19,6 +20,7 @@ export class WishListModal implements OnInit {
   @Input() show: boolean = false
   @Input() userId?: string;
   @Output() close = new EventEmitter<void>()
+  @Output() finish = new EventEmitter<Observable<boolean>>()
 
   isLoading: boolean = true
   isNewModalVisible: boolean = false;
@@ -26,7 +28,7 @@ export class WishListModal implements OnInit {
 
   form = new FormGroup({
     name: new FormControl('', Validators.required),
-    note: new FormControl('', Validators.required)
+    note: new FormControl('', )
   });
 
 
@@ -41,7 +43,31 @@ export class WishListModal implements OnInit {
 
 
   ngOnInit() {
-    if (!this.userId) return;
+
+    this.userId = "1";
+    console.log(this.isNewModalVisible)
+    if (!this.userId)
+      return
+    this.isLoading = true
+    this.wishlistService.getByUserIdWithCover(this.userId)
+      .subscribe(
+        {
+          next: (response) => {
+            console.log("loaded", response)
+            this.lists = response?.data??[];
+            this.cdr.detectChanges();
+            this.isLoading = false
+            console.log(this.isNewModalVisible)
+
+          },
+          error: (error) => {
+            this.isLoading = false;
+            console.log("from Modal ngOninit error")
+            console.log(error);
+          }
+        }
+      )
+
 
     this.isLoading = true;
 
@@ -59,6 +85,19 @@ export class WishListModal implements OnInit {
         }
       });
   }
+  onWishListClicik(wishlistId:number){
+    console.log("wishlist and property id ",wishlistId, this.propertyId)
+    if(!wishlistId || !this.propertyId)
+    {
+      this.confirmService.fail("Failed","Something went wrong, try again!");
+      return
+    }
+      let obj = this.wishlistService
+          .addPropertyToWishlist(wishlistId,this.propertyId)
+      this.onResponse(obj)
+      this.close.emit()
+}
+        
 
 
   onClose() {
@@ -66,7 +105,6 @@ export class WishListModal implements OnInit {
   }
   onNewModalClose() {
     this.isNewModalVisible = false
-    this.show = true
   }
   showNewModal() {
     this.isNewModalVisible = true
@@ -74,7 +112,42 @@ export class WishListModal implements OnInit {
   }
 
   onCreateNewWishlist() {
-    if (this.form.invalid) return;
+    if (!this.form.get('name')?.valid )
+      return
+
+    this.onNewModalClose()
+    this.isLoading= true;
+    this.form.reset()
+    this.wishlistService
+      .createNewWishlist(
+        {
+          name: this.form.get('name')?.value ?? '',
+          notes: this.form.get('note')?.value ?? '',
+          propertyIds:[this.propertyId]
+        })
+      .subscribe(
+        {
+          next: (response) => {
+            this.lists.push(response.data)
+            this.isLoading = false
+            this.confirmService.success("","property added")
+          },
+          error: (error) => {
+            this.isLoading = false
+            console.log("couldn't create new wishlist", error)
+            this.confirmService.show(
+              "Fail",
+              "Something went wrong, try again!",
+              ()=>{},
+              {
+                okText:'Ok',
+                isPrompt:true,
+                isSuccess:false
+              }
+            )
+          }
+        }
+      )
 
     this.onNewModalClose();
     this.isLoading = true;
@@ -110,8 +183,13 @@ export class WishListModal implements OnInit {
   }
 
 
+  onResponse(obj:Observable<boolean>){
+    console.log("from wishlist modal on response")
+    this.finish.emit(obj)
+  }
     getPropertyImage(imgUrl: string): string {
       return `${environment.base}${imgUrl}`;
     }
+
 
 }

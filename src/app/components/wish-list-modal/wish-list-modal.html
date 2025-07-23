@@ -1,55 +1,83 @@
 <app-modal
-  (close)="onClose()"
-  [isVisible]="show"
-  class="vh-min-60"
-  [modalDialogClass]="'mx-auto col-10 col-sm-10 col-md-8 col-lg-7 col-xl-5 rounded-5'"
-  [modalContentClass]="'col-12 rounded-5 vh-min-75'"
->
-  <app-loader
-    [containerClass]="'vh-min-60'"
-    *ngIf="isLoading"
-    [showText]="true"
-  >
-  </app-loader>
-
-  <div
-    *ngIf="!isLoading"
-    class="row row-cols-1 row-cols-sm-2 p-0 pt-4 overflow-x-hidden col-12"
-  >
-    @for(item of lists; track $index){
-    <div class="mb-3 cursor-pointer">
-      <img
-        class="wishlist-image col-12"
-        style="border-radius: 50px;"
-        [src]="getPropertyImage(item.coverImageUrl)"
-        alt=""
-      />
-      <p class="my-0 ms-3">{{item.name}}</p>
-      <p class="secondary-text small ms-3 my-0">
-        {{item.propertyIds.length}} saved
-      </p>
-    </div>
-    }
-  </div>
-  <div class="modal-footer">
-    <button
-      class="btn btn-primary bg-black primary-text text-light me-auto"
-      (click)="showNewModal()"
+    class="wishlists-modal col-12"
+    (close)="onClose()" 
+    [title]="'Wishlists'"
+    [isVisible]="show"
+    [modalClass]="'col-12'"
+    [modalDialogClass]="' mx-auto col-12  vh-min-100 p-0'"
+    [modalContentClass]="'mx-auto col-12  rounded-5 p-0 border-0 p-3 vh-max-85 vh-min-40 overflow-y-auto'"
+    
     >
-      Create new wishlist
-    </button>
-  </div>
+    <app-loader 
+        [containerClass]="'vh-min-40'"
+        *ngIf="isLoading"
+        [showText]="true"
+        >
+    </app-loader>
+    
+    
+    <div 
+        class="h-100 d-flex justify-content-center align-items-center"
+        *ngIf="!isLoading && lists.length==0">
+        <div class="empty-content">
+            <div class="empty-icon">💝</div>
+            <h3>No wishlists yet</h3>
+            <p>
+              Create your first wishlist to start saving your favorite properties
+            </p>
+            <!-- <button class="create-btn">Create Wishlist</button> -->
+          </div>
+      </div>
+    
+    <div *ngIf="!isLoading" class="row row-cols-1 row-cols-sm-2 pt-3 m-0 g-0   ">
+        @for(item of lists; track $index){
+            
+              <div class="mb-3">
+                  <div class="col-12">
+                    <button 
+                      class="text-left"
+                      (click)="onWishListClicik(item.id)">
+                      
+                        <img class="wishlist-image rounded-4 " 
+                          src="https://a0.muscache.com/im/pictures/hosting/Hosting-1336611026974467386/original/63677619-b824-43ff-a5d3-f3d74275f29f.jpeg?im_w=720"
+                          alt="">
+                        <p class="my-0 ms-1 mt-1 fw-bold small">{{item.name}}</p>
+                        <p class="secondary-text small  ms-1 my-0">{{item.propertyIds.length}} saved</p>
+                    </button>
+                  </div>
+                        
+              </div>
+            
+          }
+      </div>
+      
+    
+    <div class="modal-footer">
+        <button class="btn btn-primary bg-black  primary-text text-light me-auto"
+        (click)="showNewModal()"
+        >Create new wishlist</button>
+      </div>
+    
+    
+
 </app-modal>
 
 <app-modal
-  title="New Withlist"
-  *ngIf="isNewModalVisible"
-  (close)="onNewModalClose()"
-  [modalDialogClass]="'mx-auto col-12 rounded-5'"
-  [modalClass]="'col-12'"
-  [modalContentClass]="'col-8 col-sm-6 col-md-4 col-lg-3 mx-auto rounded-5'"
+    [title]="'New Withlist'"
+    *ngIf="isNewModalVisible"
+
+    (close)="onNewModalClose()"
+  
+    [modalClass]="'col-12'"
+    [modalDialogClass]="' col-12  vh-min-100 p-0'"
+    [modalContentClass]="'mx-auto col-12  rounded-5 p-0 border-0 p-3 vh-max-85'"
 >
-  <form [formGroup]="form" (ngSubmit)="onCreateNewWishlist()">
+    <form 
+      [formGroup]="form" 
+      (ngSubmit)="onCreateNewWishlist()"
+      class="text-start"  
+    >
+
     <div class="mb-3">
       <label for="name" class="form-label">Name</label>
       <input
@@ -89,16 +117,15 @@
       >
         Note is required.
       </div>
-    </div>
-
-    <div class="modal-footer d-flex justify-content-start">
-      <button
-        type="submit"
-        class="btn btn-primary mb-3"
-        [disabled]="form.invalid"
-      >
-        Submit
-      </button>
-    </div>
+    </div>  
   </form>
+  <div class="modal-footer d-flex justify-content-start">
+    <button
+        type="submit"
+        class="btn btn-primary mb-3" 
+        (click)="onCreateNewWishlist()"
+        [disabled]="form.invalid">Submit
+    </button>
+  </div>
+  
 </app-modal>
