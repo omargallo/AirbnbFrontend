@@ -55,7 +55,7 @@
         (cardClick)="onCardClicked($event)"
         [propertyId]="property.id"
         title="{{property.title}}"
-        imageUrl="{{property.images[0].imageUrl}}"
+        imageUrl="{{getPropertyImage(property)}}"
         [price]="property.pricePerNight"
         description="{{property.description}}"
         [rating]="property.averageRating"

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { register } from 'swiper/element/bundle';
 import { SliderCard } from "../../pages/home/components/slider-card/slider-card";
 import { Property } from '../../core/models/Property';
+import { environment } from '../../../environments/environment.development';
 
 register();
 
@@ -88,4 +89,17 @@ export class PropertySwiperComponent implements OnInit {
   trackByPropertyId(index: number, property: Property): number {
     return property.id;
   }
+
+
+  
+    getPropertyImage(property: Property): string {
+      const cover = property.images?.find(img => img.isCover && !img.isDeleted);
+  
+      if (cover?.imageUrl) {
+        return `${environment.base}${cover.imageUrl}`;
+      }
+  
+      // fallback image
+      return 'assets/images/deafult.png';
+    }
 }
