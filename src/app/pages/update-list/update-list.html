@@ -102,6 +102,17 @@
             </div>
 
             <!-- Preview Selected Files (before upload) -->
+            <div class="photo-item" *ngFor="let file of property?.photos; let i = index">
+              <div class="photo-wrapper preview-photo">
+                <img src="{{`${baseUrl}/${file.imageUrl}`}}" [alt]="'Preview ' + (i + 1)" class="photo-image">
+                <button type="button" class="photo-remove-btn" >
+                  <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                  </svg>
+                </button>
+                <div class="preview-badge">Preview</div>
+              </div>
+            </div>
             <div class="photo-item" *ngFor="let file of selectedFiles; let i = index">
               <div class="photo-wrapper preview-photo">
                 <img [src]="getPreviewUrl(file)" [alt]="'Preview ' + (i + 1)" class="photo-image">

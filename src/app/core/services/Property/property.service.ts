@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { Property } from '../../models/Property';
 import { environment } from '../../../../environments/environment.development';
+import { PropertyImage } from '../../models/PropertyImage';
 
 interface ApiResponse<T> {
   data: T;
@@ -65,6 +66,11 @@ export class PropertyService {
 
   constructor(private http: HttpClient) { }
 
+  getImagesByPropertyId(id:number):Observable<PropertyImage[]>{
+   return  this.http.get<Result<PropertyImage[]>>(`${this.baseUrl}/${id}/images`).pipe(
+    map(res=> res.data)
+   )
+  }
   uploadPhotos(formData:FormData){
     return this.http.post(`${this.baseUrl}/property-images/upload`, formData, {
       reportProgress: true,
@@ -120,5 +126,10 @@ export class PropertyService {
     });
   }
 
+
+
+  updateProperty(id:number,prop:Property){
+    // this.http.put(`${this.baseUrl}/${id}`,)
+  }
 
 }

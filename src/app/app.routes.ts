@@ -80,7 +80,7 @@ export const routes: Routes = [
   { path: 'host', component: HostProperties }
    ,{ path: 'booking', component:UserBookings },
 
-    { path: 'updatelist', component:UpdateList },
+    { path: 'updatelist/:propertyId', component:UpdateList },
 
 
 
