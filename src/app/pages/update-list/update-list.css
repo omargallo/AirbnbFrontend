@@ -173,17 +173,19 @@
 /* Content area - Center the content */
 .content-area {
   padding: 24px 32px;
-  max-width: none; /* Remove max-width constraint */
+  max-width: none;
   display: flex;
-  justify-content: center; /* Center content horizontally */
-}
+  justify-content: center;
+  height: calc(100vh - 85px);
+  overflow-y: auto;
+} 
 
 /* Content wrapper to constrain width and center content */
 .content-wrapper {
   width: 100%;
-  max-width: 600px; /* Constrain content width */
+  max-width: 600px;
+  height: fit-content;
 }
-
 .section-content {
   margin-bottom: 32px;
 }
