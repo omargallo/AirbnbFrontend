@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { UserBookingService, BookingDetailsDTO } from '../../../core/services/Booking/user-booking-service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { HeaderComponent } from "../../../components/header/header";
 
 @Component({
   selector: 'app-user-bookings',
   templateUrl: './userbookings.html',
   styleUrls: ['./userbookings.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, HeaderComponent],
   providers: [DatePipe]
 })
 export class UserBookings implements OnInit {
@@ -79,7 +80,6 @@ export class UserBookings implements OnInit {
     }
   }
 
-  // New method to format short dates with year for meta information
   formatShortDateWithYear(dateString: string): string {
     try {
       const date = new Date(dateString);
@@ -91,13 +91,11 @@ export class UserBookings implements OnInit {
 
   getBookingStatusClass(status: string): string {
     const statusMap: { [key: string]: string } = {
-      '3': 'status-completed',
-      '1': 'status-confirmed',
-      '0': 'status-pending',
-      '2': 'status-cancelled'
+      'completed': 'status-completed',
+      'confirmed': 'status-confirmed',
+      'pending': 'status-pending',
+      'cancelled': 'status-cancelled'
     };
-    console.log(typeof(status))
-    // status = String(status)
     return statusMap[status.toLowerCase()] || 'status-default';
   }
 
@@ -108,8 +106,6 @@ export class UserBookings implements OnInit {
       'pending': 'bi-clock-fill',
       'cancelled': 'bi-x-circle-fill'
     };
-    // status = String(status)
-
     return iconMap[status.toLowerCase()] || 'bi-circle-fill';
   }
 
@@ -160,9 +156,11 @@ export class UserBookings implements OnInit {
     return booking.id;
   }
 
-  // New method to get per-night price
   getPricePerNight(totalPrice: number, checkIn: string, checkOut: string): number {
     const nights = this.getNightCount(checkIn, checkOut);
     return nights > 0 ? totalPrice / nights : 0;
   }
-}
+}  
+
+
+
