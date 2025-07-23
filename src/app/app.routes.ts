@@ -32,6 +32,7 @@ import { Wishlists } from './pages/wishlist/wishlist';
 import { WishListProperties } from './pages/wishlist-properties/wishlist-properties';
 import { NotFound } from './components/not-found/not-found';
 import { UserBookings } from './pages/booking/userbookings/userbookings';
+import { UpdateList } from './pages/update-list/update-list';
 
 export const routes: Routes = [
   {
@@ -78,6 +79,14 @@ export const routes: Routes = [
   },
   { path: 'host', component: HostProperties }
    ,{ path: 'booking', component:UserBookings },
+
+    { path: 'updatelist', component:UpdateList },
+
+
+
+
+
+   
     { path: '404', component: NotFound },
 { path: '**', redirectTo: '/404' }
 
