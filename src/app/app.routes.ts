@@ -85,6 +85,7 @@ export const routes: Routes = [
   { path: 'updatelist', component: UpdateList },
 
 
+    { path: 'updatelist/:propertyId', component:UpdateList },
 
 
 
