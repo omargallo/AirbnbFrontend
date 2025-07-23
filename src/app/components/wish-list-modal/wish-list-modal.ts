@@ -162,7 +162,7 @@ export class WishListModal implements OnInit {
 
     this.wishlistService.createNewWishlist(payload).subscribe({
       next: (response) => {
-        this.lists.push(response);
+        this.lists.push(response?.data);
         this.isLoading = false;
       },
       error: (error) => {
