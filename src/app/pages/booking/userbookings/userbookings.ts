@@ -16,7 +16,7 @@ export class UserBookings implements OnInit {
   isLoading = true;
   error: string | null = null;
   private readonly currentDate = new Date();
-  private readonly userId = '1a03e58e-535d-4dfb-918f-e27e5e3b4907';
+  private readonly userId = '9a4e2846-8058-4458-badd-6cf6014052';
 
   constructor(
     private userBookingService: UserBookingService,
