@@ -1,1 +1,26 @@
-<p>confirm works!</p>
+<div
+  class="confirm-overlay"
+  *ngIf="confirm.visible()"
+  [ngClass]="{ 'dark-mode': isDarkMode() }"
+>
+  <div class="confirm-box animate">
+    <h3>{{ confirm.title }}</h3>
+    <p style="min-width: max-content">{{ confirm.message }}</p>
+    <div class="confirm-actions">
+      <button
+        *ngIf="!confirm.isPrompt"
+        class="btn cancel"
+        (click)="confirm.cancel()"
+      >
+        {{ confirm.cancelText }}
+      </button>
+      <button
+        class="btn confirm"
+        [ngClass]="confirm.isSuccess ? 'confirm-success' : 'confirm-danger'"
+        (click)="confirm.confirm()"
+      >
+        {{ confirm.oKText }}
+      </button>
+    </div>
+  </div>
+</div>

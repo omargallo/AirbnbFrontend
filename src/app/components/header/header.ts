@@ -3,6 +3,8 @@ import {
   AfterViewInit,
   HostListener,
   OnDestroy,
+  inject,
+  ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -13,6 +15,7 @@ import { ThemeService } from '../../core/services/theme.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { TopNavComponent } from "../top-nav/top-nav";
 import { SearchFilterGroupComponent } from "../search-filter-group/search-filter-group";
+import { DialogService } from '../../core/services/dialog.service';
 
 @Component({
   selector: 'app-header',
@@ -33,19 +36,35 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   isDarkMode = false;
   isSearchBarSticky = false;
   wasFilterClicked = false;
+  dialogService = inject(DialogService);
 
   constructor(
     public lang: LangService,
     public theme: ThemeService,
+    private elementRef: ElementRef
+
   ) { }
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
+    if (this.dropdownOpen) {
+      this.closeDropdown();
+    }
+
     if (!this.wasFilterClicked) {
       this.isSearchBarSticky = window.scrollY > 80;
     }
   }
 
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    const target = event.target as HTMLElement;
+    const dropdown = this.elementRef.nativeElement.querySelector('.dropdown');
+
+    if (this.dropdownOpen && dropdown && !dropdown.contains(target)) {
+      this.closeDropdown();
+    }
+  }
   ngAfterViewInit(): void { }
   ngOnDestroy(): void { }
 
@@ -119,6 +138,16 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.dropdownClosing = !this.dropdownOpen;
   }
 
+  openDropdown() {
+    this.dropdownOpen = true;
+    this.dropdownClosing = false;
+  }
+
+  closeDropdown() {
+    this.dropdownClosing = true;
+    this.dropdownOpen = false;
+  }
+
   onAnimationEnd() {
     if (this.dropdownClosing) {
       this.dropdownClosing = false;
@@ -136,5 +165,13 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   toggleTheme() {
     this.isDarkMode = !this.isDarkMode;
     this.theme.toggleTheme();
+  }
+
+  openLoginDialog() {
+    this.dialogService.openDialog('login');
+  }
+
+  openRegisterDialog() {
+    this.dialogService.openDialog('register');
   }
 }

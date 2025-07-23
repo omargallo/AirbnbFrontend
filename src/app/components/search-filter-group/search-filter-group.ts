@@ -63,6 +63,37 @@ export class SearchFilterGroupComponent implements AfterViewInit, OnDestroy {
 
     this.closeSearchModal();
   }
+
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll(event: Event) {
+    if (this.isModalVisible && !this.isModalAnimatingOut) {
+      this.ngZone.run(() => {
+        this.closeSearchModal();
+      });
+    }
+    this.updateStickyState();
+  }
+
+
+  private updateStickyState() {
+    const shouldBeSticky = window.scrollY > 80;
+
+    const headerElement = document.querySelector('.airbnb-header');
+    if (headerElement) {
+      if (shouldBeSticky && !this.isModalVisible) {
+        headerElement.classList.add('search-bar-sticky');
+        headerElement.classList.remove('modal-open');
+      } else if (shouldBeSticky && this.isModalVisible) {
+        headerElement.classList.add('search-bar-sticky');
+        headerElement.classList.add('modal-open');
+      } else {
+        headerElement.classList.remove('search-bar-sticky');
+        headerElement.classList.remove('modal-open');
+      }
+    }
+
+    this.isSearchBarSticky = shouldBeSticky;
+  }
   selectedDateRange = {
     startDate: null as moment.Moment | null,
     endDate: null as moment.Moment | null,
@@ -113,6 +144,8 @@ export class SearchFilterGroupComponent implements AfterViewInit, OnDestroy {
     this.isModalVisible = true;
     this.isModalAnimatingOut = false;
 
+    this.updateStickyState();
+
     setTimeout(() => {
       this.updateIndicator();
       this.setupModalObserver();
@@ -123,6 +156,8 @@ export class SearchFilterGroupComponent implements AfterViewInit, OnDestroy {
     if (!this.isModalVisible) return;
     this.isModalAnimatingOut = true;
     this.activeFilter = '';
+
+    this.updateStickyState();
     this.updateIndicator();
 
     if (this.modalObserver) {
@@ -251,24 +286,24 @@ export class SearchFilterGroupComponent implements AfterViewInit, OnDestroy {
 
 
 
-onDateSelected(date: string | { start: string, end: string }) {
-  if (typeof date === 'string') {
-    const day = moment(date).local();
-    this.selectedDateRange = {
-      startDate: day,
-      endDate: day
-    };
-    this.selectedDate = day.format('MMM DD');
-  } else if (typeof date === 'object' && date.start && date.end) {
-    const start = moment(date.start).local();
-    const end = moment(date.end).local();
-    this.selectedDateRange = {
-      startDate: start,
-      endDate: end
-    };
-    this.selectedDate = `${start.format('MMM DD')} - ${end.format('MMM DD')}`;
+  onDateSelected(date: string | { start: string, end: string }) {
+    if (typeof date === 'string') {
+      const day = moment(date).local();
+      this.selectedDateRange = {
+        startDate: day,
+        endDate: day
+      };
+      this.selectedDate = day.format('MMM DD');
+    } else if (typeof date === 'object' && date.start && date.end) {
+      const start = moment(date.start).local();
+      const end = moment(date.end).local();
+      this.selectedDateRange = {
+        startDate: start,
+        endDate: end
+      };
+      this.selectedDate = `${start.format('MMM DD')} - ${end.format('MMM DD')}`;
+    }
   }
-}
 
 
 

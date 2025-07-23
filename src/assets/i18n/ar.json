@@ -30,5 +30,13 @@
     "GUESTS": "ضيوف",
     "INFANT": "رضيع",
     "INFANTS": "رُضّع"
+  },
+  "login": {
+    "welcome": "مرحبًا بك مجددا",
+    "goTOForgotPassword": "هل نسيت كلمة المرور؟",
+    "notYou": "ليس انت؟",
+    "goToRegister": "استخدم حساب اخر",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور"
   }
 }

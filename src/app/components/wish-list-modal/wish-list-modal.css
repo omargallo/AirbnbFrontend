@@ -1,3 +1,9 @@
+.h-100{
+  height: 100%;
+}
+.wishlists-modal{
+  transition: all 40s;
+}
 .primary-text{
   color: var(--primary-text-color);
 }
@@ -5,7 +11,7 @@
   color: var(--secondary-text-color);
 }
 .wishlist-image{
-    aspect-ratio: 1.2/1;
+    aspect-ratio: 1.1/1;
 }
 
 .btn{
@@ -13,7 +19,10 @@
     color: var(--primary-text-color);
 
 }
-
+.note-maxLength{
+  color: var(--secondary-text-color);
+  font-size: small;
+}
 /* Apply this to the container or globally */
 .row::-webkit-scrollbar {
   width: 12px;           /* width of vertical scrollbar */
@@ -33,4 +42,35 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #c56060;      /* color on hover */
+}
+
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  padding: 80px 20px;
+}
+
+.empty-content {
+  text-align: center;
+  max-width: 400px;
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+.empty-content h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #222222;
+  margin: 0 0 12px 0;
+}
+
+.empty-content p {
+  color: #717171;
+  font-size: 16px;
+  margin: 0 0 32px 0;
+  line-height: 1.4;
 }

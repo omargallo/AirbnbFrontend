@@ -67,19 +67,19 @@ export class PropertyService {
 
   getAllProperties(): Observable<Property[]> {
     return this.http.get<ApiResponse<Property[]>>(this.propertyUrl)
-    .pipe(
-      map(response => response.data)
-    );
+      .pipe(
+        map(response => response.data)
+      );
   }
 
   getPropertyById(propertyId: number): Observable<Property> {
     const url = `${this.propertyUrl}/${propertyId}`;
     return this.http.get<ApiResponse<Property>>(url)
-    .pipe(
-      map(response => response.data)
-    );
+      .pipe(
+        map(response => response.data)
+      );
   }
-  
+
 
   getNearestProperties(page: number = 1, pageSize: number = 10, maxDistanceKm: number = 10): Observable<Result<{ items: Property[] }>> {
     const headers = new HttpHeaders()
@@ -95,7 +95,7 @@ export class PropertyService {
     return this.http.get<CountriesResponse>(this.countriesApiUrl);
   }
 
-searchProperties(params: SearchParams): Observable<Result<SearchPropertiesResponse>> {
+  searchProperties(params: SearchParams): Observable<Result<SearchPropertiesResponse>> {
     const queryParams: any = {};
 
     if (params.country) queryParams.Country = params.country;
@@ -105,7 +105,8 @@ searchProperties(params: SearchParams): Observable<Result<SearchPropertiesRespon
     if (params.startDate) queryParams.StartDate = params.startDate;
     if (params.endDate) queryParams.EndDate = params.endDate;
     if (params.page) queryParams.Page = params.page;
-    if (params.pageSize) queryParams.PageSize = params.pageSize;
+    // if (params.pageSize) queryParams.PageSize = params.pageSize;
+    queryParams.PageSize = 9;
     if (params.maxDistanceKm != null) queryParams.maxDistanceKm = params.maxDistanceKm;
 
     return this.http.get<Result<SearchPropertiesResponse>>(`${this.baseUrl}/search`, {

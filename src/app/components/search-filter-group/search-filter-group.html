@@ -45,10 +45,9 @@
     class="search-filter-item d-flex align-items-center justify-content-center"
     #whoRef
     [ngClass]="{ 'active': activeFilter === 'who' }"
-    (click)="setActive('who')"
     style="min-width: 15rem !important;"
   >
-    <div>
+    <div (click)="setActive('who')">
       @if (isSearchBarSticky) {
       <p class="label">{{ 'HEADER.ADD_GUESTS' | translate }}</p>
       }@else{
@@ -69,7 +68,7 @@
       </p>
       }
     </div>
-    <div class="ms-auto cursor-pointer" (click)="onSearch()" >
+    <div class="ms-auto cursor-pointer" (click)="onSearch()">
       <div
         class="search-icon-button d-flex align-items-center justify-content-center"
       >

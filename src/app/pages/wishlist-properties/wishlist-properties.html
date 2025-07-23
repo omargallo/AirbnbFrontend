@@ -1,0 +1,56 @@
+<div class="container py-4">
+  <div
+    *ngIf="!isLoading && properties.length > 0"
+    class="d-flex align-items-center gap-4 mb-4"
+  >
+    <button
+      class="btn goBack  rounded-circle p-2"
+      (click)="goBack()"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M15 18L9 12L15 6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+    <h2 class="mb-0 text-black">{{ wishlistName }}</h2>
+  </div>
+  <!-- Loading shimmer -->
+  <div class="row" *ngIf="isLoading">
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-4" *ngFor="let i of [1,2,3,4]">
+      <div class="p-2 rounded">
+        <div class="shimmer rounded mb-2" style="height: 180px;"></div>
+        <div class="shimmer-line w-75 mb-2"></div>
+        <div class="shimmer-line w-50 mb-1"></div>
+        <div class="shimmer-line w-100"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Property cards -->
+  <div class="row" *ngIf="!isLoading && properties.length > 0">
+    <div
+      class="col-lg-3 col-md-4 col-sm-6 mb-4"
+      *ngFor="let property of properties; trackBy: trackByPropertyId"
+    >
+      <a
+        [routerLink]="['/property', property.id]"
+        style="text-decoration: none;"
+      >
+        <app-slider-card
+          [imageUrl]="getPropertyImage(property)"
+          [title]="property.title"
+          [subtitle]="property.city + ', ' + property.country"
+          [price]="property.pricePerNight"
+          [rating]="property.averageRating"
+          [isFavorite]="true"
+        >
+        </app-slider-card>
+      </a>
+    </div>
+  </div>
+</div>

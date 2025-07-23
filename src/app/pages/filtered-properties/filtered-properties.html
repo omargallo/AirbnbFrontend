@@ -1,8 +1,8 @@
 <div class="properties-container container-fluid">
   <div class="properties-panel ml-16">
     <div class="d-flex justify-content-between items-center mb-4">
-      <p class="font-semibold">Over {{properties?.length}} homes</p>
-      <div class="d-flex justify-content-between items-center gap-2">
+      <p class="font-semibold text-lg">Over {{properties?.length}} homes</p>
+      <div class="d-flex justify-content-between items-center gap-2 text-lg">
         <img alt="fees" src="assets/images/fees.svg" width="40" height="40" />
         Prices include all fees
       </div>
@@ -15,7 +15,6 @@
         [subtitle]="getLocationSubtitle(property)"
         [price]="property.pricePerNight"
         [rating]="property.averageRating"
-        [night]="5"
         [isFavorite]="false"
         (click)="selectProperty(property)"
       >
@@ -28,7 +27,15 @@
           [disabled]="currentPage===1"
           (click)="goToPage(currentPage-1)"
         >
-          ←
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M15 18L9 12L15 6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
         </button>
         <button
           *ngFor="let page of getVisiblePages()"
@@ -44,7 +51,15 @@
           [disabled]="currentPage===totalPages"
           (click)="goToPage(currentPage+1)"
         >
-          →
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M9 18L15 12L9 6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
         </button>
       </nav>
     </div>
