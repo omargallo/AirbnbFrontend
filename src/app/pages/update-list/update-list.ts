@@ -4,16 +4,20 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { PropertyService } from '../../core/services/Property/property.service';
 import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
+import { Property } from '../../core/models/Property';
+import { PropertyImage } from '../../core/models/PropertyImage';
+import { environment } from '../../../environments/environment.development';
 
-export interface Property {
-  id: string;
+export interface PropertyT {
+  id: number;
   title: string;
   hostId:string;
   description: string;
-  propertyType: string;
+  propertyId: number;
   price: number;
   maxGuests: number;
-  photos: string[];
+  photos: PropertyImage[];
   amenities: string[];
   location: {
     address: string;
@@ -28,7 +32,7 @@ export interface Property {
 }
 
 export interface MenuSection {
-  id: keyof Property | 'photos' | 'amenities' | 'location';
+  id: keyof PropertyT | 'photos' | 'amenities' | 'location';
   label: string;
   icon: string;
   isActive: boolean;
@@ -47,18 +51,20 @@ export interface MenuSection {
 export class UpdateList implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
-  property: Property | null = null;
+  property: PropertyT | null = null ;
   propertyForm!: FormGroup;
   isLoading = false;
   hasUnsavedChanges = false;
   selectedFiles:File[] =[]
   uploadProgress:number = 0
   uploading:boolean= false
+  porpertyId:number = 0;
+  baseUrl = environment.base
 
   menuSections: MenuSection[] = [
     { id: 'photos', label: 'Photos', icon: '📸', isActive: true, hasChanges: false, isSaving: false },
     { id: 'title', label: 'Title', icon: '📝', isActive: false, hasChanges: false, isSaving: false },
-    { id: 'propertyType', label: 'Property type', icon: '🏠', isActive: false, hasChanges: false, isSaving: false },
+    { id: 'propertyId', label: 'Property type', icon: '🏠', isActive: false, hasChanges: false, isSaving: false },
     { id: 'price', label: 'Pricing', icon: '💰', isActive: false, hasChanges: false, isSaving: false },
     { id: 'maxGuests', label: 'Guests', icon: '👥', isActive: false, hasChanges: false, isSaving: false },
     { id: 'description', label: 'Description', icon: '📄', isActive: false, hasChanges: false, isSaving: false },
@@ -100,15 +106,54 @@ export class UpdateList implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private propService:PropertyService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private activatedRoute: ActivatedRoute
 
   ) {
     this.initializeForm();
   }
 
   ngOnInit(): void {
-    this.loadProperty();
+    this.initializeProperty()
+
+    this.activatedRoute.params.subscribe({
+      next:(params)=>{
+        let id = params["propertyId"]
+        if(id)
+          this.porpertyId = id as number; 
+        this.isLoading = true
+        this.loadProperty();
+      },
+      error:()=>{
+        this.isLoading = false
+        this.cdr.detectChanges()
+      }
+
+    })
     this.setupFormChangeTracking();
+  }
+  initializeProperty(){
+    this.property = {
+  id: 1,
+  title: "",
+  hostId:"",
+  description: "",
+  propertyId: 1,
+  price: 0,
+  maxGuests: 0,
+  photos: [],
+  amenities: [],
+  location: {
+    address: "",
+    city: "",
+    country: "",
+    coordinates: {
+      lat: 0,
+      lng: 0,
+    },
+  },
+  updatedAt: new Date()
+}
   }
 
   ngOnDestroy(): void {
@@ -116,8 +161,24 @@ export class UpdateList implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  loadPropertyImages(){
+  loadPropertyImages(id:number){
+    this.propService
+        .getImagesByPropertyId(id)
+        .subscribe(
+          {
+            next:(data)=>{
+                if(this.property){
+                  this.property.photos = data
+                  this.cdr.detectChanges()
+                }
+                console.log("loaded the prop images ", data)
 
+            },
+            error:(err)=>{
+              console.log("couldn't load the prop images ", err)
+            }
+          }
+        )
   }
   trackBySection(index: number, section: MenuSection): string {
     return section.id as string;
@@ -127,7 +188,7 @@ export class UpdateList implements OnInit, OnDestroy {
     this.propertyForm = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(50)]],
       description: ['', [Validators.required, Validators.maxLength(500)]],
-      propertyType: ['', Validators.required],
+      propertyId: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(1)]],
       maxGuests: [1, [Validators.required, Validators.min(1), Validators.max(16)]],
       photos: [[]],
@@ -162,7 +223,7 @@ export class UpdateList implements OnInit, OnDestroy {
     }
     else if (section && this.property) {
       const formValue = this.propertyForm.get(sectionId)?.value;
-      const originalValue = this.property[sectionId as keyof Property];
+      const originalValue = this.property[sectionId as keyof PropertyT];
       
       if (sectionId === 'location') {
         section.hasChanges = JSON.stringify(formValue) !== JSON.stringify(originalValue);
@@ -175,33 +236,54 @@ export class UpdateList implements OnInit, OnDestroy {
   }
 
   private loadProperty(): void {
+    if(! this.porpertyId)
+      return
+
     this.isLoading = true;
-
-    setTimeout(() => {
-      this.property = {
-        id: '1',
-        hostId: "5a6c3d4f-9ca1-4b58-bdf6-a6e19b62218f",
-        title: 'Cozy and good',
-        description: 'A beautiful space with all the amenities you need for a comfortable stay.',
-        propertyType: 'Apartment',
-        price: 120,
-        maxGuests: 1,
-        photos: [
+    this.propService.getPropertyById(this.porpertyId).subscribe(
+      {
+        next:(response)=>{
+          console.log("property loaded in update list ",response)
+          this.mapPropertyFromResponse(response)
+          this.populateForm();
+          this.loadPropertyImages(response.id)
+          this.isLoading = false;
           
-        ],
-        amenities: ['Wifi', 'Kitchen', 'Washer', 'Air conditioning'],
-        location: {
-          address: '123 Main Street',
-          city: 'San Francisco',
-          country: 'United States'
+          this.cdr.detectChanges()
+        },
+        error:(err)=>{
+          console.log(err)
         }
-      };
-
-      this.populateForm();
-      this.isLoading = false;
-    }, 800);
+      }
+    )
+    
   }
 
+  
+  private mapPropertyFromResponse(property:Property){
+    console.log("starting property mapping")
+    if(!this.property){
+      return
+    }
+    this.property.description = property.description
+    this.property.maxGuests = property.maxGuests
+    this.property.hostId = property.hostId
+    this.property.id = property.id
+    this.property.title = property.title
+    this.property.location = {
+              city:  property.city,
+              country: property.country,
+              address: property.state,
+              coordinates:{
+                lat:property.latitude,
+                lng: property.longitude
+              }      
+    }
+    this.property.price = property.pricePerNight
+    this.property.propertyId = property.propertyTypeId
+    this.property.photos = property.images
+    console.log("property after maping from response ", this.property)
+  }
   private populateForm(): void {
     if (this.property) {
       this.propertyForm.patchValue(this.property);
@@ -412,7 +494,7 @@ uploadSelectedPhotos() {
   // Add required parameters - check what your API expects
   // Common parameter names:
   formData.append('HostId', this.property?.hostId  || ''); // Make sure this exists and is valid
-  formData.append('PropertyId', this.property?.id || '1');
+  formData.append('PropertyId', String(this.property?.id) || '1');
   formData.append('GroupName', 'dsah');
   formData.append('CoverIndex', '2');
 
