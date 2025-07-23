@@ -15,6 +15,7 @@ export class SliderCard {
   @Input() price!: number;
   @Input() rating!: number;
   @Input() isFavorite: boolean = false;
+  @Input() reviewCount:number =0
 
 
 
