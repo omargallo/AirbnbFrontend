@@ -30,6 +30,7 @@ export class Wishlists implements OnInit {
       next: (data) => {
         this.wishlists = data;
         this.isLoading = false;
+        console.log(data)
       },
       error: (error) => {
         console.error('Error loading wishlists:', error);

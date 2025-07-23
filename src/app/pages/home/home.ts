@@ -1,17 +1,14 @@
+import { Observable } from 'rxjs';
+import { ConfirmService } from './../../core/services/confirm.service';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { SliderCard } from "./components/slider-card/slider-card";
-import { LoadingCards } from "./components/loading-cards/loading-cards";
-import { Slider } from '../../shared/components/slider/slider';
-import { SingleLoadingCard } from "./components/single-loading-card/single-loading-card";
-import { Modal } from "../../shared/components/modal/modal";
 import { WishListModal } from "../../components/wish-list-modal/wish-list-modal";
 import { PropertySwiperComponent } from "../../components/mainswiper/mainswiper";
 import { Property } from '../../core/models/Property';
 import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, Slider, SliderCard, WishListModal, PropertySwiperComponent,FormsModule],
+  imports: [CommonModule, WishListModal, PropertySwiperComponent,FormsModule],
 
   templateUrl: './home.html',
   styleUrl: './home.css'
@@ -20,6 +17,10 @@ export class Home {
 
   selectedPropertyId!: number;
   show = false;
+
+  constructor(private confirm:ConfirmService){
+
+  }
 
   onPropertyClick(id: number) {
     this.selectedPropertyId = id;
@@ -571,5 +572,26 @@ export class Home {
       ]
     }
   ];
+  onClose(){
+      
+      this.show = false
+    }
+  onFinish(observable:Observable<boolean>){
+    this.onClose()
+    observable.subscribe(
+      {
+        next:(success)=>{
+          if(success)
+            this.confirm.success("Success","Property added to wish list")
+          else
+            this.confirm.fail("Faild","Coundn't add the property")
+        },  
+        error:()=>
+            this.confirm.fail("Faild","Coundn't add the property")
 
+      }
+    )
+  }
+  
+  
 }

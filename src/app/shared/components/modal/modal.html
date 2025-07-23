@@ -19,7 +19,7 @@
       [ngClass]="modalContentClass"
     >
       <!-- Header -->
-      <div class="modal-header primary-text position-relative">
+      <div class="modal-header primary-text position-relative pt-0 bold fw-bold border-0">
         <button
           *ngIf="showCloseBtn"
           class="primary-text border-0 bg-transparent position-absolute start-0 ms-3"
@@ -32,14 +32,12 @@
       </div>
 
       <!-- Body -->
-      <div class="modal-body overflow-y-auto">
+      <div class="modal-body col-12 h-100 overflow-y-auto p-0 m-0 ">
         <ng-content></ng-content>
       </div>
 
       <!-- Footer -->
-      <div class="modal-footer footer">
-        <ng-content select="[modalFooter]"></ng-content>
-      </div>
+        <ng-content select=".modal-footer"></ng-content>
     </div>
   </div>
 </div>
