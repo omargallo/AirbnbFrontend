@@ -58,6 +58,7 @@ export class CalendarComponent implements OnInit {
   tempViewType: 'month' | 'year' = 'year';
 
   ngOnInit() {
+    this.currentYear = this.currentMonth.getFullYear();
     this.generateYearMonths();
     this.tempViewType = this.settings.viewType;
   }
@@ -204,12 +205,19 @@ export class CalendarComponent implements OnInit {
   }
 
   previousMonth() {
-    this.currentMonth = subMonths(this.currentMonth, 1);
+    const prev = subMonths(this.currentMonth, 1);
+    if (prev.getFullYear() === this.currentYear) {
+      this.currentMonth = prev;
+    }
   }
 
   nextMonth() {
-    this.currentMonth = addMonths(this.currentMonth, 1);
+    const next = addMonths(this.currentMonth, 1);
+    if (next.getFullYear() === this.currentYear) {
+      this.currentMonth = next;
+    }
   }
+
 
   // Helper methods for template
   format = format;
@@ -218,5 +226,16 @@ export class CalendarComponent implements OnInit {
   trackByDate(index: number, day: { date: Date }) {
     return day.date.toDateString();
   }
+
+  get canGoToPreviousMonth(): boolean {
+    const prev = subMonths(this.currentMonth, 1);
+    return prev.getFullYear() === this.currentYear;
+  }
+
+  get canGoToNextMonth(): boolean {
+    const next = addMonths(this.currentMonth, 1);
+    return next.getFullYear() === this.currentYear;
+  }
+
 
 }
