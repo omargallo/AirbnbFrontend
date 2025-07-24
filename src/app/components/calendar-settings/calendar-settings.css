@@ -1,0 +1,712 @@
+.settings-panel {
+  height: 87vh;
+  background: white;
+  overflow-y: auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  z-index: 1000;
+  padding: 24px;
+  position: relative;
+}
+
+/* Block Options Overlay -*/
+.block-options-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  backdrop-filter: blur(4px);
+}
+
+.block-options-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.block-options-panel {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  min-width: 280px;
+  max-width: 320px;
+  transform: translateY(20px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.block-options-overlay.show .block-options-panel {
+  transform: translateY(0) scale(1);
+}
+
+.block-options-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.block-options-header h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #717171;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #222;
+  background: #f7f7f7;
+}
+
+.block-options-list {
+  padding: 8px 0 16px;
+}
+
+.block-option-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+  color: #222;
+}
+
+.block-option-btn:hover {
+  background: #f7f7f7;
+}
+
+.option-icon {
+  color: #717171;
+  flex-shrink: 0;
+}
+
+/* Settings Header */
+.settings-header {
+  margin-bottom: 24px;
+}
+
+.settings-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 8px 0;
+}
+
+.settings-description {
+  font-size: 14px;
+  color: #717171;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Enhanced Tabs with better transitions */
+.settings-tabs {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #717171;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  z-index: 1;
+}
+
+.tab-btn.active {
+  color: #222;
+  border-bottom-color: #222;
+}
+
+.tab-btn:hover:not(.active) {
+  color: #484848;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.tab-btn.changing {
+  pointer-events: none;
+}
+
+/* Enhanced Tab Content with smooth transitions */
+.tab-content {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  animation: slideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+.tab-content.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Setting Sections */
+.setting-section {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.2s ease;
+}
+
+.setting-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.setting-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 16px 0;
+}
+
+.section-description {
+  font-size: 14px;
+  color: #717171;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+/* Setting Rows */
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.setting-label {
+  font-size: 14px;
+  color: #222;
+  font-weight: 500;
+}
+
+.remove-btn {
+  font-size: 14px;
+  color: #717171;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.remove-btn:hover {
+  color: #222;
+}
+
+/* Price Input Group */
+.price-input-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.currency {
+  font-size: 14px;
+  color: #717171;
+  font-weight: 500;
+}
+
+.price-display {
+  flex: 1;
+}
+
+.price-label {
+  font-size: 12px;
+  color: #717171;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.price-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: #222;
+}
+
+.price-input {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  width: 100px;
+  transition: all 0.2s ease;
+}
+
+.price-input:focus {
+  outline: none;
+  border-color: #222;
+  background: white;
+  box-shadow: 0 0 0 2px rgba(34, 34, 34, 0.1);
+}
+
+/* Add Weekend Price Button */
+.add-weekend-price-btn {
+  background: none;
+  border: none;
+  color: #222;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.add-weekend-price-btn:hover {
+  color: #000;
+}
+
+/* Enhanced Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 28px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ddd;
+  transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 28px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: #222;
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(20px);
+}
+
+.toggle-switch:hover .toggle-slider {
+  box-shadow: 0 0 0 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Enhanced Discount Items */
+.discount-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #f7f7f7;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.discount-item:hover {
+  background: #f0f0f0;
+  transform: translateY(-1px);
+}
+
+.discount-header {
+  flex: 1;
+}
+
+.discount-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.discount-subtitle {
+  font-size: 12px;
+  color: #717171;
+}
+
+.discount-value {
+  text-align: right;
+}
+
+.percentage {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.average {
+  font-size: 12px;
+  color: #717171;
+}
+
+/* Enhanced Buttons */
+.more-discounts-btn,
+.promotion-btn,
+.custom-lengths-btn,
+.availability-settings-btn,
+.connect-calendar-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: 16px;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.more-discounts-btn:hover,
+.promotion-btn:hover,
+.custom-lengths-btn:hover,
+.availability-settings-btn:hover,
+.connect-calendar-btn:hover {
+  border-color: #222;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.more-discounts-btn:active,
+.promotion-btn:active,
+.custom-lengths-btn:active,
+.availability-settings-btn:active,
+.connect-calendar-btn:active {
+  transform: translateY(0);
+}
+
+.more-discounts-btn > span {
+  display: block;
+}
+
+.more-discounts-btn > span:first-child {
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+  margin-bottom: 2px;
+}
+
+.discount-types {
+  font-size: 12px;
+  color: #717171;
+}
+
+.promotion-content {
+  flex: 1;
+}
+
+.promotion-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.promotion-subtitle {
+  font-size: 12px;
+  color: #717171;
+}
+
+/* Enhanced Input Rows */
+.input-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.input-group {
+  flex: 1;
+}
+
+.input-group label {
+  font-size: 12px;
+  color: #717171;
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.number-input,
+.select-input,
+.time-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #222;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.number-input:focus,
+.select-input:focus,
+.time-input:focus {
+  outline: none;
+  border-color: #222;
+  box-shadow: 0 0 0 2px rgba(34, 34, 34, 0.1);
+}
+
+.number-input:hover,
+.select-input:hover,
+.time-input:hover {
+  border-color: #999;
+}
+
+/* Enhanced Setting Items */
+.setting-item {
+  margin-bottom: 16px;
+}
+
+.setting-item label {
+  font-size: 14px;
+  color: #222;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.custom-lengths-btn > span,
+.availability-settings-btn > span:first-child,
+.connect-calendar-btn > span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+}
+
+.availability-settings-btn .subtitle {
+  font-size: 12px;
+  color: #717171;
+  font-weight: normal;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Enhanced Icons */
+.chevron-icon {
+  width: 16px;
+  height: 16px;
+  color: #717171;
+  transition: all 0.2s ease;
+}
+
+.link-icon {
+  width: 16px;
+  height: 16px;
+  color: #717171;
+  margin-right: 8px;
+}
+
+/* Icon animations on hover */
+.more-discounts-btn:hover .chevron-icon,
+.promotion-btn:hover .chevron-icon,
+.custom-lengths-btn:hover .chevron-icon,
+.availability-settings-btn:hover .chevron-icon,
+.connect-calendar-btn:hover .chevron-icon {
+  color: #222;
+  transform: translateX(2px);
+}
+
+/* Loading states */
+.tab-content.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.setting-section.updating {
+  opacity: 0.8;
+}
+
+/* Enhanced responsive design */
+@media (max-width: 768px) {
+  .settings-panel {
+    width: 100%;
+    position: relative;
+    height: auto;
+    border-left: none;
+    border-top: 1px solid #ebebeb;
+    padding: 16px;
+  }
+
+  .input-row {
+    flex-direction: column;
+  }
+
+  .settings-header h2 {
+    font-size: 20px;
+  }
+
+  .block-options-panel {
+    min-width: 260px;
+    margin: 0 16px;
+  }
+
+  .discount-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .discount-value {
+    text-align: left;
+  }
+}
+
+/* Enhanced scrollbar styling */
+.settings-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.settings-panel::-webkit-scrollbar-track {
+  background: #f7f7f7;
+  border-radius: 3px;
+}
+
+.settings-panel::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.settings-panel::-webkit-scrollbar-thumb:hover {
+  background: #bbb;
+}
+
+/* Accessibility improvements */
+.tab-btn:focus,
+.toggle-switch:focus-within,
+.price-input:focus,
+.number-input:focus,
+.select-input:focus,
+.time-input:focus {
+  /* outline: 2px solid #005fcc; */
+  outline-offset: 2px;
+}
+
+.block-option-btn:focus {
+  background: #f0f0f0;
+  /* outline: 2px solid #005fcc; */
+  outline-offset: -2px;
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .settings-panel {
+    background: #1a1a1a;
+    color: #e0e0e0;
+  }
+  
+  .settings-header h2,
+  .setting-section h3,
+  .setting-label,
+  .discount-title,
+  .promotion-title {
+    color: #e0e0e0;
+  }
+  
+  .settings-description,
+  .section-description,
+  .discount-subtitle,
+  .promotion-subtitle {
+    color: #a0a0a0;
+  }
+}
+
+
+
+
+
+.block-options {
+  display: flex;
+  background: #f1f1f1;
+  border-radius: 25px;
+  padding: 3px;
+  width: fit-content;
+}
+
+.block-toggle {
+  border: none;
+  background: transparent;
+  padding: 4px 24px;
+  border-radius: 20px;
+  cursor: pointer;
+  /* font-weight: 500; */
+  color: #000;
+  transition: background 0.3s, color 0.3s;
+}
+
+.block-toggle.active {
+  background-color: #222;
+  color: white;
+}
