@@ -1,0 +1,22 @@
+ <div class="section-content">
+      <div class="section-header">
+        <h2>Now, let's give your house a title</h2>
+        <p>Short titles work best. Have fun with it—you can always change it later.</p>
+      </div>
+      
+      <form [formGroup]="titleForm">
+        <div class="form-group">
+          <textarea
+            formControlName="title"
+            class="form-control title-input"
+            [class.is-invalid]="isFieldInvalid()"
+            placeholder="Cozy and good"
+            maxlength="50"
+            rows="3"></textarea>
+          <div class="character-count">{{ (titleForm.get('title')?.value || '').length }}/50</div>
+          <div class="invalid-feedback" *ngIf="isFieldInvalid()">
+            {{ getFieldError() }}
+          </div>
+        </div>
+      </form>
+    </div>

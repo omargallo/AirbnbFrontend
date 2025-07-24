@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PropertyBookingService, BookingDetailsDTO } from '../../../core/services/Booking/PropertyBookingService';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { HeaderComponent } from "../../../components/header/header";
+import { HeaderComponent } from "../../../components/host-header/host-header";
+
 
 @Component({
   selector: 'app-property-bookings',

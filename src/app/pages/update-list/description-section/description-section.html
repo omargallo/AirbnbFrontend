@@ -1,0 +1,22 @@
+ <div class="section-content">
+      <div class="section-header">
+        <h2>Create your description</h2>
+        <p>Share what makes your place special.</p>
+      </div>
+      
+      <form [formGroup]="descriptionForm">
+        <div class="form-group">
+          <textarea
+            formControlName="description"
+            class="form-control description-input"
+            [class.is-invalid]="isFieldInvalid()"
+            placeholder="You'll have a great time at this comfortable place to stay."
+            maxlength="500"
+            rows="5"></textarea>
+          <div class="character-count">{{ (descriptionForm.get('description')?.value || '').length }}/500</div>
+          <div class="invalid-feedback" *ngIf="isFieldInvalid()">
+            {{ getFieldError() }}
+          </div>
+        </div>
+      </form>
+    </div>

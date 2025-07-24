@@ -1,0 +1,46 @@
+<div class="section-content">
+      <div class="section-header">
+        <h2>How many guests can your place accommodate?</h2>
+        <p>Choose the maximum number of guests who can comfortably stay.</p>
+      </div>
+      
+      <form [formGroup]="guestsForm">
+        <!-- Guest Icons Display -->
+        <div class="guest-icons-container">
+          <div class="guest-icons-grid">
+            <img 
+              *ngFor="let icon of getGuestIconsToShow(); trackBy: trackByGuestIcon; let i = index" 
+              [src]="icon" 
+              [alt]="'Guest ' + (i + 1)"
+              class="guest-icon"
+              onerror="this.style.display='none'"
+              >
+          </div>
+          
+          <!-- Counter Controls -->
+          <div class="counter-controls">
+            <button
+              type="button"
+              class="counter-btn"
+              [disabled]="getCurrentGuestCount() <= 1"
+              (click)="decrementGuests()">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+              </svg>
+            </button>
+            
+            <span class="counter-value">{{ getCurrentGuestCount() }} guest{{getCurrentGuestCount() > 1 ? 's' : ''}}</span>
+            
+            <button
+              type="button"
+              class="counter-btn"
+              [disabled]="getCurrentGuestCount() >= 16"
+              (click)="incrementGuests()">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+              </svg> 
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
