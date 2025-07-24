@@ -1,95 +1,131 @@
-/* --- General Setup --- */
-/* body {
-    font-family: "Airbnb Cereal VF", Circular, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
-    color: #222222;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
-} */
+/* --- Main Content Layout --- */
+.step-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 20px 0;
+}
 
-/* --- Main Container --- */
+.title-container {
+  max-width: 630px;
+  width: 100%;
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+h1 {
+  letter-spacing: -0.64px;
+  line-height: 36px;
+  font-size: 32px;
+  font-weight: 600; /* Bolder for better visibility */
+  color: #222222;
+  margin: 0;
+  overflow-wrap: break-word;
+}
+
+/* --- Property Selection Grid --- */
 .property-selector {
-    display: flex;
-    flex-flow: row wrap; /* Allows items to wrap on smaller screens */
-    gap: 16px;
-    max-width: 800px; /* Increased max-width to accommodate more items */
-    width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 16px;
+  width: 100%;
+  justify-content: flex-start;
 }
 
 /* --- Individual Item Wrapper --- */
 /* This class handles the layout and animation for each button container */
 .property-item {
-    flex: 1 1 180px; /* Flex-grow, flex-shrink, flex-basis for responsive wrapping */
-    min-width: 150px; /* Minimum width before wrapping */
-    
-    /* Staggered animation properties */
-    animation-iteration-count: 1;
-    animation-fill-mode: both;
-    animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
-    animation-duration: 0.6s;
-    animation-name: fadeIn;
+  flex: 0 1 calc(33.333% - 11px); /* Creates a 3-column layout */
+  min-width: 150px;
+
+  /* Staggered animation properties */
+  animation: fadeIn 0.6s cubic-bezier(0.2, 0, 0, 1) both;
 }
 
 /* --- Reusable Button Style --- */
-/* All common button styles are consolidated here */
 .property-button {
-    background-color: #ffffff;
-    height: 100px;
-    width: 100%; /* Make button fill its container */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 16px;
-    border: 1px solid #dddddd;
-    border-radius: 12px;
-    cursor: pointer;
-    outline: none;
-    transition: box-shadow 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
-    text-align: left;
+  background-color: #ffffff;
+  height: 110px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px;
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+  cursor: pointer;
+  outline: none;
+  transition: box-shadow 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
+  text-align: left;
 }
 
 /* --- Interactive States --- */
 .property-button:hover {
-    border-color: #222222;
+  border-color: #222222;
 }
 
-/* Style for the selected (aria-checked="true") button */
 .property-button[aria-checked="true"] {
-    background-color: #f7f7f7;
-    border-color: #222222;
-    border-width: 2px;
-    padding: 15px; /* Adjust padding to account for thicker border */
+  background-color: #f7f7f7;
+  border: 2px solid #222222;
+  padding: 15px; /* Adjust padding to account for thicker border */
 }
 
 /* --- Icon and Label Styles --- */
+.icon-wrapper {
+  height: 45px;
+  width: 45px;
+}
+
 .property-icon {
-    width: 45px;
-    height: 45px;
-    margin-bottom: 8px; /* Add some space between icon and text */
+  width: 100%;
+  height: 100%;
+  color: #222222;
+}
+
+.label-wrapper {
+  margin-top: 8px;
 }
 
 .property-label {
-    font-size: 16px;
-    line-height: 20px;
-    font-weight: 500;
-    color: #222222;
-    word-break: break-word;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #222222;
+  word-break: break-word;
 }
 
 /* --- Keyframe Animation --- */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .property-item {
+    flex-basis: calc(50% - 8px); /* 2 columns on tablets */
+  }
+  h1 {
+    font-size: 28px;
+    text-align: center;
+  }
+  .title-container {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .property-item {
+    flex-basis: 100%; /* 1 column on mobile */
+  }
 }

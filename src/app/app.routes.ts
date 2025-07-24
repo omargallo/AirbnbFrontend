@@ -24,7 +24,6 @@ import { Step341Pricing } from './pages/add-property/step-3/step3-4-1-pricing/st
 import { Step342PricingTax } from './pages/add-property/step-3/step3-4-2-pricing-tax/step3-4-2-pricing-tax';
 import { Step35AddDiscount } from './pages/add-property/step-3/step3-5-add-discount/step3-5-add-discount';
 import { Step36Safety } from './pages/add-property/step-3/step3-6-safety/step3-6-safety';
-import { Step37FinalDetails } from './pages/add-property/step-3/step3-7-final-details/step3-7-final-details';
 import { PropertyInfo } from './pages/property-info/property-info';
 import { FilteredProperties } from './pages/filtered-properties/filtered-properties';
 import { HostProperties } from './components/host-properties/host-properties';
@@ -61,7 +60,7 @@ export const routes: Routes = [
       { path: 'step2-1-make-your', component: Step21MakeYour },
       { path: 'step2-2-tell-guests', component: Step22TellGuests },
       { path: 'step2-3-1-add-photos', component: Step23AddPhotos },
-      { path: 'step2-3-2-photos-modal', component: Step232PhotosModal },
+      // { path: 'step2-3-2-photos-modal', component: Step232PhotosModal },
       { path: 'step2-3-3-photos-ta-da', component: Step233PhotosTaDa },
       { path: 'step2-4-title', component: Step24Title },
       { path: 'step2-5-describe', component: Step25Describe },
@@ -72,8 +71,7 @@ export const routes: Routes = [
       { path: 'step3-4-1-pricing', component: Step341Pricing },
       { path: 'step3-4-2-pricing-tax', component: Step342PricingTax },
       { path: 'step3-5-add-discount', component: Step35AddDiscount },
-      { path: 'step3-6-safety', component: Step36Safety },
-      { path: 'step3-7-final-details', component: Step37FinalDetails }
+      { path: 'step3-6-safety', component: Step36Safety }
     ]
   },
   { path: 'host', component: HostProperties }

@@ -1,10 +1,9 @@
 import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { FooterComponent } from '../../../../layout/add-property-layout/wizard-layout/footer/footer';
 
 @Component({
   selector: 'app-step2-6-description',
-  imports: [FormsModule, FooterComponent],
+  imports: [FormsModule],
   templateUrl: './step2-6-description.html',
   styleUrl: './step2-6-description.css'
 })

@@ -1,16 +1,27 @@
-<div role="radiogroup" class="property-selector">
-  <div *ngFor="let type of propertyTypes; let i = index" class="property-item" [style.animation-delay]="(0.05 + i * 0.05) + 's'">
-    <button
-      type="button"
-      role="radio"
-      class="property-button"
-      [attr.aria-checked]="selectedType === type ? 'true' : 'false'"
-      (click)="selectType(type)"
+<div class="step-container">
+  <div class="title-container">
+    <h1 tabindex="-1">Which of these best describes your&nbsp;place?</h1>
+  </div>
+  <div role="radiogroup" class="property-selector">
+    <div
+      *ngFor="let type of propertyTypes; let i = index"
+      class="property-item"
+      [style.animation-delay]="400 + i * 50 + 'ms'"
     >
-      <!-- Placeholder for SVG icon, you can customize per type if needed -->
-      <svg viewBox="0 0 45 45" class="property-icon"></svg>
-      <div class="property-label">{{ type }}</div>
-    </button>
+      <button
+        type="button"
+        role="radio"
+        class="property-button"
+        [attr.aria-checked]="selectedType.name === type.name"
+        (click)="selectType(type)"
+      >
+        <div class="icon-wrapper">
+          <img [src]="type.icon" [alt]="type.name" class="property-icon">
+        </div>
+        <div class="label-wrapper">
+          <div class="property-label">{{ type.name }}</div>
+        </div>
+      </button>
+    </div>
   </div>
 </div>
-<app-footer></app-footer>
