@@ -31,6 +31,9 @@
 .view-selector {
   position: relative;
 }
+.view-selector-2 {
+  position: relative;
+}
 
 .view-btn {
   display: flex;
@@ -39,11 +42,15 @@
   padding: 8px 16px;
   background: white;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 20px;
   cursor: pointer;
   font-size: 14px;
   color: #484848;
   transition: all 0.2s ease;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -o-border-radius: 20px;
 }
 
 .view-btn:hover {
@@ -58,12 +65,12 @@
 /* View Dropdown */
 .view-dropdown {
   position: absolute;
-  top: 110%;
+  top: 114%;
   right: 0;
   background: white;
   border: 1px solid #ddd;
   border-radius: 12px;
-  /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12); */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   padding: 16px;
   min-width: 200px;
   z-index: 1000;
@@ -77,6 +84,38 @@
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+}
+.view-dropdown-2 {
+  position: absolute;
+  top: 114%;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  padding: 16px;
+  min-width: 200px;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s ease;
+}
+
+.view-dropdown-2.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.propertyavatar{
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  -ms-border-radius: 50px;
+  -o-border-radius: 50px;
+
 }
 
 .radio-option {
@@ -102,11 +141,11 @@
   transition: all 0.2s ease;
 }
 
-.radio-option input[type="radio"]:checked + .radio-custom {
+.radio-option input[type="radio"]:checked+.radio-custom {
   border-color: #222;
 }
 
-.radio-option input[type="radio"]:checked + .radio-custom::after {
+.radio-option input[type="radio"]:checked+.radio-custom::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -310,8 +349,21 @@
   background: #f7f7f7;
 }
 
+.day-cell.not-available {
+  background-color: #eee;
+}
+
+.day-cell.not-available .day-number {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.day-cell.selected.not-available:hover .day-number {
+  color: #fff !important;
+}
+
 .day-cell.selected {
-  background: #222;
+  background: #222 !important;
   color: white;
   border-color: #222;
 }
@@ -321,7 +373,7 @@
 }
 
 .day-cell.selected:hover .day-number {
-  color: black;
+  color: white;
 }
 
 .day-cell.selected .day-price {
