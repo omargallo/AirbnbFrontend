@@ -10,18 +10,16 @@ import { AuthService } from '../auth.service';
 export class UserService {
   private baseUrl = `${environment.baseUrl}/User`;
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService
-  ) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   login(payload: { email: string; password: string }): Observable<any> {
+    console.log(payload)
     return this.http.post(`${this.baseUrl}/login`, payload).pipe(
       tap((response: any) => {
         this.authService.setAccessToken(response.accessToken);
         this.authService.setRefreshToken(response.refreshToken);
         this.authService.setUserId(response.userId);
-        this.authService.setRole(response.role.name);
+        this.authService.setRole(response.roles);
       })
     );
   }
@@ -29,7 +27,7 @@ export class UserService {
   register(payload: { email: string; password: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/register`, payload).pipe(
       tap((response: any) => {
-        console.log(response)
+        console.log(response);
       })
     );
   }
@@ -40,17 +38,19 @@ export class UserService {
 
   refreshToken(): Observable<any> {
     const refreshToken = this.authService.refreshToken;
-    return this.http.post(`${this.baseUrl}/refresh-token`, {
-      refreshToken: refreshToken,
-    }).pipe(
-      tap((response: any) => {
-        this.authService.setAccessToken(response.accessToken);
-        this.authService.setRefreshToken(response.refreshToken);
+    return this.http
+      .post(`${this.baseUrl}/refresh-token`, {
+        refreshToken: refreshToken,
       })
-    );
+      .pipe(
+        tap((response: any) => {
+          this.authService.setAccessToken(response.accessToken);
+          this.authService.setRefreshToken(response.refreshToken);
+        })
+      );
   }
 
-  confirmOtp(payload: {email: string, otp: string}): Observable<any> {
+  confirmOtp(payload: { email: string; otp: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/verify-otp`, payload).pipe(
       tap((response: any) => {
         console.log(response);
@@ -59,6 +59,26 @@ export class UserService {
   }
   resendOtp(payload: { email: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/send-reset-otp`, payload).pipe(
+      tap((response: any) => {
+        console.log(response);
+      })
+    );
+  }
+
+  resetPass(payload: {
+    email: string;
+    newPassword: string;
+    code: string;
+  }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/reset-password`, payload).pipe(
+      tap((response: any) => {
+        console.log(response);
+      })
+    );
+  }
+
+  getProfile(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/profile/${id}`).pipe(
       tap((response: any) => {
         console.log(response);
       })

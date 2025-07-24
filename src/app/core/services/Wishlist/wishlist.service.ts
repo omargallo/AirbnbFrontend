@@ -19,54 +19,66 @@ export interface WishlistWithPropertiesDTO {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WishlistService {
-  private readonly baseUrl = environment.baseUrl + "/wishlist";
+  private readonly baseUrl = environment.baseUrl + '/wishlist';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAllWishlists(): Observable<Wishlist[]> {
-    return this.http.get<Result<Wishlist[]>>(this.baseUrl)
-      .pipe(
-        map(response =>response?.data ?? [])
-      );
+    return this.http
+      .get<Result<Wishlist[]>>(this.baseUrl)
+      .pipe(map((response) => response?.data ?? []));
   }
-  getByUserIdWithCover(id:string): Observable<Result<Wishlist[]>> {
-    return this.http.get<Result<Wishlist[]>>(this.baseUrl)
+  getByUserIdWithCover(id: string): Observable<Result<Wishlist[]>> {
+    return this.http.get<Result<Wishlist[]>>(this.baseUrl);
   }
 
-  createNewWishlist(wishlist: { name: string, notes: string, propertyIds:number[] }): Observable<Result<Wishlist>> {
-    return this.http.post<Result<Wishlist>>(`${this.baseUrl}/create`, wishlist)
+  createNewWishlist(wishlist: {
+    name: string;
+    notes: string;
+    propertyIds: number[];
+  }): Observable<Result<Wishlist>> {
+    return this.http.post<Result<Wishlist>>(`${this.baseUrl}/create`, wishlist);
   }
 
   deleteWishlist(id: number): Observable<boolean> {
-    return this.http.delete<Result<boolean>>(`${this.baseUrl}/${id}`)
-      .pipe(
-        map(response => response.isSuccess)
-      );
+    return this.http
+      .delete<Result<boolean>>(`${this.baseUrl}/${id}`)
+      .pipe(map((response) => response.isSuccess));
   }
 
-  addPropertyToWishlist(wishlistId: number, propertyId: number): Observable<boolean> {
-    return this.http.post<Result<boolean>>(`${this.baseUrl}/add/${wishlistId}/${propertyId}`, {})
-      .pipe(
-        map(response => response.isSuccess)
-      );
+  addPropertyToWishlist(
+    wishlistId: number,
+    propertyId: number
+  ): Observable<boolean> {
+    return this.http
+      .post<Result<boolean>>(
+        `${this.baseUrl}/add/${wishlistId}/${propertyId}`,
+        {}
+      )
+      .pipe(map((response) => response.isSuccess));
   }
 
-  removePropertyFromWishlist(wishlistId: number, propertyId: number): Observable<boolean> {
-    return this.http.delete<Result<boolean>>(`${this.baseUrl}/${wishlistId}/property/${propertyId}`)
-      .pipe(
-        map(response => response.isSuccess)
-      );
+  removePropertyFromWishlist(
+    wishlistId: number,
+    propertyId: number
+  ): Observable<boolean> {
+    return this.http
+      .delete<Result<boolean>>(
+        `${this.baseUrl}/${wishlistId}/property/${propertyId}`
+      )
+      .pipe(map((response) => response.isSuccess));
   }
 
-
-  getPropertiesInWishlist(wishlistId: number): Observable<WishlistWithPropertiesDTO> {
-    return this.http.get<Result<WishlistWithPropertiesDTO>>(`${this.baseUrl}/${wishlistId}/properties`)
-      .pipe(
-        map(response => response.data)
-      );
+  getPropertiesInWishlist(
+    wishlistId: number
+  ): Observable<WishlistWithPropertiesDTO> {
+    return this.http
+      .get<Result<WishlistWithPropertiesDTO>>(
+        `${this.baseUrl}/${wishlistId}/properties`
+      )
+      .pipe(map((response) => response.data));
   }
-
 }
