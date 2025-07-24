@@ -25,6 +25,22 @@
   height: auto;
 }
 
+/* .bi-heart{
+    border: 2px solid #ff385c;   
+  border-radius: 50%;  
+  
+} */
+
+/* .bi-heart-fill{
+  color: #c7082b;
+} */
+/* .bi-heart:hover,
+.bi-heart:active{
+  background-color: #f00b35;
+  border-radius: 70px;
+} */
+
+
 .action-btn {
   display: flex;
   align-items: center;
@@ -309,4 +325,57 @@
   .rare-find-badge {
     margin-top: 12px;
   }
+}
+
+
+
+/* Revies section */
+
+.guest-favorite-section {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.favorite-badge {
+  background-color: #FF385C;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  height: fit-content;
+}
+
+.favorite-content p {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.rating-reviews {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stars {
+  color: #FF385C;
+  font-size: 14px;
+}
+
+.score {
+  font-weight: 600;
+}
+
+.reviews {
+  color: #717171;
+  font-size: 14px;
 }

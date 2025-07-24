@@ -8,10 +8,21 @@
         <app-amenities-section [propertyId]="propertyId"></app-amenities-section>
       </div>
       <div class="col-md-4 fixed-reserve">
-        <app-reverse-section ></app-reverse-section>
+        <!-- <app-reverse-section ></app-reverse-section> -->
       </div>
   </div> 
+  <div class="bookinCalender">
+    <div class="row">
+      <div class="col-md-8">
+            <app-BookingCalendar [propertyId]="propertyId" ></app-BookingCalendar>
+      </div>
+      <div class="col-md-4">
+        <app-reverse-section ></app-reverse-section>
+      </div>
+    </div>
+  </div>
 </div>
+
 
 
 
