@@ -16,7 +16,7 @@
 
 <div
   class="card border-0 rounded rounded-2 cursor-pointer"
- (click)="onCardClick()" 
+  (click)="onCardClick()"
 >
   <div class="image-container position-relative">
     <img
@@ -26,22 +26,24 @@
     />
     <div
       class="favorite badge position-absolute top-0 start-0 m-2"
-      *ngIf="isFavorite"
+      *ngIf="rating > 4 && reviewCount>100"
     >
       Guest favorite
     </div>
-    <button class="heart position-absolute top-0 end-0 m-2"   (click)="onWishlistClick($event)">
-      <div
-      >
+    <button
+      class="bi text-success position-absolute top-0 end-0 m-2"
+      (click)="onWishlistClick($event)"
+    >
+      <div>
+        <!-- xmlns="http://www.w3.org/2000/svg" -->
         <svg
-          xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 32 32"
           aria-hidden="true"
           role="presentation"
           focusable="false"
+          [style.fill]="isFavorite ? '#ff385c' : 'rgba(0, 0, 0, 0.5)'"
           style="
             display: block;
-            fill: rgba(0, 0, 0, 0.5);
             height: 24px;
             width: 24px;
             stroke: white;

@@ -1,0 +1,17 @@
+<div class="airbnb-calendar-container mt-5">
+    <ngx-daterangepicker-material
+      [locale]="locale"
+      [linkedCalendars]="false"
+      [alwaysShowCalendars]="true"
+      [singleDatePicker]="false"
+      [showCustomRangeLabel]="false"
+      [autoApply]="true"
+      [minDate]="minDate"
+      [isInvalidDate]="isInvalidDate"
+      [(ngModel)]="selectedDateRange"
+      (datesUpdated)="datesUpdated($event)"
+    >
+    </ngx-daterangepicker-material>
+
+    <a class="report-link mt-3" href="#" (click)="clearDates()">Clear Dates</a>
+  </div>

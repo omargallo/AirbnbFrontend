@@ -24,7 +24,6 @@ import { Step341Pricing } from './pages/add-property/step-3/step3-4-1-pricing/st
 import { Step342PricingTax } from './pages/add-property/step-3/step3-4-2-pricing-tax/step3-4-2-pricing-tax';
 import { Step35AddDiscount } from './pages/add-property/step-3/step3-5-add-discount/step3-5-add-discount';
 import { Step36Safety } from './pages/add-property/step-3/step3-6-safety/step3-6-safety';
-import { Step37FinalDetails } from './pages/add-property/step-3/step3-7-final-details/step3-7-final-details';
 import { PropertyInfo } from './pages/property-info/property-info';
 import { FilteredProperties } from './pages/filtered-properties/filtered-properties';
 import { HostProperties } from './components/host-properties/host-properties';
@@ -34,6 +33,9 @@ import { NotFound } from './components/not-found/not-found';
 import { UserBookings } from './pages/booking/userbookings/userbookings';
 import { UpdateList } from './pages/update-list/update-list';
 import { Messages } from './pages/messages/messages';
+import { PropertyBookings } from './pages/booking/property-bookings/property-bookings';
+import { Availability } from './pages/availability-page/availability-page';
+import { Host } from './layout/host/host';
 
 export const routes: Routes = [
   {
@@ -47,8 +49,7 @@ export const routes: Routes = [
       { path: 'property/:propertyId', component: PropertyInfo },
       { path: 'WishLists', component: Wishlists },
       { path: "wishlist/:wishlistId/properties", component: WishListProperties },
-      { path: "Messages", component: Messages }
-    ]
+      { path: "Messages", component: Messages }]
   },
   {
     path: 'listing-wizard',
@@ -64,7 +65,7 @@ export const routes: Routes = [
       { path: 'step2-1-make-your', component: Step21MakeYour },
       { path: 'step2-2-tell-guests', component: Step22TellGuests },
       { path: 'step2-3-1-add-photos', component: Step23AddPhotos },
-      { path: 'step2-3-2-photos-modal', component: Step232PhotosModal },
+      // { path: 'step2-3-2-photos-modal', component: Step232PhotosModal },
       { path: 'step2-3-3-photos-ta-da', component: Step233PhotosTaDa },
       { path: 'step2-4-title', component: Step24Title },
       { path: 'step2-5-describe', component: Step25Describe },
@@ -75,17 +76,28 @@ export const routes: Routes = [
       { path: 'step3-4-1-pricing', component: Step341Pricing },
       { path: 'step3-4-2-pricing-tax', component: Step342PricingTax },
       { path: 'step3-5-add-discount', component: Step35AddDiscount },
-      { path: 'step3-6-safety', component: Step36Safety },
-      { path: 'step3-7-final-details', component: Step37FinalDetails }
+      { path: 'step3-6-safety', component: Step36Safety }
     ]
   },
-  { path: 'host', component: HostProperties }
-  , { path: 'booking', component: UserBookings },
+  { path: 'host', component: HostProperties },
+  { path: 'guesttbookings', component: UserBookings },
+
+
+  { path: 'propertybookings/:propertyId', component: PropertyBookings },
+
+  {
+    path: 'hostsettings',
+    component: Host,
+    children: [
+      { path: "availability", component: Availability },
+      { path: "Messages", component: Messages }
+    ]
+  },
+
 
   { path: 'updatelist', component: UpdateList },
 
-
-    { path: 'updatelist/:propertyId', component:UpdateList },
+  { path: 'updatelist/:propertyId', component: UpdateList },
 
 
 

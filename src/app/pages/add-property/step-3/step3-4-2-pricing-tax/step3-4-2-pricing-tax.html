@@ -10,7 +10,7 @@
     <div class="pricing-editor">
       <div class="price-display">${{ weekendPrice }}</div>
 
-      <div class="price-breakdown">
+      <div class="price-breakdown" [class.visible]="isBreakdownVisible">
         <div class="breakdown-card" [class.active]="view === 'guest'">
           <div class="breakdown-details">
             <div class="detail-row">
@@ -43,7 +43,8 @@
         </div>
       </div>
       <button type="button" class="toggle-view-button" (click)="toggleView()">
-        {{ view === 'guest' ? "Show what you'll earn" : 'Show guest price' }}
+        <span>{{ isBreakdownVisible ? 'Hide price details' : "Show what you'll earn" }}</span>
+        <span class="arrow" [class.up]="isBreakdownVisible">&#11206;</span>
       </button>
     </div>
 
@@ -81,4 +82,3 @@
     </div>
   </main>
 </div>
-<app-footer></app-footer>

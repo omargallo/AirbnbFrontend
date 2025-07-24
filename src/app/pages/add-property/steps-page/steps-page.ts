@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { FooterComponent } from '../../../layout/add-property-layout/wizard-layout/footer/footer';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-steps-page',
-  imports: [ FooterComponent],
   templateUrl: './steps-page.html',
-  styleUrl: './steps-page.css'
+  styleUrls: ['./steps-page.css'],
+  standalone: true,
+  imports: [CommonModule],
 })
 export class StepsPage {
-
+  constructor() {}
 }

@@ -21,4 +21,5 @@ export interface Property {
   propertyTypeId: number;
   hostId: string;
   images:PropertyImage[];
+  isFavourite:boolean ;
 }

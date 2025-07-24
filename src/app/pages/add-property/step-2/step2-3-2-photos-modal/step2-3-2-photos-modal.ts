@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { PhotosService } from '../../../../core/services/photos.service';
-import { FooterComponent } from '../../../../layout/add-property-layout/wizard-layout/footer/footer';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-step2-3-2-photos-modal',
-  imports: [ FooterComponent],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './step2-3-2-photos-modal.html',
   styleUrl: './step2-3-2-photos-modal.css'
 })
@@ -38,7 +39,7 @@ export class Step232PhotosModal {
     }
     this.hasUploadedPhotos = true;
     // Navigate to Ta-da screen automatically after photos are uploaded
-    this.router.navigate(['/add-property/step2-3-3-photos-ta-da']);
+    this.router.navigate(['/listing-wizard/step2-3-3-photos-ta-da']);
   }
 
   private readFile(file: File): void {
@@ -55,6 +56,6 @@ export class Step232PhotosModal {
 
   continueToTaDa(): void {
     this.closeModal();
-    this.router.navigate(['/add-property/step2-3-3-photos-ta-da']);
+    this.router.navigate(['/listing-wizard/step2-3-3-photos-ta-da']);
   }
 }

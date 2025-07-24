@@ -1,12 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PropertyAmenityService } from '../../../core/services/PropertyAmenity/property-amenity.service';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { HttpParams } from '@angular/common/http';
 import moment from 'moment';
 import { FormsModule } from '@angular/forms';
-import { CalendarAvailability } from '../../../core/models/CalendarAvailability';
-import { CalendarAvailabilityService } from '../../../core/services/CalendarAvailability/calendar-availability.service';
 
 // Define interface for the amenity data structure
 interface Amenity {
@@ -19,7 +17,7 @@ interface Amenity {
 @Component({
   selector: 'app-amenities-section',
   standalone: true,
-  imports: [CommonModule ,NgxDaterangepickerMd,FormsModule],
+  imports: [CommonModule ,FormsModule],
   templateUrl: './amenities-section.component.html',
   styleUrls: ['./amenities-section.component.css']
 })
@@ -28,14 +26,7 @@ export class AmenitiesSectionComponent implements OnInit {
   amenities: Amenity[] = [];
   isLoading = true;
   showAllAmenities = false;
-  readonly INITIAL_DISPLAY_COUNT = 10;
-
-
-  selected!: { startDate: moment.Moment; endDate: moment.Moment; };
-  unavailableDates: string[] = [];
-  minDate = moment(); // today
-  availabilityMessage = '';
-  totalPrice: number = 0;
+  readonly INITIAL_DISPLAY_COUNT = 7;
 
   constructor(private propertyAmenityService: PropertyAmenityService) { }
 
@@ -47,17 +38,9 @@ export class AmenitiesSectionComponent implements OnInit {
     }
     this.loadAmenities();
 
-      this.selected = {
-      startDate: moment().add(1, 'days'),
-      endDate: moment().add(2, 'days')
-    };
+   
     
   } //end oninit
-
-    isUnavailable = (date: moment.Moment): boolean => {
-    return this.unavailableDates.includes(date.format('YYYY-MM-DD'));
-  };
-  
 
   private loadAmenities(): void {
     this.propertyAmenityService.getAllAmenitiesByPropertyId(this.propertyId).subscribe({
@@ -126,7 +109,6 @@ export class AmenitiesSectionComponent implements OnInit {
 
 
 
-  // TrackBy function for better performance with *ngFor
   trackByAmenityId(index: number, amenity: Amenity): number {
     return amenity.id;
   }

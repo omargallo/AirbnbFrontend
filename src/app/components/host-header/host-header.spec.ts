@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Step37FinalDetails } from './step3-7-final-details';
+import { HostHeader } from './host-header';
 
-describe('Step37FinalDetails', () => {
-  let component: Step37FinalDetails;
-  let fixture: ComponentFixture<Step37FinalDetails>;
+describe('HostHeader', () => {
+  let component: HostHeader;
+  let fixture: ComponentFixture<HostHeader>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Step37FinalDetails]
+      imports: [HostHeader]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Step37FinalDetails);
+    fixture = TestBed.createComponent(HostHeader);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,11 +1,11 @@
-<!-- Updated HTML Template -->
+<app-header></app-header>
+
 <div class="bookings-container">
   <div class="bookings-header">
     <h1 class="page-title">Your trips</h1>
     <p class="page-subtitle">Manage your reservations and explore new destinations</p>
   </div>
 
-  <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-state">
     <div class="loading-spinner">
       <div class="spinner"></div>
@@ -13,7 +13,6 @@
     <p class="loading-text">Loading your bookings...</p>
   </div>
 
-  <!-- Error State -->
   <div *ngIf="error && !isLoading" class="error-state">
     <div class="error-card">
       <i class="bi bi-exclamation-triangle error-icon"></i>
@@ -26,9 +25,9 @@
     </div>
   </div>
 
-  <!-- Content State -->
+ 
   <div *ngIf="!isLoading && !error" class="bookings-content">
-    <!-- Empty State -->
+   
     <div *ngIf="bookings.length === 0" class="empty-state">
       <div class="empty-illustration">
         <i class="bi bi-compass"></i>

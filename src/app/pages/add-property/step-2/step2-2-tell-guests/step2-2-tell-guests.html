@@ -7,62 +7,67 @@
       </p>
     </header>
 
-    <!-- Guest Favorites Section -->
     <section class="amenity-section">
       <h2 class="section-title">What about these guest favorites?</h2>
       <div class="amenities-grid">
         <button
-          *ngFor="let amenity of guestFavorites"
+          *ngFor="let amenity of guestFavorites; let i = index"
           type="button"
           role="checkbox"
           [attr.aria-checked]="isAmenitySelected(amenity)"
           class="amenity-card"
           [class.selected]="isAmenitySelected(amenity)"
           (click)="toggleAmenity(amenity)"
+          [style.animation-delay]="i * 50 + 'ms'"
         >
-          <div class="amenity-icon"></div>
-          <span class="amenity-label">{{ amenity }}</span>
+          <div class="amenity-icon">
+            <img [src]="amenity.icon" [alt]="amenity.name + ' icon'">
+          </div>
+          <span class="amenity-label">{{ amenity.name }}</span>
         </button>
       </div>
     </section>
 
-    <!-- Standout Amenities Section -->
     <section class="amenity-section">
       <h2 class="section-title">Do you have any standout amenities?</h2>
       <div class="amenities-grid">
         <button
-          *ngFor="let amenity of standoutAmenities"
+          *ngFor="let amenity of standoutAmenities; let i = index"
           type="button"
           role="checkbox"
           [attr.aria-checked]="isAmenitySelected(amenity)"
           class="amenity-card"
           [class.selected]="isAmenitySelected(amenity)"
           (click)="toggleAmenity(amenity)"
+          [style.animation-delay]="(guestFavorites.length + i) * 50 + 'ms'"
         >
-          <div class="amenity-icon"></div>
-          <span class="amenity-label">{{ amenity }}</span>
+          <div class="amenity-icon">
+            <img [src]="amenity.icon" [alt]="amenity.name + ' icon'">
+          </div>
+          <span class="amenity-label">{{ amenity.name }}</span>
         </button>
       </div>
     </section>
 
-    <!-- Safety Items Section -->
     <section class="amenity-section">
       <h2 class="section-title">Do you have any of these safety items?</h2>
       <div class="amenities-grid">
         <button
-          *ngFor="let amenity of safetyItems"
+          *ngFor="let amenity of safetyItems; let i = index"
           type="button"
           role="checkbox"
           [attr.aria-checked]="isAmenitySelected(amenity)"
           class="amenity-card"
           [class.selected]="isAmenitySelected(amenity)"
           (click)="toggleAmenity(amenity)"
+          [style.animation-delay]="(guestFavorites.length + standoutAmenities.length + i) * 50 + 'ms'"
         >
-          <div class="amenity-icon"></div>
-          <span class="amenity-label">{{ amenity }}</span>
+          <div class="amenity-icon">
+            <img [src]="amenity.icon" [alt]="amenity.name + ' icon'">
+          </div>
+          <span class="amenity-label">{{ amenity.name }}</span>
         </button>
       </div>
     </section>
   </main>
 </div>
-<app-footer></app-footer>

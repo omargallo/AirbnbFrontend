@@ -7,12 +7,12 @@
       </div>
 
       <div class="reserve-box shadow" >
-  <div class="price-info">
-    <span class="price">{{ pricePerNight | currency }}</span> <span>/ night</span>
+        <div class="price-info">
+          <span class="price">{{ pricePerNight | currency }}</span> <span>/ night</span>
   </div>
 
   <!-- Check-in / Check-out -->
-  <div class="date-picker mt-3">
+  <div class="date-picker mt-4">
     <label>
       <span>Check-in</span>
       <input type="date" [(ngModel)]="checkInDate" />
@@ -33,10 +33,19 @@
     </label>
   </div>
 
-  <button class="check-btn">Check availability</button>   <!-- go to login page if not logged in-->
+  <button class="check-btn">Reverse</button>   <!-- go to login page if not logged in-->
+  <div class="button-subtext mt-3">You won't be charged yet</div>
 </div>
   </div>
 
+       <div class="booking-section">
+        <div class="button-container">
+        </div>
+
+        <div class="report-listing">
+            <i class="fa-regular fa-flag"></i> <a href="#" class="report-link">Report this listing</a>
+        </div>
+    </div>
   
   
   

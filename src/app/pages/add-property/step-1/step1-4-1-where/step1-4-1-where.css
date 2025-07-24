@@ -1,4 +1,4 @@
-body,
+/* body,
 html {
   margin: 0;
   padding: 0;
@@ -7,15 +7,15 @@ html {
     Roboto, "Helvetica Neue", sans-serif;
   color: #222;
   background-color: #fff;
-}
+} */
 
 .location-page {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px 24px;
+  /* padding: 0px 24px; */
   box-sizing: border-box;
-  min-height: 100vh;
+  /* min-height: 100vh; */
 }
 
 .location-content {
@@ -46,14 +46,20 @@ html {
   width: 100%;
   height: 500px;
   border-radius: 16px;
-  background-image: url("https://maps.googleapis.com/maps/api/staticmap?size=630x500&zoom=12&center=26.82055,30.8025&scale=1&key=AIzaSyC73L89dBLortoWF1LI1cgvxmpROFVd5TI&signature=5IjZ05WrYDLVAjpLB5TBhZWWVvY=");
-  background-size: cover;
-  background-position: center;
+  position: relative;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 40px;
-  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.google-map {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
 
 .address-card {
@@ -64,6 +70,9 @@ html {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
   padding: 4px;
   box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+  margin-top: 20px;
 }
 
 .address-form {
@@ -108,4 +117,51 @@ html {
 .address-input::placeholder {
   color: #6a6a6a;
   font-weight: 400;
+}
+
+.get-location-btn {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.get-location-btn:hover {
+  background-color: #f7f7f7;
+}
+
+.get-location-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.leaflet-map {
+  height: 800px !important;
+  width: 800px !important;
+  border-radius: 12px;
+  z-index: 1;
 }

@@ -21,7 +21,7 @@
   max-width: 1760px;
   padding: 16px 24px;
 }
-
+   
 .back-btn {
   background: none;
   border: none;
@@ -734,6 +734,100 @@ Special styling for larger guest counts
     max-width: none;
     padding: 0 16px;
   }
+}
+.saving-indicator {
+  color: #007bff;
+  animation: pulse 1s infinite;
+}
+
+.changes-dot {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.preview-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.photo-wrapper {
+  position: relative;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.character-count, .invalid-feedback {
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.character-count {
+  color: #666;
+  text-align: right;
+}
+
+.counter-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.counter-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.counter-btn:hover:not(:disabled) {
+  background: #f8f9fa;
+}
+
+.counter-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.counter-value {
+  font-weight: 500;
+  min-width: 100px;
+  text-align: center;
 }
 
 
