@@ -18,17 +18,51 @@ export interface Result<T> {
   isSuccess: boolean;
   message: string;
 }
+
+// DTO interface matching your backend EXACTLY
+export interface PropertyDisplayDTO {
+  id: number;
+  title: string;
+  description: string;
+  city: string;
+  country: string;
+  state: string;
+  latitude: number;
+  longitude: number;
+  pricePerNight: number;
+  maxGuests: number;
+  bedrooms: number;
+  beds: number;
+  bathrooms: number;
+  averageRating: number;
+  reviewCount: number;
+  isFavourite: boolean;
+  isActive: boolean;
+  isDeleted: boolean;
+  propertyTypeId: number;
+  hostId: string;
+  images?: PropertyImageDisplayDTO[];
+}
+
+export interface PropertyImageDisplayDTO {
+  id: number;
+  imageUrl: string;
+  propertyId: number;
+}
+
 export interface Country {
   iso2: string;
   iso3: string;
   country: string;
   cities: string[];
 }
+
 export interface CountriesResponse {
   error: boolean;
   msg: string;
   data: Country[];
 }
+
 interface SearchPropertiesResponse {
   items: Property[];
   metaData: {
@@ -37,6 +71,7 @@ interface SearchPropertiesResponse {
     total: number;
   };
 }
+
 export interface SearchParams {
   country?: string;
   longitude?: number;
@@ -47,36 +82,31 @@ export interface SearchParams {
   page?: number;
   pageSize?: number;
   maxDistanceKm?: number;
-
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class PropertyService {
-
-  // private readonly baseUrl = environment.baseUrl;
-  // private readonly propertyUrl = `${this.baseUrl}/api/Property`;
   private readonly propertyUrl = `${environment.baseUrl}/property`;
-
-
   private baseUrl = `${environment.baseUrl}/Property`;
   private countriesApiUrl = 'https://countriesnow.space/api/v0.1/countries';
 
-
   constructor(private http: HttpClient) { }
 
-  getImagesByPropertyId(id:number):Observable<PropertyImage[]>{
-   return  this.http.get<Result<PropertyImage[]>>(`${this.baseUrl}/${id}/images`).pipe(
-    map(res=> res.data)
-   )
+  getImagesByPropertyId(id: number): Observable<PropertyImage[]> {
+    return this.http.get<Result<PropertyImage[]>>(`${this.baseUrl}/${id}/images`).pipe(
+      map(res => res.data)
+    );
   }
-  uploadPhotos(formData:FormData){
+
+  uploadPhotos(formData: FormData) {
     return this.http.post(`${this.baseUrl}/property-images/upload`, formData, {
       reportProgress: true,
       observe: 'events'
-    })
+    });
   }
+
   getAllProperties(): Observable<Property[]> {
     return this.http.get<ApiResponse<Property[]>>(this.propertyUrl)
       .pipe(
@@ -92,6 +122,83 @@ export class PropertyService {
       );
   }
 
+  // FIXED: Update property method with proper DTO structure
+  updateProperty(propertyId: number, propertyData: PropertyDisplayDTO): Observable<Result<PropertyDisplayDTO>> {
+    const url = `${this.baseUrl}/${propertyId}`;
+    
+    // Log the payload being sent for debugging
+    console.log('Sending update payload:', propertyData);
+    
+    return this.http.put<Result<PropertyDisplayDTO>>(url, propertyData);
+  }
+
+  // FIXED: Update specific property section with complete DTO
+  updatePropertySection(propertyId: number, property: Property, sectionData: any, sectionType: string): Observable<Result<PropertyDisplayDTO>> {
+    // Create complete DTO with all required fields
+    const completeDTO = this.createCompleteDTO(property, sectionData, sectionType);
+    return this.updateProperty(propertyId, completeDTO);
+  }
+
+  // NEW: Create complete DTO with all required fields
+  private createCompleteDTO(property: Property, sectionData: any, sectionType: string): PropertyDisplayDTO {
+    // Start with the current property data
+    const dto: PropertyDisplayDTO = {
+      id: property.id,
+      title: property.title,
+      description: property.description,
+      city: property.city,
+      country: property.country,
+      state: property.state,
+      latitude: property.latitude,
+      longitude: property.longitude,
+      pricePerNight: property.pricePerNight,
+      maxGuests: property.maxGuests,
+      bedrooms: property.bedrooms || 0,
+      beds: property.beds || 0,
+      bathrooms: property.bathrooms || 0,
+      averageRating: property.averageRating || 0,
+      reviewCount: property.reviewCount || 0,
+      isFavourite: property.isFavourite || false,
+      isActive: property.isActive || true,
+      isDeleted: property.isDeleted || false,
+      propertyTypeId: property.propertyTypeId,
+      hostId: property.hostId
+    };
+
+    // Update specific section based on type
+    switch (sectionType) {
+      case 'title':
+        dto.title = sectionData;
+        break;
+      case 'description':
+        dto.description = sectionData;
+        break;
+      case 'price':
+        dto.pricePerNight = Number(sectionData);
+        break;
+      case 'maxGuests':
+        dto.maxGuests = Number(sectionData);
+        break;
+      case 'propertyId':
+        dto.propertyTypeId = Number(sectionData);
+        break;
+      case 'location':
+        dto.city = sectionData.city || property.city;
+        dto.country = sectionData.country || property.country;
+        dto.state = sectionData.address || property.state;
+        if (sectionData.coordinates) {
+          dto.latitude = Number(sectionData.coordinates.lat) || property.latitude;
+          dto.longitude = Number(sectionData.coordinates.lng) || property.longitude;
+        }
+        break;
+      default:
+        // For other fields, merge the data
+        Object.assign(dto, sectionData);
+    }
+
+    console.log(`Created complete DTO for ${sectionType}:`, dto);
+    return dto;
+  }
 
   getNearestProperties(page: number = 1, pageSize: number = 10, maxDistanceKm: number = 10): Observable<Result<{ items: Property[] }>> {
     const headers = new HttpHeaders()
@@ -101,7 +208,6 @@ export class PropertyService {
 
     return this.http.get<Result<{ items: Property[] }>>(`${this.baseUrl}/nearest`, { headers });
   }
-
 
   getAllCountries(): Observable<CountriesResponse> {
     return this.http.get<CountriesResponse>(this.countriesApiUrl);
@@ -117,7 +223,6 @@ export class PropertyService {
     if (params.startDate) queryParams.StartDate = params.startDate;
     if (params.endDate) queryParams.EndDate = params.endDate;
     if (params.page) queryParams.Page = params.page;
-    // if (params.pageSize) queryParams.PageSize = params.pageSize;
     queryParams.PageSize = 12;
     if (params.maxDistanceKm != null) queryParams.maxDistanceKm = params.maxDistanceKm;
 
@@ -125,11 +230,4 @@ export class PropertyService {
       params: queryParams
     });
   }
-
-
-
-  updateProperty(id:number,prop:Property){
-    // this.http.put(`${this.baseUrl}/${id}`,)
-  }
-
 }
