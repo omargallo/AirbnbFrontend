@@ -1,14 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FooterComponent } from '../../../../layout/add-property-layout/wizard-layout/footer/footer';
+import { PropertyFormStorageService } from '../../../../core/services/ListingWizard/property-form-storage.service';
+import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-step3-3-choose-welcome',
-  imports: [CommonModule, FooterComponent],
+  imports: [CommonModule],
   templateUrl: './step3-3-choose-welcome.html',
   styleUrl: './step3-3-choose-welcome.css'
 })
-export class Step33ChooseWelcome {
+export class Step33ChooseWelcome implements OnInit, OnDestroy {
+  private subscription!: Subscription;
   options = [
     {
       key: 'any',
@@ -27,7 +30,39 @@ export class Step33ChooseWelcome {
     return this.selected === key;
   }
 
+  constructor(
+    private formStorage: PropertyFormStorageService,
+    private wizardService: ListingWizardService
+  ) {}
+
+  ngOnInit(): void {
+    // Load saved data
+    const savedData = this.formStorage.getStepData('step3-3');
+    if (savedData?.selected) {
+      this.selected = savedData.selected;
+    }
+
+    // Subscribe to next step event
+    this.subscription = this.wizardService.nextStep$.subscribe(() => {
+      this.saveFormData();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
   selectOption(key: string): void {
     this.selected = key;
+    this.saveFormData();
+  }
+
+  private saveFormData(): void {
+    const data = {
+      selected: this.selected
+    };
+    this.formStorage.saveFormData('step3-3', data);
   }
 }
