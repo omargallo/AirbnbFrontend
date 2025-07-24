@@ -1,0 +1,34 @@
+ <div class="section-content">
+      <div class="section-header">
+        <h2>Tell guests what your place has to offer</h2>
+        <p>You can add more amenities after you publish your listing.</p>
+      </div>
+      
+      <form [formGroup]="amenitiesForm">
+        <div class="amenities-grid">
+          <div class="amenity-item" *ngFor="let amenity of availableAmenities">
+            <button
+              type="button"
+              class="amenity-btn"
+              [class.selected]="isAmenitySelected(amenity)"
+              (click)="toggleAmenity(amenity)">
+              <span>{{ amenity }}</span>
+              <svg *ngIf="isAmenitySelected(amenity)" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Selected amenities summary -->
+        <div class="selected-amenities-summary" *ngIf="getSelectedAmenities().length > 0">
+          <h4>Selected amenities ({{ getSelectedAmenities().length }}):</h4>
+          <div class="selected-amenities-list">
+            <span class="selected-amenity-tag" *ngFor="let amenity of getSelectedAmenities()">
+              {{ amenity }}
+              <button type="button" class="remove-amenity-btn" (click)="removeAmenity(amenity)">×</button>
+            </span>
+          </div>
+        </div>
+      </form>
+    </div>

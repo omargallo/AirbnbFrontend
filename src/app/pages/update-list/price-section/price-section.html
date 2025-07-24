@@ -1,0 +1,26 @@
+<div class="section-content">
+      <div class="section-header">
+        <h2>Now, set your price</h2>
+        <p>You can change it anytime.</p>
+      </div>
+      
+      <form [formGroup]="priceForm">
+        <div class="price-input-wrapper">
+          <div class="price-input-container">
+            <span class="currency-symbol">$</span>
+            <input
+              type="number"
+              formControlName="price"
+              class="form-control price-input"
+              [class.is-invalid]="isFieldInvalid()"
+              placeholder="0"
+              min="1"
+              step="1">
+          </div>
+          <div class="price-suffix">per night</div>
+        </div>
+        <div class="invalid-feedback" *ngIf="isFieldInvalid()">
+          {{ getFieldError() }}
+        </div>
+      </form>
+    </div>
