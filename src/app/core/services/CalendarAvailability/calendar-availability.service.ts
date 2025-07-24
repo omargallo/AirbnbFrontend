@@ -16,7 +16,7 @@ export interface CalendarCheckResponse {
 
 export interface CalendarCheckData {
   isAvailable: boolean;
-  unavailableDates: string[]; 
+  unavailableDates: string[];
   totalPrice: number;
   message: string;
 }
@@ -37,9 +37,9 @@ export class CalendarAvailabilityService {
       baseurl = environment.baseUrl;
       calenderURL = `${this.baseurl}/Calendar`;
 
-      
+
       constructor(private http: HttpClient) {}
-      
+
         reverseIThink(
                   propertyId: number,
                   startDate: string,
@@ -70,11 +70,11 @@ export class CalendarAvailabilityService {
 
 
 
-        
+
       }
-  constructor(private http: HttpClient) {}
+  // constructor(private http: HttpClient) {}
 
   // getAvailabilityForPropertyId(propertyId: number) {
   //   return this.http.get<CalendarAvailability[]>(`${this.calenderURL}/property/${propertyId}/availability`);
   // }
-}
+// }}
