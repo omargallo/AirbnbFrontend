@@ -44,7 +44,7 @@
       <div class="d-flex align-items-center position-relative">
         <a
           class="switch-to-hosting-btn d-none d-lg-block"
-          routerLink="/listing-wizard"
+          routerLink="/host"
           >{{ "HEADER.SWITCH_TO_HOSTING" | translate }}</a
         >
         <div class="dropdown" [ngClass]="{ show: dropdownOpen }">
@@ -193,7 +193,7 @@
               <a
                 class="dropdown-item d-flex align-items-center gap-2"
                 routerLink="/host"
-              >
+              > 
                 <i class="bi bi-house-door-fill"></i>{{
                 "HEADER.AIRBNB_YOUR_HOME" | translate }}
               </a>

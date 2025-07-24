@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { HostPropertiesService } from '../../core/services/Property/HostPropertiesService';
 import { PropertyDisplayDTO } from '../../core/services/Property/HostPropertiesService';
 import { environment } from '../../../environments/environment.development';
@@ -9,7 +10,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   templateUrl: './host-properties.html',
   styleUrls: ['./host-properties.css'],
-  imports: [CommonModule]
+  imports: [CommonModule,RouterLink]
 })
 export class HostProperties implements OnInit {
   properties: PropertyDisplayDTO[] = [];
@@ -18,7 +19,10 @@ export class HostProperties implements OnInit {
   viewMode: 'grid' | 'table' = 'grid';
   private hostId = '5a6c3d4f-9ca1-4b58-bdf6-a6e19b62218f';
 
-  constructor(private hostPropertiesService: HostPropertiesService) {}
+  constructor(
+    private hostPropertiesService: HostPropertiesService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadHostProperties();
@@ -51,6 +55,15 @@ export class HostProperties implements OnInit {
 
   toggleViewMode(): void {
     this.viewMode = this.viewMode === 'grid' ? 'table' : 'grid';
+  }
+
+  // Navigation methods
+  navigateToEditProperty(propertyId: number): void {
+    this.router.navigate(['/updatelist', propertyId.toString()]);
+  }
+
+  navigateToPropertyBookings(propertyId: number): void {
+    this.router.navigate(['/propertybookings', propertyId.toString()]);
   }
 
   getStatusLabel(status: string): string {
@@ -130,8 +143,8 @@ export class HostProperties implements OnInit {
   hasValidImage(property: PropertyDisplayDTO): boolean {
     return this.getCoverImageUrl(property) !== '';
   }
+  
   trackById(index: number, property: any): string | number {
-  return property.id;
+    return property.id;
+  }
 }
-}
-

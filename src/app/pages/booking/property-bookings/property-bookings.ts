@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PropertyBookingService, BookingDetailsDTO } from '../../../core/services/Booking/PropertyBookingService';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -13,7 +14,7 @@ import { HeaderComponent } from "../../../components/header/header";
   providers: [DatePipe]
 })
 export class PropertyBookings implements OnInit {
-  @Input() propertyId: number = 5; 
+  propertyId: number = 0;
   
   bookings: BookingDetailsDTO[] = [];
   isLoading = true;
@@ -22,14 +23,32 @@ export class PropertyBookings implements OnInit {
 
   constructor(
     private propertyBookingService: PropertyBookingService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.loadPropertyBookings();
+    // Get propertyId from route parameters
+    this.route.params.subscribe(params => {
+      const id = params['propertyId'];
+      if (id) {
+        this.propertyId = +id; // Convert string to number
+        this.loadPropertyBookings();
+      } else {
+        this.error = 'Property ID not found in route';
+        this.isLoading = false;
+      }
+    });
   }
 
   loadPropertyBookings(): void {
+    if (!this.propertyId || this.propertyId <= 0) {
+      this.error = 'Invalid property ID';
+      this.isLoading = false;
+      return;
+    }
+
     this.isLoading = true;
     this.error = null;
 
@@ -88,25 +107,25 @@ export class PropertyBookings implements OnInit {
     }
   }
 
- getBookingStatusClass(status: string): string {
-  const statusMap: { [key: string]: string } = {
-    'completed': 'status-completed',
-    'confirmed': 'status-confirmed',
-    'pending': 'status-pending',
-    'cancelled': 'status-cancelled'
-  };
-  return statusMap[status.toLowerCase()] || 'status-default';
-}
+  getBookingStatusClass(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      'completed': 'status-completed',
+      'confirmed': 'status-confirmed',
+      'pending': 'status-pending',
+      'cancelled': 'status-cancelled'
+    };
+    return statusMap[status.toLowerCase()] || 'status-default';
+  }
 
-getBookingStatusIcon(status: string): string {
-  const iconMap: { [key: string]: string } = {
-    'completed': 'bi-check-circle-fill',
-    'confirmed': 'bi-calendar-check-fill',
-    'pending': 'bi-clock-fill',
-    'cancelled': 'bi-x-circle-fill'
-  };
-  return iconMap[status.toLowerCase()] || 'bi-circle-fill';
-}
+  getBookingStatusIcon(status: string): string {
+    const iconMap: { [key: string]: string } = {
+      'completed': 'bi-check-circle-fill',
+      'confirmed': 'bi-calendar-check-fill',
+      'pending': 'bi-clock-fill',
+      'cancelled': 'bi-x-circle-fill'
+    };
+    return iconMap[status.toLowerCase()] || 'bi-circle-fill';
+  }
 
   isUpcomingBooking(checkInDateString: string): boolean {
     try {
@@ -175,4 +194,28 @@ getBookingStatusIcon(status: string): string {
     return booking.userCountry || 'Not specified';
   }
 
+  navigateToManageProperty(): void {
+    console.log('Current propertyId:', this.propertyId); // Debug log
+    console.log('Route params:', this.route.snapshot.params); // Debug route params
+    
+    // Try to get propertyId from route if not set in component
+    let propertyIdToUse = this.propertyId;
+    if (!propertyIdToUse || propertyIdToUse <= 0) {
+      const routePropertyId = this.route.snapshot.params['propertyId'];
+      if (routePropertyId) {
+        propertyIdToUse = +routePropertyId;
+        console.log('Using propertyId from route:', propertyIdToUse);
+      }
+    }
+    
+    if (propertyIdToUse && propertyIdToUse > 0) {
+      console.log('Navigating to /updatelist/' + propertyIdToUse.toString());
+      this.router.navigate(['/updatelist', propertyIdToUse.toString()]);
+    } else {
+      console.error('Invalid propertyId for navigation:', propertyIdToUse);
+      console.error('Available route params:', this.route.snapshot.params);
+      // Fallback - navigate to general updatelist page
+      this.router.navigate(['/updatelist']);
+    }
+  }
 }

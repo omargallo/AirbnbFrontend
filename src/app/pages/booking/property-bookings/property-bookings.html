@@ -6,7 +6,6 @@
     <p class="page-subtitle">Manage your property bookings and guest information</p>
   </div>
 
-  <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-state">
     <div class="loading-spinner">
       <div class="spinner"></div>
@@ -14,7 +13,7 @@
     <p class="loading-text">Loading property bookings...</p>
   </div>
 
-  <!-- Error State -->
+
   <div *ngIf="error && !isLoading" class="error-state">
     <div class="error-card">
       <i class="bi bi-exclamation-triangle error-icon"></i>
@@ -27,24 +26,24 @@
     </div>
   </div>
 
-  <!-- Content State -->
+
   <div *ngIf="!isLoading && !error" class="bookings-content">
-    <!-- Empty State -->
+
     <div *ngIf="bookings.length === 0" class="empty-state">
       <div class="empty-illustration">
         <i class="bi bi-calendar-x"></i>
       </div>
       <h3 class="empty-title">No bookings yet</h3>
       <p class="empty-message">Your property hasn't received any reservations yet. Keep your listing active and competitive to attract guests!</p>
-      <a routerLink="/host/property-management" class="btn-start-searching">
-        Manage Property
-      </a>
+     <button (click)="navigateToManageProperty()" class="btn-start-searching">
+  Manage Property
+</button>
     </div>
 
-    <!-- Bookings List -->
+
     <div *ngIf="bookings.length > 0" class="bookings-grid">
       <div *ngFor="let booking of bookings; trackBy: trackByBookingId" class="booking-card">
-        <!-- Booking Header -->
+
         <div class="booking-header">
           <div class="booking-type">
             {{ getBookingTypeLabel(booking) }}
@@ -55,7 +54,7 @@
           </div>
         </div>
 
-        <!-- Property Image with Gradient Overlay -->
+
         <div class="property-image">
           <div class="image-placeholder">
             <div class="image-gradient"></div>
@@ -66,9 +65,9 @@
           </div>
         </div>
 
-        <!-- Booking Details -->
+
         <div class="booking-details">
-          <!-- Property Info -->
+
           <div class="property-info">
             <h3 class="property-title">{{ booking.propertyTitle }}</h3>
             <p class="property-location">
@@ -77,7 +76,7 @@
             </p>
           </div>
 
-          <!-- Guest Information Section -->
+
           <div class="guest-info-section">
             <h4 class="guest-info-title">
               <i class="bi bi-person-fill"></i>
@@ -131,7 +130,7 @@
               </div>
             </div>
 
-            <!-- Enhanced Booking Meta Information -->
+
             <div class="booking-meta-grid">
               <div class="meta-card">
                 <div class="meta-icon">
@@ -165,7 +164,7 @@
             </div>
           </div>
 
-          <!-- Updated Footer with better pricing display -->
+
           <div class="booking-footer">
             <div class="price-section">
               <div class="price-breakdown">
