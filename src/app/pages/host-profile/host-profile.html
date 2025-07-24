@@ -1,0 +1,87 @@
+<div class="host-profile-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p>Loading host profile...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-message alert alert-danger">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <p>{{ error }}</p>
+    <button class="btn btn-primary" (click)="loadHostProfile()">
+      Retry
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="host && !isLoading" class="host-profile-content">
+    <div class="profile-header">
+      <div class="profile-image-container">
+        <img [src]="profileImage" 
+             alt="Profile picture" class="profile-image rounded-circle">
+      </div>
+      
+      <div class="profile-info">
+        <h1>{{ fullName }}</h1>
+        <div class="host-badge bg-primary text-white">Host</div>
+        
+        <div class="stats-container d-flex gap-4">
+          <div class="stat-item">
+            <!-- <div class="stat-value">20</div> -->
+            <div class="stat-label">Reviews</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">4.3</div>
+            <div class="stat-label">Rating</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ getYearsHosting() }}</div>
+            <div class="stat-label">Years hosting</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-details border-top pt-4">
+      <h2>About {{ host.firstName }}</h2>
+      
+      <div class="about-section mb-4" *ngIf="host.bio">
+        <!-- <p *ngIf="!showFullBio">{{ (host.bio | truncate:150) || '' }}</p> -->
+        <p *ngIf="showFullBio">{{ host.bio }}</p>
+        <button class="btn btn-link p-0" (click)="toggleBio()">
+          {{ showFullBio ? 'Show less' : 'Show more' }}
+        </button>
+      </div>
+      
+      <div class="details-grid row g-3">
+        <div class="detail-item col-md-6 d-flex align-items-center" *ngIf="host.country">
+          <i class="bi bi-geo-alt-fill me-2 text-primary"></i>
+          <span>From {{ host.country }}</span>
+        </div>
+        <div class="detail-item col-md-6 d-flex align-items-center">
+          <i class="bi bi-briefcase-fill me-2 text-primary"></i>
+          <span>Project Manager</span>
+        </div>
+        <div class="detail-item col-md-6 d-flex align-items-center">
+          <i class="bi bi-heart-fill me-2 text-primary"></i>
+          <span>Where I've always wanted to go: Fiji Island</span>
+        </div>
+        <div class="detail-item col-md-6 d-flex align-items-center">
+          <i class="bi bi-piggy-bank-fill me-2 text-primary"></i>
+          <span>Dopa is a mini chihuahua dog</span>
+        </div>
+        <div class="detail-item col-md-6 d-flex align-items-center" *ngIf="getAge() !== null">
+          <i class="bi bi-balloon-fill me-2 text-primary"></i>
+          <span>Born in the 90s ({{ getAge() }} years old)</span>
+        </div>
+        <div class="detail-item col-md-6 d-flex align-items-center">
+          <i class="bi bi-translate me-2 text-primary"></i>
+          <span>Speaks Arabic, French, and English</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -53,12 +53,15 @@
     >
       <app-slider-card
         (cardClick)="onCardClicked($event)"
+        (wishlistClick)="onWishListClick($event)"
         [propertyId]="property.id"
         title="{{property.title}}"
-        imageUrl="{{property.images[0].imageUrl}}"
+        imageUrl="{{getPropertyImage(property)}}"
         [price]="property.pricePerNight"
         description="{{property.description}}"
         [rating]="property.averageRating"
+        [isFavorite]="property.isFavourite"
+        [reviewCount]="property.reviewCount"
       ></app-slider-card>
     </swiper-slide>
   </swiper-container>

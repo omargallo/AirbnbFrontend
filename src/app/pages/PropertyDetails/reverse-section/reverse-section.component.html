@@ -1,0 +1,54 @@
+  <div class="leftsection">
+     <div class="rare-find-badge mt-2 mb-4">
+        <div class="rare-find-content d-flex align-items-center">
+          <i class="bi bi-gem rare-find-icon me-2"></i>
+          <span class="rare-find-title">Rare find! This place is usually booked</span>
+        </div>
+      </div>
+
+      <div class="reserve-box shadow" >
+        <div class="price-info">
+          <span class="price">{{ pricePerNight | currency }}</span> <span>/ night</span>
+  </div>
+
+  <!-- Check-in / Check-out -->
+  <div class="date-picker mt-4">
+    <label>
+      <span>Check-in</span>
+      <input type="date" [(ngModel)]="checkInDate" />
+    </label>
+    <label>
+      <span>Check-out</span>
+      <input type="date" [(ngModel)]="checkOutDate" />
+    </label>
+  </div>
+
+  <!-- Guest dropdown -->
+  <div class="guest-selector">
+    <label>
+      Guests
+      <select [(ngModel)]="guestCount">
+        <option *ngFor="let count of [1,2,3,4,5,6]" [value]="count">{{ count }} guest(s)</option>
+      </select>
+    </label>
+  </div>
+
+  <button class="check-btn">Reverse</button>   <!-- go to login page if not logged in-->
+  <div class="button-subtext mt-3">You won't be charged yet</div>
+</div>
+  </div>
+
+       <div class="booking-section">
+        <div class="button-container">
+        </div>
+
+        <div class="report-listing">
+            <i class="fa-regular fa-flag"></i> <a href="#" class="report-link">Report this listing</a>
+        </div>
+    </div>
+  
+  
+  
+  <!-- <div class="col-md-4" *ngIf="Property?.averageRating >= 4.5"> -->
+     
+    <!-- </div> -->

@@ -49,4 +49,19 @@ export class UserService {
       })
     );
   }
+
+  confirmOtp(payload: {email: string, otp: string}): Observable<any> {
+    return this.http.post(`${this.baseUrl}/verify-otp`, payload).pipe(
+      tap((response: any) => {
+        console.log(response);
+      })
+    );
+  }
+  resendOtp(payload: { email: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/send-reset-otp`, payload).pipe(
+      tap((response: any) => {
+        console.log(response);
+      })
+    );
+  }
 }

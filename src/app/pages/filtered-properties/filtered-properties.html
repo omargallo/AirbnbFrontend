@@ -1,24 +1,41 @@
 <div class="properties-container container-fluid">
-  <div class="properties-panel ml-16">
+  <div class="properties-panel">
     <div class="d-flex justify-content-between items-center mb-4">
-      <p class="font-semibold text-lg">Over {{properties?.length}} homes</p>
+      <p class="font-semibold text-lg">Over {{properties.length}} homes</p>
       <div class="d-flex justify-content-between items-center gap-2 text-lg">
         <img alt="fees" src="assets/images/fees.svg" width="40" height="40" />
         Prices include all fees
       </div>
     </div>
+    <div class="properties-grid" *ngIf="isLoading">
+      <div class="mb-4" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]">
+        <div class="p-2 rounded">
+          <div class="shimmer rounded mb-2" style="height: 180px;"></div>
+          <div class="shimmer-line w-75 mb-2"></div>
+          <div class="shimmer-line w-50 mb-1"></div>
+          <div class="shimmer-line w-100"></div>
+        </div>
+      </div>
+    </div>
     <div class="properties-grid">
-      <app-slider-card
+      <a
         *ngFor="let property of properties; trackBy: trackByPropertyId"
-        [imageUrl]="getPropertyImage(property)"
-        [title]="property.title"
-        [subtitle]="getLocationSubtitle(property)"
-        [price]="property.pricePerNight"
-        [rating]="property.averageRating"
-        [isFavorite]="false"
-        (click)="selectProperty(property)"
+        target="_blank"
+        [routerLink]="['/property', property.id]"
+        style="text-decoration: none;"
       >
-      </app-slider-card>
+        <app-slider-card
+          [imageUrl]="getPropertyImage(property)"
+          [title]="property.title"
+          [subtitle]="getLocationSubtitle(property)"
+          [price]="property.pricePerNight"
+          [rating]="property.averageRating"
+          [isFavorite]="false"
+          (mouseenter)="selectProperty(property)"
+          (mouseleave)="selectedProperty = null"
+        >
+        </app-slider-card>
+      </a>
     </div>
     <div class="pagination-container" *ngIf="totalPages > 1">
       <nav class="pagination">
@@ -65,7 +82,7 @@
     </div>
   </div>
 
-  <div class="map-panel">
+  <div class="map-panel" [class.loading]="isMapLoading">
     <div id="leaflet-map" class="leaflet-map"></div>
   </div>
 </div>

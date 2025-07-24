@@ -4,10 +4,13 @@ import { PropertyService } from '../../core/services/Property/property.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Routes } from '@angular/router';
 import { PropertImageGalaryComponent } from "../PropertyDetails/propertImage-galary/propertImage-galary.component";
+import { ReverseSectionComponent } from "../PropertyDetails/reverse-section/reverse-section.component";
+import { AmenitiesSectionComponent } from '../PropertyDetails/amenities-section/amenities-section.component';
+import { BookingCalendarComponent } from "../PropertyDetails/BookingCalendar/BookingCalendar.component";
 
 @Component({
   selector: 'app-property-info',
-  imports: [CommonModule, PropertImageGalaryComponent],
+  imports: [CommonModule, PropertImageGalaryComponent, ReverseSectionComponent, AmenitiesSectionComponent, BookingCalendarComponent],
   templateUrl: './property-info.html',
   styleUrl: './property-info.css'
 })

@@ -505,3 +505,123 @@
     height: 38px;
   }
 }
+
+/* Property Actions - Grid View */
+.property-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.dark-btn {
+  background: #2d3748;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  min-width: 100px;
+  justify-content: center;
+}
+
+.dark-btn:hover {
+  background: #4a5568;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dark-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dark-btn .btn-icon {
+  font-size: 14px;
+}
+
+.edit-btn:hover {
+  background: #3182ce;
+}
+
+.bookings-btn:hover {
+  background: #38a169;
+}
+
+/* Table Actions - Compact buttons for table view */
+.table-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.dark-btn-small {
+  background: #2d3748;
+  color: white;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-btn-small:hover {
+  background: #4a5568;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.dark-btn-small:active {
+  transform: translateY(0);
+}
+
+.dark-btn-small.edit-btn:hover {
+  background: #3182ce;
+}
+
+.dark-btn-small.bookings-btn:hover {
+  background: #38a169;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .property-actions {
+    flex-direction: column;
+  }
+  
+  .dark-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .table-actions {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+/* Focus states for accessibility */
+.dark-btn:focus,
+.dark-btn-small:focus {
+  outline: 2px solid #63b3ed;
+  outline-offset: 2px;
+}
+
+/* Ensure the table has proper spacing for the new Actions column */
+.properties-table th:last-child,
+.properties-table td:last-child {
+  width: 100px;
+  text-align: center;
+}

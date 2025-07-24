@@ -1,15 +1,38 @@
 <app-propertImage-galary [propertyId]="propertyId"></app-propertImage-galary>
+
+
+ <div class="property-details-box mt-3">
+  <div class="row ">
+      <div class="col-md-8">
+        <!-- property info, description, amenities, etc. -->
+        <app-amenities-section [propertyId]="propertyId"></app-amenities-section>
+      </div>
+      <div class="col-md-4 fixed-reserve">
+        <!-- <app-reverse-section ></app-reverse-section> -->
+      </div>
+  </div> 
+  <div class="bookinCalender">
+    <div class="row">
+      <div class="col-md-8">
+            <app-BookingCalendar [propertyId]="propertyId" ></app-BookingCalendar>
+      </div>
+      <div class="col-md-4">
+        <app-reverse-section ></app-reverse-section>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
 <div class="property-container">
   <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-state">
     <div class="spinner"></div>
   </div>
 
-  <!-- Error State -->
-  <div *ngIf="error" class="error-state">
-    <p>{{ error }}</p>
-    <button (click)="showPropertyDetails(propertyId)"></button>
-  </div>
+ 
 
   <!-- Property Content -->
   <div *ngIf="propertyId && !isLoading" class="property-content">
@@ -35,17 +58,3 @@
       </button>
     </div>
     
-    <!-- Tab Content -->
-    <div >
-      <!-- <app-propertImage-galary
-        *ngIf="activeTab === 'gallery'"
-        [propertyId]="propertyId">
-      </app-propertImage-galary> -->
-  
-    </div>
-  </div>
-</div>
-<!-- 
-<app-propertImage-galary
-  [propertyId]="propertyId">
-</app-propertImage-galary> -->

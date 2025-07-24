@@ -1,0 +1,46 @@
+<div
+  class="overlay"
+  *ngIf="dialogService.isDialogOpen('confirmOtp')"
+  (click)="close()"
+>
+  <div class="dialog" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <span>{{ "confirmOtp.confirmOtp" | translate }}</span>
+      <i class="icon-close" (click)="close()">×</i>
+    </div>
+
+    <div class="dialog-content">
+      <form (ngSubmit)="onConfirmOtp()" #confirmOtpForm="ngForm">
+        <h1>{{ "confirmOtp.welcome" | translate }}</h1>
+
+        <div class="form-group">
+          <input
+            type="text"
+            name="otp"
+            [value]="otp"
+            (input)="onOtpChange($event)"
+            maxlength="6"
+            pattern="[0-9]*"
+            required
+            placeholder="______"
+            class="otp-single-input"
+          />
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" [disabled]="otp.length !== 6">
+            {{ "confirmOtp.confirm" | translate }}
+          </button>
+          <span class="timer">{{ timer }} s</span>
+          <button
+            type="button"
+            (click)="resendOtp()"
+            [disabled]="resendDisabled"
+          >
+            {{ "confirmOtp.resendOtp" | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

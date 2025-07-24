@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { UserBookingService, BookingDetailsDTO } from '../../../core/services/Booking/user-booking-service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { HeaderComponent } from "../../../components/header/header";
 
 @Component({
   selector: 'app-user-bookings',
   templateUrl: './userbookings.html',
   styleUrls: ['./userbookings.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, HeaderComponent],
   providers: [DatePipe]
 })
 export class UserBookings implements OnInit {
@@ -16,7 +17,7 @@ export class UserBookings implements OnInit {
   isLoading = true;
   error: string | null = null;
   private readonly currentDate = new Date();
-  private readonly userId = '1a03e58e-535d-4dfb-918f-e27e5e3b4907';
+  private readonly userId = '9a4e2846-8058-4458-badd-6cf601405ae2';
 
   constructor(
     private userBookingService: UserBookingService,
@@ -46,7 +47,6 @@ export class UserBookings implements OnInit {
 
   private sortBookings(bookings: BookingDetailsDTO[]): BookingDetailsDTO[] {
     return bookings.sort((a, b) => {
-      // Sort by check-in date, newest first
       return new Date(b.checkInDate).getTime() - new Date(a.checkInDate).getTime();
     });
   }
@@ -79,7 +79,6 @@ export class UserBookings implements OnInit {
     }
   }
 
-  // New method to format short dates with year for meta information
   formatShortDateWithYear(dateString: string): string {
     try {
       const date = new Date(dateString);
@@ -156,9 +155,11 @@ export class UserBookings implements OnInit {
     return booking.id;
   }
 
-  // New method to get per-night price
   getPricePerNight(totalPrice: number, checkIn: string, checkOut: string): number {
     const nights = this.getNightCount(checkIn, checkOut);
     return nights > 0 ? totalPrice / nights : 0;
   }
-}
+}  
+
+
+

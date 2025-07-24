@@ -1,0 +1,154 @@
+.reserve-box {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 360px;
+  position: relative;
+  transition: top 0.3s ease;
+
+  margin-left: 10px;
+
+  position: sticky;
+  top: 100px; 
+  z-index: 10;
+
+
+   }  
+
+  .price-info {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 16px;
+
+    span {
+      color: #717171;
+      font-size: 14px;
+    }
+  }
+
+  .date-picker {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+
+    label {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      font-size: 12px;
+      font-weight: 600;
+      color: #222;
+
+      input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .guest-selector {
+    margin-top: 16px;
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+  }
+
+  .check-btn {
+    margin-top: 20px;
+    width: 100%;
+    color: white;
+    border: none;
+    padding: 13px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    background: linear-gradient(90deg, #d94659, #e8047a); /* Gradient from a darker to a brighter pink */
+    transition: background 0.3s ease, opacity 0.3s ease;
+    &:hover {
+      background-color: #e2859b;
+    }
+  }
+
+
+
+/* Rare Find Badge */
+.rare-find-badge {
+  background: #F2F2F2;
+
+  border-radius: 12px;
+  padding: 13px;
+  margin-left: 15px;
+  text-align: center;
+}
+
+.rare-find-icon {
+  font-size: 20px;
+  color: #ff385c;
+}
+
+.rare-find-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.rare-find-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: #222;
+}
+
+.rare-find-description {
+  font-size: 14px;
+  color: #171616;
+} 
+
+
+
+
+
+
+
+
+
+
+.button-subtext {
+    color: #3b3b3b; /* Grey color for the subtext */
+    font-size: 0.9rem; /* Smaller font size for the subtext */
+    text-align: center; /* Center the subtext */
+    margin-top: 8px; /* Add some space between the button and the text */
+}
+
+.report-listing {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center horizontally */
+    gap: 8px; /* Space between icon and text */
+    margin-top: 15px; /* Space from the button section */
+    font-size: 0.9rem;
+    color: #202020; /* Default text color */
+}
+
+.report-listing .fa-flag {
+    color: #292828; /* Color of the flag icon */
+}
+
+.report-listing .report-link {
+    color: #201f1f; /* Link color matching the text */
+    text-decoration: underline; /* Underline the link */
+    font-weight: 600; /* Make the link text bold */
+    transition: color 0.2s ease;
+}
+
+.report-listing .report-link:hover {
+    color: #484646; /* Slightly darker on hover */
+}

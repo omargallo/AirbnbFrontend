@@ -1,0 +1,144 @@
+<div class="chat-container" (click)="closeEmojiPicker()">
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="profile-section">
+      <img [src]="hostProfileImage" class="profile-img" alt="Host" />
+      <span class="host-name">{{hostName}}</span>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div #chatContainer class="chat-messages">
+    <ng-container *ngFor="let item of chatItems; let i = index">
+      <!-- Date separator -->
+      <div *ngIf="item.type === 'date'" class="date-separator">
+        <span class="date-label">{{item.label}} </span>
+      </div>
+
+      <!-- Status message -->
+      <div *ngIf="item.type === 'status'" class="status-message">
+        <span>
+          {{item.content}}
+        </span>
+        <span
+          style="color: #008489; text-decoration: underline; cursor: pointer;"
+        >
+          {{item.action}}
+        </span>
+      </div>
+
+      <!-- Message -->
+      <div
+        *ngIf="item.type === 'message'"
+        [ngClass]="{'message-right': item.sender === 'user', 'message-left': item.sender === 'host'}"
+      >
+        <!-- Host info (only for host messages) -->
+        <div *ngIf="item.sender === 'host'" class="host-info">
+          <img
+            [src]="hostProfileImage"
+            class="profile-img"
+            alt="Host"
+            style="width: 24px; height: 24px;"
+          />
+          <span class="host-label">{{hostName}} · Host</span>
+          <span class="timestamp">{{item.timestamp}}</span>
+        </div>
+
+        <!-- Message bubble -->
+        <div
+          class="message-bubble"
+          [ngClass]="{'user-bubble': item.sender === 'user', 'host-bubble': item.sender === 'host'}"
+        >
+          <span [innerHTML]="item.content"></span>
+
+          <!-- Emoji button -->
+          <button
+            class="emoji-button"
+            (click)="toggleEmojiPicker(i, $event)"
+            type="button"
+            [ngStyle]="item.sender === 'host' ? {'left': '105%'} : {'right': '105%'}"
+          >
+            😊
+
+            <!-- Emoji picker -->
+            <div
+              *ngIf="showEmojiPicker === i"
+              class="emoji-picker"
+              (click)="$event.stopPropagation()"
+              [ngStyle]="item.sender === 'host' ? {'left': '110%'} : {'right': '110%'}"
+            >
+              <button
+                *ngFor="let emoji of emojiOptions"
+                class="emoji-option"
+                (click)="addReaction(i, emoji, $event)"
+                type="button"
+              >
+                {{emoji}}
+              </button>
+            </div>
+          </button>
+
+          <!-- Reaction -->
+          <div *ngIf="item.reaction" class="message-reaction">
+            {{item.reaction}}
+          </div>
+        </div>
+
+        <!-- Timestamp for user messages -->
+        <div *ngIf="item.sender === 'user'" class="user-timestamp">
+          <span class="timestamp">{{item.timestamp}}</span>
+          <span *ngIf="item.readBy" class="read-status"
+            >Read by {{item.readBy}}</span
+          >
+          <img
+            *ngIf="item.readBy && i === getLastReadMessageIndex()"
+            [src]="hostProfileImage"
+            class="read-avatar"
+            alt="Read by {{item.readBy}}"
+          />
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- Input area -->
+  <div class="chat-input-area">
+    <div class="input-container">
+      <input
+        type="text"
+        class="message-input"
+        placeholder="Write a message..."
+        [(ngModel)]="messageInput"
+        (keypress)="onKeyPress($event)"
+      />
+      <button
+        class="send-button"
+        [disabled]="isSendDisabled"
+        (click)="sendMessage()"
+        type="button"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M2 8L14 2L10 8L14 14L2 8Z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="response-time">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1" />
+        <path
+          d="M6 3V6L8 8"
+          stroke="currentColor"
+          stroke-width="1"
+          stroke-linecap="round"
+        />
+      </svg>
+      <span>Typical response time: 11 hours</span>
+    </div>
+  </div>
+</div>

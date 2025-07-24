@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment.development';
 
@@ -31,18 +31,23 @@ interface ApiResponse {
 export class UserBookingService {
   private readonly apiUrl = `${environment.baseUrl}/Booking`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getBookingsByUserId(userId: string): Observable<BookingDetailsDTO[]> {
     return this.http.get<ApiResponse>(`${this.apiUrl}/UserBooking/${userId}`).pipe(
       map(response => {
         if (!response.isSuccess || !response.data) {
-          throw new Error(response.message || 'No bookings found');
+          return [];
         }
         return response.data;
       }),
       catchError(error => {
         console.error('API Error:', error);
+        
+        if (error.status === 404) {
+          return of([]);
+        }
+
         return throwError(() => new Error(
           error.error?.message ||
           error.message ||

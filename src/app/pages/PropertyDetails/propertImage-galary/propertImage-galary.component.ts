@@ -1,9 +1,13 @@
+import { authGuard } from './../../../core/guards/auth.guard';
 import { Property } from './../../../../../node_modules/acorn/dist/acorn.d';
 import { PropertyService } from './../../../core/services/Property/property.service';
 import { Url } from './../../../../../node_modules/lightningcss/node/ast.d';
 import { ChangeDetectorRef, Component, input, Input, OnInit } from '@angular/core';
 import { PropertyImageService } from '../../../core/services/PropertyImage/property-image.service';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../core/services/auth.service';
+import { Router } from '@angular/router';
+import { DialogService } from '../../../core/services/dialog.service';
 
 @Component({
   selector: 'app-propertImage-galary',
@@ -22,7 +26,8 @@ export class PropertImageGalaryComponent implements OnInit {
       img: any;
       Property: any;
 
-  constructor(private propertyImageService: PropertyImageService ,private cdr: ChangeDetectorRef, private PropertyService: PropertyService) { }
+  constructor(private propertyImageService: PropertyImageService ,private cdr: ChangeDetectorRef, private PropertyService: PropertyService
+    ,private authService:AuthService ,private dialogService: DialogService )  { }
 
   ngOnInit(): void {
     if (!this.propertyId) {
@@ -75,7 +80,14 @@ export class PropertImageGalaryComponent implements OnInit {
 }
 
 onSave() {
-  alert('Save clicked!'); // replace with actual save/favorite logic
+  if (this.authService.accessToken !== null) {
+    // Proceed to save
+    console.log('Saved!');
+  } else {
+    // 🔓 Open login dialog instead of navigating
+    this.dialogService.openDialog('login');
+  }
 }
+
 
 }

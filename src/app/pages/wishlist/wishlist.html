@@ -1,4 +1,4 @@
-<div class="wishlists-container">
+<div class="wishlists-container container mt-4">
   <div class="header">
     <h1 class="title">Wishlists</h1>
   </div>
@@ -100,20 +100,25 @@
     *ngIf="showModal"
     (close)="cancelDelete()"
     [modalDialogClass]="'mx-auto rounded-4'"
-    [modalContentClass]="'col-12 rounded-5'"
+    [modalContentClass]="'rounded-4 pt-4' "
   >
     <ng-content>
-      <p class="px-4" style="min-width: max-content;">
-        "{{ selectedWishlist?.name }}" will be permanently deleted
+      <p class="text-center fw-medium fs-5 mb-4 px-4" style="min-width: max-content; color: var(--secondary-text-color);">
+        "{{ selectedWishlist?.name }}" will be permanently deleted.
       </p>
     </ng-content>
 
-    <div
-      modalFooter
-      class="modal-actions d-flex justify-content-between align-items-center"
-    >
-      <button class="cancel" (click)="cancelDelete()">Cancel</button>
-      <button class="delete-confirm" (click)="deleteSelectedWishlist()">
+    <div modalFooter class="modal-actions modal-footer d-flex justify-content-end gap-3">
+      <button
+        class="btn px-4 py-2 cancel"
+        (click)="cancelDelete()"
+      >
+        Cancel
+      </button>
+      <button
+        class="btn  px-4 py-2 delete-confirm"
+        (click)="deleteSelectedWishlist()"
+      >
         Delete
       </button>
     </div>

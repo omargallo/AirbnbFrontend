@@ -36,6 +36,7 @@ export class Wishlists implements OnInit {
       next: (data) => {
         this.wishlists = data;
         this.isLoading = false;
+        console.log(data)
       },
       error: (error) => {
         console.error('Error loading wishlists:', error);
@@ -46,7 +47,7 @@ export class Wishlists implements OnInit {
   }
 
   getPropertyCount(propertyIds: number[]): number {
-    return propertyIds ? propertyIds.length : 0;
+    return propertyIds ? propertyIds?.length : 0;
   }
 
   getPropertyImage(imgUrl: string): string {

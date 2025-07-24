@@ -31,6 +31,9 @@ import { Wishlists } from './pages/wishlist/wishlist';
 import { WishListProperties } from './pages/wishlist-properties/wishlist-properties';
 import { NotFound } from './components/not-found/not-found';
 import { UserBookings } from './pages/booking/userbookings/userbookings';
+import { UpdateList } from './pages/update-list/update-list';
+import { Messages } from './pages/messages/messages';
+import { PropertyBookings } from './pages/booking/property-bookings/property-bookings';
 
 export const routes: Routes = [
   {
@@ -43,7 +46,8 @@ export const routes: Routes = [
       { path: "FilteredProperties", component: FilteredProperties },
       { path: 'property/:propertyId', component: PropertyInfo },
       { path: 'WishLists', component: Wishlists },
-      { path: "wishlist/:wishlistId/properties", component: WishListProperties }
+      { path: "wishlist/:wishlistId/properties", component: WishListProperties },
+      { path: "Messages", component: Messages }
     ]
   },
   {
@@ -75,11 +79,25 @@ export const routes: Routes = [
     ]
   },
   { path: 'host', component: HostProperties }
-   ,{ path: 'booking', component:UserBookings },
-    { path: '404', component: NotFound },
-{ path: '**', redirectTo: '/404' }
-
-
+  , { path: 'guesttbookings', component: UserBookings },
 
   
+    { path: 'propertybookings/:propertyId', component:PropertyBookings },
+
+
+
+
+  { path: 'updatelist', component: UpdateList },
+
+  { path: 'updatelist/:propertyId', component:UpdateList },
+
+
+
+
+  { path: '404', component: NotFound },
+  { path: '**', redirectTo: '/404' }
+
+
+
+
 ];

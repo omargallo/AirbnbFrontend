@@ -13,9 +13,10 @@ import { DialogService } from '../../core/services/dialog.service';
   styleUrl: './login.css',
 })
 export class Login {
-  @Input() user: string = 'bbb';
-  @Input() img: string = '1';
-  @Input() lastLoginEmail: string = 'kkkkkkk@gmail.com';
+  @Input() user: string = '';
+  @Input() img: string = '';
+  @Input() lastLoginEmail: string = '';
+  togglePass = false;
   maskEmail(email: string): string {
     const [username, domain] = email.split('@');
 
@@ -61,5 +62,9 @@ export class Login {
 
   switchToForgot() {
     this.dialogService.openDialog('forgotPassword');
+  }
+
+  showPass() {
+    this.togglePass = !this.togglePass;
   }
 }
