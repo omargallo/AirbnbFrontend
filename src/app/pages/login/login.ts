@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '../../core/services/User/user.service';
 import { DialogService } from '../../core/services/dialog.service';
+import { HandleImgService } from '../../core/services/handleImg.service';
 
 @Component({
   selector: 'app-login',
@@ -13,9 +14,20 @@ import { DialogService } from '../../core/services/dialog.service';
   styleUrl: './login.css',
 })
 export class Login {
-  @Input() user: string = '';
-  @Input() img: string = '';
-  @Input() lastLoginEmail: string = '';
+  handleImgService = inject(HandleImgService);
+  @Input() user: string | null = (() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser)?.firstName ?? '' : '';
+  })();
+
+  @Input() img: string | null = (() => {
+    const storedUser = localStorage.getItem('user');
+    return this.handleImgService.handleImage(
+      storedUser ? JSON.parse(storedUser)?.profilePictureURL ?? '' : ''
+    );
+  })();
+
+  @Input() lastLoginEmail: string = localStorage.getItem('email') || '';
   togglePass = false;
   maskEmail(email: string): string {
     const [username, domain] = email.split('@');
@@ -44,6 +56,16 @@ export class Login {
         next: (res) => {
           alert('Logged in successfully');
           this.close();
+          this.userService.getProfile(res.userId).subscribe({
+            next: (res) => {
+              console.log(res);
+              localStorage.setItem('email', res.email);
+              localStorage.setItem('user', JSON.stringify(res));
+            },
+            error: (err) => {
+              console.error(err);
+            },
+          });
         },
         error: (err) => {
           alert('Login failed');
@@ -61,6 +83,20 @@ export class Login {
   }
 
   switchToForgot() {
+    if (this.email !== '') {
+      alert('Please enter your email');
+      return;
+    }
+    localStorage.setItem('email', this.email);
+    this.userService.resendOtp({ email: this.email }).subscribe({
+      next: () => {
+        alert('OTP sent successfully');
+      },
+      error: (err) => {
+        alert('OTP sending failed');
+        console.error(err);
+      },
+    });
     this.dialogService.openDialog('forgotPassword');
   }
 

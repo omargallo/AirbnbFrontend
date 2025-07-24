@@ -5,17 +5,24 @@
 >
   <div class="dialog" (click)="$event.stopPropagation()">
     <div class="dialog-header">
-      <span *ngIf="user !== ''"
-        >{{ "login.welcome" | translate }} {{ user }}</span
-      >
+      <span *ngIf="user">
+        {{ "login.welcome" | translate }} {{ user }}
+      </span>
       <i class="icon-close" (click)="close()">×</i>
     </div>
-    <div class="last-info">
 
-      <img *ngIf="img" [src]="img" alt="user-img" />
-      <h1 *ngIf="img!==''">{{ user.charAt(0).toLocaleUpperCase() }}</h1>
-      <p>{{ maskEmail(lastLoginEmail) }}</p>
+    <div class="last-info" *ngIf="user || img || lastLoginEmail">
+      <ng-container *ngIf="img; else initialLetter">
+        <img [src]="img" alt="user-img" />
+      </ng-container>
+
+      <ng-template #initialLetter>
+        <h1 *ngIf="user">{{ user.charAt(0).toUpperCase() }}</h1>
+      </ng-template>
+
+      <p *ngIf="lastLoginEmail">{{ maskEmail(lastLoginEmail) }}</p>
     </div>
+
     <div class="dialog-content">
       <form (ngSubmit)="onLogin()" #loginForm="ngForm">
         <div class="form-group">
@@ -38,24 +45,27 @@
               required
               [(ngModel)]="password"
             />
-            <a href="#" (click)="showPass()">{{
-              "login.showPass" | translate
-            }}</a>
+            <a href="#" (click)="showPass()">
+              {{ "login.showPass" | translate }}
+            </a>
           </div>
         </div>
-        <button type="submit" [disabled]="loginForm.invalid">{{ "login.login" | translate }}</button>
+        <button type="submit" [disabled]="loginForm.invalid">
+          {{ "login.login" | translate }}
+        </button>
       </form>
     </div>
+
     <div class="dialog-footer">
-      <a href="#" (click)="switchToForgot()">{{
-        "login.goTOForgotPassword" | translate
-      }}</a>
-      <span
-        >{{ "login.notYou" | translate }}
-        <a href="#" (click)="switchToRegister()">{{
-          "login.goToRegister" | translate
-        }}</a></span
-      >
+      <a href="#" (click)="switchToForgot()">
+        {{ "login.goTOForgotPassword" | translate }}
+      </a>
+      <span>
+        {{ "login.notYou" | translate }}
+        <a href="#" (click)="switchToRegister()">
+          {{ "login.goToRegister" | translate }}
+        </a>
+      </span>
     </div>
   </div>
 </div>

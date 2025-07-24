@@ -29,6 +29,9 @@ export interface Result<T> {
 
 @Injectable({    providedIn: 'root' })
 
+@Injectable({
+  providedIn: 'root',
+})
 export class CalendarAvailabilityService {
 
       baseurl = environment.baseUrl;
@@ -69,13 +72,9 @@ export class CalendarAvailabilityService {
 
         
       }
+  constructor(private http: HttpClient) {}
 
-
-      
-      
-
-
-
-
-
-
+  // getAvailabilityForPropertyId(propertyId: number) {
+  //   return this.http.get<CalendarAvailability[]>(`${this.calenderURL}/property/${propertyId}/availability`);
+  // }
+}
