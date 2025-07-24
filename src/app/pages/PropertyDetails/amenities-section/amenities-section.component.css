@@ -18,10 +18,67 @@ body {
     box-sizing: border-box;
 
   grid-template-columns: 4fr 4fr; /* Adjust balance */
+  /* width: 800px; */
 
 
 }
 
+.guest-favorite-section{
+    box-sizing: border-box;
+
+  border: 2pxx solid black;
+}
+
+/* Revies section */
+.guest-favorite-section {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.favorite-badge {
+  background-color: #FF385C;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  height: fit-content;
+}
+
+.favorite-content p {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.rating-reviews {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stars {
+  color: #FF385C;
+  font-size: 14px;
+}
+
+.score {
+  font-weight: 600;
+}
+
+.reviews {
+  color: #717171;
+  font-size: 14px;
+}
+/*Amenities*/
 h2{
     font-size: 25px;
     font-weight: bold;
@@ -44,7 +101,7 @@ h2{
 .amenity-item {
   display: flex;
   align-items: center;
-  padding: 2px;
+  padding: 5px;
 }
 
 .amenity-icon {
@@ -67,8 +124,8 @@ h2{
 }
 
 .show-all-btn {
-  background: rgb(251, 245, 245);
-  border: 1px solid #222222;
+  background: #F2F2F2;
+  /* border: 1px solid #222222; */
   border-radius: 8px;
   font-weight: 600;
   font-size: 18px;
@@ -81,7 +138,8 @@ h2{
 }
 
 .show-all-btn:hover {
-  background-color: #f7f7f7;
+  border: 1px solid #222222; 
+
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -162,6 +220,7 @@ h2{
   .show-all-btn {
     width: 100%;
     margin-top: 20px;
+    padding: 5px;
   }
 }
 
