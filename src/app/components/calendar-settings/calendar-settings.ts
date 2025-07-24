@@ -140,7 +140,7 @@ export class CalendarSettingsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.settingsUpdateSubject
       .pipe(
-        debounceTime(300),
+        debounceTime(100),
         takeUntil(this.destroy$)
       )
       .subscribe(settings => {

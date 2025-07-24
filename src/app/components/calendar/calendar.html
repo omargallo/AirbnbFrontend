@@ -18,41 +18,40 @@
         >
           <polyline points="6,9 12,15 18,9"></polyline>
         </svg>
-
-        <!-- View Type Dropdown -->
-        <div class="view-dropdown" [class.show]="showViewDropdown">
-          <div class="dropdown-content">
-            <label class="radio-option">
-              <input
-                type="radio"
-                name="viewType"
-                value="month"
-                [checked]="settings.viewType === 'month'"
-                (change)="setViewType('month')"
-              />
-              <span class="radio-custom"></span>
-              Month
-            </label>
-            <label class="radio-option">
-              <input
-                type="radio"
-                name="viewType"
-                value="year"
-                [checked]="settings.viewType === 'year'"
-                (change)="setViewType('year')"
-              />
-              <span class="radio-custom"></span>
-              Year
-            </label>
-            <div class="dropdown-actions">
-              <button class="close-btn" (click)="closeViewDropdown()">
-                Close
-              </button>
-              <button class="apply-btn" (click)="applyViewType()">Apply</button>
-            </div>
+      </button>
+      <!-- View Type Dropdown -->
+      <div class="view-dropdown" [class.show]="showViewDropdown">
+        <div class="dropdown-content">
+          <label class="radio-option">
+            <input
+              type="radio"
+              name="viewType"
+              value="month"
+              [checked]="settings.viewType === 'month'"
+              (change)="setViewType('month')"
+            />
+            <span class="radio-custom"></span>
+            Month
+          </label>
+          <label class="radio-option">
+            <input
+              type="radio"
+              name="viewType"
+              value="year"
+              [checked]="settings.viewType === 'year'"
+              (change)="setViewType('year')"
+            />
+            <span class="radio-custom"></span>
+            Year
+          </label>
+          <div class="dropdown-actions">
+            <button class="close-btn" (click)="closeViewDropdown()">
+              Close
+            </button>
+            <button class="apply-btn" (click)="applyViewType()">Apply</button>
           </div>
         </div>
-      </button>
+      </div>
     </div>
   </div>
 
