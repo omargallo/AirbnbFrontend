@@ -1,0 +1,99 @@
+.airbnb-header {
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  /* box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); */
+  /* position: fixed;
+  top: 0;
+  left: 0; */
+  width: 100%;
+  z-index: 1030;
+  padding: 1.7rem 0;
+  /* display: flex; */
+  /* justify-content: center; */
+  /* display: block; */
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* gap: 20rem; */
+  width: 100%;
+  /* max-width: 1200px; */
+  /* margin: 0 1rem; */
+  /* padding: 0 2rem; */
+}
+
+
+.airbnb-logo svg {
+  color: #ff385c;
+  height: 32px;
+  width: 102px;
+}
+
+.nav-middle {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  /* font-weight: 500; */
+  font-size: 16px;
+  /* position: absolute; */
+  /* left: 50%; */
+}
+
+.nav-middle li a {
+  text-decoration: none;
+  transition: color 0.2s ease;
+  border: none;
+  /*font-weight: 500;
+  *//*font-size: 16px;
+  */cursor: pointer;
+  /*color: #222;
+  */padding: 0.5rem;
+  border-radius: 20px;
+  transition: all 0.5s ease;
+}
+
+.nav-middle li a:hover {
+  background-color: #f7f7f7;
+}
+
+.nav-middle li a.active {
+  background-color: #f7f7f7;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  color: #222;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  transition: background-color 0.2s ease;
+}
+
+.menu-button:hover {
+  background-color: #f7f7f7;
+}
+
+.icon-user {
+  background-color: #222;
+  color: #fff;
+  border-radius: 50%;
+  padding: 4px;
+  height: 32px;
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+}

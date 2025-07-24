@@ -1,0 +1,163 @@
+<div class="calendar-container">
+  <!-- Calendar Header -->
+  <div class="calendar-header">
+    <div class="year-display">{{ currentYear }}</div>
+    <div class="view-selector">
+      <button
+        class="view-btn"
+        [class.active]="settings.viewType === 'month'"
+        (click)="toggleViewType()"
+      >
+        View
+        <svg
+          class="dropdown-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="6,9 12,15 18,9"></polyline>
+        </svg>
+
+        <!-- View Type Dropdown -->
+        <div class="view-dropdown" [class.show]="showViewDropdown">
+          <div class="dropdown-content">
+            <label class="radio-option">
+              <input
+                type="radio"
+                name="viewType"
+                value="month"
+                [checked]="settings.viewType === 'month'"
+                (change)="setViewType('month')"
+              />
+              <span class="radio-custom"></span>
+              Month
+            </label>
+            <label class="radio-option">
+              <input
+                type="radio"
+                name="viewType"
+                value="year"
+                [checked]="settings.viewType === 'year'"
+                (change)="setViewType('year')"
+              />
+              <span class="radio-custom"></span>
+              Year
+            </label>
+            <div class="dropdown-actions">
+              <button class="close-btn" (click)="closeViewDropdown()">
+                Close
+              </button>
+              <button class="apply-btn" (click)="applyViewType()">Apply</button>
+            </div>
+          </div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Calendar Grid -->
+  <div class="calendar-grid" [class.year-view]="settings.viewType === 'year'">
+    <!-- Year View - Multiple Months -->
+    <ng-container *ngIf="settings.viewType === 'year'">
+      <div class="months-container">
+        <div class="month-block" *ngFor="let month of yearMonths">
+          <div class="month-header">
+            <h3>{{ format(month, 'MMMM') }}</h3>
+            <span class="discount-indicator" *ngIf="hasDiscount(month)"
+              >1 discount</span
+            >
+          </div>
+
+          <!-- Days of week header -->
+          <div class="days-header">
+            <div class="day-header" *ngFor="let day of weekDays">{{ day }}</div>
+          </div>
+
+          <!-- Calendar days -->
+          <div class="days-grid">
+            <div
+              class="day-cell"
+              *ngFor="let day of getMonthDays(month) ;trackBy: trackByDate"
+              [class.other-month]="!isSameMonth(day.date, month)"
+              [class.disabled]="isDisabled(day.date)"
+              [class.available]="isAvailable(day.date)"
+              [class.selected]="isSelected(day.date)"
+              [class.highlighted]="isHighlighted(day.date)"
+              (click)="selectDate(day.date)"
+            >
+              <div class="day-number">{{ format(day.date, 'd') }}</div>
+              <div
+                class="day-price"
+                *ngIf="getPrice(day.date) && !isDisabled(day.date)"
+              >
+                ${{ getPrice(day.date) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Month View - Single Month -->
+    <ng-container *ngIf="settings.viewType === 'month'">
+      <div class="single-month">
+        <div class="month-navigation">
+          <button class="nav-btn" (click)="previousMonth()">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="15,18 9,12 15,6"></polyline>
+            </svg>
+          </button>
+
+          <h2>{{ format(currentMonth, 'MMMM yyyy') }}</h2>
+          <span class="discount-indicator" *ngIf="hasDiscount(currentMonth)"
+            >1 discount</span
+          >
+
+          <button class="nav-btn" (click)="nextMonth()">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="9,18 15,12 9,6"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Days of week header -->
+        <div class="days-header">
+          <div class="day-header" *ngFor="let day of weekDays">{{ day }}</div>
+        </div>
+
+        <!-- Calendar days -->
+        <div class="days-grid">
+          <div
+            class="day-cell"
+            *ngFor="let day of getMonthDays(currentMonth)"
+            [class.other-month]="!isSameMonth(day.date, currentMonth)"
+            [class.disabled]="isDisabled(day.date)"
+            [class.available]="isAvailable(day.date)"
+            [class.selected]="isSelected(day.date)"
+            [class.highlighted]="isHighlighted(day.date)"
+            (click)="selectDate(day.date)"
+          >
+            <div class="day-number">{{ format(day.date, 'd') }}</div>
+            <div
+              class="day-price"
+              *ngIf="getPrice(day.date) && !isDisabled(day.date)"
+            >
+              ${{ getPrice(day.date) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

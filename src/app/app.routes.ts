@@ -34,6 +34,8 @@ import { UserBookings } from './pages/booking/userbookings/userbookings';
 import { UpdateList } from './pages/update-list/update-list';
 import { Messages } from './pages/messages/messages';
 import { PropertyBookings } from './pages/booking/property-bookings/property-bookings';
+import { Availability } from './pages/availability-page/availability-page';
+import { Host } from './layout/host/host';
 
 export const routes: Routes = [
   {
@@ -47,8 +49,7 @@ export const routes: Routes = [
       { path: 'property/:propertyId', component: PropertyInfo },
       { path: 'WishLists', component: Wishlists },
       { path: "wishlist/:wishlistId/properties", component: WishListProperties },
-      { path: "Messages", component: Messages }
-    ]
+      { path: "Messages", component: Messages }]
   },
   {
     path: 'listing-wizard',
@@ -78,18 +79,25 @@ export const routes: Routes = [
       { path: 'step3-6-safety', component: Step36Safety }
     ]
   },
-  { path: 'host', component: HostProperties }
-  , { path: 'guesttbookings', component: UserBookings },
-
-  
-    { path: 'propertybookings/:propertyId', component:PropertyBookings },
+  { path: 'host', component: HostProperties },
+  { path: 'guesttbookings', component: UserBookings },
 
 
+  { path: 'propertybookings/:propertyId', component: PropertyBookings },
+
+  {
+    path: 'hostsettings',
+    component: Host,
+    children: [
+      { path: "availability", component: Availability },
+      { path: "Messages", component: Messages }
+    ]
+  },
 
 
   { path: 'updatelist', component: UpdateList },
 
-  { path: 'updatelist/:propertyId', component:UpdateList },
+  { path: 'updatelist/:propertyId', component: UpdateList },
 
 
 
