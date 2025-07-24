@@ -81,15 +81,17 @@ export const routes: Routes = [
     ]
   },
   { path: 'host', component: HostProperties }
-  , { path: 'userbooking', component: UserBookings },
+  , { path: 'guesttbookings', component: UserBookings },
 
-    { path: 'propbooking', component:PropertyBookings },
+  
+    { path: 'propertybookings/:propertyId', component:PropertyBookings },
+
+
 
 
   { path: 'updatelist', component: UpdateList },
 
-
-    { path: 'updatelist/:propertyId', component:UpdateList },
+  { path: 'updatelist/:propertyId', component:UpdateList },
 
 
 
