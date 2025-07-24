@@ -169,7 +169,8 @@ export class CalendarComponent implements OnInit {
 
 
   selectDate(date: Date) {
-    if (this.isDisabled(date) || !this.isAvailable(date)) return;
+    // if (this.isDisabled(date) || !this.isAvailable(date)) return;
+    if (this.isDisabled(date)) return;
 
     const index = this.settings.selectedDates.findIndex(d => isSameDay(d, date));
 
@@ -186,6 +187,7 @@ export class CalendarComponent implements OnInit {
   }
 
   toggleViewType() {
+    this.closeProperty();
     this.showViewDropdown = !this.showViewDropdown;
   }
 
@@ -196,6 +198,21 @@ export class CalendarComponent implements OnInit {
   closeViewDropdown() {
     this.showViewDropdown = false;
     // this.tempViewType = this.settings.viewType;
+  }
+
+  showPropertyDropdown = false;
+  selectedProperty: String = '';
+  toggleProperty() {
+    this.closeViewDropdown();
+    this.showPropertyDropdown = !this.showPropertyDropdown;
+  }
+
+  setProperty(id: string) {
+    this.selectedProperty = id;
+  }
+
+  closeProperty() {
+    this.showPropertyDropdown = false;
   }
 
   applyViewType() {

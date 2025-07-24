@@ -2,53 +2,120 @@
   <!-- Calendar Header -->
   <div class="calendar-header">
     <div class="year-display">{{ currentYear }}</div>
-    <div class="view-selector">
-      <button
-        class="view-btn"
-        [class.active]="settings.viewType === 'month'"
-        (click)="toggleViewType()"
-      >
-        View
-        <svg
-          class="dropdown-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
+    <div class="d-flex items-center gap-2">
+      <div class="view-selector-2">
+        <button
+          class="view-btn"
+          [class.active]="settings.viewType === 'month'"
+          (click)="toggleProperty()"
         >
-          <polyline points="6,9 12,15 18,9"></polyline>
-        </svg>
-      </button>
-      <!-- View Type Dropdown -->
-      <div class="view-dropdown" [class.show]="showViewDropdown">
-        <div class="dropdown-content">
-          <label class="radio-option">
-            <input
-              type="radio"
-              name="viewType"
-              value="month"
-              [checked]="settings.viewType === 'month'"
-              (change)="setViewType('month')"
-            />
-            <span class="radio-custom"></span>
-            Month
-          </label>
-          <label class="radio-option">
-            <input
-              type="radio"
-              name="viewType"
-              value="year"
-              [checked]="settings.viewType === 'year'"
-              (change)="setViewType('year')"
-            />
-            <span class="radio-custom"></span>
-            Year
-          </label>
-          <div class="dropdown-actions">
-            <button class="close-btn" (click)="closeViewDropdown()">
-              Close
-            </button>
-            <button class="apply-btn" (click)="applyViewType()">Apply</button>
+          Name
+          <svg
+            class="dropdown-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="6,9 12,15 18,9"></polyline>
+          </svg>
+        </button>
+        <!-- View Type Dropdown -->
+        <div class="view-dropdown-2" [class.show]="showPropertyDropdown">
+          <div class="dropdown-content">
+            <label class="radio-option justify-content-between">
+              <input
+                type="radio"
+                name="viewType"
+                value="month"
+                [checked]="settings.viewType === 'month'"
+                (change)="setViewType('month')"
+              />
+              <span class="radio-custom"></span>
+              <div class="d-flex items-center justify-content-between gap-2">
+                <p class="mb-0">First Name</p>
+                <img
+                  alt="name"
+                  src="assets/images/deafult.png"
+                  class="propertyavatar"
+                />
+              </div>
+            </label>
+            <label class="radio-option justify-content-between">
+              <input
+                type="radio"
+                name="viewType"
+                value="year"
+                [checked]="settings.viewType === 'year'"
+                (change)="setViewType('year')"
+              />
+              <span class="radio-custom"></span>
+              <div class="d-flex items-center justify-content-between gap-2">
+                <p class="mb-0">First Name</p>
+                <img
+                  alt="name"
+                  src="assets/images/deafult.png"
+                  class="propertyavatar"
+                />
+              </div>
+            </label>
+            <div class="dropdown-actions">
+              <button class="close-btn" (click)="closeProperty()">
+                Close
+              </button>
+              <button class="apply-btn" (click)="setProperty('1')">Apply</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="view-selector">
+        <button
+          class="view-btn"
+          [class.active]="settings.viewType === 'month'"
+          (click)="toggleViewType()"
+        >
+          View
+          <svg
+            class="dropdown-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="6,9 12,15 18,9"></polyline>
+          </svg>
+        </button>
+        <!-- View Type Dropdown -->
+        <div class="view-dropdown" [class.show]="showViewDropdown">
+          <div class="dropdown-content">
+            <label class="radio-option">
+              <input
+                type="radio"
+                name="viewType"
+                value="month"
+                [checked]="settings.viewType === 'month'"
+                (change)="setViewType('month')"
+              />
+              <span class="radio-custom"></span>
+              Month
+            </label>
+            <label class="radio-option">
+              <input
+                type="radio"
+                name="viewType"
+                value="year"
+                [checked]="settings.viewType === 'year'"
+                (change)="setViewType('year')"
+              />
+              <span class="radio-custom"></span>
+              Year
+            </label>
+            <div class="dropdown-actions">
+              <button class="close-btn" (click)="closeViewDropdown()">
+                Close
+              </button>
+              <button class="apply-btn" (click)="applyViewType()">Apply</button>
+            </div>
           </div>
         </div>
       </div>
@@ -81,6 +148,7 @@
               [class.other-month]="!isSameMonth(day.date, month)"
               [class.disabled]="isDisabled(day.date)"
               [class.available]="isAvailable(day.date)"
+              [class.not-available]="!isAvailable(day.date) && !isDisabled(day.date)"
               [class.selected]="isSelected(day.date)"
               [class.highlighted]="isHighlighted(day.date)"
               (click)="selectDate(day.date)"
@@ -102,7 +170,11 @@
     <ng-container *ngIf="settings.viewType === 'month'">
       <div class="single-month">
         <div class="month-navigation">
-          <button class="nav-btn" [disabled]="!canGoToPreviousMonth" (click)="previousMonth()">
+          <button
+            class="nav-btn"
+            [disabled]="!canGoToPreviousMonth"
+            (click)="previousMonth()"
+          >
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -118,7 +190,11 @@
             >1 discount</span
           >
 
-          <button class="nav-btn" [disabled]="!canGoToNextMonth" (click)="nextMonth()">
+          <button
+            class="nav-btn"
+            [disabled]="!canGoToNextMonth"
+            (click)="nextMonth()"
+          >
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -143,6 +219,7 @@
             [class.other-month]="!isSameMonth(day.date, currentMonth)"
             [class.disabled]="isDisabled(day.date)"
             [class.available]="isAvailable(day.date)"
+            [class.not-available]="!isAvailable(day.date) && !isDisabled(day.date)"
             [class.selected]="isSelected(day.date)"
             [class.highlighted]="isHighlighted(day.date)"
             (click)="selectDate(day.date)"
