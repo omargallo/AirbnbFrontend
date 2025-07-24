@@ -1,31 +1,39 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PropertyFormStorageService } from '../../../../core/services/ListingWizard/property-form-storage.service';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
-import { Subscription } from 'rxjs';
+import { debounceTime, Subscription, Subject } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-step1-4-where',
-  imports: [FormsModule],
+  standalone: true,
+  imports: [FormsModule, CommonModule],
   templateUrl: './step1-4-1-where.html',
   styleUrl: './step1-4-1-where.css'
 })
-export class Step14Where implements OnInit, OnDestroy {
-  @ViewChild('mapContainer') mapContainer!: ElementRef;
-  private subscription!: Subscription;
-  private map: google.maps.Map | null = null;
-  private marker: google.maps.Marker | null = null;
-  private geocoder: google.maps.Geocoder = new google.maps.Geocoder();
+export class Step14Where implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
 
-  // Address entered by the user
+  private subscription!: Subscription;
   address: string = '';
   latitude: number = 26.82055;
   longitude: number = 30.8025;
 
   constructor(
     private formStorage: PropertyFormStorageService,
-    private wizardService: ListingWizardService
-  ) {}
+    private wizardService: ListingWizardService,
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {
+    this.mapChangeSubject.pipe(
+      debounceTime(1500)
+    ).subscribe(({ lat, lng }) => {
+      this.handleMapChange(lat, lng);
+    });
+  }
 
   ngOnInit(): void {
     // Load saved data
@@ -40,132 +48,16 @@ export class Step14Where implements OnInit, OnDestroy {
     this.subscription = this.wizardService.nextStep$.subscribe(() => {
       this.saveFormData();
     });
+  }
 
-    // Initialize map after view is ready
-    setTimeout(() => this.initMap(), 100);
+  ngAfterViewInit(): void {
+    this.initLeafletMap();
   }
 
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
-  }
-
-  // Initialize Google Map
-  private initMap(): void {
-    const mapOptions: google.maps.MapOptions = {
-      center: { lat: this.latitude, lng: this.longitude },
-      zoom: 12,
-      mapTypeControl: false,
-      streetViewControl: false,
-      fullscreenControl: false
-    };
-
-    this.map = new google.maps.Map(this.mapContainer.nativeElement, mapOptions);
-
-    // Add marker at current position
-    this.marker = new google.maps.Marker({
-      position: { lat: this.latitude, lng: this.longitude },
-      map: this.map,
-      draggable: true
-    });
-
-    // Listen for marker drag events
-    this.marker.addListener('dragend', () => {
-      const position = this.marker?.getPosition();
-      if (position) {
-        this.latitude = position.lat();
-        this.longitude = position.lng();
-        this.updateAddressFromCoordinates(position);
-      }
-    });
-
-    // Listen for map clicks
-    this.map.addListener('click', (event: google.maps.MapMouseEvent) => {
-      const position = event.latLng;
-      if (position) {
-        this.marker?.setPosition(position);
-        this.latitude = position.lat();
-        this.longitude = position.lng();
-        this.updateAddressFromCoordinates(position);
-      }
-    });
-  }
-
-  // Method to handle address input changes
-  onAddressChange(newAddress: string): void {
-    this.address = newAddress;
-    this.geocodeAddress();
-  }
-
-  // Geocode address to coordinates
-  private geocodeAddress(): void {
-    if (!this.address) return;
-
-    this.geocoder.geocode({ address: this.address }, (results, status) => {
-      if (status === 'OK' && results && results[0]) {
-        const location = results[0].geometry.location;
-        this.latitude = location.lat();
-        this.longitude = location.lng();
-        
-        if (this.map && this.marker) {
-          this.map.setCenter(location);
-          this.marker.setPosition(location);
-        }
-        
-        this.saveFormData();
-      }
-    });
-  }
-
-  // Update address from coordinates using reverse geocoding
-  private updateAddressFromCoordinates(position: google.maps.LatLng): void {
-    this.geocoder.geocode({ location: position }, (results, status) => {
-      if (status === 'OK' && results && results[0]) {
-        this.address = results[0].formatted_address;
-        this.saveFormData();
-      }
-    });
-  }
-
-  getCurrentLocation(): void {
-    if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser');
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this.latitude = position.coords.latitude;
-        this.longitude = position.coords.longitude;
-
-        const latLng = new google.maps.LatLng(this.latitude, this.longitude);
-        
-        if (this.map && this.marker) {
-          this.map.setCenter(latLng);
-          this.map.setZoom(15);
-          this.marker.setPosition(latLng);
-        }
-
-        this.updateAddressFromCoordinates(latLng);
-      },
-      (error) => {
-        switch(error.code) {
-          case error.PERMISSION_DENIED:
-            alert('Please allow access to your location to use this feature');
-            break;
-          case error.POSITION_UNAVAILABLE:
-            alert('Location information is unavailable');
-            break;
-          case error.TIMEOUT:
-            alert('The request to get user location timed out');
-            break;
-          default:
-            alert('An unknown error occurred');
-            break;
-        }
-      }
-    );
   }
 
   private saveFormData(): void {
@@ -175,5 +67,79 @@ export class Step14Where implements OnInit, OnDestroy {
       longitude: this.longitude
     };
     this.formStorage.saveFormData('step1-4-1', data);
+  }
+
+  isLoading = true;
+  isMapLoading = false;
+
+  map: L.Map | null = null;
+  private mapChangeSubject = new Subject<{ lat: number, lng: number, zoom: number }>();
+  private isMapInitialized = false;
+  private shouldFitBounds = true;
+  private isUserInteraction = false;
+
+  private initLeafletMap(): void {
+    if (this.mapContainer && this.mapContainer.nativeElement && !this.map) {
+      this.map = L.map(this.mapContainer.nativeElement, {
+        center: [this.latitude, this.longitude],
+        zoom: 12,
+        zoomControl: true,
+        attributionControl: false
+      });
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+      }).addTo(this.map);
+
+      this.map.whenReady(() => {
+        this.isLoading = false;
+        this.isMapInitialized = true;
+        this.setupMapEventListeners();
+      });
+    }
+  }
+
+  private setupMapEventListeners() {
+    if (!this.map) return;
+
+    const updateMapInfo = () => {
+      if (!this.isMapInitialized) return;
+      const center = this.map!.getCenter();
+      const zoom = this.map!.getZoom();
+      this.mapChangeSubject.next({ lat: center.lat, lng: center.lng, zoom });
+    };
+
+    this.map.on('movestart', () => {
+      if (this.isMapInitialized) {
+        this.shouldFitBounds = false;
+        this.isMapLoading = true;
+      }
+    });
+
+    this.map.on('moveend', () => {
+      this.isMapLoading = false;
+      updateMapInfo();
+    });
+
+    this.map.on('zoomstart', () => {
+      if (this.isMapInitialized) {
+        this.isUserInteraction = true;
+        this.shouldFitBounds = false;
+        this.isMapLoading = true;
+      }
+    });
+
+    this.map.on('zoomend', () => {
+      this.isMapLoading = false;
+      updateMapInfo();
+    });
+  }
+
+  private async handleMapChange(latitude: number, longitude: number) {
+    console.log('🔄 Map changed:', {
+      lat: latitude.toFixed(4),
+      lng: longitude.toFixed(4),
+      distance: 10000
+    });
   }
 }
