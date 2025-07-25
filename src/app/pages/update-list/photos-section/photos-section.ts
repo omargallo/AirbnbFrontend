@@ -116,7 +116,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
   @Output() saveComplete = new EventEmitter<void>();
   @Output() validationChange = new EventEmitter<boolean>();
 
-  // Internal data copy to avoid direct mutation of input
+
   internalData: PhotosSectionData | null = null;
   selectedFiles: File[] = [];
   uploadProgress: number = 0;
@@ -127,18 +127,15 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
   constructor(private propertyService: PropertyService) {}
 
   ngOnInit(): void {
-    // Initialize internal data copy
     if (this.data) {
       this.internalData = { ...this.data };
-      this.loadPropertyImages(); // Load images on init
+      this.loadPropertyImages(); 
     }
     
-    // Always valid for photos section (unless you have specific requirements)
     this.validationChange.emit(true);
   }
 
   ngOnDestroy(): void {
-    // Clean up blob URLs
     this.selectedFiles.forEach(file => {
       const url = this.previewUrls.get(file);
       if (url) {
@@ -154,14 +151,12 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
     
     this.selectedFiles = [...this.selectedFiles, ...imageFiles];
     
-    // Pre-generate URLs for new files
     imageFiles.forEach(file => {
       if (!this.previewUrls.has(file)) {
         this.previewUrls.set(file, URL.createObjectURL(file));
       }
     });
 
-    // Optional: Limit total photos
     const maxPhotos = 20;
     const currentPhotos = this.internalData?.photos?.length || 0;
     const totalPhotos = currentPhotos + this.selectedFiles.length;
