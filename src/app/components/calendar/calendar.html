@@ -127,12 +127,15 @@
     <!-- Year View - Multiple Months -->
     <ng-container *ngIf="settings.viewType === 'year'">
       <div class="months-container">
-        <div class="month-block" *ngFor="let month of yearMonths">
+        <div
+          class="month-block"
+          *ngFor="let monthData of processedMonths; trackBy: trackByMonth"
+        >
           <div class="month-header">
-            <h3>{{ format(month, 'MMMM') }}</h3>
-            <span class="discount-indicator" *ngIf="hasDiscount(month)"
-              >1 discount</span
-            >
+            <h3>{{ format(monthData.month, 'MMMM') }}</h3>
+            <span class="discount-indicator" *ngIf="monthData.hasDiscount">
+              1 discount
+            </span>
           </div>
 
           <!-- Days of week header -->
@@ -144,21 +147,21 @@
           <div class="days-grid">
             <div
               class="day-cell"
-              *ngFor="let day of getMonthDays(month) ;trackBy: trackByDate"
-              [class.other-month]="!isSameMonth(day.date, month)"
-              [class.disabled]="isDisabled(day.date)"
-              [class.available]="isAvailable(day.date)"
-              [class.not-available]="!isAvailable(day.date) && !isDisabled(day.date)"
-              [class.selected]="isSelected(day.date)"
-              [class.highlighted]="isHighlighted(day.date)"
+              *ngFor="let day of monthData.days; trackBy: trackByDate"
+              [class.other-month]="!day.inCurrentMonth"
+              [class.disabled]="day.isDisabled"
+              [class.available]="day.isAvailable"
+              [class.not-available]="!day.isAvailable && !day.isDisabled"
+              [class.selected]="day.isSelected"
+              [class.highlighted]="day.isHighlighted"
               (click)="selectDate(day.date)"
             >
               <div class="day-number">{{ format(day.date, 'd') }}</div>
               <div
                 class="day-price"
-                *ngIf="getPrice(day.date) && !isDisabled(day.date)"
+                *ngIf="day.price && !day.isDisabled"
               >
-                ${{ getPrice(day.date) }}
+                ${{ day.price }}
               </div>
             </div>
           </div>
@@ -167,7 +170,7 @@
     </ng-container>
 
     <!-- Month View - Single Month -->
-    <ng-container *ngIf="settings.viewType === 'month'">
+    <ng-container *ngIf="settings.viewType === 'month' && processedCurrentMonth">
       <div class="single-month">
         <div class="month-navigation">
           <button
@@ -186,9 +189,12 @@
           </button>
 
           <h2>{{ format(currentMonth, 'MMMM yyyy') }}</h2>
-          <span class="discount-indicator" *ngIf="hasDiscount(currentMonth)"
-            >1 discount</span
+          <span
+            class="discount-indicator"
+            *ngIf="processedCurrentMonth.hasDiscount"
           >
+            1 discount
+          </span>
 
           <button
             class="nav-btn"
@@ -215,21 +221,21 @@
         <div class="days-grid">
           <div
             class="day-cell"
-            *ngFor="let day of getMonthDays(currentMonth)"
-            [class.other-month]="!isSameMonth(day.date, currentMonth)"
-            [class.disabled]="isDisabled(day.date)"
-            [class.available]="isAvailable(day.date)"
-            [class.not-available]="!isAvailable(day.date) && !isDisabled(day.date)"
-            [class.selected]="isSelected(day.date)"
-            [class.highlighted]="isHighlighted(day.date)"
+            *ngFor="let day of processedCurrentMonth.days; trackBy: trackByDate"
+            [class.other-month]="!day.inCurrentMonth"
+            [class.disabled]="day.isDisabled"
+            [class.available]="day.isAvailable"
+            [class.not-available]="!day.isAvailable && !day.isDisabled"
+            [class.selected]="day.isSelected"
+            [class.highlighted]="day.isHighlighted"
             (click)="selectDate(day.date)"
           >
             <div class="day-number">{{ format(day.date, 'd') }}</div>
             <div
               class="day-price"
-              *ngIf="getPrice(day.date) && !isDisabled(day.date)"
+              *ngIf="day.price && !day.isDisabled"
             >
-              ${{ getPrice(day.date) }}
+              ${{ day.price }}
             </div>
           </div>
         </div>

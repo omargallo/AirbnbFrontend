@@ -14,7 +14,6 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { HttpLoaderFactory } from '../translate-loader';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
-import { GoogleMapsModule } from '@angular/google-maps';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -24,7 +23,7 @@ export const appConfig: ApplicationConfig = {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    },  
+    },
     provideHttpClient(),
     provideRouter(routes),
     importProvidersFrom(
