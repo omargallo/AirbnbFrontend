@@ -1,0 +1,90 @@
+<div class="d-flex gap-1 align-items-center">
+  @for (star of stars; track star) {
+  <fa-icon
+    [icon]="getStarIcon(star)"
+    (mouseenter)="onMouseEnter(star)"
+    (mouseleave)="onMouseLeave()"
+    (click)="selectRating(star)"
+    [ngStyle]="{
+      color: isStarActive(star) ? starColor : inactiveColor,
+      fontSize: fontSize,
+      cursor: 'pointer',
+      transition: 'color 0.4s ease-in-out'
+    }"
+  ></fa-icon>
+  }
+</div>
+
+<!-- <div
+  class="d-flex justify-content-center align-items-center"
+  style="height: 100vh"
+> -->
+<!-- *ngFor="let star of [1, 2, 3, 4, 5]" -->
+
+<!-- @for (star of [1, 2, 3, 4, 5]; track star) {
+  <fa-icon
+    [icon]="star <= selectedValue ? faStarSolid : faStarRegular"
+    [ngStyle]="{
+      color: star <= selectedValue ? 'orange' : 'lightgray',
+      cursor: 'pointer'
+    }"
+    (click)="selectedValue = star"
+  ></fa-icon>
+  } -->
+
+<!-- <fa-icon [icon]="faCoffee" size="4x" class="text-p rimary"></fa-icon> -->
+<!-- <fa-icon
+    [class.rated]="rating >= 1"
+    [icon]="faStar"
+    size="4x"
+    (click)="setRating(1)"
+  ></fa-icon>
+  <fa-icon
+    [class.rated]="rating >= 2"
+    [icon]="faStar"
+    size="4x"
+    (click)="setRating(2)"
+  ></fa-icon>
+  <fa-icon
+    [class.rated]="rating >= 3"
+    [icon]="faStar"
+    size="4x"
+    (click)="setRating(3)"
+  ></fa-icon>
+  <fa-icon
+    [class.rated]="rating >= 4"
+    [icon]="faStar"
+    size="4x"
+    (click)="setRating(4)"
+  ></fa-icon>
+  <fa-icon
+    [class.rated]="rating >= 5"
+    [icon]="faStar"
+    size="4x"
+    (click)="setRating(5)"
+  ></fa-icon> -->
+
+<!-- *ngFor="let star of [1, 2, 3, 4, 5]" -->
+<!-- {{ rating }}
+</div>
+
+<div class="d-flex">
+  @for (star of [1,2,3,4,5]; track $index) {
+  <fa-icon
+    [icon]="(hovered || rating) >= star ? faStarSolid : faStarRegular"
+    (mouseenter)="hovered = star"
+    (mouseleave)="hovered = 0"
+    (click)="rating = star"
+    [ngStyle]="{
+      color: (hovered || rating) >= star ? 'orange' : '#ccc',
+      fontSize: '2rem',
+      cursor: 'pointer',
+      transition: ' color 0.2s ease-in-out'
+    }"
+    class="me-1"
+  ></fa-icon>
+
+  }
+</div>
+
+<p class="mt-2">You rated: {{ rating }} / 5</p> -->

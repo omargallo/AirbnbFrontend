@@ -1,0 +1,260 @@
+<div class="reviews-section mt-5">
+  <!-- Reviews Header -->
+  <div class="reviews-header">
+    <div class="reviews-title">
+      <h2>Reviews</h2>
+      <div class="reviews-count">
+        <span class="reviews-count-number">{{ reviews.length }}</span>
+        <span class="reviews-count-text">{{
+          reviews.length === 1 ? "review" : "reviews"
+        }}</span>
+      </div>
+    </div>
+    <div class="reviews-actions">
+      <ng-container *ngIf="userId; else loginPrompt">
+        <ng-container *ngIf="userExistingReview; else canReviewCheck">
+          <div class="review-status-message">
+            You have already reviewed this property
+          </div>
+        </ng-container>
+        <ng-template #canReviewCheck>
+          <ng-container
+            *ngIf="userCompletedBookings.length > 0; else noBookings"
+          >
+            <button class="btn-add-review" (click)="navigateToAddReview()">
+              Add Review
+            </button>
+          </ng-container>
+          <ng-template #noBookings>
+            <div class="review-status-message">
+              Complete a booking to leave a review
+            </div>
+          </ng-template>
+        </ng-template>
+      </ng-container>
+      <ng-template #loginPrompt>
+        <div class="review-status-message">Log in to leave a review</div>
+      </ng-template>
+
+      <button class="btn-view-reviews" (click)="openReviewsModal()">
+        View All Reviews
+      </button>
+    </div>
+  </div>
+
+  <!-- Reviews Modal - View Only -->
+  <app-reviews-modal
+    *ngIf="showReviewsModal"
+    [reviews]="reviews"
+    [propertyName]="propertyName"
+    (closeModal)="closeReviewsModal()"
+  ></app-reviews-modal>
+
+  <!-- Summary Row -->
+  <div class="summary-row">
+    <!-- Overall Rating Breakdown -->
+    <div class="rating-breakdown">
+      <h6 class="mb-3">Overall rating</h6>
+      <div class="rating-bars">
+        <div class="rating-bar-item">
+          <span class="rating-number">5</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar" style="width: 80%"></div>
+          </div>
+        </div>
+        <div class="rating-bar-item">
+          <span class="rating-number">4</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar" style="width: 15%"></div>
+          </div>
+        </div>
+        <div class="rating-bar-item">
+          <span class="rating-number">3</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar" style="width: 3%"></div>
+          </div>
+        </div>
+        <div class="rating-bar-item">
+          <span class="rating-number">2</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar" style="width: 1%"></div>
+          </div>
+        </div>
+        <div class="rating-bar-item">
+          <span class="rating-number">1</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar" style="width: 1%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Ratings -->
+    <div class="category-ratings">
+      <div class="category-item">
+        <div class="category-icon-container">
+          <i class="category-icon bi bi-sparkles"></i>
+        </div>
+        <div class="category-info">
+          <span class="category-label">Cleanliness</span>
+          <span class="category-rating">5.0</span>
+        </div>
+      </div>
+      <div class="category-item">
+        <div class="category-icon-container">
+          <i class="category-icon bi bi-check-circle"></i>
+        </div>
+        <div class="category-info">
+          <span class="category-label">Accuracy</span>
+          <span class="category-rating">5.0</span>
+        </div>
+      </div>
+      <div class="category-item">
+        <div class="category-icon-container">
+          <i class="category-icon bi bi-key"></i>
+        </div>
+        <div class="category-info">
+          <span class="category-label">Check-in</span>
+          <span class="category-rating">5.0</span>
+        </div>
+      </div>
+      <div class="category-item">
+        <div class="category-icon-container">
+          <i class="category-icon bi bi-chat-square-dots"></i>
+        </div>
+        <div class="category-info">
+          <span class="category-label">Communication</span>
+          <span class="category-rating">5.0</span>
+        </div>
+      </div>
+      <div class="category-item">
+        <div class="category-icon-container">
+          <i class="category-icon bi bi-geo-alt"></i>
+        </div>
+        <div class="category-info">
+          <span class="category-label">Location</span>
+          <span class="category-rating">5.0</span>
+        </div>
+      </div>
+      <div class="category-item">
+        <div class="category-icon-container">
+          <i class="category-icon bi bi-tag"></i>
+        </div>
+        <div class="category-info">
+          <span class="category-label">Value</span>
+          <span class="category-rating">4.9</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Grid (Show only first 6) -->
+  <div class="reviews-grid">
+    <div
+      *ngFor="let review of reviews | slice : 0 : 6; trackBy: trackByReviewId"
+      class="review-card"
+    >
+      <!-- Profile Section -->
+      <div class="review-header">
+        <div class="profile-section">
+          <div class="profile-avatar">
+            {{ getInitials(review.user?.firstName, review.user?.lastName) }}
+          </div>
+          <div class="profile-info">
+            <h6 class="reviewer-name">
+              {{ getFullName(review.user?.firstName, review.user?.lastName) }}
+            </h6>
+            <p class="reviewer-meta">Guest on Airbnb</p>
+          </div>
+        </div>
+
+        <!-- Actions (Edit, View, Delete) - Only show for user's own reviews -->
+        <div class="review-actions" *ngIf="userId === review.user?.userId">
+          <i
+            (click)="navigateToEditReview(review.id)"
+            class="action-icon text-info bi bi-pencil-square"
+            title="Edit"
+            style="cursor: pointer"
+          ></i>
+          <i
+            (click)="navigateToViewReview(review.id)"
+            class="action-icon text-warning bi bi-eye-fill"
+            title="View"
+            style="cursor: pointer"
+          ></i>
+          <button
+            type="button"
+            class="btn p-0 action-icon text-danger"
+            (click)="deleteHandler(review.id)"
+            title="Delete"
+          >
+            <i class="bi bi-trash3-fill"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Rating and Date -->
+      <div class="review-meta">
+        <div class="review-stars">
+          <app-star-component [value]="review.rating" [readonly]="true">
+          </app-star-component>
+        </div>
+        <span class="review-date">{{
+          review.createdAt | date : "MMM yyyy"
+        }}</span>
+        <span class="review-type">Stayed a few nights</span>
+      </div>
+
+      <!-- Review Content -->
+      <div class="review-content">
+        <p class="review-text">{{ review.comment }}</p>
+        <button
+          class="show-more-btn"
+          type="button"
+          (click)="openReviewsModal()"
+        >
+          Show more
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Actions -->
+  <div class="bottom-actions">
+    <button
+      class="btn btn-outline-dark btn-lg show-all-btn"
+      (click)="openReviewsModal()"
+    >
+      Show all {{ reviews.length }} reviews
+    </button>
+    <div class="learn-container">
+      <a
+        href="#"
+        class="learn-link"
+        (click)="toggleTooltip($event)"
+        [attr.aria-expanded]="showTooltip"
+      >
+        Learn how reviews work
+      </a>
+      <!-- Tooltip -->
+      <div class="tooltip-popup" [class.show]="showTooltip">
+        <div class="tooltip-content">
+          <p>
+            Reviews from past guests help our community learn more about each
+            home. By default, reviews are sorted by relevancy. Relevancy is
+            based on recency, length, and information that you provide to us,
+            such as your booking search, your country, and your language
+            preferences.
+          </p>
+          <p>
+            Only the guest who booked the reservation can leave a review, and
+            Airbnb only moderates reviews flagged for not following our
+            policies. To be eligible for a percentile ranking or guest favorite
+            label, listings need 5 or more recent reviews. Criteria is subject
+            to change.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

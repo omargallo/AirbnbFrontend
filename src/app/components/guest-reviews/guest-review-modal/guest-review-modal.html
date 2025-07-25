@@ -1,0 +1,196 @@
+<!-- Modal Overlay -->
+<div class="modal-overlay show" (click)="onBackdropClick($event)">
+  <div class="modal-container">
+    <!-- Left Panel - Rating Information -->
+    <div class="left-panel">
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onClose()"
+        aria-label="Close"
+      >
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      <!-- Guest Favorite Section -->
+      <div class="guest-favorite-section" *ngIf="overallRating >= 4.7">
+        <h3 class="guest-favorite-title">Guest favorite</h3>
+        <p class="guest-favorite-subtext">
+          This home is in the <strong>top 5%</strong> of eligible listings<br />
+          based on ratings, reviews, and reliability.
+        </p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="overall-rating-section">
+        <h4 class="overall-rating-title">Overall rating</h4>
+        <div class="rating-breakdown">
+          <div *ngFor="let rating of [5, 4, 3, 2, 1]" class="rating-row">
+            <span class="rating-label">{{ rating }}</span>
+            <div class="progress">
+              <div
+                class="progress-bar"
+                [style.width.%]="getRatingPercentage(rating)"
+              ></div>
+            </div>
+            <span class="rating-count">{{ ratingCounts[rating] }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Ratings -->
+      <div class="category-ratings" *ngIf="categoryAverages.cleanliness > 0">
+        <div class="category-item">
+          <div class="category-left">
+            <i class="bi bi-house-door category-icon"></i>
+            <span class="category-label">Cleanliness</span>
+          </div>
+          <span class="category-rating">{{
+            categoryAverages.cleanliness
+          }}</span>
+        </div>
+
+        <div class="category-item">
+          <div class="category-left">
+            <i class="bi bi-check-circle category-icon"></i>
+            <span class="category-label">Accuracy</span>
+          </div>
+          <span class="category-rating">{{ categoryAverages.accuracy }}</span>
+        </div>
+
+        <div class="category-item">
+          <div class="category-left">
+            <i class="bi bi-key category-icon"></i>
+            <span class="category-label">Check-in</span>
+          </div>
+          <span class="category-rating">{{ categoryAverages.checkIn }}</span>
+        </div>
+
+        <div class="category-item">
+          <div class="category-left">
+            <i class="bi bi-chat-dots category-icon"></i>
+            <span class="category-label">Communication</span>
+          </div>
+          <span class="category-rating">{{
+            categoryAverages.communication
+          }}</span>
+        </div>
+
+        <div class="category-item">
+          <div class="category-left">
+            <i class="bi bi-geo-alt category-icon"></i>
+            <span class="category-label">Location</span>
+          </div>
+          <span class="category-rating">{{ categoryAverages.location }}</span>
+        </div>
+
+        <div class="category-item">
+          <div class="category-left">
+            <i class="bi bi-tag category-icon"></i>
+            <span class="category-label">Value</span>
+          </div>
+          <span class="category-rating">{{ categoryAverages.value }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel - Reviews -->
+    <div class="right-panel">
+      <!-- Header -->
+      <div class="right-panel-header">
+        <div class="header-controls">
+          <div>
+            <h2 class="reviews-title">{{ totalReviews }} reviews</h2>
+            <a href="#" class="learn-link">Learn how reviews work</a>
+          </div>
+          <div class="dropdown-container">
+            <select
+              class="form-select"
+              [(ngModel)]="sortOption"
+              (change)="onSortChange()"
+            >
+              <option value="most-relevant">Most relevant</option>
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="highest-rated">Highest rated</option>
+              <option value="lowest-rated">Lowest rated</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="search-section">
+          <div class="search-box">
+            <i class="bi bi-search search-icon"></i>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Search reviews"
+              [(ngModel)]="searchQuery"
+              (input)="onSearchChange()"
+            />
+          </div>
+        </div>
+
+        <div class="reviews-list">
+          <div
+            *ngFor="let review of filteredReviews; trackBy: trackByReviewId"
+            class="review-item"
+          >
+            <div class="review-header">
+              <div class="user-avatar">
+                <span>{{
+                  getInitials(
+                    review.user
+                      ? review.user.firstName + " " + review.user.lastName
+                      : "Guest User"
+                  )
+                }}</span>
+              </div>
+              <div class="user-info">
+                <div class="user-name">
+                  {{
+                    review.user
+                      ? review.user.firstName + " " + review.user.lastName
+                      : "Guest User"
+                  }}
+                </div>
+                <div class="user-details">
+                  {{ getUserJoinYear(review) }} years on Airbnb
+                </div>
+              </div>
+            </div>
+
+            <div class="review-meta">
+              <app-star-component
+                [value]="review.rating"
+                [readonly]="true"
+                [fontSize]="'14px'"
+                [starColor]="'#FFD700'"
+                class="stars"
+              ></app-star-component>
+              <span class="review-date">{{
+                formatDate(review.createdAt || "2025-06-01")
+              }}</span>
+              <span class="review-meta-separator">•</span>
+              <span class="review-type">Stayed with kids</span>
+            </div>
+
+            <div class="review-content">
+              <p class="review-text">{{ review.comment }}</p>
+            </div>
+          </div>
+
+          <div
+            *ngIf="filteredReviews.length === 0 && searchQuery"
+            class="no-results"
+          >
+            <i class="bi bi-search no-results-icon"></i>
+            <h5 class="no-results-title">No reviews found</h5>
+            <p class="no-results-text">Try adjusting your search or filters</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
