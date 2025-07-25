@@ -1,85 +1,87 @@
- <div class="section-content">
-      <div class="section-header">
-        <h2>Where's your place located?</h2>
-        <p>Guests will see this on the map.</p>
+<div class="section-content">
+  <div class="section-header">
+    <h2>Where's your place located?</h2>
+    <p>Guests will see this on the map.</p>
+  </div>
+  <form [formGroup]="locationForm">
+    <div class="location-form">
+      <div class="form-group">
+        <label for="address" class="form-label">Address</label>
+        <input
+          type="text"
+          id="address"
+          formControlName="address"
+          class="form-control"
+          [class.is-invalid]="isFieldInvalid('address')"
+          placeholder="Enter street address">
+        <div class="invalid-feedback" *ngIf="isFieldInvalid('address')">
+          {{ getFieldError('address') }}
+        </div>
       </div>
-      
-      <form [formGroup]="locationForm">
-        <div class="location-form">
+      <div class="form-group">
+        <label for="city" class="form-label">City</label>
+        <input
+          type="text"
+          id="city"
+          formControlName="city"
+          class="form-control"
+          [class.is-invalid]="isFieldInvalid('city')"
+          placeholder="Enter city">
+        <div class="invalid-feedback" *ngIf="isFieldInvalid('city')">
+          {{ getFieldError('city') }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="country" class="form-label">Country</label>
+        <input
+          type="text"
+          id="country"
+          formControlName="country"
+          class="form-control"
+          [class.is-invalid]="isFieldInvalid('country')"
+          placeholder="Enter country">
+        <div class="invalid-feedback" *ngIf="isFieldInvalid('country')">
+          {{ getFieldError('country') }}
+        </div>
+      </div>
+      <div class="map-container">
+        <div id="map"></div>
+        <!-- Updated Current Location Button - Bigger and more visible -->
+        <div class="map-controls">
+          <button type="button" class="btn-current-location" (click)="getCurrentLocation()" title="Use my current location">
+            <!-- Using a larger Unicode Pin Symbol -->
+            <span class="current-location-icon">📍</span> <!-- Wrapped in a span for styling -->
+          </button>
+        </div>
+        <p class="map-instructions">Click on the map to set your property location, or use the pin button for your current location</p>
+      </div>
+      <div class="coordinates-section" *ngIf="showCoordinates">
+        <h4>Coordinates</h4>
+        <div class="coordinates-grid">
           <div class="form-group">
-            <label for="address" class="form-label">Address</label>
+            <label for="latitude" class="form-label">Latitude</label>
             <input
-              type="text"
-              id="address"
-              formControlName="address"
+              type="number"
+              id="latitude"
+              formControlName="latitude"
               class="form-control"
-              [class.is-invalid]="isFieldInvalid('address')"
-              placeholder="Enter street address">
-            <div class="invalid-feedback" *ngIf="isFieldInvalid('address')">
-              {{ getFieldError('address') }}
-            </div>
+              placeholder="e.g., 40.7128"
+              step="any"
+              readonly>
           </div>
-
           <div class="form-group">
-            <label for="city" class="form-label">City</label>
+            <label for="longitude" class="form-label">Longitude</label>
             <input
-              type="text"
-              id="city"
-              formControlName="city"
+              type="number"
+              id="longitude"
+              formControlName="longitude"
               class="form-control"
-              [class.is-invalid]="isFieldInvalid('city')"
-              placeholder="Enter city">
-            <div class="invalid-feedback" *ngIf="isFieldInvalid('city')">
-              {{ getFieldError('city') }}
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="country" class="form-label">Country</label>
-            <input
-              type="text"
-              id="country"
-              formControlName="country"
-              class="form-control"
-              [class.is-invalid]="isFieldInvalid('country')"
-              placeholder="Enter country">
-            <div class="invalid-feedback" *ngIf="isFieldInvalid('country')">
-              {{ getFieldError('country') }}
-            </div>
-          </div>
-
-          <div class="coordinates-section" *ngIf="showCoordinates">
-            <h4>Coordinates (Optional)</h4>
-            <div class="coordinates-grid">
-              <div class="form-group">
-                <label for="latitude" class="form-label">Latitude</label>
-                <input
-                  type="number"
-                  id="latitude"
-                  formControlName="latitude"
-                  class="form-control"
-                  placeholder="e.g., 40.7128"
-                  step="any">
-              </div>
-              <div class="form-group">
-                <label for="longitude" class="form-label">Longitude</label>
-                <input
-                  type="number"
-                  id="longitude"
-                  formControlName="longitude"
-                  class="form-control"
-                  placeholder="e.g., -74.0060"
-                  step="any">
-              </div>
-            </div>
-          </div>
-
-          <!-- Toggle coordinates visibility -->
-          <div class="coordinates-toggle">
-            <button type="button" class="toggle-btn" (click)="toggleCoordinates()">
-              {{ showCoordinates ? 'Hide' : 'Show' }} Coordinates
-            </button>
+              placeholder="e.g., -74.0060"
+              step="any"
+              readonly>
           </div>
         </div>
-      </form>
+      </div>
     </div>
+  </form>
+</div>
