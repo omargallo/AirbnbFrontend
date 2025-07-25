@@ -63,7 +63,7 @@ export class Login {
               localStorage.setItem('email', res.email);
               localStorage.setItem('user', JSON.stringify(res));
               if (res.firstName === '') {
-                this.router.navigate(['/take-info']);
+                this.router.navigate(['/take-info/' + res.userId]);
               } else {
                 this.router.navigate(['/']);
               }
