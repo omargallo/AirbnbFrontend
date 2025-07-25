@@ -11,8 +11,8 @@
       <i class="icon-close" (click)="close()">×</i>
     </div>
 
-    <div class="last-info" *ngIf="user || img || lastLoginEmail">
-      <ng-container *ngIf="img; else initialLetter">
+    <div class="last-info" *ngIf="img || lastLoginEmail">
+      <ng-container *ngIf="ifImg; else initialLetter">
         <img [src]="img" alt="user-img" />
       </ng-container>
 

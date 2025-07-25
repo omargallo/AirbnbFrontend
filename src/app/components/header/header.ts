@@ -5,6 +5,7 @@ import {
   OnDestroy,
   inject,
   ElementRef,
+  Input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -16,6 +17,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TopNavComponent } from "../top-nav/top-nav";
 import { SearchFilterGroupComponent } from "../search-filter-group/search-filter-group";
 import { DialogService } from '../../core/services/dialog.service';
+import { HandleImgService } from '../../core/services/handleImg.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -37,15 +40,37 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   isSearchBarSticky = false;
   wasFilterClicked = false;
   dialogService = inject(DialogService);
+  authService = inject(AuthService);
   isMessagesRoute = false;
 
   constructor(
     public lang: LangService,
     public theme: ThemeService,
     private elementRef: ElementRef,
-    private router: Router
-
+    private router: Router,
   ) { }
+
+  userId: any = this.authService.userId;
+  handleImgService = inject(HandleImgService);
+  @Input() user: string | null = (() => {
+    const storedUser = localStorage.getItem('user');
+    console.log(this.userId)
+    return storedUser ? JSON.parse(storedUser)?.firstName ?? '' : '';
+  })();
+
+  ifImg: string | null = (() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser)?.profilePictureURL ?? '' : '';
+  })();
+
+  @Input() img: string | null = (() => {
+    const storedUser = localStorage.getItem('user');
+    return this.handleImgService.handleImage(
+      storedUser ? JSON.parse(storedUser)?.profilePictureURL ?? '' : ''
+    );
+  })();
+
+
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
