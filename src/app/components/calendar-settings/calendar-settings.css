@@ -610,9 +610,9 @@
 }
 
 /* Dark mode support (optional) */
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   .settings-panel {
-    background: #1a1a1a;
+    background: #e2dede;
     color: #e0e0e0;
   }
 
@@ -631,7 +631,7 @@
     color: #a0a0a0;
   }
 }
-
+ */
 
 
 
