@@ -170,6 +170,12 @@ export class PropertyService {
       case 'title':
         dto.title = sectionData;
         break;
+
+        case 'rooms':
+          dto.bedrooms = Number(sectionData.bedrooms) || property.bedrooms || 1;
+          dto.beds = Number(sectionData.beds) || property.beds || 1;
+          dto.bathrooms = Number(sectionData.bathrooms) || property.bathrooms || 1;
+        break;
       case 'description':
         dto.description = sectionData;
         break;
@@ -182,6 +188,7 @@ export class PropertyService {
       case 'propertyId':
         dto.propertyTypeId = Number(sectionData);
         break;
+        
       case 'location':
         dto.city = sectionData.city || property.city;
         dto.country = sectionData.country || property.country;
@@ -190,11 +197,17 @@ export class PropertyService {
           dto.latitude = Number(sectionData.coordinates.lat) || property.latitude;
           dto.longitude = Number(sectionData.coordinates.lng) || property.longitude;
         }
+        
+        
+
+    
         break;
       default:
         // For other fields, merge the data
         Object.assign(dto, sectionData);
     }
+
+    
 
     console.log(`Created complete DTO for ${sectionType}:`, dto);
     return dto;

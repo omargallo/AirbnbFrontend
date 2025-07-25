@@ -1,0 +1,133 @@
+<div class="section-content">
+  <div class="section-header">
+    <h2>Share some basics about your place</h2>
+    <p>You'll add more details later, like bed types.</p>
+  </div>
+
+  <form [formGroup]="roomsForm" class="rooms-form">
+
+    <!-- Bedrooms Section -->
+    <div class="room-item">
+      <div class="room-info">
+        <div class="room-label">Bedrooms</div>
+        <div class="room-description">How many bedrooms can guests use?</div>
+      </div>
+      <div class="room-counter">
+        <button 
+          type="button" 
+          class="counter-btn counter-btn-minus"
+          *ngIf="(roomsForm.get('bedrooms')?.value || 1) > 1"
+          (click)="decrementBedrooms()">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+          </svg>
+        </button>
+        <div class="counter-value">
+          <input 
+            formControlName="bedrooms"
+            type="number"
+            class="counter-input"
+            [class.is-invalid]="isFieldInvalid('bedrooms')"
+            min="1"
+            max="16"
+            readonly>
+        </div>
+        <button 
+          type="button" 
+          class="counter-btn counter-btn-plus"
+          *ngIf="(roomsForm.get('bedrooms')?.value || 1) < 16"
+          (click)="incrementBedrooms()">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="invalid-feedback" *ngIf="isFieldInvalid('bedrooms')">
+        {{ getFieldError('bedrooms') }}
+      </div>
+    </div>
+
+    <!-- Beds Section -->
+    <div class="room-item">
+      <div class="room-info">
+        <div class="room-label">Beds</div>
+        <div class="room-description">How many beds can guests use?</div>
+      </div>
+      <div class="room-counter">
+        <button 
+          type="button" 
+          class="counter-btn counter-btn-minus"
+          *ngIf="(roomsForm.get('beds')?.value || 1) > 1"
+          (click)="decrementBeds()">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+          </svg>
+        </button>
+        <div class="counter-value">
+          <input 
+            formControlName="beds"
+            type="number"
+            class="counter-input"
+            [class.is-invalid]="isFieldInvalid('beds')"
+            min="1"
+            max="16"
+            readonly>
+        </div>
+        <button 
+          type="button" 
+          class="counter-btn counter-btn-plus"
+          *ngIf="(roomsForm.get('beds')?.value || 1) < 16"
+          (click)="incrementBeds()">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="invalid-feedback" *ngIf="isFieldInvalid('beds')">
+        {{ getFieldError('beds') }}
+      </div>
+    </div>
+
+    <!-- Bathrooms Section -->
+    <div class="room-item">
+      <div class="room-info">
+        <div class="room-label">Bathrooms</div>
+        <div class="room-description">How many bathrooms can guests use?</div>
+      </div>
+      <div class="room-counter">
+        <button 
+          type="button" 
+          class="counter-btn counter-btn-minus"
+          *ngIf="(roomsForm.get('bathrooms')?.value || 1) > 1"
+          (click)="decrementBathrooms()">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+          </svg>
+        </button>
+        <div class="counter-value">
+          <input 
+            formControlName="bathrooms"
+            type="number"
+            class="counter-input"
+            [class.is-invalid]="isFieldInvalid('bathrooms')"
+            min="1"
+            max="16"
+            readonly>
+        </div>
+        <button 
+          type="button" 
+          class="counter-btn counter-btn-plus"
+          *ngIf="(roomsForm.get('bathrooms')?.value || 1) < 16"
+          (click)="incrementBathrooms()">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="invalid-feedback" *ngIf="isFieldInvalid('bathrooms')">
+        {{ getFieldError('bathrooms') }}
+      </div>
+    </div>
+
+  </form>
+</div>
