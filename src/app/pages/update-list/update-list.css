@@ -112,12 +112,12 @@
 }
 
 .menu-item:hover {
-  background-color: #f7f7f7;
+  background-color: #e5e3e3ff;
 }
 
 .menu-item.active {
-  background-color: #f7f7f7;
-  box-shadow: inset 3px 0 0 #ff385c;
+  background-color: #e5e3e3ff;
+  /* box-shadow: inset 3px 0 0 #121111ff; */
 }
 
 .menu-item-content {
