@@ -8,6 +8,7 @@ import { ConfirmOtp } from '../confirm-otp/confirm-otp';
 
 @Component({
   selector: 'app-register',
+  standalone: true,
   imports: [CommonModule, TranslateModule, FormsModule, ConfirmOtp],
   templateUrl: './register.html',
   styleUrl: './register.css',
