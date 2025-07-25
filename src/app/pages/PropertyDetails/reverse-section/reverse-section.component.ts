@@ -2,55 +2,59 @@
 import { CommonModule } from '@angular/common';
 import { Property } from './../../../core/models/Property'; // Assuming this path is correct
 import { PropertyService } from './../../../core/services/Property/property.service';
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { BookingService } from '../../../core/services/Booking/booking.service';
 import { FormsModule } from '@angular/forms';
-import { DatePipe } from '@angular/common'; // Import DatePipe
-import { locale } from 'moment';
-import moment from 'moment';
 
 @Component({
   selector: 'app-reverse-section',
-  imports: [CommonModule, FormsModule], // Add DatePipe to imports
+  imports: [CommonModule, FormsModule], 
   templateUrl: './reverse-section.component.html',
   styleUrls: ['./reverse-section.component.css']
 })
 export class ReverseSectionComponent implements OnInit {
+  
+  constructor(private propertyService: PropertyService, private bookingService: BookingService) {}
+  
+   @Input() checkIn!: string;
+  @Input() checkOut!: string;
+
+  @Output() guestChange = new EventEmitter<{
+    adults: number;
+    children: number;
+    infants: number;
+  }>();
+
+    @Input() guests: {
+    adults: number;
+    children: number;
+    infants: number;
+  } = { adults: 1, children: 0, infants: 0 }; // Default values
+
+  @Input() propertyId!: number;
+  property: any;
 
   checkInDate: Date | null = null;
   checkOutDate: Date | null = null;
   guestCount: number = 1;
-  pricePerNight: number = 120; // Example price
+  pricePerNight: number = 120; //test
 
-  isSticky = false;
+  isSticky = true;
+  totalPrice: any;
+
+  showGuestDropdown = false;
+
+  maxGuests = 4; // Maximum guests allowed (excluding infants)
+
 
   @HostListener('window:scroll', [])
   onScroll(): void {
     this.isSticky = window.scrollY > 300;
-
-
-    
-      // locale = {
-      //   format: 'MMM DD, YYYY',
-      //   separator: ' - ',
-      //   applyLabel: 'Apply',
-      //   cancelLabel: 'Cancel',
-      //   fromLabel: 'From',
-      //   toLabel: 'To',
-      //   customRangeLabel: 'Custom Range',
-      //   weekLabel: 'W',
-      //   daysOfWeek: moment.weekdaysMin(),
-      //   monthNames: moment.monthsShort(),
-      //   firstDay: moment.localeData().firstDayOfWeek(),
-      // };
-      
   }
 
-  @Input() propertyId!: number;
-  property: any; // Consider typing this more specifically if Property model is rich
 
   // Calendar properties
-  currentMonth: Date = new Date(); // Represents the first day of the currently displayed month
+  currentMonth: Date = new Date(); 
   weekDays: string[] = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   currentMonthDays: any[] = [];
   nextMonthDays: any[] = [];
@@ -74,7 +78,6 @@ export class ReverseSectionComponent implements OnInit {
     return next.getFullYear();
   }
 
-  constructor(private propertyService: PropertyService, private bookingService: BookingService) {}
 
   ngOnInit() {
     if (!this.propertyId) {
@@ -193,19 +196,60 @@ export class ReverseSectionComponent implements OnInit {
     // This could involve calling your bookingService with checkInDate, checkOutDate, and guestCount
     console.log('Checking availability for:', this.checkInDate, this.checkOutDate, this.guestCount);
     if (this.checkInDate && this.checkOutDate && this.guestCount) {
-      // Example call (replace with your actual service method)
-      // this.bookingService.checkAvailability(this.propertyId, this.checkInDate, this.checkOutDate, this.guestCount).subscribe(
-      //   (response) => {
-      //     console.log('Availability response:', response);
-      //     // Handle success (e.g., navigate to booking confirmation)
-      //   },
-      //   (error) => {
-      //     console.error('Availability check failed:', error);
-      //     // Handle error (e.g., show error message)
-      //   }
-      // );
+    
     } else {
       alert('Please select check-in and check-out dates and guest count.');
     }
   }
+
+
+
+ 
+
+
+ toggleGuestDropdown(): void {
+    this.showGuestDropdown = !this.showGuestDropdown;
+  }
+
+  updateGuests(type: 'adults' | 'children' | 'infants', delta: number): void {
+    const newValue = this.guests[type] + delta;
+    if (type === 'adults') {
+      if (newValue >= 1 && (this.guests.adults + this.guests.children) <= this.maxGuests) {
+        this.guests[type] = newValue;
+      }
+    } else if (type === 'children') {
+      if (newValue >= 0 && (this.guests.adults + newValue) <= this.maxGuests) {
+        this.guests[type] = newValue;
+      }
+    } else if (type === 'infants' ) {
+      if (newValue >= 0) {
+        this.guests[type] = newValue;
+      }
+    }
+    
+    this.guestChange.emit(this.guests);
+  }
+
+  get totalGuests(): string {
+    const total = this.guests.adults + this.guests.children;
+    let text = `${total} guest${total !== 1 ? 's' : ''}`;
+    if (this.guests.infants > 0) {
+      text += `, ${this.guests.infants} infant${this.guests.infants !== 1 ? 's' : ''}`;
+    }
+    return text;
+  }
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
