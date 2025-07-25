@@ -36,6 +36,7 @@ import { Messages } from './pages/messages/messages';
 import { PropertyBookings } from './pages/booking/property-bookings/property-bookings';
 import { Availability } from './pages/availability-page/availability-page';
 import { Host } from './layout/host/host';
+import { Profile } from './pages/profile/profile';
 
 export const routes: Routes = [
   {
@@ -45,11 +46,16 @@ export const routes: Routes = [
       { path: '', component: Home },
       { path: 'experiences', component: Home },
       { path: 'services', component: Home },
-      { path: "FilteredProperties", component: FilteredProperties },
+      { path: 'FilteredProperties', component: FilteredProperties },
       { path: 'property/:propertyId', component: PropertyInfo },
       { path: 'WishLists', component: Wishlists },
-      { path: "wishlist/:wishlistId/properties", component: WishListProperties },
-      { path: "Messages", component: Messages }]
+      {
+        path: 'wishlist/:wishlistId/properties',
+        component: WishListProperties,
+      },
+      { path: 'Messages', component: Messages },
+      { path: 'profile/:id', component: Profile },
+    ],
   },
   {
     path: 'listing-wizard',
@@ -76,12 +82,12 @@ export const routes: Routes = [
       { path: 'step3-4-1-pricing', component: Step341Pricing },
       { path: 'step3-4-2-pricing-tax', component: Step342PricingTax },
       { path: 'step3-5-add-discount', component: Step35AddDiscount },
-      { path: 'step3-6-safety', component: Step36Safety }
-    ]
+      { path: 'step3-6-safety', component: Step36Safety },
+    ],
   },
+  { path: 'take-info/:id', component: Profile },
   { path: 'host', component: HostProperties },
   { path: 'guesttbookings', component: UserBookings },
-
 
   { path: 'propertybookings/:propertyId', component: PropertyBookings },
 
@@ -89,23 +95,15 @@ export const routes: Routes = [
     path: 'hostsettings',
     component: Host,
     children: [
-      { path: "availability", component: Availability },
-      { path: "Messages", component: Messages }
-    ]
+      { path: 'availability', component: Availability },
+      { path: 'Messages', component: Messages },
+    ],
   },
-
 
   { path: 'updatelist', component: UpdateList },
 
   { path: 'updatelist/:propertyId', component: UpdateList },
 
-
-
-
   { path: '404', component: NotFound },
-  { path: '**', redirectTo: '/404' }
-
-
-
-
+  { path: '**', redirectTo: '/404' },
 ];

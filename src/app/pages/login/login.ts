@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '../../core/services/User/user.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { HandleImgService } from '../../core/services/handleImg.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -42,12 +43,12 @@ export class Login {
     return `${visibleStart}${maskedMiddle}${visibleEnd}@${domain}`;
   }
 
-  email: string = '';
+  email: string = localStorage.getItem('email') || '';
   password: string = '';
 
   dialogService = inject(DialogService);
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   onLogin() {
     this.userService
@@ -61,6 +62,11 @@ export class Login {
               console.log(res);
               localStorage.setItem('email', res.email);
               localStorage.setItem('user', JSON.stringify(res));
+              if (res.firstName === '') {
+                this.router.navigate(['/take-info']);
+              } else {
+                this.router.navigate(['/']);
+              }
             },
             error: (err) => {
               console.error(err);
@@ -83,21 +89,30 @@ export class Login {
   }
 
   switchToForgot() {
-    if (this.email !== '') {
-      alert('Please enter your email');
+    let email = localStorage.getItem('email');
+
+    if (this.email && this.email.trim() !== '') {
+      email = this.email.trim();
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email || !emailRegex.test(email)) {
+      alert('Please enter a valid email address');
       return;
     }
-    localStorage.setItem('email', this.email);
-    this.userService.resendOtp({ email: this.email }).subscribe({
+
+    this.userService.resendOtp({ email: email as string }).subscribe({
       next: () => {
         alert('OTP sent successfully');
+        this.dialogService.openDialog('resetPassword');
+        (window as any).startOtpTimer?.();
       },
       error: (err) => {
         alert('OTP sending failed');
         console.error(err);
       },
     });
-    this.dialogService.openDialog('forgotPassword');
   }
 
   showPass() {

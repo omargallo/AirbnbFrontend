@@ -58,7 +58,7 @@ export class ConfirmOtp {
     if (!email) return;
 
     this.userService.resendOtp({ email }).subscribe({
-      next: () => {
+      next: (res) => {
         this.otp = '';
         this.startTimer();
       },

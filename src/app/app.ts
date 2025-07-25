@@ -8,10 +8,11 @@ import { Footer } from "./components/footer/footer";
 import { Confirm } from "./shared/components/confirm/confirm";
 import { ConfirmOtp } from "./pages/confirm-otp/confirm-otp";
 import { SignalrTestComponent } from "./signal-rtest/signal-rtest";
+import { ResetPassword } from "./pages/reset-password/reset-password";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Confirm, Login, Register, SignalrTestComponent],
+  imports: [RouterOutlet, Confirm, Login, Register, SignalrTestComponent, ResetPassword],
 
   templateUrl: './app.html',
   styleUrl: './app.css'
