@@ -1,9 +1,13 @@
 
 <hr>
-<!-- mapLocation.component.html -->
-<div>
-map section 
-</div>
 
-<!-- [leafletLayers]="layers"> -->
-<!-- [leafletOptions]="options" -->
+<p class="title mt-10 mb-2">Where you’ll be</p>
+<p class="info mb-3"> {{title}}, {{country}}, {{city}}</p>
+
+<div *ngIf="!loading" leaflet 
+     [leafletOptions]="options"
+     [leafletZoom]="zoom"
+     [leafletCenter]="center"
+     [leafletLayers]="layers"
+     style="height: 300px;">
+</div>
