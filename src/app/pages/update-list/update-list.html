@@ -1,3 +1,4 @@
+<app-hostheader> </app-hostheader>
 <div class="airbnb-listing-editor">
       <!-- Loading Overlay -->
       <div *ngIf="isLoading" class="loading-overlay">
@@ -122,6 +123,19 @@
                     (hasChanges)="onSectionHasChanges('description', $event)"
                     (validationChange)="onSectionValidationChange('description', $event)">
                   </app-description-section>
+
+                  <!-- Rooms Section -->
+                    <app-rooms-section
+                        *ngIf="activeSection === 'rooms'"
+                        [data]="roomsData"
+                        (dataChange)="onRoomsDataChange($event)"
+                        (hasChanges)="onSectionHasChanges('rooms', $event)"
+                        (validationChange)="onSectionValidationChange('rooms', $event)">
+                      </app-rooms-section>
+
+                  
+
+                  
 
                   <!-- Amenities Section -->
                   <app-amenities-section
