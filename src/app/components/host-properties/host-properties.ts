@@ -4,13 +4,14 @@ import { HostPropertiesService } from '../../core/services/Property/HostProperti
 import { PropertyDisplayDTO } from '../../core/services/Property/HostPropertiesService';
 import { environment } from '../../../environments/environment.development';
 import { CommonModule } from '@angular/common';
+import { HeaderComponent } from "../host-header/host-header";
 
 @Component({
   selector: 'app-host-properties',
   standalone: true,
   templateUrl: './host-properties.html',
   styleUrls: ['./host-properties.css'],
-  imports: [CommonModule,RouterLink]
+  imports: [CommonModule, RouterLink, HeaderComponent]
 })
 export class HostProperties implements OnInit {
   properties: PropertyDisplayDTO[] = [];

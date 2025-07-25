@@ -1,0 +1,171 @@
+.coordinates-section {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .coordinates-section h4 {
+      margin: 0 0 1rem 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #222222;
+    }
+
+    .coordinates-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .coordinates-toggle {
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: 1px solid #ddd;
+      color: #666;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn:hover {
+      background-color: #f5f5f5;
+      border-color: #999;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #333;
+    }
+
+    @media (max-width: 768px) {
+      .coordinates-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    
+    /* Existing styles */
+.coordinates-section {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.coordinates-section h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #222222;
+}
+
+.coordinates-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* New map styles */
+.map-container {
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#map {
+  height: 300px;
+  width: 100%;
+}
+
+.map-instructions {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #666;
+  text-align: center;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .coordinates-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  #map {
+    height: 250px;
+  }
+}
+
+.map-container {
+  position: relative;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#map {
+  height: 300px;
+  width: 100%;
+}
+
+.map-controls {
+  position: absolute;
+  top: 12px; /* Slightly adjust positioning if needed */
+  right: 12px;
+  z-index: 1000;
+}
+
+.btn-current-location {
+  background-color: #fff;
+  border: 2px solid #4285f4; /* More visible border */
+  border-radius: 6px; /* Slightly rounder corners */
+  padding: 10px 15px; /* Increased padding for bigger size */
+  font-size: 1rem; /* Larger base font size */
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2); /* Stronger shadow */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center content */
+  transition: all 0.2s ease-in-out; /* Smooth transition */
+}
+
+.btn-current-location:hover {
+  background-color: #f0f5ff; /* Lighter background on hover */
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3); /* Enhanced shadow on hover */
+  transform: translateY(-1px); /* Slight lift effect */
+}
+
+.btn-current-location:active {
+ transform: translateY(0); /* Reset lift effect */
+ box-shadow: 0 1px 4px rgba(0,0,0,0.2); /* Softer shadow on press */
+}
+
+.current-location-icon {
+  font-size: 1.5rem; /* Make the icon itself bigger */
+  color: #4285f4; /* Color for the icon */
+}
+
+
+.map-instructions {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #666;
+  text-align: center;
+}

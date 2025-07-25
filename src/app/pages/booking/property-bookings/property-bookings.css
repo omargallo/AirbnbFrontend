@@ -1,7 +1,7 @@
 /* Container and Layout */
 .bookings-container {
   max-width: 1120px;
-  margin: 180px auto 0 auto;
+  margin: 1px auto 0 auto;
   padding: 24px 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--bg-color);
