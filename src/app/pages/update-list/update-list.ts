@@ -19,7 +19,7 @@ import { RoomsSectionComponent, RoomsSectionData } from './rooms-section/rooms-s
 import { PropertyService } from '../../core/services/Property/property.service';
 import { Property } from '../../core/models/Property';
 import { PropertyImage } from '../../core/models/PropertyImage';
-import { HeaderComponent } from "../../components/host-header/host-header"; // Add this import
+import { HeaderComponent } from "../../components/host-header/host-header"; 
 
 export interface MenuSection {
   id: string;
@@ -47,8 +47,7 @@ export interface MenuSection {
     AmenitiesSectionComponent,
     LocationSectionComponent,
     RoomsSectionComponent,
-    RouterLink,
-    HeaderComponent
+    RouterLink
 ],
   templateUrl: './update-list.html',
 })

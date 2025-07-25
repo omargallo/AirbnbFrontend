@@ -4,13 +4,13 @@ import { PropertyDisplayDTO, PropertyService } from '../../../core/services/Prop
 import { ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
 import { Property } from '../../../core/models/Property';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+// import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 
 @Component({
   selector: 'app-mapLocation',
     standalone: true,
-  imports: [CommonModule,LeafletModule],
+  imports: [CommonModule],
   templateUrl: './mapLocation.component.html',
   styleUrls: ['./mapLocation.component.css']
 })
