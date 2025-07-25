@@ -11,7 +11,7 @@ export interface PriceSectionData {
   selector: 'app-price-section',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-   styleUrls: ['../update-list.css'],
+   styleUrls: ['../update-list.css','./price-section.css'],
   
   templateUrl: './price-section.html',
 })

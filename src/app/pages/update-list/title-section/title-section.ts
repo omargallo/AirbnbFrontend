@@ -11,7 +11,7 @@ export interface TitleSectionData {
   selector: 'app-title-section',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-   styleUrls: ['../update-list.css'],
+   styleUrls: ['../update-list.css', './title-section.css'],
   templateUrl: './title-section.html',
 })
 export class TitleSectionComponent implements OnInit, OnDestroy {

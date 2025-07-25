@@ -50,6 +50,12 @@ export interface PropertyImageDisplayDTO {
   propertyId: number;
 }
 
+// NEW: Property Type DTO interface
+export interface PropertyTypeDto {
+  id: number;
+  name: string;
+}
+
 export interface Country {
   iso2: string;
   iso3: string;
@@ -90,9 +96,15 @@ export interface SearchParams {
 export class PropertyService {
   private readonly propertyUrl = `${environment.baseUrl}/property`;
   private baseUrl = `${environment.baseUrl}/Property`;
+  private propertyTypeUrl = `${environment.baseUrl}/PropertyType`; // NEW: Property Type endpoint
   private countriesApiUrl = 'https://countriesnow.space/api/v0.1/countries';
 
   constructor(private http: HttpClient) { }
+
+  // NEW: Get all property types from API
+  getAllPropertyTypes(): Observable<PropertyTypeDto[]> {
+    return this.http.get<PropertyTypeDto[]>(this.propertyTypeUrl);
+  }
 
   getImagesByPropertyId(id: number): Observable<PropertyImage[]> {
     return this.http.get<Result<PropertyImage[]>>(`${this.baseUrl}/${id}/images`).pipe(
@@ -197,17 +209,11 @@ export class PropertyService {
           dto.latitude = Number(sectionData.coordinates.lat) || property.latitude;
           dto.longitude = Number(sectionData.coordinates.lng) || property.longitude;
         }
-        
-        
-
-    
         break;
       default:
         // For other fields, merge the data
         Object.assign(dto, sectionData);
     }
-
-    
 
     console.log(`Created complete DTO for ${sectionType}:`, dto);
     return dto;
@@ -234,7 +240,7 @@ export class PropertyService {
     if (params.latitude != null) queryParams.Latitude = params.latitude;
     if (params.guestsCount != null) queryParams.GuestsCount = params.guestsCount;
     if (params.startDate) queryParams.StartDate = params.startDate;
-    if (params.endDate) queryParams.EndDate = params.endDate;
+    if (params.endDate) queryParams.endDate = params.endDate;
     if (params.page) queryParams.Page = params.page;
     queryParams.PageSize = 12;
     if (params.maxDistanceKm != null) queryParams.maxDistanceKm = params.maxDistanceKm;

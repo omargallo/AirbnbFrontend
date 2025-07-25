@@ -10,7 +10,7 @@ export interface DescriptionSectionData {
 @Component({
   selector: 'app-description-section',
   standalone: true,
-   styleUrls: ['../update-list.css'],
+   styleUrls: ['../update-list.css','./description-section.css'],
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './description-section.html',
 

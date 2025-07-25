@@ -1,4 +1,3 @@
-// Complete UpdateList component with proper photos section integration
 
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -47,7 +46,8 @@ export interface MenuSection {
     AmenitiesSectionComponent,
     LocationSectionComponent,
     RoomsSectionComponent,
-    RouterLink
+    RouterLink,
+    HeaderComponent
 ],
   templateUrl: './update-list.html',
 })
