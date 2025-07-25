@@ -1,0 +1,213 @@
+/* Updated guests-section.css */
+
+.section-content {
+  padding: 1rem 2rem 2rem;
+  max-width: 100%;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #222222;
+  margin-bottom: 0.5rem;
+}
+
+.section-header p {
+  color: #717171;
+  font-size: 1rem;
+}
+
+/* Main container for the entire guest selection */
+.guest-selection-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem 0;
+}
+
+/* Counter controls - now below the icons */
+.counter-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  order: 2;
+}
+
+.counter-btn {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #b0b0b0;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.counter-btn:hover:not(:disabled) {
+  border-color: #222222;
+  transform: scale(1.05);
+}
+
+.counter-btn:disabled {
+  border-color: #e5e7eb;
+  color: #e5e7eb;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.counter-value {
+  font-weight: 600;
+  font-size: 2rem;
+  color: #222222;
+  min-width: 60px;
+  text-align: center;
+}
+
+/* Guest icons container - single row, no scroll, bigger icons */
+.guest-icons-container {
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+  order: 1;
+}
+
+.guest-icons-scroll {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 1rem 0;
+  max-width: 100%;
+}
+
+.guest-icon {
+  flex-shrink: 0;
+  width: 75px !important; ; 
+  height: 75px !important; ;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid transparent;
+  transition: all 0.2s ease;
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
+}
+
+.guest-icon:hover {
+  transform: scale(1.1);
+  /* border-color: #ff385c; */
+  /* box-shadow: 0 4px 16px rgba(255, 56, 92, 0.3); */
+}
+
+/* Animation for appearing guests only (no refresh animation) */
+.guest-icon.new-guest {
+  animation: slideInScale 0.4s ease-out;
+}
+
+@keyframes slideInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.5) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .counter-controls {
+    gap: 1.5rem;
+  }
+  
+  .counter-btn {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .counter-value {
+    font-size: 1.8rem;
+    min-width: 50px;
+  }
+  
+  .guest-icon {
+    width: 55px;
+    height: 55px;
+  }
+  
+  .guest-icons-scroll {
+    gap: 10px;
+  }
+  
+  .section-content {
+    padding: 0.5rem 1rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .counter-controls {
+    gap: 1rem;
+  }
+  
+  .counter-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .counter-value {
+    font-size: 1.6rem;
+    min-width: 45px;
+  }
+  
+  .guest-icon {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .guest-icons-scroll {
+    gap: 8px;
+  }
+  
+  .section-content {
+    padding: 0.5rem 0.5rem 1rem;
+  }
+}
+
+/* Special handling for larger guest counts */
+@media (min-width: 1200px) {
+  .guest-icon {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .guest-icons-scroll {
+    gap: 15px;
+  }
+}
+
+/* Ensure icons don't break to multiple rows on smaller screens */
+@media (max-width: 600px) {
+  .guest-icons-scroll {
+    flex-wrap: nowrap;
+    overflow-x: visible;
+    justify-content: center;
+  }
+  
+  .guest-icon {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+  }
+}

@@ -1,0 +1,35 @@
+.price-input-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.price-input-container {
+  position: relative;
+  flex: 1;
+  max-width: 200px;
+}
+
+.currency-symbol {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  font-weight: 600;
+  color: #222222;
+  pointer-events: none;
+}
+
+.price-input {
+  padding-left: 40px;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: right;
+}
+
+.price-suffix {
+  font-size: 18px;
+  color: #717171;
+}

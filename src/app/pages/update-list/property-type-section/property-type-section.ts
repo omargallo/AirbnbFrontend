@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angu
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { PropertyService, PropertyTypeDto } from '../../../core/services/Property/property.service';
 
 export interface PropertyTypeSectionData {
   propertyTypeId: number;
@@ -11,7 +12,7 @@ export interface PropertyTypeSectionData {
   selector: 'app-property-type-section',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-   styleUrls: ['../update-list.css'],
+  styleUrls: ['../update-list.css' , './property-type-section.css'],
   templateUrl: './property-type-section.html',
 })
 export class PropertyTypeSectionComponent implements OnInit, OnDestroy {
@@ -24,16 +25,20 @@ export class PropertyTypeSectionComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private initialValue: number = 0;
 
-  propertyTypes = [
-    'House', 'Apartment', 'Condo', 'Villa', 'Townhouse',
-    'Cabin', 'Loft', 'Studio', 'Guesthouse', 'Hotel'
-  ];
+  // Dynamic property types from API
+  propertyTypes: PropertyTypeDto[] = [];
+  isLoadingPropertyTypes = false;
+  propertyTypesError: string | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private propertyService: PropertyService
+  ) {
     this.initializeForm();
   }
 
   ngOnInit(): void {
+    this.loadPropertyTypes();
     this.setupFormData();
     this.setupFormChangeTracking();
   }
@@ -47,6 +52,40 @@ export class PropertyTypeSectionComponent implements OnInit, OnDestroy {
     this.propertyTypeForm = this.fb.group({
       propertyTypeId: [0, Validators.required]
     });
+  }
+
+  private loadPropertyTypes(): void {
+    this.isLoadingPropertyTypes = true;
+    this.propertyTypesError = null;
+
+    this.propertyService.getAllPropertyTypes()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (propertyTypes) => {
+          this.propertyTypes = propertyTypes;
+          this.isLoadingPropertyTypes = false;
+          console.log('Loaded property types:', propertyTypes);
+        },
+        error: (error) => {
+          console.error('Failed to load property types:', error);
+          this.propertyTypesError = 'Failed to load property types';
+          this.isLoadingPropertyTypes = false;
+          
+          // Fallback to hardcoded types if API fails
+          this.propertyTypes = [
+            { id: 1, name: 'House' },
+            { id: 2, name: 'Apartment' },
+            { id: 3, name: 'Condo' },
+            { id: 4, name: 'Villa' },
+            { id: 5, name: 'Townhouse' },
+            { id: 6, name: 'Cabin' },
+            { id: 7, name: 'Loft' },
+            { id: 8, name: 'Studio' },
+            { id: 9, name: 'Guesthouse' },
+            { id: 10, name: 'Hotel' }
+          ];
+        }
+      });
   }
 
   private setupFormData(): void {
@@ -98,6 +137,17 @@ export class PropertyTypeSectionComponent implements OnInit, OnDestroy {
 
   // Method to get property type name by ID
   getPropertyTypeName(typeId: number): string {
-    return this.propertyTypes[typeId - 1] || '';
+    const propertyType = this.propertyTypes.find(type => type.id === typeId);
+    return propertyType?.name || '';
+  }
+
+  // Method to retry loading property types
+  retryLoadPropertyTypes(): void {
+    this.loadPropertyTypes();
+  }
+
+  // TrackBy function for better performance
+  trackByPropertyType(index: number, propertyType: PropertyTypeDto): number {
+    return propertyType.id;
   }
 }

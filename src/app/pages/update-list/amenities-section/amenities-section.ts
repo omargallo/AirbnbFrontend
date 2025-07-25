@@ -10,7 +10,7 @@ export interface AmenitiesSectionData {
 @Component({
   selector: 'app-amenities-section',
   standalone: true,
-  styleUrls: ['../update-list.css'],
+  styleUrls: ['../update-list.css','./amenities-section.css'],
   imports: [CommonModule, ReactiveFormsModule],  
   templateUrl: './amenities-section.html',
   

@@ -7,11 +7,17 @@ export interface GuestsSectionData {
   maxGuests: number;
 }
 
+interface GuestIcon {
+  id: string;
+  url: string;
+  index: number;
+}
+
 @Component({
   selector: 'app-guests-section',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  styleUrls: ['../update-list.css'],
+  styleUrls: ['../update-list.css','./guests-section.css'],
   templateUrl: './guests-section.html',
 })
 export class GuestsSectionComponent implements OnInit, OnDestroy, OnChanges {
@@ -27,7 +33,7 @@ export class GuestsSectionComponent implements OnInit, OnDestroy, OnChanges {
   private isInitialized = false;
 
   // Guest icons array
-  guestIcons = [
+  private guestIconUrls = [
     'https://a0.muscache.com/im/pictures/mediaverse/MYS%20Number%20of%20Guests/original/354bca63-8008-45d7-b76f-c1c19a788825.png',
     'https://a0.muscache.com/im/pictures/mediaverse/MYS%20Number%20of%20Guests/original/5a0d9cb7-0aea-44e9-a61a-017685c6d2d0.png',
     'https://a0.muscache.com/im/pictures/mediaverse/MYS%20Number%20of%20Guests/original/244dc498-e875-449e-b855-5d13b8f44d50.png',
@@ -42,8 +48,12 @@ export class GuestsSectionComponent implements OnInit, OnDestroy, OnChanges {
     'https://a0.muscache.com/im/pictures/mediaverse/MYS%20Number%20of%20Guests/original/50f7cb91-d0fe-4726-963c-7242660b1db3.png'
   ];
 
+  // Stable guest icons array to prevent refresh
+  guestIcons: GuestIcon[] = [];
+
   constructor(private fb: FormBuilder) {
     this.initializeForm();
+    this.initializeGuestIcons();
   }
 
   ngOnInit(): void {
@@ -67,6 +77,18 @@ export class GuestsSectionComponent implements OnInit, OnDestroy, OnChanges {
     this.guestsForm = this.fb.group({
       maxGuests: [1, [Validators.required, Validators.min(1), Validators.max(16)]]
     });
+  }
+
+  private initializeGuestIcons(): void {
+    // Create a stable array of guest icons with unique IDs
+    for (let i = 0; i < 16; i++) {
+      const iconIndex = i % this.guestIconUrls.length;
+      this.guestIcons.push({
+        id: `guest-${i}`,
+        url: this.guestIconUrls[iconIndex],
+        index: i
+      });
+    }
   }
 
   private setupFormData(): void {
@@ -115,20 +137,13 @@ export class GuestsSectionComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  getGuestIconsToShow(): string[] {
+  getGuestIconsToShow(): GuestIcon[] {
     const guestCount = this.getCurrentGuestCount();
-    const iconsToShow: string[] = [];
-
-    for (let i = 0; i < guestCount && i < 16; i++) {
-      const iconIndex = i % this.guestIcons.length;
-      iconsToShow.push(this.guestIcons[iconIndex]);
-    }
-
-    return iconsToShow;
+    return this.guestIcons.slice(0, Math.min(guestCount, 16));
   }
 
-  trackByGuestIcon(index: number, icon: string): string {
-    return `${index}-${icon}`;
+  trackByGuestIcon(index: number, icon: GuestIcon): string {
+    return icon.id;
   }
 
   // Public methods that parent might need
