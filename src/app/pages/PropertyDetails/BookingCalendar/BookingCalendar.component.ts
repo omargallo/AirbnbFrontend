@@ -9,6 +9,11 @@ import 'dayjs/locale/en';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import { PropertyService } from '../../../core/services/Property/property.service';
+import { map, Observable } from 'rxjs';
+import { Result } from '../../../core/services/Wishlist/wishlist.service';
+import { Property } from '../../../core/models/Property';
+import { HttpRequest } from '@microsoft/signalr';
+import { HttpClient } from '@angular/common/http';
 
 dayjs.extend(localeData);
 dayjs.extend(isSameOrAfter);
@@ -23,6 +28,8 @@ dayjs.extend(isSameOrBefore);
   styleUrls: ['./BookingCalendar.component.css']
 })
 export class BookingCalendarComponent implements OnInit {
+  
+  constructor(private calendarService: CalendarAvailabilityService , private property :PropertyService,private http:HttpClient) {}
 
     @Input() propertyId!: number;
     @Output() dateSelected = new EventEmitter<{ start: string; end: string }>();
@@ -51,7 +58,6 @@ export class BookingCalendarComponent implements OnInit {
     firstDay: 0
   };
 
- constructor(private calendarService: CalendarAvailabilityService , private property :PropertyService) {}
 
   ngOnInit(): void {
     this.selectedDateRange = { startDate: null, endDate: null };
@@ -59,6 +65,20 @@ export class BookingCalendarComponent implements OnInit {
     this.fetchUnavailableDates();
     console.log("finish");
   }
+
+ selectPropertyName_price(propertyId: number): Observable<{ title: string; pricePerNight: number }> {
+  const url = `${this.property}/${propertyId}`;
+  return this.http.get<Result<Property>>(url).pipe(
+    map(response => {
+      const property = response.data;
+      return {
+        title: property.title,
+        pricePerNight: property.pricePerNight
+      };
+    })
+  );
+}
+
 
   fetchUnavailableDates(): void {
     const start = dayjs().startOf('month').format('YYYY-MM-DD');
@@ -96,7 +116,7 @@ export class BookingCalendarComponent implements OnInit {
   }
 
     this.selectedDateRange = { startDate: start, endDate: end };
-    this.dateSelected.emit({ start, end });
+    this.dateSelected.emit({ start, end });    //emit that to
   }
 
   clearDates(): void {

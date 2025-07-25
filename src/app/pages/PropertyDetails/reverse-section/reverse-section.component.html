@@ -1,4 +1,4 @@
-  <div class="leftsection">
+<div class="leftsection booking-sticky-box">
      <div class="rare-find-badge mt-2 mb-4">
         <div class="rare-find-content d-flex align-items-center">
           <i class="bi bi-gem rare-find-icon me-2"></i>
@@ -6,16 +6,16 @@
         </div>
       </div>
 
-      <div class="reserve-box shadow" >
-        <div class="price-info">
-          <span class="price">{{ pricePerNight | currency }}</span> <span>/ night</span>
-  </div>
+  <div class="reserve-box " >
+        <div class="price-info  " *ngIf="totalPrice">
+          <span class="price" >{{ pricePerNight | currency }}</span> <span>/ night</span>
+      </div>
 
   <!-- Check-in / Check-out -->
   <div class="date-picker mt-4">
     <label>
       <span>Check-in</span>
-      <input type="date" [(ngModel)]="checkInDate" />
+      <input  type="date" [(ngModel)]="checkInDate" />
     </label>
     <label>
       <span>Check-out</span>
@@ -23,32 +23,68 @@
     </label>
   </div>
 
-  <!-- Guest dropdown -->
-  <div class="guest-selector">
-    <label>
-      Guests
-      <select [(ngModel)]="guestCount">
-        <option *ngFor="let count of [1,2,3,4,5,6]" [value]="count">{{ count }} guest(s)</option>
-      </select>
-    </label>
-  </div>
+ <!-- Guest Selector Dropdown -->
+<div class="guest-selector-container">
+    <div class="guest-selector-trigger" (click)="toggleGuestDropdown()">
+      <span>Guests</span>
+      <span class="guest-summary">{{ totalGuests }}</span>
+      <i class="bi bi-chevron-down dropdown-icon"></i>
+    </div>
 
-  <button class="check-btn">Reverse</button>   <!-- go to login page if not logged in-->
-  <div class="button-subtext mt-3">You won't be charged yet</div>
-</div>
-  </div>
-
-       <div class="booking-section">
-        <div class="button-container">
+    <div class="guest-dropdown" *ngIf="showGuestDropdown">
+      <div class="guest-option">
+        <div class="guest-type">
+          <div class="guest-label">Adults</div>
+          <div class="guest-description">Age 13+</div>
         </div>
+        <div class="guest-counter">
+          <button [disabled]="guests.adults <= 1" (click)="updateGuests('adults', -1)">−</button>
+          <span>{{ guests.adults }}</span>
+          <button [disabled]="(guests.adults + guests.children) >= maxGuests" (click)="updateGuests('adults', 1)">+</button>
+        </div>
+      </div>
 
+      <div class="guest-option">
+        <div class="guest-type">
+          <div class="guest-label">Children</div>
+          <div class="guest-description">Ages 2-12</div>
+        </div>
+        <div class="guest-counter">
+          <button [disabled]="guests.children <= 0" (click)="updateGuests('children', -1)">−</button>
+          <span>{{ guests.children }}</span>
+          <button [disabled]="(guests.adults + guests.children) >= maxGuests" (click)="updateGuests('children', 1)">+</button>
+        </div>
+      </div>
+
+      <div class="guest-option">
+        <div class="guest-type">
+          <div class="guest-label">Infants</div>
+          <div class="guest-description">Under 2</div>
+        </div>
+        <div class="guest-counter">
+          <button [disabled]="guests.infants <= 0" (click)="updateGuests('infants', -1)">−</button>
+          <span>{{ guests.infants }}</span>
+          <button (click)="updateGuests('infants', 1)">+</button>
+        </div>
+      </div>
+   
+        <div class="guest-limit-note" *ngIf="maxGuests">
+        This place has a maximum of {{ maxGuests }} guests, not including infants. 
+        If you're bringing more than 2 pets, please let your host know.
+      </div>
+      </div>
+
+    
+    </div>
+         <button class="check-btn">Reverse</button>  
+      <div class="button-subtext mt-3">You won't be charged yet</div>
+  </div>
+
+ 
+</div>
         <div class="report-listing">
             <i class="fa-regular fa-flag"></i> <a href="#" class="report-link">Report this listing</a>
         </div>
-    </div>
   
   
   
-  <!-- <div class="col-md-4" *ngIf="Property?.averageRating >= 4.5"> -->
-     
-    <!-- </div> -->

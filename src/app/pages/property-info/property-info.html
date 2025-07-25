@@ -14,10 +14,31 @@
   <div class="bookinCalender">
     <div class="row">
       <div class="col-md-8">
-            <app-BookingCalendar [propertyId]="propertyId" ></app-BookingCalendar>
+
+            <app-BookingCalendar 
+                  [propertyId]="propertyId"
+                  (dateSelected)="onDateSelected($event)">
+            </app-BookingCalendar>
+
       </div>
       <div class="col-md-4">
-        <app-reverse-section ></app-reverse-section>
+
+        <app-reverse-section   
+                [checkIn]="selectedDates.start"
+                [checkOut]="selectedDates.end"
+                [guests]="guestCount"
+                (guestChange)="onGuestChange($event)">
+        </app-reverse-section>
+
+
+      </div>
+      <div class="mapSection">
+        <h4>Where you’ll be</h4>
+            <app-mapLocation 
+                  *ngIf="selectedProperty"
+                  [latitude]="selectedProperty.latitude"
+                  [longitude]="selectedProperty.longitude">
+            </app-mapLocation>
       </div>
     </div>
   </div>
@@ -58,3 +79,4 @@
       </button>
     </div>
     
+    <hr style="color: black; width: 5px;">
