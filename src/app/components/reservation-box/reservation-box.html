@@ -5,27 +5,91 @@
     <!-- <button class="close-btn">×</button> -->
   </div>
 
+  <!-- Loading State -->
+
+  <div *ngIf="isLoading" class="text-center mt-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading reservation details...</p>
+  </div>
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-state">
+    <span>{{error}}</span>
+    <button (click)="refreshReservationData()" class="retry-button">
+      Retry
+    </button>
+  </div>
+
+  <!-- No Chat Selected State -->
+  <div
+    *ngIf="!selectedChatSession && !isLoading && !error"
+    class="no-chat-selected"
+  >
+    <div class="empty-state">
+      <h3>No Conversation Selected</h3>
+      <p>Select a conversation to view reservation details.</p>
+    </div>
+  </div>
+
   <!-- Scrollable Content -->
-  <div class="scrollable-content">
+  <div
+    class="scrollable-content"
+    *ngIf="selectedChatSession && !isLoading && !error"
+  >
     <!-- Property Image with Status -->
     <div class="property-image-container">
-      <img [src]="reservation.image" alt="Property" class="property-image">
+      <img [src]="reservation.image" alt="Property" class="property-image" />
       <div class="status-overlay">
-        <span class="status-badge">{{ reservation.status }}</span>
+        <span
+          class="status-badge"
+          [ngClass]="{
+                'status-pending': isPending,
+                'status-approved': isApproved,
+                'status-declined': isDeclined,
+                'status-cancelled': isCancelled
+              }"
+        >
+          {{ reservation.status }}
+        </span>
       </div>
     </div>
 
     <!-- Inquiry Status -->
     <div class="inquiry-section">
-      <h3 class="inquiry-title">Inquiry declined</h3>
+      <h3
+        class="inquiry-title"
+        [ngClass]="{
+            'inquiry-pending': isPending,
+            'inquiry-approved': isApproved,
+            'inquiry-declined': isDeclined,
+            'inquiry-cancelled': isCancelled
+          }"
+      >
+        {{ getInquiryTitle() }}
+      </h3>
       <p class="inquiry-message">{{ reservation.hostMessage }}</p>
-      <button class="keep-searching-btn">Keep searching</button>
+
+      <!-- Action button based on status -->
+      <button
+        *ngIf="isDeclined"
+        class="keep-searching-btn"
+        (click)="keepSearching()"
+      >
+        Keep searching
+      </button>
+      <button *ngIf="isPending" class="pending-btn" disabled>
+        Waiting for response
+      </button>
+      <button *ngIf="isApproved" class="approved-btn">
+        View booking details
+      </button>
     </div>
 
     <!-- Trip Details Section -->
-    <div class="trip-details-section">
+    <div class="trip-details-section" *ngIf="hasReservation">
       <h3 class="section-title">Trip Details</h3>
-      
+
       <div class="property-info">
         <div class="property-details">
           <h4 class="property-name">{{ reservation.propertyName }}</h4>
@@ -36,13 +100,15 @@
     </div>
 
     <!-- Property Details -->
-    <div class="property-details-section">
+    <div class="property-details-section" *ngIf="selectedChatSession">
       <div class="property-header">
         <div class="property-info-mini">
-          <h4 class="property-name-mini">Condo</h4>
+          <h4 class="property-name-mini">
+            {{ selectedChatSession.propertyTitle }}
+          </h4>
           <p class="property-location">{{ reservation.propertyType }}</p>
         </div>
-        <span class="chevron-right">›</span>
+        <!-- <span class="chevron-right">›</span> -->
       </div>
     </div>
 
@@ -50,16 +116,16 @@
     <div class="host-info">
       <div class="host-details">
         <h4>Hosted by {{ reservation.hostName }}</h4>
-        <p class="host-reviews">{{ reservation.hostReviews }} reviews</p>
+        <!-- <p class="host-reviews">{{ reservation.hostReviews }}</p> -->
       </div>
       <div class="host-avatar">
-        <img [src]="reservation.hostAvatar" alt="Host" class="avatar-img">
+        <img [src]="reservation.hostAvatar" alt="Host" class="avatar-img" />
         <div class="host-badge"></div>
       </div>
     </div>
 
     <!-- Check-in/out Details -->
-    <div class="checkin-details">
+    <div class="checkin-details" *ngIf="hasReservation && reservation.checkIn">
       <div class="detail-row">
         <span class="detail-label">Check-in</span>
         <span class="detail-value">{{ reservation.checkIn }}</span>
@@ -75,34 +141,41 @@
     </div>
 
     <!-- Payment Details -->
-    <div class="payment-section">
+    <div
+      class="payment-section"
+      *ngIf="hasReservation && reservation.nights > 0"
+    >
       <h3 class="section-title">Payment Details</h3>
-      
+
       <div class="payment-row">
-        <span class="payment-description">{{ reservation.pricePerNight }} × {{ reservation.nights }} nights</span>
+        <span class="payment-description"
+          >{{ reservation.pricePerNight }} × {{ reservation.nights }}
+          nights</span
+        >
         <span class="payment-amount">{{ reservation.subtotal }}</span>
       </div>
-      
+
       <div class="payment-row">
         <span class="payment-description">Taxes</span>
         <span class="payment-amount">{{ reservation.taxes }}</span>
       </div>
-      
-      <hr class="payment-divider">
-      
+
+      <hr class="payment-divider" />
+
       <div class="payment-row total-row">
-        <span class="payment-description">Price after discount</span>
+        <span class="payment-description">Total amount</span>
         <span class="payment-amount total-amount">{{ reservation.total }}</span>
       </div>
     </div>
 
     <!-- Safety Notice -->
-    <div class="safety-notice">
+    <div class="safety-notice mt-2">
       <h4 class="safety-title">Always communicate through Airbnb</h4>
       <div class="safety-content">
         <p class="safety-text">
-          To protect your payment, never transfer money or communicate outside of the Airbnb website or app. 
-          <a href="#" class="learn-more-link">Learn more</a>
+          To protect your payment, never transfer money or communicate outside
+          of the Airbnb website or app.
+          <!-- <a href="#" class="learn-more-link">Learn more</a> -->
         </p>
         <div class="safety-icon">
           <div class="shield-icon">🛡️</div>
@@ -111,8 +184,8 @@
     </div>
 
     <!-- Report Host -->
-    <div class="report-section">
-      <a href="#" class="report-link">Report Host</a>
-    </div>
+    <!-- <div class="report-section">
+      <a href="#" class="report-link" (click)="reportHost()">Report Host</a>
+    </div> -->
   </div>
 </div>
