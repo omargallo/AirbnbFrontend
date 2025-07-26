@@ -204,6 +204,8 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.router.events.subscribe(() => {
       this.checkIfMessagesRoute();
     });
+    this.isLoggedIn =
+      this.userId === null || this.userId === undefined ? false : true;
     (window as any).Logging = () => {
       this.isLoggedIn =
         this.userId === null || this.userId === undefined ? false : true;
@@ -231,5 +233,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.authService.clear();
     this.userService.Logout();
     this.isLoggedIn = false;
+    this.router.navigate(['/']);
   }
 }
