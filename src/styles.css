@@ -56,6 +56,13 @@ body {
   --primary-bg-transition-time: 0.4s;
 }
 
+body.dRTL {
+  direction: rtl;
+}
+body.dLTR {
+  direction: ltr;
+}
+
 .shimmer {
   position: relative;
   overflow: hidden;

@@ -61,7 +61,9 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   handleImgService = inject(HandleImgService);
   @Input() user: string | null = (() => {
     const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser)?.firstName ?? '' : '';
+    return storedUser
+      ? JSON.parse(storedUser)?.firstName ?? JSON.parse(storedUser)?.userName
+      : '';
   })();
 
   ifImg: string | null = (() => {
@@ -214,6 +216,11 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
   changeLanguage(lang: string) {
     this.lang.switchLang(lang);
+    if (lang == 'ar') {
+      document.body.classList.contains('dRTL');
+    } else {
+      document.body.classList.contains('dLTR');
+    }
   }
 
   toggleTheme() {
