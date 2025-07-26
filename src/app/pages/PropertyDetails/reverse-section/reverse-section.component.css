@@ -22,16 +22,21 @@
     font-size: 22px;
     font-weight: 600;
     margin-bottom: 16px;
-      color: #222; /* Ensure text is visible */
+    color: #222; /* Ensure text is visible */
 
-    /* span {
+    span {
       color: #717171;
       font-size: 14px;
-    } */
+    }
   }
 
   .price-info .price {
-  color: #222;
+  color: #161616;
+}
+
+.price{
+  color: #161616;
+  font-weight: 25;
 }
 
   .date-picker {

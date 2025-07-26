@@ -2,9 +2,15 @@
 .airbnb-calendar-container {
   max-width: 810;
   margin: 0 auto;
-  padding: 20px;
-  font-family: 'Airbnb Cereal App', -apple-system, BlinkMacSystemFont, sans-serif;
+  padding: 12px;
+  /* font-family: 'Airbnb Cereal App', -apple-system, BlinkMacSystemFont, sans-serif; */
   overflow-x: hidden;
+}
+
+.titlecalender{
+  font-weight: bold;
+  font-size: 19px;
+  margin: 0;
 }
 
 /* Calendar Wrapper */

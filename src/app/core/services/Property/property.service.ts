@@ -230,4 +230,18 @@ export class PropertyService {
       params: queryParams
     });
   }
+
+
+
+//to reverse
+getGuetsAndPricePerNeightPropertyById(id: number): Observable<{ maxGuests: number,pricePerNeight:number }> {
+  return this.http.get<{ maxGuests: number ,pricePerNeight:number }>(`${this.baseUrl}/property/${id}`);
+}
+
+
+
+
+
+
+
 }
