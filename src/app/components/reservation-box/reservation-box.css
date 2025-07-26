@@ -132,7 +132,7 @@
 /* Trip Details Section */
 .trip-details-section {
   border-top: 1px solid #e0e0e0;
-  padding: 24px;
+  padding: 24px 24px 0px 24px;
 }
 
 .section-title {
@@ -146,7 +146,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
+  /* cursor: pointer; */
   padding: 8px 0;
 }
 
@@ -185,7 +185,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
+  /* cursor: pointer; */
   padding: 8px 12px;
 }
 
@@ -214,7 +214,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  padding: 16px 4px;
   border-bottom: 1px solid #f0f0f0;
 }
 
@@ -222,7 +222,7 @@
   font-size: 16px;
   font-weight: 600;
   color: #222;
-  margin: 0 0 4px 0;
+  margin: 0 0 0px 0;
 }
 
 .host-reviews {
@@ -236,8 +236,8 @@
 }
 
 .avatar-img {
-  width: 40px;
-  height: 40px;
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -248,8 +248,8 @@
   right: -2px;
   width: 16px;
   height: 16px;
-  background: #ffd700;
-  border: 2px solid white;
+  /* background: #ffd700; */
+  /* border: 2px solid white; */
   border-radius: 50%;
 }
 

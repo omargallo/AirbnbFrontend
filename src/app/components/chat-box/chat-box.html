@@ -8,8 +8,27 @@
   </div>
 
   <!-- Messages -->
-  <div #chatContainer class="chat-messages">
-    <ng-container *ngFor="let item of chatItems; let i = index;trackBy: trackById">
+  <div #chatContainer class="chat-messages" (scroll)="onScroll($event)">
+    <!-- Loading indicator for older messages -->
+    <div *ngIf="isLoadingOlderMessages" class="loading-older-messages">
+      <div class="loading-dots">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+
+    <!-- Initial loading indicator -->
+    <div *ngIf="isLoading && isInitialLoad" class="initial-loading">
+      <div class="loading-dots">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+      <span class="loading-text">Loading messages...</span>
+    </div>
+
+    <ng-container *ngFor="let item of chatItems; let i = index; trackBy: trackById">
       <!-- Date separator -->
       <div *ngIf="item.type === 'date'" class="date-separator">
         <span class="date-label">{{item.label}} </span>
@@ -84,7 +103,6 @@
             class="message-reaction"
             [ngStyle]="item.sender === 'host' ? {'right': '8px'} : {'left': '8px'}"
             [ngClass]="item.sender === 'host' ? 'reaction-host' : 'reaction-user'"
-
           >
             {{item.reaction}}
           </div>

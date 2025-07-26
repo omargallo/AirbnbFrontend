@@ -42,6 +42,66 @@
   background-color: #ffffff;
 }
 
+/* Loading indicators */
+.loading-older-messages {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0;
+  margin-bottom: 8px;
+}
+
+.initial-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60%;
+  gap: 12px;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ff385c;
+  animation: loading-bounce 1.4s ease-in-out infinite both;
+}
+
+.dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0s;
+}
+
+.loading-text {
+  font-size: 14px;
+  color: #717171;
+  font-weight: 500;
+}
+
+@keyframes loading-bounce {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* Date separator */
 .date-separator {
   text-align: center;
@@ -126,7 +186,6 @@
 .message-reaction {
   position: absolute;
   bottom: -16px;
-  /* right: 8px; */
   background: #eee;
   border: 1px solid #e5e5e5;
   border-radius: 12px;
@@ -138,9 +197,11 @@
   font-size: 14px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .reaction-user {
   background-color: #f0f0f0;
 }
+
 .reaction-host {
   background-color: #222;
   color: #fff;
@@ -149,7 +210,6 @@
 /* Emoji reaction button */
 .emoji-button {
   position: absolute;
-  /* right: 65px; */
   top: 50%;
   transform: translateY(-50%);
   width: 26px;
@@ -174,7 +234,6 @@
 /* Emoji picker */
 .emoji-picker {
   position: absolute;
-  /* right: 0; */
   top: -45px;
   background: white;
   border: 1px solid #e5e5e5;
@@ -235,9 +294,7 @@
   color: #717171;
   text-align: center;
   padding: 12px 16px;
-  /* background-color: #f7f7f7; */
   border-radius: 8px;
-  /* margin-bottom: 16px; */
 }
 
 .status-link {

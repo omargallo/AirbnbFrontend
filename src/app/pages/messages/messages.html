@@ -5,13 +5,29 @@
         (chatSessionSelected)="onChatSessionSelected($event)"
       ></app-messages-box>
     </div>
-    <div class="col-md-6 p-0">
-      <app-chat-box [selectedChatSession]="selectedChatSession"></app-chat-box>
+
+    <!-- Show loading state -->
+    <div class="col-md-9 p-0" *ngIf="isLoadingChat">
+      <app-chat-loading></app-chat-loading>
     </div>
-    <div class="col-md-3 p-0">
-      <app-reservation-box
-        [selectedChatSession]="selectedChatSession"
-      ></app-reservation-box>
+    
+    <div class="col-md-9 p-0" *ngIf="!hasChatSelected">
+      <app-chat-placeholder></app-chat-placeholder>
     </div>
+
+    <ng-container *ngIf="hasChatSelected">
+      <div class="col-md-6 p-0">
+        <app-chat-box
+          [selectedChatSession]="selectedChatSession"
+          [initialMessages]="initialMessages"
+        ></app-chat-box>
+      </div>
+      <div class="col-md-3 p-0">
+        <app-reservation-box
+          [selectedChatSession]="selectedChatSession"
+          [ReservationWithProperty]="ReservationWithProperty"
+        ></app-reservation-box>
+      </div>
+    </ng-container>
   </div>
 </div>

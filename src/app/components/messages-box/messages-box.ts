@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { ChatService, ChatSessionDto, MessageDto } from '../../core/services/Message/message.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { SignalRService } from '../../core/services/SignalRService/signal-rservice';
 
 interface MessageThread {
@@ -26,15 +26,23 @@ interface MessageThread {
 })
 export class MessagesBoxComponent implements OnInit, OnDestroy {
   @Output() chatSessionSelected = new EventEmitter<ChatSessionDto>();
+  @ViewChild('messagesContainer', { static: false }) messagesContainer!: ElementRef;
 
   activeFilter: 'all' | 'unread' = 'all';
   messageThreads: MessageThread[] = [];
   selectedThreadId: string | null = null;
   isLoading = false;
   error: string | null = null;
-  // --------------------------------------------------------------------------------------------------
+  
+  // Pagination properties
+  currentPage = 1;
+  pageSize = 20;
+  hasMoreData = true;
+  isLoadingMore = false;
+  totalCount = 0;
 
   private destroy$ = new Subject<void>();
+  private scrollSubject = new Subject<Event>();
 
   constructor(
     private chatService: ChatService,
@@ -45,10 +53,51 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
   ngOnInit(): void {
     this.loadChatSessions();
     this.subscribeToNewMessages();
+    this.setupScrollListener();
+  }
 
+  ngAfterViewInit(): void {
+    // Setup scroll listener after view is initialized
+    if (this.messagesContainer) {
+      this.setupScrollListener();
+    }
+  }
+
+  private setupScrollListener(): void {
+    // Subscribe to scroll events with debounce
+    this.scrollSubject.pipe(
+      debounceTime(100),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.checkScrollPosition();
+    });
+  }
+
+  onScroll(event: Event): void {
+    this.scrollSubject.next(event);
+  }
+
+  private checkScrollPosition(): void {
+    const container = this.messagesContainer?.nativeElement;
+    if (!container || this.isLoadingMore || !this.hasMoreData) {
+      return;
+    }
+
+    const scrollTop = container.scrollTop;
+    const scrollHeight = container.scrollHeight;
+    const clientHeight = container.clientHeight;
+
+    // Check if user scrolled to bottom (with 100px threshold)
+    const isNearBottom = scrollTop + clientHeight >= scrollHeight - 100;
+
+    if (isNearBottom) {
+      this.loadMoreMessages();
+    }
   }
 
   private subscribeToNewMessages(): void {
@@ -59,6 +108,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
         this.updateThreadWithNewMessage(newMessage);
       });
   }
+
   private updateThreadWithNewMessage(newMessage: MessageDto): void {
     const threadIndex = this.messageThreads.findIndex(
       thread => thread.id === newMessage.chatSessionId
@@ -78,32 +128,87 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
       this.messageThreads.unshift(updatedThread);
     } else {
       // If thread doesn't exist, refresh the entire list
-      this.loadChatSessions();
+      this.resetAndLoadChatSessions();
     }
   }
-  // --------------------------------------------------------------------------------------------------
+
+  // Reset pagination and load first page
+  resetAndLoadChatSessions(): void {
+    this.currentPage = 1;
+    this.messageThreads = [];
+    this.hasMoreData = true;
+    this.totalCount = 0;
+    this.loadChatSessions();
+  }
+
   loadChatSessions(page: number = 1, pageSize: number = 20): void {
-    this.isLoading = true;
+    if (page === 1) {
+      this.isLoading = true;
+    } else {
+      this.isLoadingMore = true;
+    }
+    
     this.error = null;
 
     this.chatService.getChatSessions(page, pageSize).subscribe({
-      next: (sessions: ChatSessionDto[]) => {
-        console.log('Chat Sessions loaded:', sessions);
-        this.messageThreads = this.mapSessionsToThreads(sessions);
-        console.log('Mapped Message Threads:', this.messageThreads);
-        this.isLoading = false;
-
-        // Auto-select first session if none selected
-        if (this.messageThreads.length > 0 && !this.selectedThreadId) {
-          this.openMessage(this.messageThreads[0]);
+      next: (response: any) => {
+        console.log('Chat Sessions loaded:', response);
+        
+        // Handle different response formats
+        let sessions: ChatSessionDto[] = [];
+        let total = 0;
+        
+        if (Array.isArray(response)) {
+          // If response is direct array
+          sessions = response;
+          total = response.length;
+        } else if (response.data) {
+          // If response has data property
+          sessions = response.data;
+          total = response.total || response.count || sessions.length;
+        } else {
+          sessions = [];
         }
+
+        const newThreads = this.mapSessionsToThreads(sessions);
+        
+        if (page === 1) {
+          // First page - replace all threads
+          this.messageThreads = newThreads;
+        } else {
+          // Subsequent pages - append to existing threads
+          this.messageThreads = [...this.messageThreads, ...newThreads];
+        }
+
+        this.totalCount = total;
+        this.currentPage = page;
+        
+        // Check if there's more data
+        this.hasMoreData = sessions.length === pageSize && this.messageThreads.length < this.totalCount;
+        
+        console.log('Mapped Message Threads:', this.messageThreads);
+        console.log(`Page ${page} loaded. Total threads: ${this.messageThreads.length}, Has more: ${this.hasMoreData}`);
+        
+        this.isLoading = false;
+        this.isLoadingMore = false;
       },
       error: (error) => {
         console.error('Error loading chat sessions:', error);
         this.error = 'Failed to load messages. Please try again.';
         this.isLoading = false;
+        this.isLoadingMore = false;
       }
     });
+  }
+
+  loadMoreMessages(): void {
+    if (this.isLoadingMore || !this.hasMoreData) {
+      return;
+    }
+
+    console.log('Loading more messages...');
+    const nextPage = this.currentPage + 1;
+    this.loadChatSessions(nextPage, this.pageSize);
   }
 
   private mapSessionsToThreads(sessions: ChatSessionDto[]): MessageThread[] {
@@ -144,6 +249,8 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   setActiveFilter(filter: 'all' | 'unread'): void {
     this.activeFilter = filter;
     console.log('Filter changed to:', filter);
+    // Reset pagination when filter changes
+    this.resetAndLoadChatSessions();
   }
 
   openMessage(thread: MessageThread): void {
@@ -176,41 +283,61 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
 
   // Method to refresh chat sessions (useful after sending messages)
   refreshChatSessions(): void {
-    this.loadChatSessions();
+    this.resetAndLoadChatSessions();
   }
 
   // Development methods for testing different states
   showMessagesState(): void {
-    this.loadChatSessions();
+    this.resetAndLoadChatSessions();
   }
 
   showEmptyState(): void {
     this.messageThreads = [];
     this.selectedThreadId = null;
+    this.hasMoreData = false;
   }
 
   showMultipleMessagesState(): void {
-    this.loadChatSessions(1, 50); // Load more messages
+    this.pageSize = 50;
+    this.resetAndLoadChatSessions();
   }
 
-  // Search functionality - commented out for now
-  // searchActive = false;
-  // closing = false;
+  // Manual load more method for testing
+  loadMoreManually(): void {
+    this.loadMoreMessages();
+  }
 
-  // openSearch() {
-  //   this.searchActive = true;
-  // }
+  // Get loading state info for UI
+  getLoadingInfo(): string {
+    if (this.isLoading) return 'Loading messages...';
+    if (this.isLoadingMore) return 'Loading more messages...';
+    if (!this.hasMoreData && this.messageThreads.length > 0) return 'All messages loaded';
+    return '';
+  }
 
-  // closeSearch() {
-  //   this.closing = true;
-  //   this.searchActive = false;
+  // TrackBy function for better performance
+  trackByThreadId(index: number, thread: MessageThread): string {
+    return thread.id;
+  }
 
-  //   setTimeout(() => {
-  //     this.closing = false;
-  //   }, 300);
-  // }
+  // Optional: Method to scroll to top
+  scrollToTop(): void {
+    if (this.messagesContainer) {
+      this.messagesContainer.nativeElement.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  }
 
-  // onAnimationDone() {
-  //   this.closing = false;
-  // }
+  // Optional: Method to scroll to specific message
+  scrollToMessage(messageId: string): void {
+    const element = document.getElementById(`message-${messageId}`);
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  }
 }
