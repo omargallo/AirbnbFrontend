@@ -1,3 +1,4 @@
+import { AuthService } from './../../core/services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { HostPropertiesService } from '../../core/services/Property/HostPropertiesService';
@@ -18,18 +19,29 @@ export class HostProperties implements OnInit {
   isLoading = true;
   error: string | null = null;
   viewMode: 'grid' | 'table' = 'grid';
-  private hostId = '5a6c3d4f-9ca1-4b58-bdf6-a6e19b62218f';
+
+  private hostId: string | null = null;
 
   constructor(
     private hostPropertiesService: HostPropertiesService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService  
   ) {}
 
   ngOnInit(): void {
+    
+    this.hostId = this.authService.userId;
     this.loadHostProperties();
   }
 
   loadHostProperties(): void {
+    // Check if hostId is available
+    if (!this.hostId) {
+      this.error = 'User not authenticated';
+      this.isLoading = false;
+      return;
+    }
+
     this.isLoading = true;
     this.error = null;
 
