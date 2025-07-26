@@ -45,7 +45,7 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
   // Pagination properties
   isLoadingOlderMessages = false;
   currentPage = 1;
-  pageSize = 10;
+  pageSize = 50;
   hasMoreMessages = true;
   isInitialLoad = true;
 
@@ -96,6 +96,10 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
       this.messages = [...this.initialMessages];
       this.processChatItems();
       this.scrollToBottom();
+      // Mark as not initial load since we have messages now
+      this.isInitialLoad = false;
+      // Set current page to 2 since we already have page 1 (initialMessages)
+      this.currentPage = 2;
     }
   }
 
@@ -109,6 +113,7 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
     this.isInitialLoad = true;
     this.messages = [];
     this.chatItems = [];
+    this.isLoadingOlderMessages = false;
   }
 
   private initializeChatSession(): void {
@@ -118,20 +123,21 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
     this.hostProfileImage = this.selectedChatSession.hostAvatarUrl ||
       'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg';
 
-    this.loadMessages();
+    // Don't load messages here - only use initialMessages
+    // this.loadMessages();
     this.markMessagesAsRead();
   }
 
   private loadMessages(): void {
     if (!this.selectedChatSession) return;
 
-    this.isLoading = this.isInitialLoad;
-    this.isLoadingOlderMessages = !this.isInitialLoad;
+    // This method should only be called for loading older messages (pagination)
+    this.isLoadingOlderMessages = true;
     this.error = null;
 
     // Store current scroll position and height for maintaining position
     let previousScrollHeight = 0;
-    if (this.chatContainer && !this.isInitialLoad) {
+    if (this.chatContainer) {
       previousScrollHeight = this.chatContainer.nativeElement.scrollHeight;
     }
 
@@ -139,44 +145,33 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (messages: MessageDto[]) => {
-          console.log('Messages loaded:', messages);
+          console.log('Older messages loaded:', messages);
           
           if (messages.length === 0) {
             this.hasMoreMessages = false;
           } else {
-            if (this.isInitialLoad) {
-              this.messages = messages;
-            } else {
-              // Prepend older messages to the beginning of the array
-              this.messages = [...messages, ...this.messages];
-            }
+            // Prepend older messages to the beginning of the array
+            this.messages = [...messages, ...this.messages];
             
             this.processChatItems();
             
-            if (this.isInitialLoad) {
-              this.scrollToBottom();
-            } else {
-              // Maintain scroll position after loading older messages
-              setTimeout(() => {
-                if (this.chatContainer) {
-                  const newScrollHeight = this.chatContainer.nativeElement.scrollHeight;
-                  const scrollDifference = newScrollHeight - previousScrollHeight;
-                  this.chatContainer.nativeElement.scrollTop = scrollDifference;
-                }
-              }, 0);
-            }
+            // Maintain scroll position after loading older messages
+            setTimeout(() => {
+              if (this.chatContainer) {
+                const newScrollHeight = this.chatContainer.nativeElement.scrollHeight;
+                const scrollDifference = newScrollHeight - previousScrollHeight;
+                this.chatContainer.nativeElement.scrollTop = scrollDifference;
+              }
+            }, 0);
             
             this.currentPage++;
           }
 
-          this.isLoading = false;
           this.isLoadingOlderMessages = false;
-          this.isInitialLoad = false;
         },
         error: (error) => {
           console.error('Error loading messages:', error);
           this.error = 'Failed to load messages. Please try again.';
-          this.isLoading = false;
           this.isLoadingOlderMessages = false;
         }
       });
@@ -186,7 +181,11 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
     const element = event.target as HTMLElement;
     
     // Check if user scrolled to top (with some threshold)
-    if (element.scrollTop <= 100 && !this.isLoadingOlderMessages && this.hasMoreMessages && !this.isInitialLoad) {
+    // Only load if we have messages (not initial load) and not already loading
+    if (element.scrollTop <= 100 && 
+        !this.isLoadingOlderMessages && 
+        this.hasMoreMessages && 
+        this.messages.length > 0) {
       this.loadMessages();
     }
   }
