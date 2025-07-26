@@ -50,10 +50,15 @@ body.dark {
 }
 
 body {
-  background-color: var(--bg-color);
+  background-color: var(--bg-color) !important;
   color: var(--primary-text-color);
   transition: 0.3s ease;
   --primary-bg-transition-time: 0.4s;
+}
+
+html,
+body {
+  background-color: var(--bg-color) !important;
 }
 
 body.dRTL {
@@ -821,13 +826,4 @@ body.dLTR {
   .col-xxl-12 {
     width: var(--col-12);
   }
-}
-
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
 }

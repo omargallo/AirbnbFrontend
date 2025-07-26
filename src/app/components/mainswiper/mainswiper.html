@@ -1,7 +1,7 @@
 <div class="properties-container container">
   <!-- Header -->
   <div class="header mt-3">
-    <h2 class="title">Available for similar dates</h2>
+    <h2 class="title">{{title}}</h2>
     <div class="navigation-arrows">
       <button
         class="nav-btn prev-btn"
@@ -35,18 +35,12 @@
   <!-- Swiper Container -->
   <swiper-container
     #swiperEl
-    slides-per-view="3"
+    [attr.slides-per-view]="slidesPerView"
     space-between="16"
     grab-cursor="true"
     mousewheel="false"
     keyboard="true"
-    breakpoints='{
-          "320": {"slidesPerView": 1, "spaceBetween": 12},
-          "640": {"slidesPerView": 2, "spaceBetween": 16},
-          "768": {"slidesPerView": 3, "spaceBetween": 16},
-          "1024": {"slidesPerView": 4, "spaceBetween": 16},
-          "1280": {"slidesPerView": 7, "spaceBetween": 16}
-        }'
+    [breakpoints]="breakpoints"
   >
     <ng-container *ngIf="!isLoading; else shimmerSlides">
       <swiper-slide

@@ -63,7 +63,7 @@
   overflow: hidden;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   transition: transform 0.2s ease-in-out;
-  background-color: var(--bg-color);
+  background-color: transparent !important;
   color: var(--primary-text-color);
 }
 

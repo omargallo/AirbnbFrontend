@@ -17,6 +17,9 @@ register();
 })
 export class PropertySwiperComponent implements OnInit {
   @Input() isLoading: boolean = false;
+  @Input() title: string = '';
+  @Input() slidesPerView: number = 3;
+
 
   @Output() propertyClicked = new EventEmitter<number>();
   @Output() wishlistIconClick = new EventEmitter<number>();
@@ -34,10 +37,19 @@ export class PropertySwiperComponent implements OnInit {
   isEnd = false;
 
 
-
+  breakpoints: any = {};
   @Input() properties: Property[] = [];
 
   ngOnInit(): void {
+    this.breakpoints = {
+      320: { slidesPerView: 1, spaceBetween: 12 },
+      640: { slidesPerView: 2, spaceBetween: 16 },
+      768: { slidesPerView: 3, spaceBetween: 16 },
+      1024: { slidesPerView: this.slidesPerView, spaceBetween: 16 },
+      1280: { slidesPerView: this.slidesPerView, spaceBetween: 16 }
+    };
+
+
     setTimeout(() => {
       this.setupSwiperEvents();
     }, 100);
