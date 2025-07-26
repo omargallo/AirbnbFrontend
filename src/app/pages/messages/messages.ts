@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-messages',
-  imports: [MessagesBoxComponent, ChatBoxComponent, ReservationBoxComponent, ChatPlaceholderComponent, ChatLoadingComponent,CommonModule],
+  imports: [MessagesBoxComponent, ChatBoxComponent, ReservationBoxComponent, ChatPlaceholderComponent, ChatLoadingComponent, CommonModule],
   templateUrl: './messages.html',
   styleUrl: './messages.css',
 })
@@ -20,7 +20,7 @@ export class Messages implements OnInit, OnDestroy {
   initialMessages: MessageDto[] = [];
   ReservationWithProperty: any | null = null;
   isLoadingChat: boolean = false;
-  
+
   constructor(
     private signalRService: SignalRService,
     private messageService: ChatService) { }
@@ -66,7 +66,8 @@ export class Messages implements OnInit, OnDestroy {
           this.initialMessages = res.data.messages;
           this.ReservationWithProperty = res.data;
           this.isLoadingChat = false;
-        }, 500);
+        }, 200);
+
       },
       error: (err) => {
         console.error('Error reserving property:', err);
