@@ -9,6 +9,10 @@ import { FormsModule } from '@angular/forms';
 import { PropertyService } from '../../core/services/Property/property.service';
 import { Router } from '@angular/router';
 import { WishlistService } from '../../core/services/Wishlist/wishlist.service';
+import { AuthService } from '../../core/services/auth.service';
+import { DialogService } from '../../core/services/dialog.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 @Component({
   selector: 'app-home',
   imports: [CommonModule, WishListModal, PropertySwiperComponent, FormsModule],
@@ -27,7 +31,10 @@ export class Home {
     private confirm: ConfirmService,
     private propertyService: PropertyService,
     private router: Router,
-    private wishlistService: WishlistService
+    private wishlistService: WishlistService,
+    private authService: AuthService,
+    private dialogService: DialogService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -44,36 +51,68 @@ export class Home {
   // }
 
   onWishlistClick(id: number) {
+    if (!this.authService.userId) {
+      this.showToast('Please log in to add to wishlist.', 'top', 'right');
+      this.dialogService.openDialog('login');
+      return;
+    }
+
     const property = this.properties.find(p => p.id === id);
 
     if (property?.isFavourite) {
-      // Remove from wishlist
       this.removeFromWishlist(id);
     } else {
-      // Add to wishlist (existing logic)
       this.selectedPropertyId = id;
       this.show = !this.show;
     }
   }
+
   removeFromWishlist(propertyId: number) {
     this.wishlistService.removePropertyFromWishlist(propertyId).subscribe({
       next: (success) => {
         if (success) {
-          // Update the property's favorite status
           const property = this.properties.find(p => p.id === propertyId);
-          if (property) {
-            property.isFavourite = false;
-          }
-          this.confirm.success("Success", "Property removed from wishlist");
+          if (property) property.isFavourite = false;
+          this.showToast('Property removed from wishlist', 'bottom', 'left');
         } else {
-          this.confirm.fail("Failed", "Couldn't remove the property");
+          this.showToast("Couldn't remove the property", 'bottom', 'left');
         }
       },
       error: () => {
-        this.confirm.fail("Failed", "Couldn't remove the property");
+        this.showToast("Couldn't remove the property", 'bottom', 'left');
       }
     });
   }
+
+  onFinish(observable: Observable<boolean>) {
+    this.onClose();
+    observable.subscribe({
+      next: (success) => {
+        if (success) {
+          const property = this.properties.find(p => p.id === this.selectedPropertyId);
+          if (property) property.isFavourite = true;
+
+          this.showToast('Property added to wishlist', 'bottom', 'left');
+        } else {
+          this.showToast("Couldn't add the property", 'bottom', 'left');
+        }
+      },
+      error: () => {
+        this.showToast("Couldn't add the property", 'bottom', 'left');
+      }
+    });
+  }
+
+  private showToast(message: string, vertical: 'top' | 'bottom', horizontal: 'left' | 'right') {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: horizontal,
+      verticalPosition: vertical,
+      panelClass: ['custom-snackbar']
+    });
+  }
+
+
   loadProperties() {
     this.isLoading = true;
     this.propertyService.searchProperties({}).subscribe({
@@ -97,27 +136,7 @@ export class Home {
 
     this.show = false
   }
-  onFinish(observable: Observable<boolean>) {
-    this.onClose();
-    observable.subscribe({
-      next: (success) => {
-        if (success) {
-          // ✅ Update favorite status
-          const property = this.properties.find(p => p.id === this.selectedPropertyId);
-          if (property) {
-            property.isFavourite = true;
-          }
 
-          this.confirm.success("Success", "Property added to wish list");
-        } else {
-          this.confirm.fail("Faild", "Couldn't add the property");
-        }
-      },
-      error: () => {
-        this.confirm.fail("Faild", "Couldn't add the property");
-      }
-    });
-  }
 
 
 

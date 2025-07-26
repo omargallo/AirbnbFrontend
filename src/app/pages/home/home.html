@@ -102,19 +102,19 @@
 </div>
 
 <app-wish-list-modal
-    *ngIf="show"
-    [propertyId]="selectedPropertyId"
-    (close)="onClose()"
-    (finish)="onFinish($event)"
-    [show]="show"
-    [userId]="'2'"
-    class="col-12"
+  *ngIf="show"
+  [propertyId]="selectedPropertyId"
+  (close)="onClose()"
+  (finish)="onFinish($event)"
+  [show]="show"
+  [userId]="'2'"
+  class="col-12"
 >
 </app-wish-list-modal>
 
 <app-property-swiper
+  [isLoading]="isLoading"
   (wishlistIconClick)="onWishlistClick($event)"
   (propertyClicked)="onPropertyClick($event)"
   [properties]="properties"
 ></app-property-swiper>
-
