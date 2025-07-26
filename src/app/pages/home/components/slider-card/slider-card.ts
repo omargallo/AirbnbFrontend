@@ -14,7 +14,7 @@ export class SliderCard {
   @Input() subtitle!: string;
   @Input() price!: number;
   @Input() rating!: number;
-  @Input() isFavorite: boolean = false;
+  @Input() isFavourite: boolean = false;
   @Input() reviewCount:number =0
 
 

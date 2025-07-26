@@ -95,6 +95,7 @@ export class WishListModal implements OnInit {
       .addPropertyToWishlist(wishlistId, this.propertyId)
     this.onResponse(obj)
     this.close.emit()
+    
   }
 
 

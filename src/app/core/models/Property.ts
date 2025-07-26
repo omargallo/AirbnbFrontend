@@ -18,8 +18,8 @@ export interface Property {
   reviewCount: number;
   isActive: boolean;
   isDeleted: boolean;
+  isFavourite?: boolean;
   propertyTypeId: number;
   hostId: string;
-  images:PropertyImage[];
-  isFavourite:boolean ;
+  images: PropertyImage[];
 }

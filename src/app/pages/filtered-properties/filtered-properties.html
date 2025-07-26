@@ -30,7 +30,7 @@
           [subtitle]="getLocationSubtitle(property)"
           [price]="property.pricePerNight"
           [rating]="property.averageRating"
-          [isFavorite]="false"
+          [isFavourite]="property.isFavourite ?? false"
           (mouseenter)="selectProperty(property)"
           (mouseleave)="selectedProperty = null"
         >
