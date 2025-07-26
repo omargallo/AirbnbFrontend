@@ -38,8 +38,74 @@ export class Home {
   ) { }
 
   ngOnInit() {
-    this.loadProperties();
+    this.sections = this.shuffleArray(this.sections);
+    this.loadAllSections();
+
   }
+
+  sections = [
+    { title: 'Popular homes in Cairo', search: { country: 'Egypt', city: 'Cairo' } },
+    { title: 'Available in Hurghada next weekend', search: { country: 'Egypt', city: 'Hurghada', startDate: this.getNextWeekend() } },
+    { title: 'Stay in New Cairo', search: { country: 'Egypt', city: 'New Cairo' } },
+    { title: 'Available next month in Dubai', search: { country: 'UAE', city: 'Dubai', startDate: this.getNextMonth() } },
+    { title: 'Homes in Ain Sokhna', search: { country: 'Egypt', city: 'Ain Sokhna' } },
+    { title: 'Available in Alexandria next weekend', search: { country: 'Egypt', city: 'Alexandria', startDate: this.getNextWeekend() } },
+    { title: 'Places to stay in Paris', search: { country: 'France', city: 'Paris' } },
+    { title: 'Check out homes in Milan', search: { country: 'Italy', city: 'Milan' } },
+    { title: 'Popular homes in Sheikh Zayed City', search: { country: 'Egypt', city: 'Sheikh Zayed City' } },
+    { title: 'Stay in Barcelona', search: { country: 'Spain', city: 'Barcelona' } },
+  ];
+
+  getNextWeekend(): string {
+    const today = new Date();
+    const nextSaturday = new Date(today);
+    nextSaturday.setDate(today.getDate() + ((6 - today.getDay()) % 7));
+    return nextSaturday.toISOString();
+  }
+
+  getNextMonth(): string {
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    return nextMonth.toISOString();
+  }
+
+  sectionProperties: { title: string; properties: Property[]; isLoading: boolean; slidesPerView: number }[] = [];
+  getRandomSlidesCount(): number {
+    const options = [5, 6, 7];
+    return options[Math.floor(Math.random() * options.length)];
+  }
+
+  shuffleArray<T>(array: T[]): T[] {
+    return array
+      .map(value => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+  }
+
+
+  loadAllSections() {
+    this.sections.forEach((section, index) => {
+      this.sectionProperties.push({
+        title: section.title,
+        properties: [],
+        isLoading: true,
+        slidesPerView: this.getRandomSlidesCount()
+      });
+
+      this.propertyService.searchProperties(section.search).subscribe({
+        next: (res) => {
+          if (res.isSuccess) {
+            this.sectionProperties[index].properties = res.data.items;
+          }
+          this.sectionProperties[index].isLoading = false;
+        },
+        error: () => {
+          this.sectionProperties[index].isLoading = false;
+        }
+      });
+    });
+  }
+
 
   onPropertyClick(id: number) {
     this.router.navigate(['/property', id])
@@ -113,24 +179,23 @@ export class Home {
   }
 
 
-  loadProperties() {
-    this.isLoading = true;
-    this.propertyService.searchProperties({}).subscribe({
-      next: (response) => {
-        console.log('🔍 Search Response:', response);
+  // loadProperties() {
+  //   this.isLoading = true;
+  //   this.propertyService.searchProperties({}).subscribe({
+  //     next: (response) => {
 
-        if (response.isSuccess) {
-          this.properties = response.data.items;
-        }
+  //       if (response.isSuccess) {
+  //         this.properties = response.data.items;
+  //       }
 
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('❌ API Error:', err);
-        this.isLoading = false;
-      },
-    });
-  }
+  //       this.isLoading = false;
+  //     },
+  //     error: (err) => {
+  //       console.error('❌ API Error:', err);
+  //       this.isLoading = false;
+  //     },
+  //   });
+  // }
 
   onClose() {
 
