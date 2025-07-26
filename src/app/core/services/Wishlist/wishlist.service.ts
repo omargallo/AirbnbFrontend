@@ -62,12 +62,11 @@ export class WishlistService {
   }
 
   removePropertyFromWishlist(
-    wishlistId: number,
     propertyId: number
   ): Observable<boolean> {
     return this.http
       .delete<Result<boolean>>(
-        `${this.baseUrl}/${wishlistId}/property/${propertyId}`
+        `${this.baseUrl}/remove-favorite/${propertyId}`
       )
       .pipe(map((response) => response.isSuccess));
   }

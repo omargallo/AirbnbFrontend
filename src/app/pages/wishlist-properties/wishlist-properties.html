@@ -48,7 +48,7 @@
           [subtitle]="property.city + ', ' + property.country"
           [price]="property.pricePerNight"
           [rating]="property.averageRating"
-          [isFavorite]="true"
+          [isFavourite]="property.isFavourite ?? false"
         >
         </app-slider-card>
       </a>

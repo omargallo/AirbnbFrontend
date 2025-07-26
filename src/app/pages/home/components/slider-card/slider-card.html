@@ -2,7 +2,7 @@
 <div class="card">
   <div class="image-container">
     <img [src]="imageUrl" alt="listing image" />
-    <div class="favorite" *ngIf="isFavorite">Guest favorite</div>
+    <div class="favorite" *ngIf="isFavourite">Guest favorite</div>
     <button class="heart">&#9825;</button>
   </div>
   <div class="info">
@@ -41,7 +41,7 @@
           aria-hidden="true"
           role="presentation"
           focusable="false"
-          [style.fill]="isFavorite ? '#ff385c' : 'rgba(0, 0, 0, 0.5)'"
+          [style.fill]="isFavourite ? '#ff385c' : 'rgba(0, 0, 0, 0.5)'"
           style="
             display: block;
             height: 24px;
