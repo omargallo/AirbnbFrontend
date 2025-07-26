@@ -16,11 +16,12 @@ register();
   styleUrls: ['./mainswiper.css']
 })
 export class PropertySwiperComponent implements OnInit {
+  @Input() isLoading: boolean = false;
 
   @Output() propertyClicked = new EventEmitter<number>();
   @Output() wishlistIconClick = new EventEmitter<number>();
 
-  onWishListClick(id:number){
+  onWishListClick(id: number) {
     this.wishlistIconClick.emit(id)
   }
   onCardClicked(id: number) {
@@ -95,15 +96,15 @@ export class PropertySwiperComponent implements OnInit {
   }
 
 
-  
-    getPropertyImage(property: Property): string {
-      const cover = property.images?.find(img => img.isCover && !img.isDeleted);
-  
-      if (cover?.imageUrl) {
-        return `${environment.base}${cover.imageUrl}`;
-      }
-  
-      // fallback image
-      return 'assets/images/deafult.png';
+
+  getPropertyImage(property: Property): string {
+    const cover = property.images?.find(img => img.isCover && !img.isDeleted);
+
+    if (cover?.imageUrl) {
+      return `${environment.base}${cover.imageUrl}`;
     }
+
+    // fallback image
+    return 'assets/images/deafult.png';
+  }
 }
