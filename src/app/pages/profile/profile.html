@@ -1,1 +1,61 @@
-<p>profile works!</p>
+mmm
+<div class="profile-container">
+  <form class="profile-form" (ngSubmit)="onUpdateProfile()" #profileForm="ngForm">
+    <div class="form-data">
+      <input
+        type="text"
+        id="firstName"
+        name="firstName"
+        placeholder="{{ 'profile.firstName' | translate }}"
+        [(ngModel)]="firstName"
+      />
+    </div>
+    <div class="form-data">
+      <input
+        type="text"
+        id="lastName"
+        name="lastName"
+        placeholder="{{ 'profile.lastName' | translate }}"
+        [(ngModel)]="lastName"
+      />
+    </div>
+    <div class="form-data">
+      <input
+        type="text"
+        id="phoneNumber"
+        name="phoneNumber"
+        placeholder="{{ 'profile.phoneNumber' | translate }}"
+        [(ngModel)]="phoneNumber"
+      />
+    </div>
+    <div class="form-data">
+      <input
+        type="text"
+        id="country"
+        name="country"
+        placeholder="{{ 'profile.country' | translate }}"
+        [(ngModel)]="country"
+      />
+    </div>
+    <div class="form-data">
+      <input
+        type="date"
+        id="birthDate"
+        name="birthDate"
+        placeholder="{{ 'profile.birthDate' | translate }}"
+        [(ngModel)]="birthDate"
+      />
+    </div>
+
+    <textarea
+      name="bio"
+      id="bio"
+      placeholder="{{ 'profile.bio' | translate }}"
+      [(ngModel)]="bio"
+    ></textarea>
+
+    <button type="submit" [disabled]="profileForm.invalid">
+      {{ "profile.submit" | translate }}
+    </button>
+  </form>
+</div>
