@@ -6,6 +6,7 @@ import { debounceTime, Subscription, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
+import { Icon } from 'leaflet';
 
 @Component({
   selector: 'app-step1-4-where',
@@ -63,8 +64,10 @@ export class Step14Where implements OnInit, AfterViewInit, OnDestroy {
   private saveFormData(): void {
     const data = {
       address: this.address,
-      latitude: this.latitude,
-      longitude: this.longitude
+      coordinates: {
+        lat: this.latitude,
+        lng: this.longitude
+      }
     };
     this.formStorage.saveFormData('step1-4-1', data);
   }
@@ -77,6 +80,8 @@ export class Step14Where implements OnInit, AfterViewInit, OnDestroy {
   private isMapInitialized = false;
   private shouldFitBounds = true;
   private isUserInteraction = false;
+
+  private marker: L.Marker | null = null;
 
   private initLeafletMap(): void {
     if (this.mapContainer && this.mapContainer.nativeElement && !this.map) {
@@ -91,11 +96,97 @@ export class Step14Where implements OnInit, AfterViewInit, OnDestroy {
         maxZoom: 19,
       }).addTo(this.map);
 
+      // Add marker at initial position
+      this.addMarker(this.latitude, this.longitude);
+
+      // Add click event to map
+      this.map.on('click', (e: L.LeafletMouseEvent) => {
+        const { lat, lng } = e.latlng;
+        this.updateLocation(lat, lng);
+      });
+
       this.map.whenReady(() => {
         this.isLoading = false;
         this.isMapInitialized = true;
         this.setupMapEventListeners();
       });
+    }
+  }
+
+  private addMarker(lat: number, lng: number): void {
+    if (this.map) {
+      if (this.marker) {
+        this.marker.remove();
+      }
+
+      this.marker = L.marker([lat, lng], {
+        draggable: true
+      }).addTo(this.map);
+
+      // Handle marker drag events
+      this.marker.on('dragend', (event) => {
+        const marker = event.target;
+        const position = marker.getLatLng();
+        this.updateLocation(position.lat, position.lng);
+      });
+    }
+  }
+
+  private updateLocation(lat: number, lng: number): void {
+    this.latitude = lat;
+    this.longitude = lng;
+    this.addMarker(lat, lng);
+    this.reverseGeocode(lat, lng);
+  }
+
+  private async reverseGeocode(lat: number, lng: number): Promise<void> {
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`);
+      const data = await response.json();
+      if (data.display_name) {
+        this.address = data.display_name;
+        
+        // Save detailed address components
+        const address = data.address;
+        const addressData = {
+          country: address.country_code?.toUpperCase() || '',
+          countryName: address.country || '',
+          street: [address.road, address.house_number].filter(Boolean).join(' ') || '',
+          apt: '',
+          city: address.city || address.town || address.village || '',
+          state: address.state || '',
+          zipcode: address.postcode || '',
+          latitude: lat,
+          longitude: lng,
+          formattedAddress: data.display_name
+        };
+        
+        // Save both the current step data and the next step data
+        this.saveFormData();
+        this.formStorage.saveFormData('step1-4-2', addressData);
+      }
+    } catch (error) {
+      console.error('Error reverse geocoding:', error);
+    }
+  }
+
+  // Get current location
+  getCurrentLocation(): void {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          this.updateLocation(latitude, longitude);
+          if (this.map) {
+            this.map.setView([latitude, longitude], 16);
+          }
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
     }
   }
 

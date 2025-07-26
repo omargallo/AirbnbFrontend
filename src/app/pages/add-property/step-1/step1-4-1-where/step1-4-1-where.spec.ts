@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Step14Where } from './step1-4-where';
+import { Step14Where } from './step1-4-1-where';
 
 describe('Step14Where', () => {
   let component: Step14Where;
