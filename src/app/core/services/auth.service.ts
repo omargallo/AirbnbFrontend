@@ -32,12 +32,12 @@ export class AuthService {
 
 
   setAccessToken(token: string) {
-    this.cookieService.set(this.accessTokenKey, token, 7, '/');
+    // this.cookieService.set(this.accessTokenKey, token, 7, '/');
     this.accessTokenSubject.next(token);
   }
 
   setRefreshToken(token: string) {
-    this.cookieService.set(this.refreshTokenKey, token, 7, '/');
+    // this.cookieService.set(this.refreshTokenKey, token, 7, '/');
     this.refreshTokenSubject.next(token);
   }
 

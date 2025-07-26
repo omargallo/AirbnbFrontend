@@ -14,7 +14,7 @@ export class UserService {
 
   login(payload: { email: string; password: string }): Observable<any> {
     console.log(payload);
-    return this.http.post(`${this.baseUrl}/login`, payload).pipe(
+    return this.http.post(`${this.baseUrl}/login`, payload,{withCredentials:true}).pipe(
       tap((response: any) => {
         this.authService.setAccessToken(response.accessToken);
         this.authService.setRefreshToken(response.refreshToken);
