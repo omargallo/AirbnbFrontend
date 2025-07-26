@@ -62,7 +62,7 @@ export class BookingCalendarComponent implements OnInit {
   ngOnInit(): void {
     this.selectedDateRange = { startDate: null, endDate: null };
     console.log('enter oninit of booking service rawan ' )
-    this.fetchUnavailableDates();
+    // this.fetchUnavailableDates();
     console.log("finish");
   }
 
@@ -80,20 +80,20 @@ export class BookingCalendarComponent implements OnInit {
 }
 
 
-  fetchUnavailableDates(): void {
-    const start = dayjs().startOf('month').format('YYYY-MM-DD');
-    const end = dayjs().add(3, 'month').endOf('month').format('YYYY-MM-DD');
+  // fetchUnavailableDates(): void {
+  //   const start = dayjs().startOf('month').format('YYYY-MM-DD');
+  //   const end = dayjs().add(3, 'month').endOf('month').format('YYYY-MM-DD');
 
-    this.calendarService.reverseIThink(this.propertyId, start, end).subscribe(res => {
-        console.log(this.calendarService);
-      console.log(this.propertyId, this.selectedDateRange ,"first date ",start ,"lastdate rawan ", end)
-      if (res.isSuccess && res.data.unavailableDates) {
-        this.munavailableDates = res.data.unavailableDates;
-        console.log(res)
-      }
-    }
-  );
-  }
+  //   this.calendarService.reverseIThink(this.propertyId, start, end).subscribe(res => {
+  //       console.log(this.calendarService);
+  //     console.log(this.propertyId, this.selectedDateRange ,"first date ",start ,"lastdate rawan ", end)
+  //     if (res.isSuccess && res.data.unavailableDates) {
+  //       this.munavailableDates = res.data.unavailableDates;
+  //       console.log(res)
+  //     }
+  //   }
+  // );
+  // }
 
   datesUpdated(range: any): void {
     const start = dayjs(range.startDate).format('YYYY-MM-DD');
