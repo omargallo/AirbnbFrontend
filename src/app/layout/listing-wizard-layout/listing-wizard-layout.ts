@@ -4,6 +4,7 @@ import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { PropertyFormStorageService } from '../../core/services/ListingWizard/property-form-storage.service';
 import { ListingWizardService } from '../../core/services/ListingWizard/listing-wizard.service';
+import { PropertyCreationService } from '../../core/services/Property/property-creation.service';
 
 @Component({
   selector: 'app-listing-wizard-layout',
@@ -54,7 +55,8 @@ export class ListingWizardLayoutComponent {
   constructor(
     private router: Router,
     private formStorage: PropertyFormStorageService,
-    private wizardService: ListingWizardService
+    private wizardService: ListingWizardService,
+    private propertyCreationService: PropertyCreationService
   ) {
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
@@ -62,6 +64,33 @@ export class ListingWizardLayoutComponent {
         this.updateProgress();
         this.updateStepState();
       });
+  }
+
+  handleSubmit() {
+    // Build property data from wizard form storage
+    const propertyData = this.propertyCreationService.buildPropertyFromWizard();
+    
+    // Ensure images array exists
+    const finalPropertyData = {
+      ...propertyData,
+      images: propertyData.images || []
+    };
+    
+    // Create the property
+    this.propertyCreationService.createProperty(finalPropertyData).subscribe({
+      next: (response) => {
+        // Clear form storage
+        this.formStorage.clearFormData();
+        // Clear local storage
+        localStorage.removeItem('property_form_data');
+        // Navigate to success page or property listing
+        this.router.navigate(['/host']);
+      },
+      error: (error) => {
+        console.error('Error creating property:', error);
+        // Handle error (show error message to user)
+      }
+    });
   }
 
   private getCurrentStepIndex(): number {
