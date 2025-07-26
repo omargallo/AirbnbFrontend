@@ -8,11 +8,11 @@ import { ReverseSectionComponent } from "../PropertyDetails/reverse-section/reve
 import { AmenitiesSectionComponent } from '../PropertyDetails/amenities-section/amenities-section.component';
 import { BookingCalendarComponent } from "../PropertyDetails/BookingCalendar/BookingCalendar.component";
 import { MapLocationComponent } from "../PropertyDetails/mapLocation/mapLocation.component";
+import { GuestReviews } from "../../components/guest-reviews/guest-reviews";
 
 @Component({
   selector: 'app-property-info',
-  imports: [CommonModule, PropertImageGalaryComponent, ReverseSectionComponent, AmenitiesSectionComponent, BookingCalendarComponent, MapLocationComponent,
-    ],
+  imports: [CommonModule, PropertImageGalaryComponent, ReverseSectionComponent, AmenitiesSectionComponent, BookingCalendarComponent, MapLocationComponent, GuestReviews],
   templateUrl: './property-info.html',
   styleUrl: './property-info.css'
 })

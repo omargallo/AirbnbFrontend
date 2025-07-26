@@ -29,7 +29,8 @@
     "GUEST": "guest",
     "GUESTS": "guests",
     "INFANT": "infant",
-    "INFANTS": "infants"
+    "INFANTS": "infants",
+    "LOGOUT": "Logout"
   },
   "login": {
     "welcome": "Welcome back",
@@ -54,5 +55,14 @@
     "confirmOtp": "Confirm OTP",
     "confirm": "Confirm",
     "resendOtp": "Resend OTP"
+  },
+  "resetPassword": {
+    "welcome": "You have been sent a reset password email with a one-time code for your password reset valid for 1 minute",
+    "resetYourPassword": "Reset Password",
+    "email": "Email",
+    "password": "Password",
+    "showPass": "Show",
+    "confirm": "Confirm",
+    "confirmReset": "Confirm Reset Password"
   }
 }

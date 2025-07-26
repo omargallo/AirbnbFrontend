@@ -21,10 +21,19 @@ export interface CalendarCheckData {
   message: string;
 }
 
+
 export interface Result<T> {
-  data: T;
+   data: T;
   isSuccess: boolean;
   message: string;
+  statusCode?: number;
+}
+
+// Single date availability structure rawan use
+export interface CalendarAvailabilityDto {
+  date: string; 
+  isAvailable: boolean;
+  price: number;
 }
 
 @Injectable({    providedIn: 'root' })
@@ -34,47 +43,33 @@ export interface Result<T> {
 })
 export class CalendarAvailabilityService {
 
-      baseurl = environment.baseUrl;
-      calenderURL = `${this.baseurl}/Calendar`;
+       private baseUrl = environment.baseUrl;
+  private calendarUrl = `${this.baseUrl}/Calendar`;
 
 
       constructor(private http: HttpClient) {}
 
-        reverseIThink(
-                  propertyId: number,
-                  startDate: string,
-                  endDate: string,
-                  // totalPrice:number
+  getAvailability(
+          propertyId: number,
+          startDate: string,
+          endDate: string
+        ): Observable<CalendarAvailabilityDto[]> {
+          const params = new HttpParams()
+            .set('startDate', startDate)
+            .set('endDate', endDate);
 
-                ): Observable<CalendarCheckResponse> {
-                  const params = new HttpParams()
-                    .set('startDate', startDate)
-                    .set('endDate', endDate);
-                    // .set('totalPrice',totalPrice)
+          const url = `${this.calendarUrl}/property/${propertyId}`;
 
-                  return this.http.get<CalendarCheckResponse>(
-                    `${this.baseurl}/property/${propertyId}`,
-                    { params }
-                  );
-                }
+          return this.http
+            .get<Result<CalendarAvailabilityDto[]>>(url, { params })
+            .pipe(map(res => res.data));
+}
 
-      checkAvailability(propertyID:Number):Observable<CalendarCheckData>{
-          const url = `${this.calenderURL}/property/${propertyID}/availability`;
-
-        return this.http.get<Result<CalendarCheckData>>(url)
-            .pipe(
-              map(response => response.data)
-            );
-        }
+     
 
 
 
 
 
       }
-  // constructor(private http: HttpClient) {}
 
-  // getAvailabilityForPropertyId(propertyId: number) {
-  //   return this.http.get<CalendarAvailability[]>(`${this.calenderURL}/property/${propertyId}/availability`);
-  // }
-// }}

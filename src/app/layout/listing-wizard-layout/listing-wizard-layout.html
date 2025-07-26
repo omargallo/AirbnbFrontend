@@ -44,7 +44,7 @@
     </div>
 
     <button
-      (click)="isLastStep ? onSubmit.emit() : navigateToNextStep()"
+      (click)="isLastStep ? handleSubmit() : navigateToNextStep()"
       [disabled]="!canProceed"
       class="nav-button btn-primary"
       [ngClass]="{ 'btn-get-started': isFirstStep }"

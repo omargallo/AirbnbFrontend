@@ -1,3 +1,4 @@
+<app-hostheader></app-hostheader>
 <div class="airbnb-listing-editor">
       <!-- Loading Overlay -->
       <div *ngIf="isLoading" class="loading-overlay">
@@ -10,14 +11,7 @@
       <!-- Header -->
       <div class="editor-header">
         <div class="container-fluid">
-          <div class="d-flex align-items-center">
-            <button class="back-btn" type="button" routerLink="/host">
-              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M8.354 1.646a.5.5 0 0 1 0 .708L3.207 7.5H14.5a.5.5 0 0 1 0 1H3.207l5.147 5.146a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
-              </svg>
-            </button>
-            <h1 class="editor-title">Listing editor</h1>
-          </div>
+          <!-- Empty header for spacing/consistency -->
         </div>
       </div>
 
@@ -28,7 +22,18 @@
             <!-- Sidebar Navigation -->
             <div class="col-12 col-lg-4 col-xl-3">
               <div class="sidebar">
-              
+                <!-- Menu Title in Sidebar with Back Button -->
+                <div class="sidebar-header">
+                  <div class="sidebar-title-container">
+                    <button class="back-btn" type="button" routerLink="/host">
+                      <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8.354 1.646a.5.5 0 0 1 0 .708L3.207 7.5H14.5a.5.5 0 0 1 0 1H3.207l5.147 5.146a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                      </svg>
+                    </button>
+                    <h1 class="editor-title">Listing editor</h1>
+                  </div>
+                </div>
+                
                 <!-- Scrollable Menu -->
                 <div class="menu-container">
                   <div class="menu-list">
@@ -122,6 +127,15 @@
                     (hasChanges)="onSectionHasChanges('description', $event)"
                     (validationChange)="onSectionValidationChange('description', $event)">
                   </app-description-section>
+
+                  <!-- Rooms Section -->
+                    <app-rooms-section
+                        *ngIf="activeSection === 'rooms'"
+                        [data]="roomsData"
+                        (dataChange)="onRoomsDataChange($event)"
+                        (hasChanges)="onSectionHasChanges('rooms', $event)"
+                        (validationChange)="onSectionValidationChange('rooms', $event)">
+                      </app-rooms-section>
 
                   <!-- Amenities Section -->
                   <app-amenities-section

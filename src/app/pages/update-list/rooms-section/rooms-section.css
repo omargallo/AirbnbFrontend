@@ -1,0 +1,153 @@
+/* Add this to your update-list.css file */
+
+/* Rooms Form Styles */
+.rooms-form {
+  max-width: 600px;
+}
+
+.room-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0;
+  border-bottom: 1px solid #DDDDDD;
+  position: relative;
+}
+
+.room-item:last-child {
+  border-bottom: none;
+}
+
+.room-info {
+  flex: 1;
+}
+
+.room-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222222;
+  margin-bottom: 4px;
+}
+
+.room-description {
+  font-size: 14px;
+  color: #717171;
+  line-height: 1.4;
+}
+
+.room-counter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.counter-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #B0B0B0;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #717171;
+}
+
+.counter-btn:hover:not(:disabled) {
+  border-color: #222222;
+  color: #222222;
+}
+
+.counter-btn:disabled {
+  border-color: #EBEBEB;
+  color: #EBEBEB;
+  cursor: not-allowed;
+}
+
+.counter-btn-minus:disabled {
+  opacity: 0.3;
+}
+
+.counter-btn-plus:disabled {
+  opacity: 0.3;
+}
+
+.counter-value {
+  min-width: 40px;
+  text-align: center;
+}
+
+.counter-input {
+  width: 40px;
+  text-align: center;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 400;
+  color: #222222;
+  cursor: default;
+}
+
+.counter-input::-webkit-outer-spin-button,
+.counter-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* .counter-input[type=number] {
+    -moz-appearance: textfield;
+} */
+
+.counter-input.is-invalid {
+  color: #D93900;
+}
+
+.invalid-feedback {
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  font-size: 12px;
+  color: #D93900;
+  margin-top: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .room-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .room-counter {
+    align-self: flex-end;
+  }
+  
+  .invalid-feedback {
+    position: static;
+  }
+}
+
+/* Animation for counter changes */
+.counter-value {
+  transition: transform 0.1s ease;
+}
+
+.counter-btn:active {
+  transform: scale(0.95);
+}
+
+/* Focus styles for accessibility */
+.counter-btn:focus {
+  /* outline: 2px solid ; */
+  outline-offset: 2px;
+}
+
+.counter-input:focus {
+  /* outline: 2px solid; */
+  outline-offset: 1px;
+  border-radius: 4px;
+}

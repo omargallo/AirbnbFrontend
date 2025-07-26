@@ -7,19 +7,22 @@
       </div>
 
   <div class="reserve-box " >
-        <div class="price-info  " *ngIf="totalPrice">
+        <div class="price-info  " *ngIf="totalPrice">price:-
           <span class="price" >{{ pricePerNight | currency }}</span> <span>/ night</span>
       </div>
+          <div class="total-price" *ngIf="totalPrice">
+              Total: {{ totalPrice | currency }}
+          </div>
 
   <!-- Check-in / Check-out -->
   <div class="date-picker mt-4">
     <label>
       <span>Check-in</span>
-      <input  type="date" [(ngModel)]="checkInDate" />
+      <input  type="date" [(ngModel)]="checkInDate"  (ngModelChange)="isCheckIn($event)" />
     </label>
     <label>
       <span>Check-out</span>
-      <input type="date" [(ngModel)]="checkOutDate" />
+      <input type="date" [(ngModel)]="checkOutDate" (ngModelChange)="isCheckOut($event)"/>
     </label>
   </div>
 
@@ -72,11 +75,25 @@
         This place has a maximum of {{ maxGuests }} guests, not including infants. 
         If you're bringing more than 2 pets, please let your host know.
       </div>
+      <div class="text-red-500 mt-2" *ngIf="errorMessage">
+            {{ errorMessage }}
+      </div>
       </div>
 
     
     </div>
-         <button class="check-btn">Reverse</button>  
+         <button type="su" class="check-btn" [disabled]="!checkInDate || !checkOutDate " (click)="checkAvailabilityForSelectedRange()">
+          Reverse
+        </button>  
+        <!-- If available -->
+<div *ngIf="isDateRangeAvailable === true" class="mt-2 text-success">
+  ✅ Available — Total Price: {{ totalPrice }}$
+</div>
+
+<!-- If unavailable -->
+<div *ngIf="isDateRangeAvailable === false" class="mt-2 text-danger">
+  ❌ Unavailable Dates: {{ unavailableDates.join(', ') }}
+</div>
       <div class="button-subtext mt-3">You won't be charged yet</div>
   </div>
 

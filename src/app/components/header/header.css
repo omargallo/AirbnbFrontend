@@ -60,12 +60,19 @@
   background-color: var(--primary-text-color);
   color: var(--bg-color);
   border-radius: 50%;
-  padding: 4px;
   height: 32px;
   width: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.icon-user img {
+  width: 32px;
+  height: 32px;
+  background-position: center;
+  background-size: cover;
+  border-radius: 50%;
 }
 
 .user-menu-dropdown {

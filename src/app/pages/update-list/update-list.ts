@@ -1,4 +1,3 @@
-// Complete UpdateList component with proper photos section integration
 
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -14,10 +13,12 @@ import { GuestsSectionComponent, GuestsSectionData } from './guests-section/gues
 import { DescriptionSectionComponent, DescriptionSectionData } from './description-section/description-section';
 import { AmenitiesSectionComponent, AmenitiesSectionData } from './amenities-section/amenities-section';
 import { LocationSectionComponent, LocationSectionData } from './location-section/location-section';
+import { RoomsSectionComponent, RoomsSectionData } from './rooms-section/rooms-section';
 
 import { PropertyService } from '../../core/services/Property/property.service';
 import { Property } from '../../core/models/Property';
-import { PropertyImage } from '../../core/models/PropertyImage'; // Add this import
+import { PropertyImage } from '../../core/models/PropertyImage';
+import { HeaderComponent } from "../../components/host-header/host-header"; 
 
 export interface MenuSection {
   id: string;
@@ -44,8 +45,10 @@ export interface MenuSection {
     DescriptionSectionComponent,
     AmenitiesSectionComponent,
     LocationSectionComponent,
-    RouterLink
-  ],
+    RoomsSectionComponent,
+    RouterLink,
+    HeaderComponent
+],
   templateUrl: './update-list.html',
 })
 export class UpdateList implements OnInit, OnDestroy {
@@ -57,6 +60,8 @@ export class UpdateList implements OnInit, OnDestroy {
   // Property data
   property: Property | null = null;
   originalProperty: Property | null = null;
+  roomsData: RoomsSectionData | null = null;
+
   propertyId: number = 0;
   isLoading = false;
 
@@ -65,10 +70,13 @@ export class UpdateList implements OnInit, OnDestroy {
     { id: 'photos', label: 'Photos', icon: '📸', isActive: true, hasChanges: false, isSaving: false, isValid: true },
     { id: 'title', label: 'Title', icon: '📝', isActive: false, hasChanges: false, isSaving: false, isValid: true },
     { id: 'propertyId', label: 'Property type', icon: '🏠', isActive: false, hasChanges: false, isSaving: false, isValid: true },
+      { id: 'rooms', label: 'Rooms & beds', icon: '🛏️', isActive: false, hasChanges: false, isSaving: false, isValid: true }, // ADD THIS LINE
+
     { id: 'price', label: 'Pricing', icon: '💰', isActive: false, hasChanges: false, isSaving: false, isValid: true },
     { id: 'maxGuests', label: 'Guests', icon: '👥', isActive: false, hasChanges: false, isSaving: false, isValid: true },
     { id: 'description', label: 'Description', icon: '📄', isActive: false, hasChanges: false, isSaving: false, isValid: true },
     { id: 'amenities', label: 'Amenities', icon: '✨', isActive: false, hasChanges: false, isSaving: false, isValid: true },
+    
     { id: 'location', label: 'Location', icon: '📍', isActive: false, hasChanges: false, isSaving: false, isValid: true }
   ];
 
@@ -157,6 +165,13 @@ export class UpdateList implements OnInit, OnDestroy {
         maxGuests: property.maxGuests || 1
       };
 
+      this.roomsData = {
+      bedrooms: property.bedrooms || 1,
+      beds: property.beds || 1,
+      bathrooms: property.bathrooms || 1
+      };
+
+
       this.descriptionData = {
         description: property.description
       };
@@ -196,6 +211,16 @@ export class UpdateList implements OnInit, OnDestroy {
       });
     });
   }
+
+  onRoomsDataChange(data: RoomsSectionData): void {
+  this.roomsData = data;
+  // Also update the main property object for consistency
+  if (this.property) {
+    this.property.bedrooms = data.bedrooms;
+    this.property.beds = data.beds;
+    this.property.bathrooms = data.bathrooms;
+  }
+}
 
   // Menu navigation
   onMenuSectionClick(section: MenuSection): void {
@@ -346,6 +371,8 @@ export class UpdateList implements OnInit, OnDestroy {
         return this.amenitiesData?.amenities;
       case 'location':
         return this.locationData?.location;
+        case 'rooms':
+        return this.roomsData;
       default:
         return null;
     }
@@ -370,6 +397,13 @@ export class UpdateList implements OnInit, OnDestroy {
       case 'propertyId':
         this.originalProperty.propertyTypeId = Number(data);
         break;
+        case 'rooms':
+        this.originalProperty.bedrooms = Number(data.bedrooms);
+        this.originalProperty.beds = Number(data.beds);
+        this.originalProperty.bathrooms = Number(data.bathrooms);
+         break;
+
+
       case 'location':
         this.originalProperty.city = data.city;
         this.originalProperty.country = data.country;

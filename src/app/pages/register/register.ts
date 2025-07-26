@@ -8,6 +8,7 @@ import { ConfirmOtp } from '../confirm-otp/confirm-otp';
 
 @Component({
   selector: 'app-register',
+  standalone: true,
   imports: [CommonModule, TranslateModule, FormsModule, ConfirmOtp],
   templateUrl: './register.html',
   styleUrl: './register.css',
@@ -29,7 +30,7 @@ export class Register {
           alert('Registered successfully');
           this.close();
           this.dialogService.openDialog('confirmOtp');
-          (window as any).startOtpTimer?.();
+          (window as any).startOtpTimerR?.();
         },
         error: (err) => {
           alert('Register failed');

@@ -50,6 +50,12 @@ export interface PropertyImageDisplayDTO {
   propertyId: number;
 }
 
+// NEW: Property Type DTO interface
+export interface PropertyTypeDto {
+  id: number;
+  name: string;
+}
+
 export interface Country {
   iso2: string;
   iso3: string;
@@ -90,9 +96,15 @@ export interface SearchParams {
 export class PropertyService {
   private readonly propertyUrl = `${environment.baseUrl}/property`;
   private baseUrl = `${environment.baseUrl}/Property`;
+  private propertyTypeUrl = `${environment.baseUrl}/PropertyType`; // NEW: Property Type endpoint
   private countriesApiUrl = 'https://countriesnow.space/api/v0.1/countries';
 
   constructor(private http: HttpClient) { }
+
+  // NEW: Get all property types from API
+  getAllPropertyTypes(): Observable<PropertyTypeDto[]> {
+    return this.http.get<PropertyTypeDto[]>(this.propertyTypeUrl);
+  }
 
   getImagesByPropertyId(id: number): Observable<PropertyImage[]> {
     return this.http.get<Result<PropertyImage[]>>(`${this.baseUrl}/${id}/images`).pipe(
@@ -170,6 +182,12 @@ export class PropertyService {
       case 'title':
         dto.title = sectionData;
         break;
+
+        case 'rooms':
+          dto.bedrooms = Number(sectionData.bedrooms) || property.bedrooms || 1;
+          dto.beds = Number(sectionData.beds) || property.beds || 1;
+          dto.bathrooms = Number(sectionData.bathrooms) || property.bathrooms || 1;
+        break;
       case 'description':
         dto.description = sectionData;
         break;
@@ -182,6 +200,7 @@ export class PropertyService {
       case 'propertyId':
         dto.propertyTypeId = Number(sectionData);
         break;
+        
       case 'location':
         dto.city = sectionData.city || property.city;
         dto.country = sectionData.country || property.country;
@@ -221,7 +240,7 @@ export class PropertyService {
     if (params.latitude != null) queryParams.Latitude = params.latitude;
     if (params.guestsCount != null) queryParams.GuestsCount = params.guestsCount;
     if (params.startDate) queryParams.StartDate = params.startDate;
-    if (params.endDate) queryParams.EndDate = params.endDate;
+    if (params.endDate) queryParams.endDate = params.endDate;
     if (params.page) queryParams.Page = params.page;
     queryParams.PageSize = 12;
     if (params.maxDistanceKm != null) queryParams.maxDistanceKm = params.maxDistanceKm;
@@ -230,4 +249,18 @@ export class PropertyService {
       params: queryParams
     });
   }
+
+
+
+//to reverse
+getGuetsAndPricePerNeightPropertyById(id: number): Observable<{ maxGuests: number,pricePerNeight:number }> {
+  return this.http.get<{ maxGuests: number ,pricePerNeight:number }>(`${this.baseUrl}/property/${id}`);
+}
+
+
+
+
+
+
+
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogService } from '../../core/services/dialog.service';
@@ -22,7 +22,7 @@ export class ConfirmOtp {
   timerInterval: any;
 
   ngAfterViewInit(): void {
-    (window as any).startOtpTimer = () => {
+    (window as any).startOtpTimerR = () => {
       this.resetTimer();
     };
   }
@@ -58,7 +58,7 @@ export class ConfirmOtp {
     if (!email) return;
 
     this.userService.resendOtp({ email }).subscribe({
-      next: () => {
+      next: (res) => {
         this.otp = '';
         this.startTimer();
       },

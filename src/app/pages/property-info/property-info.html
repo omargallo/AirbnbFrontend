@@ -1,7 +1,7 @@
 <app-propertImage-galary [propertyId]="propertyId"></app-propertImage-galary>
 
 
- <div class="property-details-box mt-3">
+ <div class="property-details-box mt-2">
   <div class="row ">
       <div class="col-md-8">
         <!-- property info, description, amenities, etc. -->
@@ -24,6 +24,7 @@
       <div class="col-md-4">
 
         <app-reverse-section   
+        [propertyId]="propertyId"
                 [checkIn]="selectedDates.start"
                 [checkOut]="selectedDates.end"
                 [guests]="guestCount"
@@ -32,13 +33,12 @@
 
 
       </div>
-      <div class="mapSection">
-        <h4>Where you’ll be</h4>
-            <app-mapLocation 
-                  *ngIf="selectedProperty"
-                  [latitude]="selectedProperty.latitude"
-                  [longitude]="selectedProperty.longitude">
-            </app-mapLocation>
+      <!-- <div class="reviewSection">
+        <app-guest-reviews [propertyId]="propertyId"></app-guest-reviews> 
+      </div> -->
+
+      <div class="mapSection mt-15">
+            <app-mapLocation [propertyId]="propertyId"></app-mapLocation>
       </div>
     </div>
   </div>
