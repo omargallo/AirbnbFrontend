@@ -279,6 +279,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
 
     // Emit the selected chat session to parent component
     this.chatSessionSelected.emit(thread.originalSession);
+    
   }
 
   getFilteredMessages(): MessageThread[] {
