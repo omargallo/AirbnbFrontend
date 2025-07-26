@@ -72,6 +72,8 @@ export class Login {
               console.log(res);
               localStorage.setItem('email', res.email);
               localStorage.setItem('user', JSON.stringify(res));
+              (window as any).Logging?.();
+
               if (res.firstName === null) {
                 this.router.navigate(['/take-info/' + this.authService.userId]);
               } else {

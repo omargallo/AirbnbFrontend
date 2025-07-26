@@ -29,7 +29,8 @@
     "GUEST": "ضيف",
     "GUESTS": "ضيوف",
     "INFANT": "رضيع",
-    "INFANTS": "رُضّع"
+    "INFANTS": "رُضّع",
+    "LOGOUT": "تسجيل الخروج"
   },
   "login": {
     "welcome": "مرحبًا بك مجددا",

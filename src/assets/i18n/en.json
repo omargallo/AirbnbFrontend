@@ -29,7 +29,8 @@
     "GUEST": "guest",
     "GUESTS": "guests",
     "INFANT": "infant",
-    "INFANTS": "infants"
+    "INFANTS": "infants",
+    "LOGOUT": "Logout"
   },
   "login": {
     "welcome": "Welcome back",

@@ -60,10 +60,19 @@
             >
               <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
-            <div class="icon-user" (click)="$event.stopPropagation()">
-              <a href="#" routerLink="/profile/{{ userId }}">{{
-                user?.charAt(0)?.toUpperCase()
-              }}</a>
+            <div *ngIf="isLoggedIn" class="icon-user" (click)="$event.stopPropagation()">
+              <a href="#" routerLink="/profile/{{ userId }}"
+                ><span *ngIf="ifImg === ''" [ngStyle]="{padding: '4px'}">{{
+                  user?.charAt(0)?.toUpperCase() || "K"
+                }}</span>
+                <img
+                  *ngIf="ifImg"
+                  [src]="img"
+                  alt="user-img"
+                  class="user-img"
+                  (click)="$event.stopPropagation()"
+                />
+              </a>
             </div>
           </button>
 
@@ -125,7 +134,18 @@
                 Messages
               </a>
             </li>
-            <li>
+            <li *ngIf="isLoggedIn">
+              <a
+                class="dropdown-item d-flex align-items-center gap-2"
+                href="#"
+                (click)="logout()"
+              >
+                <i class="bi bi-box-arrow-right"></i>
+                {{ "HEADER.LOGOUT" | translate }}
+              </a>
+            </li>
+
+            <li *ngIf="!isLoggedIn">
               <a
                 class="dropdown-item d-flex align-items-center gap-2"
                 href="#"
@@ -136,7 +156,7 @@
               </a>
             </li>
 
-            <li>
+            <li *ngIf="!isLoggedIn">
               <a
                 class="dropdown-item d-flex align-items-center gap-2"
                 href="#"
