@@ -15,13 +15,21 @@ export class AuthService {
   private roleSubject = new BehaviorSubject<string[] | null>(null);
 
   constructor(private cookieService: CookieService) {
-    this.accessTokenSubject.next(this.cookieService.get(this.accessTokenKey) || null);
-    this.refreshTokenSubject.next(this.cookieService.get(this.refreshTokenKey) || null);
-    this.userIdSubject.next(this.cookieService.get(this.userIdKey) || null);
+  this.accessTokenSubject.next(
+    this.cookieService.get(this.accessTokenKey) || null
+  );
+  this.refreshTokenSubject.next(
+    this.cookieService.get(this.refreshTokenKey) || null
+  );
+  this.userIdSubject.next(this.cookieService.get(this.userIdKey) || null);
 
-    const roleRaw = this.cookieService.get(this.roleKey);
-    this.roleSubject.next(roleRaw ? JSON.parse(roleRaw) : null);
+  const rolesJson = this.cookieService.get(this.roleKey);
+  if (rolesJson) {
+    const roles = JSON.parse(rolesJson);
+    this.roleSubject.next(roles);
   }
+}
+
 
   setAccessToken(token: string) {
     this.cookieService.set(this.accessTokenKey, token, 7, '/');
@@ -38,9 +46,11 @@ export class AuthService {
     this.userIdSubject.next(userId);
   }
 
-  setRole(roles: []) {
-    this.cookieService.set(this.roleKey, JSON.stringify(roles), 7, '/');
-    this.roleSubject.next(roles);
+  setRole(roles: { name: string }[]) {
+    const names = roles.map((r) => r.name);
+    sessionStorage.setItem(this.roleKey, JSON.stringify(names));
+    this.cookieService.set(this.roleKey, JSON.stringify(names), 7, '/');
+    this.roleSubject.next(names);
   }
 
   get accessToken(): string | null {
@@ -61,11 +71,9 @@ export class AuthService {
     return val;
   }
 
-  get role(): string[] | null {
-    const raw = this.cookieService.get(this.roleKey);
-    const parsed = raw ? JSON.parse(raw) : null;
-    this.roleSubject.next(parsed);
-    return parsed;
+  get role(): string[] {
+    const rolesJson = this.cookieService.get(this.roleKey);
+    return rolesJson ? JSON.parse(rolesJson) : [];
   }
 
   get accessToken$() {

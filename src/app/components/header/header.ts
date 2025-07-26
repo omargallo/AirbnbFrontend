@@ -6,6 +6,7 @@ import {
   inject,
   ElementRef,
   Input,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -14,11 +15,12 @@ import { FormsModule } from '@angular/forms';
 import { LangService } from '../../core/services/lang.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { TopNavComponent } from "../top-nav/top-nav";
-import { SearchFilterGroupComponent } from "../search-filter-group/search-filter-group";
+import { TopNavComponent } from '../top-nav/top-nav';
+import { SearchFilterGroupComponent } from '../search-filter-group/search-filter-group';
 import { DialogService } from '../../core/services/dialog.service';
 import { HandleImgService } from '../../core/services/handleImg.service';
 import { AuthService } from '../../core/services/auth.service';
+import { UserService } from '../../core/services/User/user.service';
 
 @Component({
   selector: 'app-header',
@@ -30,7 +32,7 @@ import { AuthService } from '../../core/services/auth.service';
     FormsModule,
     TranslateModule,
     TopNavComponent,
-    SearchFilterGroupComponent
+    SearchFilterGroupComponent,
   ],
   templateUrl: './header.html',
   styleUrls: ['./header.css'],
@@ -48,13 +50,17 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     public theme: ThemeService,
     private elementRef: ElementRef,
     private router: Router,
-  ) { }
+    private userService: UserService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  userId: any = this.authService.userId;
+  userId: any = (() => {
+    const userId = this.authService.userId;
+    return userId;
+  })();
   handleImgService = inject(HandleImgService);
   @Input() user: string | null = (() => {
     const storedUser = localStorage.getItem('user');
-    console.log(this.userId)
     return storedUser ? JSON.parse(storedUser)?.firstName ?? '' : '';
   })();
 
@@ -69,8 +75,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       storedUser ? JSON.parse(storedUser)?.profilePictureURL ?? '' : ''
     );
   })();
-
-
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
@@ -92,7 +96,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       this.closeDropdown();
     }
   }
-  ngOnDestroy(): void { }
+  ngOnDestroy(): void {}
 
   navItems = [
     {
@@ -180,24 +184,30 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  isLoggedIn = false;
+
   ngOnInit() {
     this.isDarkMode = document.body.classList.contains('dark');
     this.checkIfMessagesRoute();
-
+    this.isLoggedIn =
+      this.userId === null || this.userId === undefined ? false : true;
   }
 
   checkIfMessagesRoute() {
     this.isMessagesRoute =
       this.router.url.startsWith('/Messages') ||
-      this.router.url.startsWith('/WishLists')||
-      this.router.url.startsWith('/wishlist')
-      ;
+      this.router.url.startsWith('/WishLists') ||
+      this.router.url.startsWith('/wishlist');
   }
 
   ngAfterViewInit(): void {
     this.router.events.subscribe(() => {
       this.checkIfMessagesRoute();
     });
+    (window as any).Logging = () => {
+      this.isLoggedIn =
+        this.userId === null || this.userId === undefined ? false : true;
+    };
   }
 
   changeLanguage(lang: string) {
@@ -215,5 +225,11 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
   openRegisterDialog() {
     this.dialogService.openDialog('register');
+  }
+
+  logout() {
+    this.authService.clear();
+    this.userService.Logout();
+    this.isLoggedIn = false;
   }
 }

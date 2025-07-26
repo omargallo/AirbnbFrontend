@@ -30,7 +30,7 @@ export class Register {
           alert('Registered successfully');
           this.close();
           this.dialogService.openDialog('confirmOtp');
-          (window as any).startOtpTimer?.();
+          (window as any).startOtpTimerR?.();
         },
         error: (err) => {
           alert('Register failed');

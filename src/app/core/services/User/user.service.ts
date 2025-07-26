@@ -13,7 +13,7 @@ export class UserService {
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   login(payload: { email: string; password: string }): Observable<any> {
-    console.log(payload)
+    console.log(payload);
     return this.http.post(`${this.baseUrl}/login`, payload).pipe(
       tap((response: any) => {
         this.authService.setAccessToken(response.accessToken);
@@ -79,6 +79,20 @@ export class UserService {
 
   getProfile(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/profile/${id}`).pipe(
+      tap((response: any) => {
+        console.log(response);
+      })
+    );
+  }
+  updateProfile(id: string, payload: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/profile/${id}`, payload).pipe(
+      tap((response: any) => {
+        console.log(response);
+      })
+    );
+  }
+  Logout(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/logout`, {}).pipe(
       tap((response: any) => {
         console.log(response);
       })
