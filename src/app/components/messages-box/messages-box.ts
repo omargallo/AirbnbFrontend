@@ -3,6 +3,7 @@ import { Component, OnInit, Output, EventEmitter, OnDestroy, ElementRef, ViewChi
 import { ChatService, ChatSessionDto, MessageDto } from '../../core/services/Message/message.service';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { SignalRService } from '../../core/services/SignalRService/signal-rservice';
+import { AuthService } from '../../core/services/auth.service'; // Add this import
 
 interface MessageThread {
   id: string;
@@ -15,7 +16,7 @@ interface MessageThread {
   propertyId: number;
   hostId: string;
   userId: string;
-  originalSession: ChatSessionDto; // Keep reference to original session
+  originalSession: ChatSessionDto; 
 }
 
 @Component({
@@ -41,12 +42,16 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   isLoadingMore = false;
   totalCount = 0;
 
+  // Current user ID
+  private currentUserId: string | null = null;
+
   private destroy$ = new Subject<void>();
   private scrollSubject = new Subject<Event>();
 
   constructor(
     private chatService: ChatService,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    private authService: AuthService 
   ) { }
 
   ngOnDestroy(): void {
@@ -55,6 +60,9 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Get current user ID
+    this.currentUserId = this.authService.userId;
+    
     this.loadChatSessions();
     this.subscribeToNewMessages();
     this.setupScrollListener();
@@ -212,19 +220,31 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   }
 
   private mapSessionsToThreads(sessions: ChatSessionDto[]): MessageThread[] {
-    return sessions.map(session => ({
-      id: session.id,
-      profileImage: session.hostAvatarUrl || session.userAvatarUrl || 'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg',
-      name: session.hostName || session.userName || 'Unknown User',
-      preview: session.lastMessageText || 'No messages yet',
-      time: this.formatTime(session.lastActivityAt),
-      tripDetails: session.propertyTitle,
-      isUnread: session.unreadCount > 0,
-      propertyId: session.propertyId,
-      hostId: session.hostId,
-      userId: session.userId,
-      originalSession: session
-    }));
+    return sessions.map(session => {
+      // Check if current user ID matches the userId in session
+      // If yes, show hostName, otherwise show userName
+      const displayName = this.currentUserId === session.userId 
+        ? (session.hostName || 'Unknown Host')
+        : (session.userName || 'Unknown User');
+      
+      const profileImage = this.currentUserId === session.userId
+        ? (session.hostAvatarUrl || 'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg')
+        : (session.userAvatarUrl || 'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg');
+
+      return {
+        id: session.id,
+        profileImage: profileImage,
+        name: displayName,
+        preview: session.lastMessageText || 'No messages yet',
+        time: this.formatTime(session.lastActivityAt),
+        tripDetails: session.propertyTitle,
+        isUnread: session.unreadCount > 0,
+        propertyId: session.propertyId,
+        hostId: session.hostId,
+        userId: session.userId,
+        originalSession: session
+      };
+    });
   }
 
   private formatTime(dateString: string): string {
@@ -259,6 +279,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
 
     // Emit the selected chat session to parent component
     this.chatSessionSelected.emit(thread.originalSession);
+    
   }
 
   getFilteredMessages(): MessageThread[] {
