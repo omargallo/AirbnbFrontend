@@ -6,7 +6,8 @@
   border: 1px solid #e0e0e0;
   /* border-radius: 12px; */
   overflow: hidden;
-  font-family: 'Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: "Circular", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
   display: flex;
   flex-direction: column;
 }
@@ -72,7 +73,6 @@
   height: 200px;
   object-fit: cover;
   /* border-radius: 12px; */
-
 }
 
 .status-overlay {
@@ -186,13 +186,14 @@
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  padding: 8px 12px;
 }
 
 .property-header:hover {
   background: #f9f9f9;
   border-radius: 8px;
-  padding: 8px 12px;
-  margin: 0 -12px;
+
+  /* margin: 0 -12px; */
 }
 
 .property-info-mini .property-name-mini {
@@ -418,4 +419,88 @@
     padding-left: 16px;
     padding-right: 16px;
   }
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #666;
+  padding: 20px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #008489;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error State */
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #e74c3c;
+  text-align: center;
+  padding: 20px;
+}
+
+.retry-button {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background-color: #008489;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.retry-button:hover {
+  background-color: #006b6f;
+}
+
+/* No Chat Selected State */
+.no-chat-selected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  padding: 20px;
+}
+
+.empty-state {
+  text-align: center;
+  color: #666;
+  max-width: 250px;
+}
+
+.empty-state h3 {
+  margin-bottom: 12px;
+  color: #333;
+  font-size: 18px;
+}
+
+.empty-state p {
+  line-height: 1.5;
+  margin: 0;
+  font-size: 14px;
 }

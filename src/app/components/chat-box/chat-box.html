@@ -9,7 +9,7 @@
 
   <!-- Messages -->
   <div #chatContainer class="chat-messages">
-    <ng-container *ngFor="let item of chatItems; let i = index">
+    <ng-container *ngFor="let item of chatItems; let i = index;trackBy: trackById">
       <!-- Date separator -->
       <div *ngIf="item.type === 'date'" class="date-separator">
         <span class="date-label">{{item.label}} </span>
@@ -79,7 +79,13 @@
           </button>
 
           <!-- Reaction -->
-          <div *ngIf="item.reaction" class="message-reaction">
+          <div
+            *ngIf="item.reaction"
+            class="message-reaction"
+            [ngStyle]="item.sender === 'host' ? {'right': '8px'} : {'left': '8px'}"
+            [ngClass]="item.sender === 'host' ? 'reaction-host' : 'reaction-user'"
+
+          >
             {{item.reaction}}
           </div>
         </div>

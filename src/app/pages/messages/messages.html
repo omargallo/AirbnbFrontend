@@ -1,13 +1,17 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-3 p-0">
-      <app-messages-box></app-messages-box>
+      <app-messages-box
+        (chatSessionSelected)="onChatSessionSelected($event)"
+      ></app-messages-box>
     </div>
     <div class="col-md-6 p-0">
-      <app-chat-box></app-chat-box>
+      <app-chat-box [selectedChatSession]="selectedChatSession"></app-chat-box>
     </div>
     <div class="col-md-3 p-0">
-      <app-reservation-box></app-reservation-box>
+      <app-reservation-box
+        [selectedChatSession]="selectedChatSession"
+      ></app-reservation-box>
     </div>
   </div>
 </div>
