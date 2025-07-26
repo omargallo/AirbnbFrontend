@@ -103,7 +103,7 @@ export class PropertyService {
 
   // NEW: Get all property types from API
   getAllPropertyTypes(): Observable<PropertyTypeDto[]> {
-    return this.http.get<PropertyTypeDto[]>(this.propertyTypeUrl);
+    return this.http.get<PropertyTypeDto[]>(this.propertyTypeUrl,{withCredentials:true});
   }
 
   getImagesByPropertyId(id: number): Observable<PropertyImage[]> {

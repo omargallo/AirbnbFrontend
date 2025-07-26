@@ -22,7 +22,10 @@ export class AuthInterceptor implements HttpInterceptor {
     if (accessToken) {
       req = this.addToken(req, accessToken);
     }
-
+    req = req.clone({
+      withCredentials: true
+    });
+    console.log("from interceptor")
     return next.handle(req).pipe(
       catchError(error => {
         if (error instanceof HttpErrorResponse && error.status === 401 && !req.url.includes('/auth/login')) {
