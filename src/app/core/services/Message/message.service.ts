@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment.development';
 import { Observable, map } from 'rxjs';
+import { Property } from '../../models/Property';
 
 export interface Result<T> {
   data: T;
@@ -112,31 +113,6 @@ export interface PropertyImage {
   isDeleted: boolean;
 }
 
-export interface Property {
-  id: number;
-  title: string;
-  description: string;
-  city: string;
-  country: string;
-  state: string;
-  latitude: number;
-  longitude: number;
-  pricePerNight: number;
-  maxGuests: number;
-  bedrooms: number;
-  beds: number;
-  bathrooms: number;
-  averageRating: number;
-  reviewCount: number;
-  isFavourite: boolean;
-  isActive: boolean;
-  isDeleted: boolean;
-  propertyTypeId: number;
-  hostId: string;
-  images: PropertyImage[];
-  hostPicture: string | null;
-}
-
 export interface ReservationRequestWithUser extends ReservationRequest {
   userId: string;
   user: User;
@@ -145,7 +121,7 @@ export interface ReservationRequestWithUser extends ReservationRequest {
 export interface ReservePropertyResponse {
   latestReservationRequest: ReservationRequestWithUser;
   chatSession: ChatSessionDto;
-  proeprty: Property; // Note: API has typo "proeprty"
+  proeprty: Property;
   messages: MessageDto[];
 }
 

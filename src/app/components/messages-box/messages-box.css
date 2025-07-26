@@ -1,17 +1,49 @@
-:root {
-  --border-color: #e0e0e0;
-  --background: #ffffff;
-  --primary-text: #333333;
-  --secondary-text: #666666;
-}
-
 .component-container {
   border: 1px solid var(--border-color);
   padding: 20px;
   background-color: var(--background);
   height: 87vh;
   border-left: 0px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollable container for messages */
+.messages-scroll-container {
+  flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+  margin-right: -8px;
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.messages-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+.messages-scroll-container::-webkit-scrollbar-thumb:hover {
+  background-color: #999;
+}
+
+/* Loading indicator in header */
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--secondary-text);
+  font-size: 14px;
 }
 
 .icon-btn {
@@ -53,7 +85,7 @@
 }
 
 .filter-btn:hover:not(.active) {
-  background-color: #f8f9fa;
+  background-color: var(--hover-background);
   border-color: #ccc;
 }
 
@@ -63,13 +95,32 @@
   border-radius: 12px;
   padding: 15px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
   border: 1px solid transparent;
+  position: relative;
 }
 
 .message-thread:hover {
-  background-color: #f8f9fa;
+  background-color: var(--hover-background);
   border-color: #e9ecef;
+  /* transform: translateY(-1px); */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Selected thread styling */
+.message-thread.selected {
+  background-color: #f0f8ff;
+  border-color: var(--primary-color);
+}
+
+.message-thread.selected .message-name {
+  color: var(--primary-color);
+}
+
+/* Unread thread styling */
+.message-thread.unread {
+  background-color: #fafbfc;
+  border-left: 3px solid var(--primary-color);
 }
 
 .profile-img {
@@ -78,32 +129,89 @@
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
+  border: 2px solid #f0f0f0;
+  transition: border-color 0.2s;
+}
+
+.message-thread:hover .profile-img {
+  border-color: #ddd;
 }
 
 .message-name {
   font-weight: 600;
-  font-size: 16px;
   color: var(--primary-text);
-  margin-bottom: 2px;
+  font-size: 14px;
+  
+  /* Text truncation for long names */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  
+  display: inline-block;
+  vertical-align: top;
+  transition: color 0.2s;
 }
 
 .message-preview {
-  font-size: 14px;
   color: var(--secondary-text);
-  margin-bottom: 4px;
-  line-height: 1.4;
+  font-size: 13px;
+  margin-top: 4px;
+  line-height: 1.3;
+  
+  /* Text truncation for long preview text */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 34px;
+  transition: color 0.2s;
 }
 
 .message-details {
+  color: #888;
   font-size: 12px;
-  color: #999;
-  margin-top: 2px;
+  margin-top: 4px;
+  font-style: italic;
+  
+  /* Text truncation for long trip details */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  transition: color 0.2s;
 }
 
 .message-time {
-  font-size: 12px;
   color: #999;
+  font-size: 12px;
   white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.unread-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  margin-left: 6px;
+  vertical-align: middle;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 56, 92, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 56, 92, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 56, 92, 0);
+  }
 }
 
 .placeholder-icon {
@@ -123,16 +231,42 @@
   line-height: 1.4;
 }
 
+/* Pagination info styling */
+.pagination-info {
+  padding: 10px 0;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 10px;
+}
+
+/* Loading states */
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Smooth animations for new messages */
+.message-thread {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Heart emoji styling */
 .message-preview .heart {
-  color: #ff4757;
+  color: var(--primary-color);
   font-size: 16px;
 }
 
-
-
-
-
+/* Search bar styles (commented out in template) */
 .search-bar-container {
   background: #f5f5f5;
   border-radius: 999px;
@@ -169,19 +303,12 @@
   color: #333;
 }
 
-.icon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
 .cancel-btn {
   font-weight: 500;
   font-size: 14px;
   color: black;
   text-decoration: none;
 }
-
 
 @keyframes openFromRight {
   0% {
@@ -206,5 +333,252 @@
     width: 0;
     opacity: 0;
     transform: translateX(30px);
+  }
+}
+
+/* Container adjustments */
+.flex-grow-1 {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.d-flex.justify-content-between {
+  gap: 8px;
+}
+
+/* Hover effects for better UX */
+.message-thread:hover .message-name,
+.message-thread:hover .message-preview,
+.message-thread:hover .message-details {
+  color: #333;
+}
+
+.message-thread:hover .message-time {
+  color: #666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .component-container {
+    padding: 15px;
+  }
+  
+  .message-name {
+    max-width: 120px;
+  }
+  
+  .message-details {
+    max-width: 150px;
+  }
+  
+  .message-preview {
+    -webkit-line-clamp: 1;
+    max-height: 17px;
+  }
+  
+  .profile-img {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .messages-scroll-container {
+    padding-right: 4px;
+    margin-right: -4px;
+  }
+}
+
+/* Focus states for accessibility */
+.message-thread:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.filter-btn:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Loading animation for message threads */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.loading-shimmer {
+  animation: shimmer 1.5s linear infinite;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+  position: sticky;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-color) 0%, transparent 100%);
+  z-index: 10;
+}
+
+/* Better loading states */
+.text-center.py-3 {
+  border-top: 1px solid #f0f0f0;
+  margin-top: 10px;
+}
+
+.text-center.py-3:first-of-type {
+  border-top: none;
+  margin-top: 0;
+}
+
+/* Load more button styling */
+.btn-outline-primary.btn-sm {
+  padding: 6px 16px;
+  font-size: 13px;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-primary.btn-sm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+}
+
+/* End of data indicator */
+.text-muted i {
+  color: #28a745;
+}
+
+/* Development controls styling */
+.mt-4.pt-4.border-top {
+  border-color: #f0f0f0 !important;
+}
+
+.btn-sm {
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 15px;
+}
+
+/* Smooth scroll behavior */
+.messages-scroll-container {
+  scroll-behavior: smooth;
+}
+
+/* Loading overlay for better UX */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+/* Enhanced message thread interactions */
+.message-thread {
+  user-select: none;
+}
+
+.message-thread:active {
+  transform: translateY(1px);
+}
+
+/* Status indicators */
+.status-online {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background: #28a745;
+  border: 2px solid white;
+  border-radius: 50%;
+}
+
+.status-away {
+  background: #ffc107;
+}
+
+.status-offline {
+  background: #6c757d;
+}
+
+/* Message thread skeleton loader */
+.message-thread.skeleton {
+  pointer-events: none;
+}
+
+.message-thread.skeleton .profile-img,
+.message-thread.skeleton .message-name,
+.message-thread.skeleton .message-preview,
+.message-thread.skeleton .message-details {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  color: transparent;
+}
+
+.message-thread.skeleton .profile-img {
+  border-radius: 50%;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .message-thread,
+  .unread-indicator,
+  .btn-outline-primary.btn-sm {
+    animation: none;
+    transition: none;
+  }
+  
+  .messages-scroll-container {
+    scroll-behavior: auto;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border-color: #000000;
+    --primary-text: #000000;
+    --secondary-text: #333333;
+    --primary-color: #0066cc;
+  }
+  
+  .message-thread {
+    border: 2px solid var(--border-color);
+  }
+  
+  .message-thread:hover {
+    border-color: var(--primary-color);
+  }
+}
+
+/* Print styles */
+@media print {
+  .component-container {
+    height: auto;
+    border: none;
+    padding: 0;
+  }
+  
+  .messages-scroll-container {
+    height: auto;
+    overflow: visible;
+  }
+  
+  .filter-btn,
+  .btn,
+  .loading-indicator,
+  .mt-4.pt-4.border-top {
+    display: none;
   }
 }

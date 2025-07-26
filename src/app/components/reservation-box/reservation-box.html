@@ -6,13 +6,13 @@
   </div>
 
   <!-- Loading State -->
-
   <div *ngIf="isLoading" class="text-center mt-4">
     <div class="spinner-border" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
     <p class="mt-2">Loading reservation details...</p>
   </div>
+  
   <!-- Error State -->
   <div *ngIf="error && !isLoading" class="error-state">
     <span>{{error}}</span>
@@ -93,30 +93,49 @@
       <div class="property-info">
         <div class="property-details">
           <h4 class="property-name">{{ reservation.propertyName }}</h4>
-          <p class="property-type">{{ reservation.propertyType }}</p>
-        </div>
-        <span class="chevron-right">›</span>
-      </div>
-    </div>
-
-    <!-- Property Details -->
-    <div class="property-details-section" *ngIf="selectedChatSession">
-      <div class="property-header">
-        <div class="property-info-mini">
-          <h4 class="property-name-mini">
-            {{ selectedChatSession.propertyTitle }}
-          </h4>
-          <p class="property-location">{{ reservation.propertyType }}</p>
+          <p class="property-type">Entire condo • {{ reservation.propertyType }}</p>
         </div>
         <!-- <span class="chevron-right">›</span> -->
       </div>
+
+      <!-- Host Info in Trip Details -->
+      <div class="host-info">
+        <div class="host-details d-flex align-items-start justify-content-center gap-1 flex-column">
+          <span class="host-label">Hosted by {{ reservation.hostName }}</span>
+          <span class="host-reviews">{{ reservation.hostReviews }}</span>
+        </div>
+        <div class="host-avatar">
+          <img [src]="reservation.hostAvatar" alt="Host" class="avatar-img" />
+          <div class="host-badge"></div>
+        </div>
+      </div>
+
+      <!-- Trip Dates and Guests -->
+      <div class="trip-dates" *ngIf="reservation.checkIn">
+        <div class="date-row">
+          <span class="date-label">Check-in</span>
+          <span class="date-value">{{ reservation.checkIn }}</span>
+        </div>
+        
+        <div class="date-row">
+          <span class="date-label">Checkout</span>
+          <span class="date-value">{{ reservation.checkOut }}</span>
+        </div>
+        
+        <div class="date-row">
+          <span class="date-label">Guests</span>
+          <span class="date-value">{{ reservation.guests }}</span>
+        </div>
+      </div>
     </div>
 
+
+
     <!-- Host Info -->
-    <div class="host-info">
+    <div class="host-info" *ngIf="!hasReservation">
       <div class="host-details">
         <h4>Hosted by {{ reservation.hostName }}</h4>
-        <!-- <p class="host-reviews">{{ reservation.hostReviews }}</p> -->
+        <p class="host-reviews">{{ reservation.hostReviews }}</p>
       </div>
       <div class="host-avatar">
         <img [src]="reservation.hostAvatar" alt="Host" class="avatar-img" />
@@ -124,15 +143,15 @@
       </div>
     </div>
 
-    <!-- Check-in/out Details -->
-    <div class="checkin-details" *ngIf="hasReservation && reservation.checkIn">
+    <!-- Check-in/out Details (Only show if no reservation) -->
+    <div class="checkin-details">
       <div class="detail-row">
         <span class="detail-label">Check-in</span>
-        <span class="detail-value">{{ reservation.checkIn }}</span>
+        <span class="detail-value">{{ reservation.checkIn || 'Not set' }}</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">Checkout</span>
-        <span class="detail-value">{{ reservation.checkOut }}</span>
+        <span class="detail-value">{{ reservation.checkOut || 'Not set' }}</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">Guests</span>
@@ -143,7 +162,6 @@
     <!-- Payment Details -->
     <div
       class="payment-section"
-      *ngIf="hasReservation && reservation.nights > 0"
     >
       <h3 class="section-title">Payment Details</h3>
 
@@ -169,7 +187,7 @@
     </div>
 
     <!-- Safety Notice -->
-    <div class="safety-notice mt-2">
+    <div class="safety-notice">
       <h4 class="safety-title">Always communicate through Airbnb</h4>
       <div class="safety-content">
         <p class="safety-text">

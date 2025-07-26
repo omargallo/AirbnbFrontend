@@ -1,55 +1,17 @@
 <div class="component-container">
   <!-- Header -->
   <div class="d-flex justify-content-between align-items-center">
-    <h2 class="fs-3 fw-bold mb-1" >Messages</h2>
+    <h2 class="fs-3 fw-bold mb-1">Messages</h2>
 
-    <!-- Search functionality commented out -->
-    <!--
-    <div
-      class="search-bar-container"
-      [ngClass]="{
-        'active': searchActive,
-        'animate-open': searchActive,
-        'animate-close': closing
-      }"
-    >
-      <i class="bi bi-search search-icon"></i>
-      <input
-        type="text"
-        class="search-input "
-        placeholder="Search all messages"
-        *ngIf="searchActive || closing"
-      />
-    </div>
-
-    <button class="icon-btn" *ngIf="!searchActive" (click)="openSearch()">
-      <i class="bi bi-search"></i>
-    </button>
-
-    <button class="cancel-btn p-2" *ngIf="searchActive" (click)="closeSearch()">
-      Cancel
-    </button>
-    -->
+    <!-- Loading indicator in header when loading more -->
+    <!-- <div *ngIf="isLoadingMore" class="loading-indicator">
+      <div class="spinner-border spinner-border-sm" role="status">
+        <span class="visually-hidden">Loading more...</span>
+      </div>
+    </div> -->
   </div>
-
-  <!-- Loading State -->
-  <div *ngIf="isLoading" class="text-center mt-4">
-    <div class="spinner-border" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-    <p class="mt-2">Loading messages...</p>
-  </div>
-
-  <!-- Error State -->
-  <div *ngIf="error" class="alert alert-danger mt-3">
-    {{ error }}
-    <button class="btn btn-link p-0 ms-2" (click)="loadChatSessions()">
-      Try again
-    </button>
-  </div>
-
   <!-- Filter Buttons -->
-  <div class="d-flex gap-2 mb-4" *ngIf="!isLoading && !error">
+  <div class="d-flex gap-2 mb-4" *ngIf="!error">
     <button
       class="filter-btn"
       [class.active]="activeFilter === 'all'"
@@ -66,12 +28,34 @@
     </button>
   </div>
 
-  <!-- Messages List -->
-  <div *ngIf="getFilteredMessages().length > 0 && !isLoading && !error">
+  <!-- Loading State for initial load -->
+  <div *ngIf="isLoading && currentPage === 1" class="text-center mt-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading messages...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="alert alert-danger mt-3">
+    {{ error }}
+    <button class="btn btn-link p-0 ms-2" (click)="resetAndLoadChatSessions()">
+      Try again
+    </button>
+  </div>
+
+  <!-- Messages List Container with Scroll -->
+  <div
+    *ngIf="getFilteredMessages().length > 0 && !isLoading && !error"
+    class="messages-scroll-container"
+    #messagesContainer
+    (scroll)="onScroll($event)"
+  >
     <div
-      *ngFor="let thread of getFilteredMessages()"
+      *ngFor="let thread of getFilteredMessages(); trackBy: trackByThreadId"
       class="message-thread mb-3"
       [class.unread]="thread.isUnread"
+      [class.selected]="isThreadSelected(thread.id)"
       (click)="openMessage(thread)"
     >
       <div class="d-flex align-items-start">
@@ -83,48 +67,119 @@
         />
         <div class="flex-grow-1">
           <div class="d-flex justify-content-between align-items-start">
-            <div class="message-name">
+            <div class="message-name" [title]="thread.name">
               {{ thread.name }}
               <span *ngIf="thread.isUnread" class="unread-indicator"></span>
             </div>
             <div class="message-time">{{ thread.time }}</div>
           </div>
-          <div class="message-preview" [innerHTML]="thread.preview"></div>
-          <div class="message-details" *ngIf="thread.tripDetails">
+          <div
+            class="message-preview"
+            [innerHTML]="thread.preview"
+            [title]="thread.preview"
+          ></div>
+          <div
+            class="message-details"
+            *ngIf="thread.tripDetails"
+            [title]="thread.tripDetails"
+          >
             {{ thread.tripDetails }}
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Loading more indicator -->
+    <div *ngIf="isLoadingMore" class="text-center py-3">
+      <div class="spinner-border spinner-border-sm" role="status">
+        <span class="visually-hidden">Loading more...</span>
+      </div>
+      <small class="d-block mt-1 text-muted">Loading more messages...</small>
+    </div>
+
+    <!-- End of data indicator -->
+    <div
+      *ngIf="!hasMoreData && messageThreads.length > 0 && !isLoadingMore"
+      class="text-center py-3"
+    >
+      <small class="text-muted">
+        <i class="bi bi-check-circle me-1"></i>
+        All messages loaded ({{ messageThreads.length }} total)
+      </small>
+    </div>
+
+    <!-- Manual load more button (fallback) -->
+    <div *ngIf="hasMoreData && !isLoadingMore" class="text-center py-3">
+      <button
+        class="btn btn-outline-primary btn-sm"
+        (click)="loadMoreManually()"
+        [disabled]="isLoadingMore"
+      >
+        Load More Messages
+      </button>
+    </div>
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="getFilteredMessages().length === 0 && !isLoading && !error" class="text-center mt-5 pt-5">
+  <div
+    *ngIf="getFilteredMessages().length === 0 && !isLoading && !error"
+    class="text-center mt-5 pt-5"
+  >
     <div class="placeholder-icon mb-3">
       <i class="bi bi-chat-dots"></i>
     </div>
     <div class="empty-title mb-2">
-      {{ activeFilter === 'unread' ? 'No unread messages' : 'You don\'t have any messages' }}
+      {{ activeFilter === 'unread' ? 'No unread messages' : 'You don\'t have any
+      messages' }}
     </div>
     <div class="empty-subtitle">
-      {{ activeFilter === 'unread' ? 'All your messages have been read.' : 'When you receive a new message, it will appear here.' }}
+      {{ activeFilter === 'unread' ? 'All your messages have been read.' : 'When
+      you receive a new message, it will appear here.' }}
     </div>
   </div>
 
+  <!-- Pagination Info (Development) -->
+  <!-- <div *ngIf="messageThreads.length > 0 && !isLoading" class="pagination-info">
+    <small class="text-muted">
+      Showing {{ getFilteredMessages().length }} messages
+      <span *ngIf="totalCount > 0"> of {{ totalCount }} total</span>
+      • Page {{ currentPage }}
+      <span *ngIf="hasMoreData"> • More available</span>
+    </small>
+  </div> -->
+
   <!-- Development buttons for testing -->
-  <!-- Remove these in production -->
   <!-- <div class="mt-4 pt-4 border-top" *ngIf="!isLoading">
     <small class="text-muted d-block mb-2">Development Controls:</small>
-    <div class="d-flex gap-2">
-      <button class="btn btn-sm btn-outline-primary" (click)="showMessagesState()">
+    <div class="d-flex gap-2 flex-wrap">
+      <button
+        class="btn btn-sm btn-outline-primary"
+        (click)="showMessagesState()"
+      >
         Reload Messages
       </button>
-      <button class="btn btn-sm btn-outline-secondary" (click)="showEmptyState()">
+      <button
+        class="btn btn-sm btn-outline-secondary"
+        (click)="showEmptyState()"
+      >
         Show Empty State
       </button>
-      <button class="btn btn-sm btn-outline-info" (click)="showMultipleMessagesState()">
-        Load More Messages
+      <button
+        class="btn btn-sm btn-outline-info"
+        (click)="showMultipleMessagesState()"
+      >
+        Load More Messages (50)
       </button>
+      <button
+        class="btn btn-sm btn-outline-success"
+        (click)="loadMoreManually()"
+        [disabled]="!hasMoreData || isLoadingMore"
+      >
+        Manual Load More
+      </button>
+    </div>
+    <div class="mt-2">
+      <small class="text-info">{{ getLoadingInfo() }}</small>
     </div>
   </div> -->
 </div>

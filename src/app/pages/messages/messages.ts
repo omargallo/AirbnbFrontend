@@ -2,20 +2,28 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MessagesBoxComponent } from "../../components/messages-box/messages-box";
 import { ChatBoxComponent } from "../../components/chat-box/chat-box";
 import { ReservationBoxComponent } from "../../components/reservation-box/reservation-box";
-import { ChatSessionDto } from '../../core/services/Message/message.service';
+
+import { ChatService, ChatSessionDto, MessageDto, ReservationRequest, ReservePropertyRequest } from '../../core/services/Message/message.service';
 import { SignalRService } from '../../core/services/SignalRService/signal-rservice';
+import { ChatPlaceholderComponent } from './ChatPlaceholder/ChatPlaceholderComponent';
+import { ChatLoadingComponent } from './ChatLoading/ChatLoadingComponent';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-messages',
-  imports: [MessagesBoxComponent, ChatBoxComponent, ReservationBoxComponent],
+  imports: [MessagesBoxComponent, ChatBoxComponent, ReservationBoxComponent, ChatPlaceholderComponent, ChatLoadingComponent,CommonModule],
   templateUrl: './messages.html',
-  styleUrl: './messages.css'
+  styleUrl: './messages.css',
 })
-export class Messages implements OnInit, OnDestroy{
-
+export class Messages implements OnInit, OnDestroy {
   selectedChatSession: ChatSessionDto | null = null;
-
-  constructor(private signalRService: SignalRService) {}
+  initialMessages: MessageDto[] = [];
+  ReservationWithProperty: any | null = null;
+  isLoadingChat: boolean = false;
+  
+  constructor(
+    private signalRService: SignalRService,
+    private messageService: ChatService) { }
 
   ngOnInit(): void {
     this.startSignalRConnection();
@@ -34,18 +42,44 @@ export class Messages implements OnInit, OnDestroy{
   }
 
   onChatSessionSelected(session: ChatSessionDto): void {
-    console.log('Chat session selected:', session);
-    
-    // Leave previous session if exists
-    // if (this.selectedChatSession) {
-    //   this.signalRService.leaveChatSession(this.selectedChatSession.id);
-    // }
-    
-    this.selectedChatSession = session;
-    
-    // Join new session
-    // if (session && this.signalRService.isConnected()) {
-    //   this.signalRService.joinChatSession(session.id);
-    // }
+    this.isLoadingChat = true;
+    // Reset previous data
+    this.selectedChatSession = null;
+    this.initialMessages = [];
+    this.ReservationWithProperty = null;
+
+    const reserveRequest: any = {
+      propertyId: session.propertyId.toString(),
+      // checkInDate: '',
+      // checkOutDate: '',
+      // guestCount: 0,
+      message: 'Hello, I want to inquire about this property.'
+    };
+
+    console.log(reserveRequest)
+    this.messageService.reserveProperty(reserveRequest).subscribe({
+      next: (res) => {
+        console.log("res", res.data)
+        // Add slight delay for better UX
+        setTimeout(() => {
+          this.selectedChatSession = res.data.chatSession;
+          this.initialMessages = res.data.messages;
+          this.ReservationWithProperty = res.data;
+          this.isLoadingChat = false;
+        }, 500);
+      },
+      error: (err) => {
+        console.error('Error reserving property:', err);
+        this.isLoadingChat = false;
+      }
+    });
+  }
+
+  get hasChatSelected(): boolean {
+    return this.selectedChatSession !== null;
+  }
+
+  get showPlaceholder(): boolean {
+    return !this.isLoadingChat && !this.hasChatSelected;
   }
 }

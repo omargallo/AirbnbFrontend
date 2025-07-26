@@ -29,6 +29,7 @@ interface ChatItem {
 })
 export class ChatBoxComponent implements OnInit, OnDestroy {
   @Input() selectedChatSession: ChatSessionDto | null = null;
+  @Input() initialMessages: MessageDto[] = [];
 
   private destroy$ = new Subject<void>();
 
@@ -40,6 +41,13 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
   isLoading = false;
   isSending = false;
   error: string | null = null;
+
+  // Pagination properties
+  isLoadingOlderMessages = false;
+  currentPage = 1;
+  pageSize = 50;
+  hasMoreMessages = true;
+  isInitialLoad = true;
 
   emojiOptions = ['😀', '❤️', '👍', '👏', '🔥'];
 
@@ -53,6 +61,7 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
     private signalRService: SignalRService,
     private cdr: ChangeDetectorRef
   ) { }
+
   ngOnInit(): void {
     // Initialize with default values or wait for selectedChatSession input
     if (this.selectedChatSession) {
@@ -76,16 +85,36 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedChatSession'] && changes['selectedChatSession'].currentValue) {
+      this.resetPagination();
       this.initializeChatSession();
     }
+
+    if (changes['initialMessages'] && this.initialMessages.length > 0) {
+      this.messages = [...this.initialMessages];
+      this.processChatItems();
+      this.scrollToBottom();
+      // Mark as not initial load since we have messages now
+      this.isInitialLoad = false;
+      // Set current page to 2 since we already have page 1 (initialMessages)
+      this.currentPage = 2;
+    }
   }
+
   trackById(index: number, item: ChatItem): string {
     return item.messageId || index.toString();
   }
 
-
+  private resetPagination(): void {
+    this.currentPage = 1;
+    this.hasMoreMessages = true;
+    this.isInitialLoad = true;
+    this.messages = [];
+    this.chatItems = [];
+    this.isLoadingOlderMessages = false;
+  }
 
   private initializeChatSession(): void {
     if (!this.selectedChatSession) return;
@@ -94,32 +123,71 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
     this.hostProfileImage = this.selectedChatSession.hostAvatarUrl ||
       'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg';
 
-    this.loadMessages();
+    // Don't load messages here - only use initialMessages
+    // this.loadMessages();
     this.markMessagesAsRead();
   }
 
   private loadMessages(): void {
     if (!this.selectedChatSession) return;
 
-    this.isLoading = true;
+    // This method should only be called for loading older messages (pagination)
+    this.isLoadingOlderMessages = true;
     this.error = null;
 
-    this.chatService.getChatMessages(this.selectedChatSession.id, 1, 50)
+    // Store current scroll position and height for maintaining position
+    let previousScrollHeight = 0;
+    if (this.chatContainer) {
+      previousScrollHeight = this.chatContainer.nativeElement.scrollHeight;
+    }
+
+    this.chatService.getChatMessages(this.selectedChatSession.id, this.currentPage, this.pageSize)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (messages: MessageDto[]) => {
-          console.log('Messages loaded:', messages);
-          this.messages = messages;
-          this.processChatItems();
-          this.isLoading = false;
-          this.scrollToBottom();
+          console.log('Older messages loaded:', messages);
+          
+          if (messages.length === 0) {
+            this.hasMoreMessages = false;
+          } else {
+            // Prepend older messages to the beginning of the array
+            this.messages = [...messages, ...this.messages];
+            
+            this.processChatItems();
+            
+            // Maintain scroll position after loading older messages
+            setTimeout(() => {
+              if (this.chatContainer) {
+                const newScrollHeight = this.chatContainer.nativeElement.scrollHeight;
+                const scrollDifference = newScrollHeight - previousScrollHeight;
+                this.chatContainer.nativeElement.scrollTop = scrollDifference;
+              }
+            }, 0);
+            
+            this.currentPage++;
+          }
+
+          this.isLoadingOlderMessages = false;
         },
         error: (error) => {
           console.error('Error loading messages:', error);
           this.error = 'Failed to load messages. Please try again.';
-          this.isLoading = false;
+          this.isLoadingOlderMessages = false;
         }
       });
+  }
+
+  onScroll(event: Event): void {
+    const element = event.target as HTMLElement;
+    
+    // Check if user scrolled to top (with some threshold)
+    // Only load if we have messages (not initial load) and not already loading
+    if (element.scrollTop <= 100 && 
+        !this.isLoadingOlderMessages && 
+        this.hasMoreMessages && 
+        this.messages.length > 0) {
+      this.loadMessages();
+    }
   }
 
   private processChatItems(): void {
@@ -327,6 +395,7 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
   // Helper method to refresh messages (can be called from parent)
   refreshMessages(): void {
     if (this.selectedChatSession) {
+      this.resetPagination();
       this.loadMessages();
     }
   }
