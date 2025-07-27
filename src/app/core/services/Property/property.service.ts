@@ -6,6 +6,10 @@ import { Property } from '../../models/Property';
 import { environment } from '../../../../environments/environment.development';
 import { PropertyImage } from '../../models/PropertyImage';
 
+import {  HttpRequest, HttpErrorResponse } from '@angular/common/http';
+import { catchError } from 'rxjs';
+
+
 interface ApiResponse<T> {
   data: T;
   isSuccess: boolean;
@@ -19,7 +23,6 @@ export interface Result<T> {
   message: string;
 }
 
-// DTO interface matching your backend EXACTLY
 export interface PropertyDisplayDTO {
   id: number;
   title: string;
@@ -103,7 +106,7 @@ export class PropertyService {
 
   // NEW: Get all property types from API
   getAllPropertyTypes(): Observable<PropertyTypeDto[]> {
-    return this.http.get<PropertyTypeDto[]>(this.propertyTypeUrl,{withCredentials:true});
+    return this.http.get<PropertyTypeDto[]>(this.propertyTypeUrl, {withCredentials: true});
   }
 
   getImagesByPropertyId(id: number): Observable<PropertyImage[]> {
@@ -134,28 +137,29 @@ export class PropertyService {
       );
   }
 
-  // FIXED: Update property method with proper DTO structure
-  updateProperty(propertyId: number, propertyData: PropertyDisplayDTO): Observable<Result<PropertyDisplayDTO>> {
-    const url = `${this.baseUrl}/${propertyId}`;
-    
+  // UPDATED: Update property method to match new backend - no propertyId in URL
+  updateProperty(propertyData: PropertyDisplayDTO): Observable<Result<PropertyDisplayDTO>> {
     // Log the payload being sent for debugging
     console.log('Sending update payload:', propertyData);
     
-    return this.http.put<Result<PropertyDisplayDTO>>(url, propertyData);
+    // Send PUT request to base URL without property ID in path
+    return this.http.put<Result<PropertyDisplayDTO>>(this.baseUrl, propertyData, {
+      withCredentials: true // Add credentials for authorization
+    });
   }
 
-  // FIXED: Update specific property section with complete DTO
-  updatePropertySection(propertyId: number, property: Property, sectionData: any, sectionType: string): Observable<Result<PropertyDisplayDTO>> {
+  // UPDATED: Update specific property section with complete DTO
+  updatePropertySection(property: Property, sectionData: any, sectionType: string): Observable<Result<PropertyDisplayDTO>> {
     // Create complete DTO with all required fields
     const completeDTO = this.createCompleteDTO(property, sectionData, sectionType);
-    return this.updateProperty(propertyId, completeDTO);
+    return this.updateProperty(completeDTO);
   }
 
-  // NEW: Create complete DTO with all required fields
+  // UPDATED: Create complete DTO with all required fields
   private createCompleteDTO(property: Property, sectionData: any, sectionType: string): PropertyDisplayDTO {
     // Start with the current property data
     const dto: PropertyDisplayDTO = {
-      id: property.id,
+      id: property.id, // ID is now required in the body
       title: property.title,
       description: property.description,
       city: property.city,
@@ -174,7 +178,7 @@ export class PropertyService {
       isActive: property.isActive || true,
       isDeleted: property.isDeleted || false,
       propertyTypeId: property.propertyTypeId,
-      hostId: property.hostId
+      hostId: property.hostId // This is required for authorization
     };
 
     // Update specific section based on type
@@ -183,20 +187,24 @@ export class PropertyService {
         dto.title = sectionData;
         break;
 
-        case 'rooms':
-          dto.bedrooms = Number(sectionData.bedrooms) || property.bedrooms || 1;
-          dto.beds = Number(sectionData.beds) || property.beds || 1;
-          dto.bathrooms = Number(sectionData.bathrooms) || property.bathrooms || 1;
+      case 'rooms':
+        dto.bedrooms = Number(sectionData.bedrooms) || property.bedrooms || 1;
+        dto.beds = Number(sectionData.beds) || property.beds || 1;
+        dto.bathrooms = Number(sectionData.bathrooms) || property.bathrooms || 1;
         break;
+        
       case 'description':
         dto.description = sectionData;
         break;
+        
       case 'price':
         dto.pricePerNight = Number(sectionData);
         break;
+        
       case 'maxGuests':
         dto.maxGuests = Number(sectionData);
         break;
+        
       case 'propertyId':
         dto.propertyTypeId = Number(sectionData);
         break;
@@ -210,6 +218,7 @@ export class PropertyService {
           dto.longitude = Number(sectionData.coordinates.lng) || property.longitude;
         }
         break;
+        
       default:
         // For other fields, merge the data
         Object.assign(dto, sectionData);
@@ -250,17 +259,75 @@ export class PropertyService {
     });
   }
 
+  // To reverse
+  getGuetsAndPricePerNeightPropertyById(id: number): Observable<{ maxGuests: number, pricePerNeight: number }> {
+    return this.http.get<{ maxGuests: number, pricePerNeight: number }>(`${this.baseUrl}/property/${id}`);
+  }
 
+deletePropertyImages(propertyId: number, imageIds: number[]): Observable<Result<boolean>> {
+  const formData = new FormData();
+  
+  // Add image IDs to form data
+  imageIds.forEach(id => {
+    formData.append('imgIds', id.toString());
+  });
 
-//to reverse
-getGuetsAndPricePerNeightPropertyById(id: number): Observable<{ maxGuests: number,pricePerNeight:number }> {
-  return this.http.get<{ maxGuests: number ,pricePerNeight:number }>(`${this.baseUrl}/property/${id}`);
+  // Create a custom HTTP request to support DELETE with body
+  const request = new HttpRequest(
+    'DELETE',
+    `${this.baseUrl}/property-images/delete/${propertyId}`,
+    formData,
+    {
+      reportProgress: false,
+      withCredentials: true
+    }
+  );
+
+  return this.http.request<Result<boolean>>(request).pipe(
+    map((event: any): Result<boolean> => {
+      console.log('Delete service response event:', event); // Debug log
+      
+      // Handle the response event
+      if (event.body) {
+        return event.body as Result<boolean>;
+      }
+      
+      // FIXED: Handle 204 No Content responses
+      if (event.status === 204) {
+        // Return a successful result for 204 responses
+        return {
+          data: true,
+          isSuccess: true,
+          message: 'Images deleted successfully'
+        } as Result<boolean>;
+      }
+      
+      // Return default success result if no body
+      return {
+        data: true,
+        isSuccess: true,
+        message: 'Images deleted successfully'
+      } as Result<boolean>;
+    }),
+    // Add error handling
+    catchError((error: HttpErrorResponse): Observable<Result<boolean>> => {
+      console.error('Delete images error:', error);
+      
+      // FIXED: Handle 204 as success in error handler too
+      if (error.status === 204) {
+        // 204 is actually success, Angular treats it as error due to no content
+        return new Observable<Result<boolean>>(observer => {
+          observer.next({
+            data: true,
+            isSuccess: true,
+            message: 'Images deleted successfully'
+          });
+          observer.complete();
+        });
+      }
+      
+      throw error;
+    })
+  );
 }
-
-
-
-
-
-
-
 }

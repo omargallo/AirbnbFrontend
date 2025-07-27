@@ -92,9 +92,9 @@ export class FilteredProperties implements OnInit {
       const zoom = Number(params['zoom']);
       if (!isNaN(zoom)) {
         // searchParams.maxDistanceKm = this.calculateDistanceFromZoom(zoom);
-        searchParams.maxDistanceKm = 10000000;
+        searchParams.maxDistanceKm = 1000;
       } else {
-        searchParams.maxDistanceKm = 10000000;
+        searchParams.maxDistanceKm = 1000;
       }
 
       this.searchParams = searchParams;

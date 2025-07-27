@@ -3,6 +3,8 @@ import { UserBookingService, BookingDetailsDTO } from '../../../core/services/Bo
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from "../../../components/header/header";
+import { AuthService } from '../../../core/services/auth.service';
+
 
 @Component({
   selector: 'app-user-bookings',
@@ -16,12 +18,19 @@ export class UserBookings implements OnInit {
   bookings: BookingDetailsDTO[] = [];
   isLoading = true;
   error: string | null = null;
+
+  private userId: string | null = null;
+
   private readonly currentDate = new Date();
-  private readonly userId = '9a4e2846-8058-4458-badd-6cf601405ae2';
+
+  
+  // private readonly userId = '9a4e2846-8058-4458-badd-6cf601405ae2';
 
   constructor(
     private userBookingService: UserBookingService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private authService: AuthService  
+
   ) { }
 
   ngOnInit(): void {
@@ -29,21 +38,29 @@ export class UserBookings implements OnInit {
   }
 
   loadUserBookings(): void {
-    this.isLoading = true;
-    this.error = null;
+  this.isLoading = true;
+  this.error = null;
 
-    this.userBookingService.getBookingsByUserId(this.userId).subscribe({
-      next: (bookings) => {
-        this.bookings = this.sortBookings(bookings);
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.error = err.message;
-        this.isLoading = false;
-        console.error('Error loading bookings:', err);
-      }
-    });
+  this.userId = this.authService.userId;
+
+  if (!this.userId) {
+    this.error = 'User ID is not available.';
+    this.isLoading = false;
+    return;
   }
+
+  this.userBookingService.getBookingsByUserId(this.userId).subscribe({
+    next: (bookings) => {
+      this.bookings = this.sortBookings(bookings);
+      this.isLoading = false;
+    },
+    error: (err) => {
+      this.error = err.message;
+      this.isLoading = false;
+      console.error('Error loading bookings:', err);
+    }
+  });
+}
 
   private sortBookings(bookings: BookingDetailsDTO[]): BookingDetailsDTO[] {
     return bookings.sort((a, b) => {

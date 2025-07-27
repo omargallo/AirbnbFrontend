@@ -10,7 +10,7 @@
   font-size: 1.2rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   transition: 0.3s ease;
-  z-index: 10000000;
+  z-index: 10000;
 }
 
 .toast.show {

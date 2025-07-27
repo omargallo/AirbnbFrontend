@@ -64,5 +64,19 @@
     "showPass": "عرض",
     "confirm": "تأكيد",
     "confirmReset": "تأكيد إعادة تعيين كلمة المرور"
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "firstName": "الاسم الأول",
+    "lastName": "الاسم الأخير",
+    "phoneNumber": "رقم الهاتف",
+    "country": "البلد",
+    "birthDate": "تاريخ الميلاد",
+    "bio": "السيرة الذاتية",
+    "submit": "تم",
+    "aboutMe": "نبذة عني",
+    "travels": "الرحلات السابقة",
+    "edit": "تعديل",
+    "yourReviews": "التقييمات التي كتبتها"
   }
 }

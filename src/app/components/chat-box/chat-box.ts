@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ChatService, MessageDto, ChatSessionDto } from '../../core/services/Message/message.service';
 import { Subject, takeUntil } from 'rxjs';
 import { SignalRService } from '../../core/services/SignalRService/signal-rservice';
+import { AuthService } from '../../core/services/auth.service';
 
 interface ChatItem {
   type: 'date' | 'message' | 'status';
@@ -31,6 +32,8 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
   @Input() selectedChatSession: ChatSessionDto | null = null;
   @Input() initialMessages: MessageDto[] = [];
 
+  private currentUserId: string | null = null;
+
   private destroy$ = new Subject<void>();
 
   hostProfileImage = '';
@@ -53,16 +56,21 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
 
   chatItems: ChatItem[] = [];
   messages: MessageDto[] = [];
+  isHost: boolean = false;
 
   @ViewChild('chatContainer') chatContainer!: ElementRef;
 
   constructor(
     private chatService: ChatService,
     private signalRService: SignalRService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
+
   ) { }
 
   ngOnInit(): void {
+    this.currentUserId = this.authService.userId;
+
     // Initialize with default values or wait for selectedChatSession input
     if (this.selectedChatSession) {
       this.initializeChatSession();
@@ -87,12 +95,12 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedChatSession'] && changes['selectedChatSession'].currentValue) {
+    if (changes['selectedChatSession'] && changes['selectedChatSession']?.currentValue) {
       this.resetPagination();
       this.initializeChatSession();
     }
 
-    if (changes['initialMessages'] && this.initialMessages.length > 0) {
+    if (changes['initialMessages'] && this.initialMessages?.length > 0) {
       this.messages = [...this.initialMessages];
       this.processChatItems();
       this.scrollToBottom();
@@ -117,9 +125,12 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
   }
 
   private initializeChatSession(): void {
+   if(this.selectedChatSession){
+    this.isHost=this.selectedChatSession.hostId==this.currentUserId
+   }
     if (!this.selectedChatSession) return;
 
-    this.hostName = this.selectedChatSession.hostName;
+    this.hostName = this.isHost? this.selectedChatSession.userName : this.selectedChatSession.hostName;
     this.hostProfileImage = this.selectedChatSession.hostAvatarUrl ||
       'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg';
 
@@ -146,15 +157,15 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (messages: MessageDto[]) => {
           console.log('Older messages loaded:', messages);
-          
+
           if (messages.length === 0) {
             this.hasMoreMessages = false;
           } else {
             // Prepend older messages to the beginning of the array
             this.messages = [...messages, ...this.messages];
-            
+
             this.processChatItems();
-            
+
             // Maintain scroll position after loading older messages
             setTimeout(() => {
               if (this.chatContainer) {
@@ -163,7 +174,7 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
                 this.chatContainer.nativeElement.scrollTop = scrollDifference;
               }
             }, 0);
-            
+
             this.currentPage++;
           }
 
@@ -179,13 +190,13 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
 
   onScroll(event: Event): void {
     const element = event.target as HTMLElement;
-    
+
     // Check if user scrolled to top (with some threshold)
     // Only load if we have messages (not initial load) and not already loading
-    if (element.scrollTop <= 100 && 
-        !this.isLoadingOlderMessages && 
-        this.hasMoreMessages && 
-        this.messages.length > 0) {
+    if (element.scrollTop <= 100 &&
+      !this.isLoadingOlderMessages &&
+      this.hasMoreMessages &&
+      this.messages.length > 0) {
       this.loadMessages();
     }
   }

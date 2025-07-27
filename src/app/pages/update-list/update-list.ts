@@ -1,4 +1,3 @@
-
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -300,60 +299,75 @@ export class UpdateList implements OnInit, OnDestroy {
   }
 
   // Save functionality
-  onSaveCurrentSection(): void {
-    const activeSection = this.getActiveSectionObject();
-    if (activeSection && activeSection.hasChanges && !activeSection.isSaving) {
-      this.saveSection(activeSection);
-    }
-  }
-
-  private async saveSection(section: MenuSection): Promise<void> {
-    section.isSaving = true;
-    
-    try {
-      // Handle photos section specially
-      if (section.id === 'photos') {
-        if (this.photosComponent) {
-          await this.photosComponent.handleSave();
-          
-          // Update section state
-          section.hasChanges = false;
-          section.isSaving = false;
-          section.lastSaved = new Date();
-          
-          console.log('Successfully saved photos');
-        }
-      } else {
-        // Handle other sections with API calls
-        const sectionData = this.getSectionDataForSave(section.id);
+ private async saveSection(section: MenuSection): Promise<void> {
+  section.isSaving = true;
+  
+  try {
+    // Handle photos section specially
+    if (section.id === 'photos') {
+      if (this.photosComponent) {
+        await this.photosComponent.handleSave();
         
-        if (this.originalProperty && sectionData !== null && sectionData !== undefined) {
-          await this.propertyService.updatePropertySection(
-            this.propertyId,
-            this.originalProperty,
-            sectionData,
-            section.id
-          ).toPromise();
-
-          // Update section state
-          section.hasChanges = false;
-          section.isSaving = false;
-          section.lastSaved = new Date();
-
-          // Update original property data
-          this.updateOriginalPropertyData(section.id, sectionData);
-          
-          console.log(`Successfully saved ${section.id}`);
-        }
+        // Update section state
+        section.hasChanges = false;
+        section.isSaving = false;
+        section.lastSaved = new Date();
+        
+        console.log('Successfully saved photos');
       }
-    } catch (error) {
-      section.isSaving = false;
-      console.error(`Error saving ${section.id}:`, error);
-      alert(`Failed to save ${section.label}`);
+    } else {
+      // Handle other sections with API calls
+      const sectionData = this.getSectionDataForSave(section.id);
+      
+      if (this.originalProperty && sectionData !== null && sectionData !== undefined) {
+        // UPDATED: Remove propertyId parameter since it's now in the DTO body
+        await this.propertyService.updatePropertySection(
+          this.originalProperty,
+          sectionData,
+          section.id
+        ).toPromise();
+
+        // Update section state
+        section.hasChanges = false;
+        section.isSaving = false;
+        section.lastSaved = new Date();
+
+        // Update original property data
+        this.updateOriginalPropertyData(section.id, sectionData);
+        
+        console.log(`Successfully saved ${section.id}`);
+      }
     }
+  } catch (error: any) { // Type assertion to 'any' to access error properties
+    section.isSaving = false;
+    console.error(`Error saving ${section.id}:`, error);
     
-    this.cdr.detectChanges();
+    // Enhanced error handling with proper typing
+    const httpError = error?.error || error;
+    const status = error?.status || httpError?.status;
+    const message = httpError?.message || error?.message || 'Unknown error';
+    
+    if (status === 401) {
+      alert(`Unauthorized: You don't have permission to update this property`);
+    } else if (status === 404) {
+      alert(`Property not found`);
+    } else if (status === 409) {
+      alert(`Conflict: There was a reference conflict while updating`);
+    } else {
+      alert(`Failed to save ${section.label}: ${message}`);
+    }
   }
+  
+  this.cdr.detectChanges();
+}
+
+// Also add this method to your component for the Save button functionality
+onSaveCurrentSection(): void {
+  const activeSection = this.getActiveSectionObject();
+  if (activeSection && activeSection.hasChanges && !activeSection.isSaving) {
+    this.saveSection(activeSection);
+  }
+}
 
   private getSectionDataForSave(sectionId: string): any {
     switch (sectionId) {

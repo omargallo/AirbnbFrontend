@@ -37,6 +37,9 @@ import { PropertyBookings } from './pages/booking/property-bookings/property-boo
 import { Availability } from './pages/availability-page/availability-page';
 import { Host } from './layout/host/host';
 import { Profile } from './pages/profile/profile';
+import { UpdateProfile } from './pages/update-profile/update-profile';
+import { YourReviews } from './pages/your-reviews/your-reviews';
+import { Notifications } from './pages/notifications/notifications';
 
 export const routes: Routes = [
   {
@@ -55,6 +58,9 @@ export const routes: Routes = [
       },
       { path: 'Messages', component: Messages },
       { path: 'profile/:id', component: Profile },
+      { path: 'update-profile/:id', component: UpdateProfile },
+      { path: 'your-reviews', component: YourReviews },
+      { path: 'notifications', component: Notifications },
     ],
   },
   {
@@ -85,7 +91,7 @@ export const routes: Routes = [
       { path: 'step3-6-safety', component: Step36Safety },
     ],
   },
-  { path: 'take-info/:id', component: Profile },
+  { path: 'take-info/:id', component: UpdateProfile },
   { path: 'host', component: HostProperties },
   { path: 'guesttbookings', component: UserBookings },
 

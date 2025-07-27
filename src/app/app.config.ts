@@ -40,6 +40,7 @@ export const appConfig: ApplicationConfig = {
 
     provideZoneChangeDetection(),
 
+    
     //  importProvidersFrom(GoogleMapsModule)
     // provideZonelessChangeDetection(),
   ],
