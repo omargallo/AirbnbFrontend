@@ -107,7 +107,7 @@
   (close)="onClose()"
   (finish)="onFinish($event)"
   [show]="show"
-  [userId]="'2'"
+  [userId]="authService.userId ?? undefined"
   class="col-12"
 >
 </app-wish-list-modal>

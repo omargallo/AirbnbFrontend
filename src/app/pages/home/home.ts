@@ -32,7 +32,7 @@ export class Home {
     private propertyService: PropertyService,
     private router: Router,
     private wishlistService: WishlistService,
-    private authService: AuthService,
+    public authService: AuthService,
     private dialogService: DialogService,
     private snackBar: MatSnackBar
   ) { }
@@ -123,22 +123,35 @@ export class Home {
       return;
     }
 
-    const property = this.properties.find(p => p.id === id);
+    let foundProperty: Property | undefined;
 
-    if (property?.isFavourite) {
+    for (let section of this.sectionProperties) {
+      const prop = section.properties.find(p => p.id === id);
+      if (prop) {
+        foundProperty = prop;
+        break;
+      }
+    }
+
+    if (foundProperty?.isFavourite) {
       this.removeFromWishlist(id);
     } else {
       this.selectedPropertyId = id;
-      this.show = !this.show;
+      this.show = true;
     }
   }
+
 
   removeFromWishlist(propertyId: number) {
     this.wishlistService.removePropertyFromWishlist(propertyId).subscribe({
       next: (success) => {
         if (success) {
-          const property = this.properties.find(p => p.id === propertyId);
-          if (property) property.isFavourite = false;
+          for (let section of this.sectionProperties) {
+            const property = section.properties.find(p => p.id === propertyId);
+            if (property) {
+              property.isFavourite = false;
+            }
+          }
           this.showToast('Property removed from wishlist', 'bottom', 'left');
         } else {
           this.showToast("Couldn't remove the property", 'bottom', 'left');
@@ -150,13 +163,18 @@ export class Home {
     });
   }
 
+
   onFinish(observable: Observable<boolean>) {
     this.onClose();
     observable.subscribe({
       next: (success) => {
         if (success) {
-          const property = this.properties.find(p => p.id === this.selectedPropertyId);
-          if (property) property.isFavourite = true;
+          for (let section of this.sectionProperties) {
+            const property = section.properties.find(p => p.id === this.selectedPropertyId);
+            if (property) {
+              property.isFavourite = true;
+            }
+          }
 
           this.showToast('Property added to wishlist', 'bottom', 'left');
         } else {
@@ -168,6 +186,7 @@ export class Home {
       }
     });
   }
+
 
   private showToast(message: string, vertical: 'top' | 'bottom', horizontal: 'left' | 'right') {
     this.snackBar.open(message, 'Close', {
