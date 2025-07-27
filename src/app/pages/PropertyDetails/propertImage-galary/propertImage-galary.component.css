@@ -54,7 +54,7 @@ overflow-x: hidden;
   font-size: 14px;
   cursor: pointer;
   transition: color 0.2s ease;
-  max-height: 40px;
+  /* max-height: 40px; */
   padding: 10px;
 
   border-radius: 12px 12px 12px 12px;

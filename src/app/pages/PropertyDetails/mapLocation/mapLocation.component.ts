@@ -4,18 +4,25 @@ import { PropertyDisplayDTO, PropertyService } from '../../../core/services/Prop
 import { ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
 import { Property } from '../../../core/models/Property';
-// import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+// import { DaterangepickerDirective } from 'ngx-daterangepicker-material';
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+import { FormsModule } from '@angular/forms';
+import moment from 'moment';
 
-
+// npm install angular-calendar date-fns
+//npm install ng2-date-picker --legacy-peer-deps
 @Component({
   selector: 'app-mapLocation',
     standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,LeafletModule,NgxDaterangepickerMd,FormsModule],
   templateUrl: './mapLocation.component.html',
   styleUrls: ['./mapLocation.component.css']
 })
 export class MapLocationComponent implements OnInit {
  @Input() propertyId!: number;
+ 
+
 
   options!: L.MapOptions;
   layers: L.Layer[] = [];
