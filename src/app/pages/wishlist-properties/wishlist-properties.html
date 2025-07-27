@@ -3,10 +3,7 @@
     *ngIf="!isLoading && properties.length > 0"
     class="d-flex align-items-center gap-4 mb-4"
   >
-    <button
-      class="btn goBack  rounded-circle p-2"
-      (click)="goBack()"
-    >
+    <button class="btn goBack rounded-circle p-2" (click)="goBack()">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path
           d="M15 18L9 12L15 6"
@@ -37,21 +34,29 @@
       class="col-lg-3 col-md-4 col-sm-6 mb-4"
       *ngFor="let property of properties; trackBy: trackByPropertyId"
     >
-      <a
-        [routerLink]="['/property', property.id]"
-        style="text-decoration: none;"
-        target="_blank"
+      <app-slider-card
+        [propertyId]="property.id"
+        (cardClick)="onPropertyClick($event)"
+        (wishlistClick)="onWishlistClick($event)"
+        [imageUrl]="getPropertyImage(property)"
+        [title]="property.title"
+        [subtitle]="property.city + ', ' + property.country"
+        [price]="property.pricePerNight"
+        [rating]="property.averageRating"
+        [isFavourite]="property.isFavourite ?? false"
       >
-        <app-slider-card
-          [imageUrl]="getPropertyImage(property)"
-          [title]="property.title"
-          [subtitle]="property.city + ', ' + property.country"
-          [price]="property.pricePerNight"
-          [rating]="property.averageRating"
-          [isFavourite]="property.isFavourite ?? false"
-        >
-        </app-slider-card>
-      </a>
+      </app-slider-card>
     </div>
   </div>
+
+  <app-wish-list-modal
+    *ngIf="show"
+    [propertyId]="selectedPropertyId"
+    (close)="onClose()"
+    (finish)="onFinish($event)"
+    [show]="show"
+    [userId]="authService.userId ?? undefined"
+    class="col-12"
+  >
+  </app-wish-list-modal>
 </div>

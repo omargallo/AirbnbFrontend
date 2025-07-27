@@ -27,7 +27,9 @@ export class MainLayout {
   checkIfSecondRoute() {
     this.isSecondRoute =
       this.router.url.startsWith('/WishLists') ||
-      this.router.url.startsWith('/wishlist');
+      this.router.url.startsWith('/wishlist')||
+      this.router.url.startsWith('/profile') ||
+      this.router.url.startsWith('/update-profile');
   }
   ngAfterViewInit(): void {
     this.router.events.subscribe(() => {

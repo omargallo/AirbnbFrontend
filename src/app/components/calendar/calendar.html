@@ -3,71 +3,46 @@
   <div class="calendar-header">
     <div class="year-display">{{ currentYear }}</div>
     <div class="d-flex items-center gap-2">
+      <!-- Property Selector Dropdown -->
       <div class="view-selector-2">
-        <button
-          class="view-btn"
-          [class.active]="settings.viewType === 'month'"
-          (click)="toggleProperty()"
-        >
-          Name
-          <svg
-            class="dropdown-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
+        <button class="view-btn" (click)="toggleProperty()">
+          {{ selectedPropertyTitle }}
+          <svg class="dropdown-icon" viewBox="0 0 24 24" stroke="currentColor">
             <polyline points="6,9 12,15 18,9"></polyline>
           </svg>
         </button>
-        <!-- View Type Dropdown -->
+
         <div class="view-dropdown-2" [class.show]="showPropertyDropdown">
           <div class="dropdown-content">
-            <label class="radio-option justify-content-between">
+            <label
+              *ngFor="let property of properties"
+              class="radio-option justify-content-between"
+            >
               <input
                 type="radio"
-                name="viewType"
-                value="month"
-                [checked]="settings.viewType === 'month'"
-                (change)="setViewType('month')"
+                name="property"
+                [value]="property.id"
+                [checked]="selectedPropertyId === property.id.toString()"
+                (change)="setProperty(property.id.toString())"
               />
               <span class="radio-custom"></span>
               <div class="d-flex items-center justify-content-between gap-2">
-                <p class="mb-0">First Name</p>
+                <p class="mb-0">{{ property.title }}</p>
                 <img
-                  alt="name"
-                  src="assets/images/deafult.png"
+                  alt="{{ property.title }}"
+                  [src]="getPropertyImage(property)"
                   class="propertyavatar"
                 />
               </div>
             </label>
-            <label class="radio-option justify-content-between">
-              <input
-                type="radio"
-                name="viewType"
-                value="year"
-                [checked]="settings.viewType === 'year'"
-                (change)="setViewType('year')"
-              />
-              <span class="radio-custom"></span>
-              <div class="d-flex items-center justify-content-between gap-2">
-                <p class="mb-0">First Name</p>
-                <img
-                  alt="name"
-                  src="assets/images/deafult.png"
-                  class="propertyavatar"
-                />
-              </div>
-            </label>
+
             <div class="dropdown-actions">
-              <button class="close-btn" (click)="closeProperty()">
-                Close
-              </button>
-              <button class="apply-btn" (click)="setProperty('1')">Apply</button>
+              <button class="close-btn" (click)="closeProperty()">Close</button>
             </div>
           </div>
         </div>
       </div>
+
       <div class="view-selector">
         <button
           class="view-btn"
@@ -133,9 +108,9 @@
         >
           <div class="month-header">
             <h3>{{ format(monthData.month, 'MMMM') }}</h3>
-            <span class="discount-indicator" *ngIf="monthData.hasDiscount">
+            <!-- <span class="discount-indicator" *ngIf="monthData.hasDiscount">
               1 discount
-            </span>
+            </span> -->
           </div>
 
           <!-- Days of week header -->
@@ -151,16 +126,13 @@
               [class.other-month]="!day.inCurrentMonth"
               [class.disabled]="day.isDisabled"
               [class.available]="day.isAvailable"
-              [class.not-available]="!day.isAvailable && !day.isDisabled"
+              [class.not-available]="!day.isAvailable && day.inCurrentMonth && !day.isDisabled"
               [class.selected]="day.isSelected"
               [class.highlighted]="day.isHighlighted"
               (click)="selectDate(day.date)"
             >
               <div class="day-number">{{ format(day.date, 'd') }}</div>
-              <div
-                class="day-price"
-                *ngIf="day.price && !day.isDisabled"
-              >
+              <div class="day-price" *ngIf="day.price && !day.isDisabled">
                 ${{ day.price }}
               </div>
             </div>
@@ -170,7 +142,9 @@
     </ng-container>
 
     <!-- Month View - Single Month -->
-    <ng-container *ngIf="settings.viewType === 'month' && processedCurrentMonth">
+    <ng-container
+      *ngIf="settings.viewType === 'month' && processedCurrentMonth"
+    >
       <div class="single-month">
         <div class="month-navigation">
           <button
@@ -189,12 +163,6 @@
           </button>
 
           <h2>{{ format(currentMonth, 'MMMM yyyy') }}</h2>
-          <span
-            class="discount-indicator"
-            *ngIf="processedCurrentMonth.hasDiscount"
-          >
-            1 discount
-          </span>
 
           <button
             class="nav-btn"
@@ -225,16 +193,13 @@
             [class.other-month]="!day.inCurrentMonth"
             [class.disabled]="day.isDisabled"
             [class.available]="day.isAvailable"
-            [class.not-available]="!day.isAvailable && !day.isDisabled"
+            [class.not-available]="!day.isAvailable && day.inCurrentMonth && !day.isDisabled"
             [class.selected]="day.isSelected"
             [class.highlighted]="day.isHighlighted"
             (click)="selectDate(day.date)"
           >
             <div class="day-number">{{ format(day.date, 'd') }}</div>
-            <div
-              class="day-price"
-              *ngIf="day.price && !day.isDisabled"
-            >
+            <div class="day-price" *ngIf="day.price && !day.isDisabled">
               ${{ day.price }}
             </div>
           </div>

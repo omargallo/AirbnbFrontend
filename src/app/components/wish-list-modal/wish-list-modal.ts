@@ -8,6 +8,7 @@ import { Loader } from "../../shared/components/loader/loader";
 import { ConfirmService } from '../../core/services/confirm.service';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-wish-list-modal',
@@ -19,6 +20,7 @@ export class WishListModal implements OnInit {
   @Input() propertyId!: number;
   @Input() show: boolean = false
   @Input() userId?: string;
+
   @Output() close = new EventEmitter<void>()
   @Output() finish = new EventEmitter<Observable<boolean>>()
 
@@ -35,12 +37,10 @@ export class WishListModal implements OnInit {
   constructor(
     private wishlistService: WishlistService,
     private cdr: ChangeDetectorRef,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    private snackBar: MatSnackBar
   ) {
   }
-
-
-
 
   ngOnInit() {
 
@@ -88,16 +88,21 @@ export class WishListModal implements OnInit {
   onWishListClicik(wishlistId: number) {
     console.log("wishlist and property id ", wishlistId, this.propertyId)
     if (!wishlistId || !this.propertyId) {
-      this.confirmService.fail("Failed", "Something went wrong, try again!");
+      this.snackBar.open('Something went wrong, try again!', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'left',
+        verticalPosition: 'bottom',
+        panelClass: ['custom-snackbar']
+      });
+
       return
     }
     let obj = this.wishlistService
       .addPropertyToWishlist(wishlistId, this.propertyId)
     this.onResponse(obj)
     this.close.emit()
-    
-  }
 
+  }
 
 
   onClose() {
@@ -137,21 +142,30 @@ export class WishListModal implements OnInit {
       next: (response) => {
         this.lists.push(response.data);
         this.isLoading = false;
-        this.confirmService.success("", "property added");
+
+        this.finish.emit(new Observable<boolean>((observer) => {
+          observer.next(true);
+          observer.complete();
+        }));
+
+        this.snackBar.open('Property added', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'left',
+          verticalPosition: 'bottom',
+          panelClass: ['custom-snackbar']
+        });
+
       },
       error: (error) => {
         this.isLoading = false;
         console.log("couldn't create new wishlist", error);
-        this.confirmService.show(
-          "Fail",
-          "Something went wrong, try again!",
-          () => { },
-          {
-            okText: 'Ok',
-            isPrompt: true,
-            isSuccess: false
-          }
-        );
+        this.snackBar.open('Something went wrong, try again!', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'left',
+          verticalPosition: 'bottom',
+          panelClass: ['custom-snackbar']
+        });
+
       }
     });
 

@@ -199,7 +199,9 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.isMessagesRoute =
       this.router.url.startsWith('/Messages') ||
       this.router.url.startsWith('/WishLists') ||
-      this.router.url.startsWith('/wishlist');
+      this.router.url.startsWith('/wishlist') ||
+      this.router.url.startsWith('/profile') ||
+      this.router.url.startsWith('/update-profile');
   }
 
   ngAfterViewInit(): void {
@@ -218,6 +220,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.lang.switchLang(lang);
     if (lang == 'ar') {
       document.body.classList.contains('dRTL');
+      console.log(true);
     } else {
       document.body.classList.contains('dLTR');
     }

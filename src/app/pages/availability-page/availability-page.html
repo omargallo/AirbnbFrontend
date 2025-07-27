@@ -1,134 +1,19 @@
 <div class="availability-page">
   <!-- Main Calendar Area -->
-  <div class="calendar-area">
+  <div class="loading-indicator" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading calendar data...</p>
+  </div>
+
+  <div class="calendar-area" [class.loading]="isLoading">
     <app-calendar
+    
       [settings]="calendarSettings"
       (dateSelected)="onDateSelected($event)"
       (settingsChanged)="onCalendarSettingsChanged($event)"
+      (propertySelected)="onPropertySelected($event)"
     >
     </app-calendar>
-
-    <!-- Selected Nights Info Panel -->
-    <div class="selected-nights-panel" *ngIf="selectedNightInfo">
-      <div class="panel-header">
-        <h3>
-          {{ selectedNightInfo.nights }} night{{ selectedNightInfo.nights > 1 ?
-          's' : '' }}
-        </h3>
-        <button class="close-btn" (click)="clearSelection()">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-
-      <!-- Open/Block Toggle -->
-      <div class="availability-toggle">
-        <button
-          class="toggle-btn"
-          [class.active]="availabilityMode === 'open'"
-          (click)="setAvailabilityMode('open')"
-        >
-          Open
-        </button>
-        <button
-          class="toggle-btn"
-          [class.active]="availabilityMode === 'blocked'"
-          (click)="setAvailabilityMode('blocked')"
-        >
-          Block nights
-        </button>
-      </div>
-
-      <!-- Pricing Info -->
-      <div class="pricing-info" *ngIf="availabilityMode === 'open'">
-        <div class="price-display">
-          <span class="price-amount">${{ selectedNightInfo.basePrice }}</span>
-        </div>
-
-        <!-- Discount Info -->
-        <div class="discount-info" *ngIf="selectedNightInfo.hasDiscount">
-          <button class="discount-btn" (click)="showDiscountDetails()">
-            <span
-              >${{ selectedNightInfo.discountRange?.min }} – ${{
-              selectedNightInfo.discountRange?.max }} with last-minute
-              discount</span
-            >
-            <svg
-              class="chevron-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <polyline points="9,18 15,12 9,6"></polyline>
-            </svg>
-          </button>
-        </div>
-
-        <!-- Similar Listings -->
-        <button class="similar-listings-btn" (click)="showSimilarListings()">
-          <svg
-            class="location-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-            <circle cx="12" cy="10" r="3"></circle>
-          </svg>
-          <span>View similar listings</span>
-        </button>
-
-        <!-- Private Note -->
-        <button class="private-note-btn" (click)="addPrivateNote()">
-          <span>Add a private note</span>
-          <svg
-            class="chevron-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <polyline points="9,18 15,12 9,6"></polyline>
-          </svg>
-        </button>
-      </div>
-
-      <!-- Blocked Nights Info -->
-      <div class="blocked-info" *ngIf="availabilityMode === 'blocked'">
-        <p class="blocked-message">
-          These nights will be blocked and unavailable for booking.
-        </p>
-
-        <button class="add-note-btn" (click)="addBlockedNote()">
-          <span>Add a reason (optional)</span>
-          <svg
-            class="chevron-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <polyline points="9,18 15,12 9,6"></polyline>
-          </svg>
-        </button>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="panel-actions" *ngIf="selectedNightInfo">
-        <button class="save-btn" (click)="saveChanges()">
-          {{ availabilityMode === 'open' ? 'Save' : 'Block nights' }}
-        </button>
-      </div>
-    </div>
   </div>
 
   <!-- Settings Panel -->
@@ -136,7 +21,13 @@
     <app-calendar-settings
       [showBlockOptions]="showBlockOptions"
       [settings]="fullSettings"
+      [selectedPropertyId]="selectedPropertyId"
+      [selectedDatePrice]="selectedDatePrice"
       (settingsChanged)="onFullSettingsChanged($event)"
+      (availabilityModeChanged)="setAvailabilityMode($event)"
+      (priceChanged)="onPriceChanged($event)"
+      (saveChanges)="saveChanges()"
+      (clearSelection)="clearSelection()"
     >
     </app-calendar-settings>
   </div>

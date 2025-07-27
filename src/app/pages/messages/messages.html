@@ -10,19 +10,19 @@
     <div class="col-md-9 p-0" *ngIf="isLoadingChat">
       <app-chat-loading></app-chat-loading>
     </div>
-    
+
     <div class="col-md-9 p-0" *ngIf="!hasChatSelected">
       <app-chat-placeholder></app-chat-placeholder>
     </div>
 
     <ng-container *ngIf="hasChatSelected">
-      <div class="col-md-6 p-0">
+      <div [ngClass]="{'col-md-9': isHost, 'col-md-6': !isHost}" class="p-0">
         <app-chat-box
           [selectedChatSession]="selectedChatSession"
           [initialMessages]="initialMessages"
         ></app-chat-box>
       </div>
-      <div class="col-md-3 p-0">
+      <div class="col-md-3 p-0" *ngIf="!this.isHost">
         <app-reservation-box
           [selectedChatSession]="selectedChatSession"
           [ReservationWithProperty]="ReservationWithProperty"
