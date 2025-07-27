@@ -1,34 +1,48 @@
 <app-propertImage-galary [propertyId]="propertyId"></app-propertImage-galary>
 
 
- <div class="property-details-box mt-2">
-  <div class="row ">
-      <div class="col-md-8">
+<div class="container-lg d-flex flex-column">
+
+  <div class="property-details-box mt-2 d-flex justify-content-between ">
+    <div class="d-flex flex-column ">
+      <div class="col-md-12">
         <!-- property info, description, amenities, etc. -->
         <app-amenities-section [propertyId]="propertyId"></app-amenities-section>
       </div>
-      <div class="col-md-4 fixed-reserve">
+      <div class="col-md-12 fixed-reserve">
         <!-- <app-reverse-section ></app-reverse-section> -->
+        <div class="col-md-12">
+
+          <app-BookingCalendar 
+              [propertyId]="propertyId" 
+              [checkIn]="selectedDates.start" 
+              [checkOut]="selectedDates.end"
+              [dateMap]="dateMap"
+            (datedChange)="onDateChange($event)">
+          </app-BookingCalendar>
+
+        </div>
       </div>
-  </div> 
-  <div class="bookinCalender">
-    <div class="row">
-      <div class="col-md-8">
+    </div>
+    <div class="bookinCalender  position-relative" style="position: relative !important;">
+      <!-- <div class="row"> -->
+      <!-- <div class="col-md-8">
 
-            <app-BookingCalendar 
-                  [propertyId]="propertyId"
-                  (dateSelected)="onDateSelected($event)">
-            </app-BookingCalendar>
+        <app-BookingCalendar [propertyId]="propertyId" [checkIn]="selectedDates.start" [checkOut]="selectedDates.end"
+          (datedChange)="onDateChange($event)">
+        </app-BookingCalendar>
 
-      </div>
-      <div class="col-md-4">
+      </div> -->
+      <div class="col-md-12 sticky-box" style="position: sticky; top: 90px; ">
 
-        <app-reverse-section   
-        [propertyId]="propertyId"
-                [checkIn]="selectedDates.start"
-                [checkOut]="selectedDates.end"
-                [guests]="guestCount"
-                (guestChange)="onGuestChange($event)">
+        <app-reverse-section 
+          [dateMap]="dateMap"
+          [propertyId]="propertyId"
+          [checkIn]="selectedDates.start"
+          [checkOut]="selectedDates.end"
+          [guests]="guestCount" 
+          (guestChange)="onGuestChange($event)" 
+          (dateChange)="onDateChange($event)">
         </app-reverse-section>
 
 
@@ -37,15 +51,16 @@
         <app-guest-reviews [propertyId]="propertyId"></app-guest-reviews> 
       </div> -->
 
-      <div class="mapSection mt-15">
-            <app-mapLocation [propertyId]="propertyId"></app-mapLocation>
-      </div>
+
+      <!-- </div> -->
     </div>
   </div>
+
+
+  <div class="mapSection mt-15 mx-auto col-12">
+    <app-mapLocation [propertyId]="propertyId"></app-mapLocation>
+  </div>
 </div>
-
-
-
 
 <div class="property-container">
   <!-- Loading State -->
@@ -53,34 +68,27 @@
     <div class="spinner"></div>
   </div>
 
- 
+
 
   <!-- Property Content -->
   <div *ngIf="propertyId && !isLoading" class="property-content">
     <h1>{{ property.title }}</h1>
     <p>{{ property.description }}</p>
-    
+
     <!-- Navigation Tabs -->
     <div class="tabs">
-      <button 
-        [class.active]="activeTab === 'gallery'"
-        (click)="changeTab('gallery')">
+      <button [class.active]="activeTab === 'gallery'" (click)="changeTab('gallery')">
         Gallery
       </button>
-      <button 
-        [class.active]="activeTab === 'reviews'"
-        (click)="changeTab('reviews')">
+      <button [class.active]="activeTab === 'reviews'" (click)="changeTab('reviews')">
         Reviews
       </button>
-      <button 
-        [class.active]="activeTab === 'amenities'"
-        (click)="changeTab('amenities')">
+      <button [class.active]="activeTab === 'amenities'" (click)="changeTab('amenities')">
         Amenities
       </button>
     </div>
-    
     <hr style="color: black; width: 5px;">
-      </div>
+   </div>
 
   <app-guest-reviews [propertyId]="propertyId"></app-guest-reviews>
 </div>
