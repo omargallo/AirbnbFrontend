@@ -12,7 +12,7 @@
     </div>
     <p class="mt-2">Loading reservation details...</p>
   </div>
-  
+
   <!-- Error State -->
   <div *ngIf="error && !isLoading" class="error-state">
     <span>{{error}}</span>
@@ -116,12 +116,12 @@
           <span class="date-label">Check-in</span>
           <span class="date-value">{{ reservation.checkIn }}</span>
         </div>
-        
+
         <div class="date-row">
           <span class="date-label">Checkout</span>
           <span class="date-value">{{ reservation.checkOut }}</span>
         </div>
-        
+
         <div class="date-row">
           <span class="date-label">Guests</span>
           <span class="date-value">{{ reservation.guests }}</span>
@@ -173,17 +173,17 @@
         <span class="payment-amount">{{ reservation.subtotal }}</span>
       </div>
 
-      <div class="payment-row">
+      <!-- <div class="payment-row">
         <span class="payment-description">Taxes</span>
         <span class="payment-amount">{{ reservation.taxes }}</span>
-      </div>
+      </div> -->
 
       <hr class="payment-divider" />
 
-      <div class="payment-row total-row">
+      <!-- <div class="payment-row total-row">
         <span class="payment-description">Total amount</span>
         <span class="payment-amount total-amount">{{ reservation.total }}</span>
-      </div>
+      </div> -->
     </div>
 
     <!-- Safety Notice -->

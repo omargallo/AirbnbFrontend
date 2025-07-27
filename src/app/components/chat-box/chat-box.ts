@@ -10,6 +10,7 @@ interface ChatItem {
   type: 'date' | 'message' | 'status';
   label?: string;
   sender?: 'host' | 'user';
+  isCurrentUser?: boolean;
   content?: string;
   timestamp?: string;
   reaction?: string;
@@ -82,6 +83,8 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
         if (this.selectedChatSession && newMessage.chatSessionId === this.selectedChatSession.id) {
           console.log('New message received via SignalR:', newMessage);
           this.messages.push(newMessage);
+
+
           this.processChatItems();
           this.scrollToBottom();
           this.cdr.detectChanges();
@@ -102,6 +105,11 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
 
     if (changes['initialMessages'] && this.initialMessages?.length > 0) {
       this.messages = [...this.initialMessages];
+
+      if (!this.currentUserId) {
+        this.currentUserId = this.authService.userId;
+      }
+
       this.processChatItems();
       this.scrollToBottom();
       // Mark as not initial load since we have messages now
@@ -125,12 +133,12 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
   }
 
   private initializeChatSession(): void {
-   if(this.selectedChatSession){
-    this.isHost=this.selectedChatSession.hostId==this.currentUserId
-   }
+    if (this.selectedChatSession) {
+      this.isHost = this.selectedChatSession.hostId == this.currentUserId
+    }
     if (!this.selectedChatSession) return;
 
-    this.hostName = this.isHost? this.selectedChatSession.userName : this.selectedChatSession.hostName;
+    this.hostName = this.isHost ? this.selectedChatSession.userName : this.selectedChatSession.hostName;
     this.hostProfileImage = this.selectedChatSession.hostAvatarUrl ||
       'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg';
 
@@ -202,6 +210,10 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
   }
 
   private processChatItems(): void {
+     if (!this.currentUserId) {
+    this.currentUserId = this.authService.userId;
+  }
+  
     this.chatItems = [];
     let lastDate = '';
 
@@ -229,7 +241,9 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
       // Add message
       this.chatItems.push({
         type: 'message',
-        sender: message.isHost ? 'host' : 'user',
+        // sender: message.isHost ? 'host' : 'user',
+        isCurrentUser: message.senderId === this.currentUserId,
+
         content: message.messageText,
         timestamp: this.formatTime(message.createdAt),
         messageId: message.id,
@@ -238,7 +252,8 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
         reaction: message.reactions && message.reactions.length > 0 ?
           this.getReactionEmoji(message.reactions[0].reactionType) : undefined,
         // Show read status for user messages
-        readBy: !message.isHost && message.isRead ? this.hostName : undefined
+        // readBy: !message.isHost && message.isRead ? this.hostName : undefined
+        readBy: message.senderId !== this.currentUserId && message.isRead ? this.hostName : undefined
       });
     });
   }
@@ -342,6 +357,10 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
           // Add message to local messages array
           this.messages.push(sentMessage);
 
+          if (!this.currentUserId) {
+            this.currentUserId = this.authService.userId;
+          }
+
           // Refresh chat items
           this.processChatItems();
 
@@ -396,7 +415,8 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
 
   getLastReadMessageIndex(): number {
     for (let i = this.chatItems.length - 1; i >= 0; i--) {
-      if (this.chatItems[i].type === 'message' && this.chatItems[i].readBy) {
+      if (this.chatItems[i].type === 'message' && this.chatItems[i].isCurrentUser && this.chatItems[i].readBy) {
+        // if (this.chatItems[i].type === 'message' && this.chatItems[i].readBy) {
         return i;
       }
     }

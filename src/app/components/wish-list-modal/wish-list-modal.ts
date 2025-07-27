@@ -20,6 +20,7 @@ export class WishListModal implements OnInit {
   @Input() propertyId!: number;
   @Input() show: boolean = false
   @Input() userId?: string;
+
   @Output() close = new EventEmitter<void>()
   @Output() finish = new EventEmitter<Observable<boolean>>()
 

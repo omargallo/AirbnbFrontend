@@ -107,7 +107,7 @@
   (close)="onClose()"
   (finish)="onFinish($event)"
   [show]="show"
-  [userId]="'2'"
+  [userId]="authService.userId ?? undefined"
   class="col-12"
 >
 </app-wish-list-modal>
@@ -123,7 +123,7 @@
   <app-property-swiper
     [title]="section.title"
     [slidesPerView]="section.slidesPerView"
-    *ngIf="!section.isLoading"
+    [isLoading]="section.isLoading"
     [properties]="section.properties"
     (propertyClicked)="onPropertyClick($event)"
     (wishlistIconClick)="onWishlistClick($event)"

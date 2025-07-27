@@ -9,23 +9,35 @@ import {
 import { BehaviorSubject, catchError, filter, Observable, switchMap, take, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
+
+
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
+
+
+
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const isExternalRequest = req.url.startsWith('https://countriesnow.space');
+
+    if (isExternalRequest) {
+      return next.handle(req);
+    }
+
     const accessToken = this.authService.accessToken;
 
     if (accessToken) {
       req = this.addToken(req, accessToken);
     }
+
     req = req.clone({
       withCredentials: true
     });
-    console.log("from interceptor")
+
     return next.handle(req).pipe(
       catchError(error => {
         if (error instanceof HttpErrorResponse && error.status === 401 && !req.url.includes('/auth/login')) {
@@ -36,6 +48,9 @@ export class AuthInterceptor implements HttpInterceptor {
       })
     );
   }
+
+
+
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
     if (!this.isRefreshing) {
@@ -64,6 +79,10 @@ export class AuthInterceptor implements HttpInterceptor {
     }
   }
 
+
+
+
+
   private addToken(request: HttpRequest<any>, token: string) {
     return request.clone({
       setHeaders: {
@@ -72,4 +91,3 @@ export class AuthInterceptor implements HttpInterceptor {
     });
   }
 }
-

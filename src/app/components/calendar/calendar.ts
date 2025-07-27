@@ -15,6 +15,11 @@ import {
   isBefore,
   startOfDay
 } from 'date-fns';
+import { AuthService } from '../../core/services/auth.service';
+import { Router } from '@angular/router';
+import { HostPropertiesService } from '../../core/services/Property/HostPropertiesService';
+import { PropertyDisplayDTO } from '../../core/models/PropertyDisplayDTO';
+import { environment } from '../../../environments/environment.development';
 
 export interface DayAvailability {
   date: Date;
@@ -45,7 +50,6 @@ interface ProcessedDay {
 interface ProcessedMonth {
   month: Date;
   days: ProcessedDay[];
-  hasDiscount: boolean;
 }
 
 @Component({
@@ -87,13 +91,17 @@ export class CalendarComponent implements OnInit, OnChanges {
   showViewDropdown = false;
   tempViewType: 'month' | 'year' = 'year';
   showPropertyDropdown = false;
-  selectedProperty: String = '';
+  // selectedProperty: String = '';
 
   ngOnInit() {
     this.currentYear = this.currentMonth.getFullYear();
     this.tempViewType = this.settings.viewType;
     this.updateCaches();
     this.processAllData();
+
+
+    this.hostId = this.authService.userId;
+    this.loadHostProperties();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -158,12 +166,10 @@ export class CalendarComponent implements OnInit, OnChanges {
       const today = startOfDay(new Date());
 
       const isDisabled = isBefore(day.date, today);
-      const isAvailable =
-        !isDisabled && (availability ? availability.available : true);
+      const isAvailable = !isDisabled && (availability ? availability.available : true);
       const isSelected = this.selectedDatesSet.has(dateKey);
       const isHighlighted = this.calculateIsHighlighted(day.date);
       const price = availability ? availability.price : null;
-
       return {
         date: day.date,
         inCurrentMonth: day.inCurrentMonth,
@@ -176,13 +182,10 @@ export class CalendarComponent implements OnInit, OnChanges {
       };
     });
 
-    // Check if month has discount
-    const hasDiscount = this.calculateHasDiscount(monthDate);
 
     return {
       month: monthDate,
       days: processedDays,
-      hasDiscount,
     };
   }
 
@@ -194,18 +197,6 @@ export class CalendarComponent implements OnInit, OnChanges {
     return isAfter(date, start) && isBefore(date, end);
   }
 
-  private calculateHasDiscount(monthDate: Date): boolean {
-    const monthStart = startOfMonth(monthDate);
-    const monthEnd = endOfMonth(monthDate);
-
-    return this.settings.availability.some(
-      (a) =>
-        a.date >= monthStart &&
-        a.date <= monthEnd &&
-        a.originalPrice &&
-        a.price < a.originalPrice
-    );
-  }
 
   selectDate(date: Date) {
     const today = startOfDay(new Date());
@@ -277,7 +268,9 @@ export class CalendarComponent implements OnInit, OnChanges {
   }
 
   setProperty(id: string) {
-    this.selectedProperty = id;
+    this.selectedPropertyId = id;
+    this.closeProperty();
+    this.propertySelected.emit(id);
   }
 
   closeProperty() {
@@ -311,4 +304,64 @@ export class CalendarComponent implements OnInit, OnChanges {
     const next = addMonths(this.currentMonth, 1);
     return next.getFullYear() === this.currentYear;
   }
+
+
+
+
+
+  @Output() propertySelected = new EventEmitter<string>();
+  properties: PropertyDisplayDTO[] = [];
+  isLoading = true;
+  error: string | null = null;
+  private hostId: string | null = null;
+  selectedPropertyId: string | null = null;
+  constructor(
+    private hostPropertiesService: HostPropertiesService,
+    private router: Router,
+    private authService: AuthService
+  ) { }
+
+
+  loadHostProperties(): void {
+    // Check if hostId is available
+    if (!this.hostId) {
+      this.error = 'User not authenticated';
+      this.isLoading = false;
+      return;
+    }
+
+    this.isLoading = true;
+    this.error = null;
+
+    this.hostPropertiesService.getPropertiesByHostId(this.hostId).subscribe({
+      next: (properties) => {
+        this.properties = properties;
+        if (this.properties.length > 0) {
+          this.selectedPropertyId = this.properties[0].id.toString();
+          this.propertySelected.emit(this.selectedPropertyId);
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load properties. Please try again later.';
+        this.isLoading = false;
+        console.error('Error loading properties:', err);
+      }
+    });
+  }
+  get selectedPropertyTitle(): string {
+    const property = this.properties.find(p => p.id.toString() === this.selectedPropertyId);
+    return property?.title || 'Select Property';
+  }
+  getPropertyImage(property: PropertyDisplayDTO): string {
+    const cover = property.images?.find(img => img.isCover && !img.isDeleted);
+
+    if (cover?.imageUrl) {
+      return `${environment.base}${cover.imageUrl}`;
+    }
+
+    // fallback image
+    return 'assets/images/deafult.png';
+  }
+
 }

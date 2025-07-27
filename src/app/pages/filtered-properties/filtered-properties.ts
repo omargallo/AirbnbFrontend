@@ -6,16 +6,105 @@ import { Property } from '../../core/models/Property';
 import * as L from 'leaflet';
 import { SliderCard } from '../home/components/slider-card/slider-card';
 import { environment } from '../../../environments/environment.development';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, Observable, Subject } from 'rxjs';
+import { WishlistService } from '../../core/services/Wishlist/wishlist.service';
+import { AuthService } from '../../core/services/auth.service';
+import { DialogService } from '../../core/services/dialog.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { WishListModal } from "../../components/wish-list-modal/wish-list-modal";
 
 @Component({
   selector: 'app-filtered-properties',
   standalone: true,
-  imports: [CommonModule, SliderCard, RouterModule],
+  imports: [CommonModule, SliderCard, RouterModule, WishListModal],
   templateUrl: './filtered-properties.html',
   styleUrls: ['./filtered-properties.css']
 })
 export class FilteredProperties implements OnInit {
+
+  selectedPropertyId!: number;
+  show = false;
+
+  onPropertyClick(id: number) {
+    this.router.navigate(['/property', id])
+  }
+
+  onWishlistClick(id: number) {
+    if (!this.authService.userId) {
+      this.showToast('Please log in to manage wishlist.', 'top', 'right');
+      this.dialogService.openDialog('login');
+      return;
+    }
+    const foundProperty = this.properties.find(p => p.id === id);
+    if (foundProperty?.isFavourite) {
+      this.removeFromWishlist(id);
+    } else {
+      this.selectedPropertyId = id;
+      this.show = true;
+    }
+  }
+
+
+  removeFromWishlist(propertyId: number) {
+    this.wishlistService.removePropertyFromWishlist(propertyId).subscribe({
+      next: (success) => {
+        if (success) {
+          const property = this.properties.find(p => p.id === propertyId);
+          if (property) {
+            property.isFavourite = false;
+            this.updateMapMarkers();
+          }
+
+          this.showToast('Property removed from wishlist', 'bottom', 'left');
+        } else {
+          this.showToast("Couldn't remove the property", 'bottom', 'left');
+        }
+      },
+      error: (err) => {
+        console.error('Error removing property:', err);
+        this.showToast("Couldn't remove the property", 'bottom', 'left');
+      }
+    });
+  }
+
+
+  onFinish(observable: Observable<boolean>) {
+    this.onClose();
+
+    observable.subscribe({
+      next: (success) => {
+        if (success) {
+          const property = this.properties.find(p => p.id === this.selectedPropertyId);
+          if (property) {
+            property.isFavourite = true;
+            this.updateMapMarkers();
+          }
+
+          this.showToast('Property added to wishlist', 'bottom', 'left');
+        } else {
+          this.showToast("Couldn't add the property", 'bottom', 'left');
+        }
+      },
+      error: () => {
+        this.showToast("Couldn't add the property", 'bottom', 'left');
+      }
+    });
+  }
+
+
+  private showToast(message: string, vertical: 'top' | 'bottom', horizontal: 'left' | 'right') {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: horizontal,
+      verticalPosition: vertical,
+      panelClass: ['custom-snackbar']
+    });
+  }
+
+  onClose() {
+    this.show = false
+  }
+
   private isFirstLoad = true;
   isLoading = true;
   isMapLoading = false;
@@ -41,8 +130,12 @@ export class FilteredProperties implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private propertyService: PropertyService,
+    private wishlistService: WishlistService,
     private router: Router,
-    private propertyService: PropertyService
+    public authService: AuthService,
+    private dialogService: DialogService,
+    private snackBar: MatSnackBar
   ) {
     // Setup debounced map change handler
     this.mapChangeSubject.pipe(
@@ -299,7 +392,7 @@ export class FilteredProperties implements OnInit {
       zoomAnimationThreshold: 4
     }).setView([lat, lng], 10);
 
-    
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap'
     }).addTo(this.map!);
@@ -313,45 +406,93 @@ export class FilteredProperties implements OnInit {
 
       const marker = L.marker([p.latitude, p.longitude], { icon: customIcon })
         .addTo(this.map!)
-        .bindPopup(`
-          <div class=" border-0  popup-card" style="width: 200px; border-radius: 50px !important;cursor: pointer; background-color:transparent !important;">
-            <div class="image-container position-relative">
-              <img src="${this.getPropertyImage(p)}"
-                   alt="listing image"
-                   class="img-fluid rounded-4"
-                   style="width: 100%; height: 120px; object-fit: cover;">
-              ${false ? `
-              <div class="favorite badge fw-semibold position-absolute top-0 start-0 m-2"
-                   style="font-size: 10px; padding: 2px 6px; border-radius: 999px; color: var(--primary-text-color) !important; background-color: var(--bg-color);">
-                Guest favorite
-              </div>` : ''}
-              <button class="heart position-absolute top-0 end-0 m-2"
-                      style="background: none; border: none; cursor: pointer;">
-                <i class="bi bi-heart fs-6"></i>
-              </button>
-            </div>
+        .bindPopup(
+          `
+        <div class="popup-card" style="width: 200px; cursor: pointer;" data-property-id="${p.id
+          }">
+      <div class="image-container position-relative">
+        <img src="${this.getPropertyImage(p)}"
+             alt="listing image"
+             class="img-fluid rounded-4"
+             style="width: 100%; height: 120px; object-fit: cover;">
 
-            <div class="info px-2 pt-2 pb-3">
-              <div class="title fw-semibold" style="font-size: 12px; color: var(--primary-text-color); !important">${p.title}</div>
-              <div class="subtitle small" style="font-size: 10px; color: var(--secondary-text-color) !important;">${this.getLocationSubtitle(p)}</div>
+        <button
+          class="wishlist-btn bi text-success position-absolute top-0 end-0 m-2"
+          data-wishlist-id="${p.id}"
+        >
+          <svg
+            viewBox="0 0 32 32"
+            aria-hidden="true"
+            role="presentation"
+            focusable="false"
+            style="display: block; height: 24px; width: 24px; stroke: white !important; stroke-width: 2; overflow: visible;"
+          >
+            <path
+              d="M16 28c7-4.73 14-10 14-17a6.98 6.98 0 0 0-7-7c-1.8 0-3.58.68-4.95 2.05L16 8.1l-2.05-2.05a6.98 6.98 0 0 0-9.9 0A6.98 6.98 0 0 0 2 11c0 7 7 12.27 14 17z"
+              fill="${p.isFavourite ? '#ff385c' : 'rgba(0, 0, 0, 0.5)'}"
+            ></path>
+          </svg>
+        </button>
+      </div>
 
-              <div class="d-flex justify-content-between align-items-center mt-1 flex-row-reverse">
-                <div class="rating small d-flex align-items-center" style="font-size: 10px; color: var(--secondary-text-color) !important;">
-                  <i class="bi bi-star-fill text-warning me-1"></i>${p.averageRating}
-                </div>
-                <div class="price" style="font-size: 10px; color: var(--secondary-text-color) !important;">
-                  $${p.pricePerNight} <span class="small">for 5 night</span>
-                </div>
-              </div>
-            </div>
+      <div class="info px-2 pt-2 pb-3">
+        <div class="title fw-semibold" style="font-size: 12px;">${p.title}</div>
+        <div class="subtitle small" style="font-size: 10px;">${this.getLocationSubtitle(
+            p
+          )}</div>
+
+        <div class="d-flex justify-content-between align-items-center mt-1 flex-row-reverse">
+          <div class="rating small d-flex align-items-center" style="font-size: 10px;">
+            <i class="bi bi-star-fill text-warning me-1"></i>${p.averageRating}
           </div>
-        `)
+          <div class="price" style="font-size: 10px;">
+            $${p.pricePerNight} <span class="small">for 5 nights</span>
+          </div>
+        </div>
+      </div>
+    </div>
+        `
+        )
         .on('click', () => {
           this.selectProperty(p);
           this.updateSelectedMarker(marker);
+        }).on('popupopen', () => {
+          const cardEl = document.querySelector(`.popup-card[data-property-id="${p.id}"]`);
+          if (cardEl) {
+            cardEl.addEventListener('click', (event) => {
+              const target = event.target as HTMLElement;
+              if (target.closest('.wishlist-btn')) return;
+              this.onPropertyClick(p.id);
+            });
+          }
+
+          const wishlistBtn = document.querySelector(`.wishlist-btn[data-wishlist-id="${p.id}"]`);
+          if (wishlistBtn) {
+            wishlistBtn.addEventListener('click', (event) => {
+              event.stopPropagation();
+              this.onWishlistClick(p.id);
+            });
+          }
         });
+
       this.markers.push(marker);
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Only fit bounds if it's initial load or specifically requested
     if (this.markers.length && this.shouldFitBounds && !this.isUserInteraction) {
@@ -378,41 +519,70 @@ export class FilteredProperties implements OnInit {
       const marker = L.marker([p.latitude, p.longitude], { icon: customIcon })
         .addTo(this.map!)
         .bindPopup(`
-          <div class="card border-0 rounded rounded-2 popup-card" style="width: 200px; cursor: pointer; background-color: var(--bg-color);">
-            <div class="image-container position-relative">
-              <img src="${this.getPropertyImage(p)}"
-                   alt="listing image"
-                   class="img-fluid rounded-4"
-                   style="width: 100%; height: 120px; object-fit: cover;">
-              ${false ? `
-              <div class="favorite badge fw-semibold position-absolute top-0 start-0 m-2"
-                   style="font-size: 10px; padding: 2px 6px; border-radius: 999px; color: var(--primary-text-color) !important; background-color: var(--bg-color);">
-                Guest favorite
-              </div>` : ''}
-              <button class="heart position-absolute top-0 end-0 m-2"
-                      style="background: none; border: none; cursor: pointer;">
-                <i class="bi bi-heart fs-6"></i>
-              </button>
-            </div>
+      <div class="popup-card" style="width: 200px; cursor: pointer; background:var(--bg-color) !important" data-property-id="${p.id
+          }">
+      <div class="image-container position-relative">
+        <img src="${this.getPropertyImage(p)}"
+             alt="listing image"
+             class="img-fluid rounded-4"
+             style="width: 100%; height: 120px; object-fit: cover;">
 
-            <div class="info px-2 pt-2 pb-3">
-              <div class="title fw-semibold" style="font-size: 12px; color: var(--primary-text-color); !important">${p.title}</div>
-              <div class="subtitle small" style="font-size: 10px; color: var(--secondary-text-color) !important;">${this.getLocationSubtitle(p)}</div>
+        <button
+          class="wishlist-btn bi text-success position-absolute top-0 end-0 m-2"
+          data-wishlist-id="${p.id}"
+        >
+          <svg
+            viewBox="0 0 32 32"
+            aria-hidden="true"
+            role="presentation"
+            focusable="false"
+            style="display: block; height: 24px; width: 24px; stroke: white !important; stroke-width: 2; overflow: visible;"
+          >
+            <path
+              d="M16 28c7-4.73 14-10 14-17a6.98 6.98 0 0 0-7-7c-1.8 0-3.58.68-4.95 2.05L16 8.1l-2.05-2.05a6.98 6.98 0 0 0-9.9 0A6.98 6.98 0 0 0 2 11c0 7 7 12.27 14 17z"
+              fill="${p.isFavourite ? '#ff385c' : 'rgba(0, 0, 0, 0.5)'}"
+            ></path>
+          </svg>
+        </button>
+      </div>
 
-              <div class="d-flex justify-content-between align-items-center mt-1 flex-row-reverse">
-                <div class="rating small d-flex align-items-center" style="font-size: 10px; color: var(--secondary-text-color) !important;">
-                  <i class="bi bi-star-fill text-warning me-1"></i>${p.averageRating}
-                </div>
-                <div class="price" style="font-size: 10px; color: var(--secondary-text-color) !important;">
-                  $${p.pricePerNight} <span class="small">for 5 night</span>
-                </div>
-              </div>
-            </div>
+      <div class="info px-2 pt-2 pb-3">
+        <div class="title fw-semibold" style="font-size: 12px;">${p.title}</div>
+        <div class="subtitle small" style="font-size: 10px;">${this.getLocationSubtitle(
+            p
+          )}</div>
+
+        <div class="d-flex justify-content-between align-items-center mt-1 flex-row-reverse">
+          <div class="rating small d-flex align-items-center" style="font-size: 10px;">
+            <i class="bi bi-star-fill text-warning me-1"></i>${p.averageRating}
           </div>
+          <div class="price" style="font-size: 10px;">
+            $${p.pricePerNight} <span class="small">for 5 nights</span>
+          </div>
+        </div>
+      </div>
+    </div>
         `)
         .on('click', () => {
           this.selectProperty(p);
           this.updateSelectedMarker(marker);
+        }).on('popupopen', () => {
+          const cardEl = document.querySelector(`.popup-card[data-property-id="${p.id}"]`);
+          if (cardEl) {
+            cardEl.addEventListener('click', (event) => {
+              const target = event.target as HTMLElement;
+              if (target.closest('.wishlist-btn')) return;
+              this.onPropertyClick(p.id);
+            });
+          }
+
+          const wishlistBtn = document.querySelector(`.wishlist-btn[data-wishlist-id="${p.id}"]`);
+          if (wishlistBtn) {
+            wishlistBtn.addEventListener('click', (event) => {
+              event.stopPropagation();
+              this.onWishlistClick(p.id);
+            });
+          }
         });
       (marker as any).propertyId = p.id;
 
