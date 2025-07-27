@@ -6,6 +6,10 @@ import { Property } from '../../models/Property';
 import { environment } from '../../../../environments/environment.development';
 import { PropertyImage } from '../../models/PropertyImage';
 
+import {  HttpRequest, HttpErrorResponse } from '@angular/common/http';
+import { catchError } from 'rxjs';
+
+
 interface ApiResponse<T> {
   data: T;
   isSuccess: boolean;
@@ -259,4 +263,71 @@ export class PropertyService {
   getGuetsAndPricePerNeightPropertyById(id: number): Observable<{ maxGuests: number, pricePerNeight: number }> {
     return this.http.get<{ maxGuests: number, pricePerNeight: number }>(`${this.baseUrl}/property/${id}`);
   }
+
+deletePropertyImages(propertyId: number, imageIds: number[]): Observable<Result<boolean>> {
+  const formData = new FormData();
+  
+  // Add image IDs to form data
+  imageIds.forEach(id => {
+    formData.append('imgIds', id.toString());
+  });
+
+  // Create a custom HTTP request to support DELETE with body
+  const request = new HttpRequest(
+    'DELETE',
+    `${this.baseUrl}/property-images/delete/${propertyId}`,
+    formData,
+    {
+      reportProgress: false,
+      withCredentials: true
+    }
+  );
+
+  return this.http.request<Result<boolean>>(request).pipe(
+    map((event: any): Result<boolean> => {
+      console.log('Delete service response event:', event); // Debug log
+      
+      // Handle the response event
+      if (event.body) {
+        return event.body as Result<boolean>;
+      }
+      
+      // FIXED: Handle 204 No Content responses
+      if (event.status === 204) {
+        // Return a successful result for 204 responses
+        return {
+          data: true,
+          isSuccess: true,
+          message: 'Images deleted successfully'
+        } as Result<boolean>;
+      }
+      
+      // Return default success result if no body
+      return {
+        data: true,
+        isSuccess: true,
+        message: 'Images deleted successfully'
+      } as Result<boolean>;
+    }),
+    // Add error handling
+    catchError((error: HttpErrorResponse): Observable<Result<boolean>> => {
+      console.error('Delete images error:', error);
+      
+      // FIXED: Handle 204 as success in error handler too
+      if (error.status === 204) {
+        // 204 is actually success, Angular treats it as error due to no content
+        return new Observable<Result<boolean>>(observer => {
+          observer.next({
+            data: true,
+            isSuccess: true,
+            message: 'Images deleted successfully'
+          });
+          observer.complete();
+        });
+      }
+      
+      throw error;
+    })
+  );
+}
 }

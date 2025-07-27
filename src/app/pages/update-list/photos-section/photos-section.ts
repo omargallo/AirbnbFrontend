@@ -16,7 +16,8 @@ export interface PhotosSectionData {
   standalone: true,
   imports: [CommonModule],
   styleUrls: ['../update-list.css', './photos-section.css'],
-templateUrl: './photos-section.html',})
+  templateUrl: './photos-section.html',
+})
 export class PhotosSectionComponent implements OnInit, OnDestroy {
   @Input() data: PhotosSectionData | null = null;
   @Output() dataChange = new EventEmitter<PhotosSectionData>();
@@ -24,13 +25,17 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
   @Output() saveComplete = new EventEmitter<void>();
   @Output() validationChange = new EventEmitter<boolean>();
 
-
   internalData: PhotosSectionData | null = null;
   selectedFiles: File[] = [];
   uploadProgress: number = 0;
   uploading: boolean = false;
+  deleting: boolean = false;
   baseUrl = environment.base;
   private previewUrls: Map<File, string> = new Map();
+  
+  // Track images to be deleted
+  imagesToDelete: Set<number> = new Set();
+  deleteMode: boolean = false;
 
   constructor(private propertyService: PropertyService) {}
 
@@ -40,7 +45,8 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
       this.loadPropertyImages(); 
     }
     
-    this.validationChange.emit(true);
+    // UPDATED: Initial validation check
+    this.updateValidation();
   }
 
   ngOnDestroy(): void {
@@ -51,6 +57,13 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
       }
     });
     this.previewUrls.clear();
+  }
+
+  // NEW: Method to check if section is valid (has at least 5 photos)
+  private updateValidation(): void {
+    const totalPhotos = this.getTotalPhotoCount();
+    const isValid = totalPhotos >= 5;
+    this.validationChange.emit(isValid);
   }
 
   onFilesSelected(event: any) {
@@ -84,8 +97,9 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
       console.warn(`Maximum ${maxPhotos} photos allowed`);
     }
 
-    // Emit changes
+    // UPDATED: Emit changes and validation
     this.updateHasChanges();
+    this.updateValidation();
     event.target.value = '';
   }
 
@@ -105,6 +119,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
     }
     this.selectedFiles.splice(index, 1);
     this.updateHasChanges();
+    this.updateValidation(); // UPDATED: Check validation after removing file
   }
 
   clearSelectedFiles() {
@@ -117,10 +132,137 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
     });
     this.selectedFiles = [];
     this.updateHasChanges();
+    this.updateValidation(); // UPDATED: Check validation after clearing files
+  }
+
+  // Toggle delete mode
+  toggleDeleteMode() {
+    this.deleteMode = !this.deleteMode;
+    if (!this.deleteMode) {
+      this.imagesToDelete.clear();
+      this.updateHasChanges();
+      this.updateValidation(); // UPDATED: Check validation when exiting delete mode
+    }
+  }
+
+  // Toggle image selection for deletion
+  toggleImageForDeletion(imageId: number) {
+    if (this.imagesToDelete.has(imageId)) {
+      this.imagesToDelete.delete(imageId);
+    } else {
+      this.imagesToDelete.add(imageId);
+    }
+    this.updateHasChanges();
+    this.updateValidation(); // UPDATED: Check validation when toggling deletion
+  }
+
+  // Check if image is selected for deletion
+  isImageSelectedForDeletion(imageId: number): boolean {
+    return this.imagesToDelete.has(imageId);
+  }
+
+  // Delete selected images
+  deleteSelectedImages() {
+    if (this.imagesToDelete.size === 0 || !this.internalData) return;
+
+    const imageIds = Array.from(this.imagesToDelete);
+    
+    // UPDATED: Check minimum images considering the 5 image requirement
+    const remainingImages = (this.internalData.photos?.length || 0) - imageIds.length;
+    if (remainingImages < 5) {
+      alert('You must keep at least 5 photos for your property.');
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to delete ${imageIds.length} image(s)?`)) {
+      return;
+    }
+
+    this.deleting = true;
+
+    this.propertyService.deletePropertyImages(this.internalData.propertyId, imageIds).subscribe({
+      next: (result) => {
+        console.log('Delete response:', result);
+        
+        if (result && result.isSuccess === true) {
+          console.log('Images deleted successfully');
+          
+          // Remove deleted images from local data
+          if (this.internalData?.photos) {
+            this.internalData.photos = this.internalData.photos.filter(
+              photo => !this.imagesToDelete.has(photo.id)
+            );
+          }
+          
+          // Clear selection and exit delete mode
+          this.imagesToDelete.clear();
+          this.deleteMode = false;
+          this.deleting = false;
+          
+          // Emit updated data
+          this.dataChange.emit({ ...this.internalData! });
+          this.saveComplete.emit();
+          this.updateHasChanges();
+          this.updateValidation(); // UPDATED: Check validation after successful delete
+          
+        } else {
+          const message = result?.message || 'Delete operation failed';
+          console.error('Delete failed:', message);
+          alert(`Delete failed: ${message}`);
+          this.deleting = false;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Delete error:', error);
+        this.deleting = false;
+        
+        let errorMessage = 'Failed to delete images';
+        
+        if (error.status === 204) {
+          console.log('Delete successful (204 No Content)');
+          
+          // Remove deleted images from local data
+          if (this.internalData?.photos) {
+            this.internalData.photos = this.internalData.photos.filter(
+              photo => !this.imagesToDelete.has(photo.id)
+            );
+          }
+          
+          // Clear selection and exit delete mode
+          this.imagesToDelete.clear();
+          this.deleteMode = false;
+          this.deleting = false;
+          
+          // Emit updated data
+          this.dataChange.emit({ ...this.internalData! });
+          this.saveComplete.emit();
+          this.updateHasChanges();
+          this.updateValidation(); // UPDATED: Check validation after successful delete
+          return;
+        }
+        
+        // Handle other error cases
+        if (error.status === 401) {
+          errorMessage = 'Unauthorized: You don\'t have permission to delete these images';
+        } else if (error.status === 404) {
+          errorMessage = 'Images not found';
+        } else if (error.status === 400) {
+          errorMessage = 'Bad request: Invalid image IDs or property ID';
+        } else if (error.status === 500) {
+          errorMessage = 'Server error: Please try again later';
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+        
+        alert(`Delete Error: ${errorMessage}`);
+      }
+    });
   }
 
   private updateHasChanges() {
-    this.hasChanges.emit(this.selectedFiles.length > 0);
+    const hasNewFiles = this.selectedFiles.length > 0;
+    const hasDeletedImages = this.imagesToDelete.size > 0;
+    this.hasChanges.emit(hasNewFiles || hasDeletedImages);
   }
 
   uploadSelectedPhotos() {
@@ -198,6 +340,9 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
             
             // Emit the updated data to parent
             this.dataChange.emit({ ...this.internalData });
+            
+            // UPDATED: Check validation after loading images
+            this.updateValidation();
           }
         },
         error: (err) => {
@@ -208,7 +353,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
   }
 
   getTotalPhotoCount(): number {
-    const existingPhotos = this.internalData?.photos?.length || 0;
+    const existingPhotos = (this.internalData?.photos?.length || 0) - this.imagesToDelete.size;
     const selectedPhotos = this.selectedFiles.length;
     return existingPhotos + selectedPhotos;
   }
@@ -216,20 +361,46 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
   // Method to handle external save trigger (called by parent)
   handleSave(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (this.selectedFiles.length > 0) {
-        // Subscribe to save completion
-        const saveSubscription = this.saveComplete.subscribe(() => {
-          saveSubscription.unsubscribe();
+      // UPDATED: Check validation before saving
+      if (this.getTotalPhotoCount() < 5) {
+        reject(new Error('At least 5 photos are required'));
+        return;
+      }
+
+      const hasUploads = this.selectedFiles.length > 0;
+      const hasDeletes = this.imagesToDelete.size > 0;
+
+      if (hasUploads && hasDeletes) {
+        // Handle both uploads and deletes
+        this.deleteSelectedImages();
+        const deleteSubscription = this.saveComplete.subscribe(() => {
+          deleteSubscription.unsubscribe();
+          
+          // After delete, do upload
+          const uploadSubscription = this.saveComplete.subscribe(() => {
+            uploadSubscription.unsubscribe();
+            resolve();
+          });
+          this.uploadSelectedPhotos();
+        });
+      } else if (hasDeletes) {
+        // Only deletes
+        const deleteSubscription = this.saveComplete.subscribe(() => {
+          deleteSubscription.unsubscribe();
           resolve();
         });
-
-        // Start upload
+        this.deleteSelectedImages();
+      } else if (hasUploads) {
+        // Only uploads
+        const uploadSubscription = this.saveComplete.subscribe(() => {
+          uploadSubscription.unsubscribe();
+          resolve();
+        });
         this.uploadSelectedPhotos();
       } else {
-        // No changes to save
+        // No changes
         resolve();
       }
     });
   }
-} 
-
+}
