@@ -1,69 +1,47 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '../../core/services/User/user.service';
 import { AuthService } from '../../core/services/auth.service';
+import { HandleImgService } from '../../core/services/handleImg.service';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule, TranslateModule, FormsModule],
+  standalone: true,
+  imports: [CommonModule, TranslateModule, FormsModule, RouterModule],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
 export class Profile {
-  constructor(
-    private userService: UserService,
-    private authService: AuthService
-  ) {}
-  userId: any = (() => {
-    const userId = this.authService.userId;
-    return userId;
-  })();
-  firstName: string | null = (() => {
+  selectedSection: string = 'aboutMe';
+  authService = inject(AuthService);
+  constructor(private userService: UserService, private router: Router) {}
+  userId = this.authService.userId;
+  roles= this.authService.role;
+  handleImgService = inject(HandleImgService);
+  user: string | null = (() => {
     const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser)?.firstName ?? '' : '';
+    return storedUser
+      ? JSON.parse(storedUser)?.firstName ?? JSON.parse(storedUser)?.userName
+      : '';
   })();
-  lastName: string | null = (() => {
+
+  ifImg: string | null = (() => {
     const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser)?.lastName ?? '' : '';
+    return storedUser ? JSON.parse(storedUser)?.profilePictureURL ?? '' : '';
   })();
-  phoneNumber: string | null = (() => {
+
+  img: string | null = (() => {
     const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser)?.phoneNumber ?? '' : '';
+    return this.handleImgService.handleImage(
+      storedUser ? JSON.parse(storedUser)?.profilePictureURL ?? '' : ''
+    );
   })();
+
   country: string | null = (() => {
     const storedUser = localStorage.getItem('user');
     return storedUser ? JSON.parse(storedUser)?.country ?? '' : '';
   })();
-
-  birthDate: any = () => {
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser)?.birthDate ?? '' : '';
-  };
-  bio: string | null = (() => {
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser)?.bio ?? '' : '';
-  })();
-
-  onUpdateProfile() {
-    const updatedUser = {
-      firstName: this.firstName,
-      lastName: this.lastName,
-      phoneNumber: this.phoneNumber,
-      country: this.country,
-      birthDate: this.birthDate(),
-      bio: this.bio,
-    };
-
-    this.userService.updateProfile(this.userId, updatedUser).subscribe({
-      next: (res) => {
-        alert('Profile updated successfully');
-      },
-      error: (err) => {
-        alert('Profile update failed');
-        console.error(err);
-      },
-    });
-  }
 }
