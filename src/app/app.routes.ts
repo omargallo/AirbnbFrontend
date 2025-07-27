@@ -59,8 +59,8 @@ export const routes: Routes = [
       { path: 'Messages', component: Messages },
       { path: 'profile/:id', component: Profile },
       { path: 'update-profile/:id', component: UpdateProfile },
-      { path: '/your-reviews', component: YourReviews },
-      { path: '/notifications', component: Notifications },
+      { path: 'your-reviews', component: YourReviews },
+      { path: 'notifications', component: Notifications },
     ],
   },
   {
