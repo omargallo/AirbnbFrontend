@@ -1,0 +1,40 @@
+.reviews-container {
+  padding: 20px;
+  border-radius: 12px;
+}
+
+h2 {
+  text-align: center;
+}
+
+.no-reviews {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+}
+
+.review-card {
+  border: 1px solid var(--border-color);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.comment {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.private-comment {
+  font-style: italic;
+  margin-top: 5px;
+}
+
+.ratings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
