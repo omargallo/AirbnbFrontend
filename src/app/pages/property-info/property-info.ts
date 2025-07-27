@@ -30,7 +30,7 @@ import { CalendarAvailabilityDto, CalendarAvailabilityService } from '../../core
 export class PropertyInfo implements OnInit {
 
   // properties: Property[] = [];
-  selectedProperty: Property | null = null;
+  selectedProperty: Property | undefined;
   isLoading = true;
   error: string | null = null;
   firstCalendarDate = dayjs().add(-5,'months')
@@ -121,8 +121,9 @@ export class PropertyInfo implements OnInit {
     this.propertyService.getPropertyById(id).subscribe({
       next: (property) => {
         this.selectedProperty = property;
-        // console.log('Selected property:', this.selectedProperty);
+        console.log('Selected property:', this.selectedProperty);
         console.log(id);
+        this.cdr.detectChanges()
 
       },
       error: (err) => {

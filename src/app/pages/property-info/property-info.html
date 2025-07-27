@@ -7,7 +7,10 @@
     <div class="d-flex flex-column ">
       <div class="col-md-12">
         <!-- property info, description, amenities, etc. -->
-        <app-amenities-section [propertyId]="propertyId"></app-amenities-section>
+        <app-amenities-section 
+        [propertyId]="propertyId"
+        [property]="selectedProperty"
+        ></app-amenities-section>
       </div>
       <div class="col-md-12 fixed-reserve">
         <!-- <app-reverse-section ></app-reverse-section> -->

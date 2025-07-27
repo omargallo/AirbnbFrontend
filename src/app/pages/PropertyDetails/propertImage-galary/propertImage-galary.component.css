@@ -257,7 +257,8 @@ overflow-x: hidden;
 }
 
 .property-specs span {
-  line-height: 1;
+  /* line-height: 1; */
+  /* overflow: hidden; */
 }
 
 /* Rare Find Badge */
