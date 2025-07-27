@@ -1,22 +1,4 @@
 <div class="settings-panel">
-  <!-- Block -->
-<div class="block-options" *ngIf="showBlockOptions">
-  <button
-    class="block-toggle"
-    [class.active]="selectedBlockOption === 'open'"
-    (click)="setBlockOption('open')"
-  >
-    Open night
-  </button>
-  <button
-    class="block-toggle"
-    [class.active]="selectedBlockOption === 'blocked'"
-    (click)="setBlockOption('blocked')"
-  >
-    Blocked
-  </button>
-</div>
-
   <div class="settings-header">
     <h2>Settings</h2>
     <p class="settings-description">
@@ -33,13 +15,13 @@
     >
       Pricing
     </button>
-    <button
+    <!-- <button
       class="tab-btn"
       [class.active]="activeTab === 'availability'"
       (click)="setActiveTab('availability')"
     >
       Availability
-    </button>
+    </button> -->
   </div>
 
   <!-- Pricing Tab with lazy loading -->
@@ -54,9 +36,14 @@
       <div class="price-input-group">
         <span class="currency">{{ settings.pricing.currency }}</span>
         <div class="price-display">
-          <span class="price-label">Per night</span>
-          <div class="price-value">${{ settings.pricing.basePrice }}</div>
+          <input
+            type="number"
+            class="price-input"
+            [(ngModel)]="settings.pricing.basePrice "
+            (ngModelChange)="onSettingsChange()"
+          />
         </div>
+        <span class="price-label">Per night</span>
       </div>
     </div>
 
@@ -93,8 +80,25 @@
       </button>
     </div>
 
+    <!-- Block -->
+    <div class="block-options" *ngIf="showBlockOptions">
+      <button
+        class="block-toggle"
+        [class.active]="selectedBlockOption === 'open'"
+        (click)="setBlockOption('open')"
+      >
+        Open night
+      </button>
+      <button
+        class="block-toggle"
+        [class.active]="selectedBlockOption === 'blocked'"
+        (click)="setBlockOption('blocked')"
+      >
+        Blocked
+      </button>
+    </div>
     <!-- Smart Pricing -->
-    <div class="setting-section">
+    <!-- <div class="setting-section">
       <div class="setting-row">
         <span class="setting-label">Smart Pricing</span>
         <label class="toggle-switch">
@@ -106,17 +110,17 @@
           <span class="toggle-slider"></span>
         </label>
       </div>
-    </div>
+    </div> -->
 
     <!-- Discounts Section -->
-    <div class="setting-section">
+    <!-- <div class="setting-section">
       <h3>Discounts</h3>
       <p class="section-description">
         Adjust your pricing to attract more guests.
-      </p>
+      </p> -->
 
-      <!-- Weekly Discount -->
-      <div class="discount-item">
+    <!-- Weekly Discount -->
+    <!-- <div class="discount-item">
         <div class="discount-header">
           <span class="discount-title">Weekly</span>
           <span class="discount-subtitle"
@@ -130,10 +134,10 @@
           >
           <span class="average">Weekly average is $233</span>
         </div>
-      </div>
+      </div> -->
 
-      <!-- Monthly Discount -->
-      <div class="discount-item">
+    <!-- Monthly Discount -->
+    <!-- <div class="discount-item">
         <div class="discount-header">
           <span class="discount-title">Monthly</span>
           <span class="discount-subtitle"
@@ -147,10 +151,10 @@
           >
           <span class="average">Monthly average is $888</span>
         </div>
-      </div>
+      </div> -->
 
-      <!-- More Discounts -->
-      <button class="more-discounts-btn" (click)="showMoreDiscounts()">
+    <!-- More Discounts -->
+    <!-- <button class="more-discounts-btn" (click)="showMoreDiscounts()">
         <span>More discounts</span>
         <span class="discount-types">Early bird, last-minute</span>
         <svg
@@ -163,10 +167,10 @@
           <polyline points="9,18 15,12 9,6"></polyline>
         </svg>
       </button>
-    </div>
+    </div> -->
 
     <!-- Promotions Section -->
-    <div class="setting-section">
+    <!-- <div class="setting-section">
       <h3>Promotions</h3>
       <p class="section-description">
         Set short-term discounts to get new bookings.
@@ -189,172 +193,169 @@
           <polyline points="9,18 15,12 9,6"></polyline>
         </svg>
       </button>
-    </div>
+    </div> -->
 
     <!-- Additional Charges -->
-    <div class="setting-section">
+    <!-- <div class="setting-section">
       <h3>Additional charges</h3>
-    </div>
-  </div>
+    </div> -->
+    <!-- </div> -->
 
-  <!-- Availability Tab with lazy loading -->
-  <div
-    class="tab-content availability-tab"
-    [class.active]="activeTab === 'availability'"
-    *ngIf="activeTab === 'availability'"
-  >
-    <!-- Trip Length -->
-    <div class="setting-section">
-      <h3>Trip length</h3>
+    <!-- Availability Tab with lazy loading -->
+    <!-- <div
+      class="tab-content availability-tab"
+      [class.active]="activeTab === 'availability'"
+      *ngIf="activeTab === 'availability'"
+    >
+      <div class="setting-section">
+        <h3>Trip length</h3>
 
-      <div class="input-row">
-        <div class="input-group">
-          <label>Minimum nights</label>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Minimum nights</label>
+            <input
+              type="number"
+              class="number-input"
+              [(ngModel)]="settings.availability.minNights"
+              (ngModelChange)="onSettingsChange()"
+            />
+          </div>
+
+          <div class="input-group">
+            <label>Maximum nights</label>
+            <input
+              type="number"
+              class="number-input"
+              [(ngModel)]="settings.availability.maxNights"
+              (ngModelChange)="onSettingsChange()"
+            />
+          </div>
+        </div>
+
+        <button class="custom-lengths-btn" (click)="showCustomTripLengths()">
+          <span>Custom trip lengths</span>
+          <svg
+            class="chevron-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+        </button>
+      </div>
+      <div class="setting-section">
+        <h3>Availability</h3>
+
+        <div class="setting-item">
+          <label>Advance notice</label>
+          <select
+            class="select-input"
+            [(ngModel)]="settings.availability.advanceNotice"
+            (ngModelChange)="onSettingsChange()"
+          >
+            <option value="same-day">Same day</option>
+            <option value="1-day">1 day</option>
+            <option value="2-days">2 days</option>
+            <option value="3-days">3 days</option>
+            <option value="7-days">7 days</option>
+          </select>
+        </div>
+
+        <div
+          class="setting-item"
+          *ngIf="settings.availability.advanceNotice === 'same-day'"
+        >
+          <label>Same day advance notice</label>
           <input
-            type="number"
-            class="number-input"
-            [(ngModel)]="settings.availability.minNights"
+            type="time"
+            class="time-input"
+            [(ngModel)]="settings.availability.sameDayNoticeTime"
             (ngModelChange)="onSettingsChange()"
           />
         </div>
 
-        <div class="input-group">
-          <label>Maximum nights</label>
-          <input
-            type="number"
-            class="number-input"
-            [(ngModel)]="settings.availability.maxNights"
+        <div class="setting-item">
+          <label>Preparation time</label>
+          <select
+            class="select-input"
+            [(ngModel)]="settings.availability.preparationTime"
             (ngModelChange)="onSettingsChange()"
-          />
+          >
+            <option value="none">None</option>
+            <option value="1-hour">1 hour</option>
+            <option value="2-hours">2 hours</option>
+            <option value="1-day">1 day</option>
+          </select>
         </div>
+
+        <div class="setting-item">
+          <label>Availability window</label>
+          <select
+            class="select-input"
+            [(ngModel)]="settings.availability.availabilityWindow"
+            (ngModelChange)="onSettingsChange()"
+          >
+            <option value="3 months in advance">3 months in advance</option>
+            <option value="6 months in advance">6 months in advance</option>
+            <option value="12 months in advance">12 months in advance</option>
+            <option value="24 months in advance">24 months in advance</option>
+          </select>
+        </div>
+
+        <button
+          class="availability-settings-btn"
+          (click)="showMoreAvailabilitySettings()"
+        >
+          <span>More availability settings</span>
+          <span class="subtitle">Restrict check-in and checkout days</span>
+          <svg
+            class="chevron-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+        </button>
       </div>
 
-      <button class="custom-lengths-btn" (click)="showCustomTripLengths()">
-        <span>Custom trip lengths</span>
-        <svg
-          class="chevron-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <polyline points="9,18 15,12 9,6"></polyline>
-        </svg>
-      </button>
-    </div>
+      <div class="setting-section">
+        <h3>Connect calendars</h3>
+        <p class="section-description">
+          Sync all of your hosting calendars so they automatically stay up to
+          date.
+        </p>
 
-    <!-- Availability Rules -->
-    <div class="setting-section">
-      <h3>Availability</h3>
-
-      <div class="setting-item">
-        <label>Advance notice</label>
-        <select
-          class="select-input"
-          [(ngModel)]="settings.availability.advanceNotice"
-          (ngModelChange)="onSettingsChange()"
-        >
-          <option value="same-day">Same day</option>
-          <option value="1-day">1 day</option>
-          <option value="2-days">2 days</option>
-          <option value="3-days">3 days</option>
-          <option value="7-days">7 days</option>
-        </select>
+        <button class="connect-calendar-btn" (click)="connectCalendar()">
+          <svg
+            class="link-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+            ></path>
+            <path
+              d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+            ></path>
+          </svg>
+          <span>Connect to another website</span>
+          <svg
+            class="chevron-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+        </button>
       </div>
-
-      <div
-        class="setting-item"
-        *ngIf="settings.availability.advanceNotice === 'same-day'"
-      >
-        <label>Same day advance notice</label>
-        <input
-          type="time"
-          class="time-input"
-          [(ngModel)]="settings.availability.sameDayNoticeTime"
-          (ngModelChange)="onSettingsChange()"
-        />
-      </div>
-
-      <div class="setting-item">
-        <label>Preparation time</label>
-        <select
-          class="select-input"
-          [(ngModel)]="settings.availability.preparationTime"
-          (ngModelChange)="onSettingsChange()"
-        >
-          <option value="none">None</option>
-          <option value="1-hour">1 hour</option>
-          <option value="2-hours">2 hours</option>
-          <option value="1-day">1 day</option>
-        </select>
-      </div>
-
-      <div class="setting-item">
-        <label>Availability window</label>
-        <select
-          class="select-input"
-          [(ngModel)]="settings.availability.availabilityWindow"
-          (ngModelChange)="onSettingsChange()"
-        >
-          <option value="3 months in advance">3 months in advance</option>
-          <option value="6 months in advance">6 months in advance</option>
-          <option value="12 months in advance">12 months in advance</option>
-          <option value="24 months in advance">24 months in advance</option>
-        </select>
-      </div>
-
-      <button
-        class="availability-settings-btn"
-        (click)="showMoreAvailabilitySettings()"
-      >
-        <span>More availability settings</span>
-        <span class="subtitle">Restrict check-in and checkout days</span>
-        <svg
-          class="chevron-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <polyline points="9,18 15,12 9,6"></polyline>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Connect Calendars -->
-    <div class="setting-section">
-      <h3>Connect calendars</h3>
-      <p class="section-description">
-        Sync all of your hosting calendars so they automatically stay up to
-        date.
-      </p>
-
-      <button class="connect-calendar-btn" (click)="connectCalendar()">
-        <svg
-          class="link-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path
-            d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
-          ></path>
-          <path
-            d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
-          ></path>
-        </svg>
-        <span>Connect to another website</span>
-        <svg
-          class="chevron-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <polyline points="9,18 15,12 9,6"></polyline>
-        </svg>
-      </button>
-    </div>
+    </div> -->
   </div>
 </div>
