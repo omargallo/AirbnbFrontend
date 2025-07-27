@@ -4,8 +4,56 @@
           <!-- <p>{{ checkIn | checkin: 'MMM d, y' }} - {{ checkOut | date: 'MMM d, y' }}</p> -->
     </div>
     <ngx-daterangepicker-material
+    ngxDaterangepickerMd
+    #picker
+    (choosedDate)="onDatesChanged($event)"
+    [isInvalidDate]="isInvalidDate"
+    [showClearButton]="true"
+    [linkedCalendars]="true"
+    [alwaysShowCalendars]="true"
+    [ranges]="ranges"
+    [autoApply]="true"
+    [locale]="locale"
+    (startDateChanged)="onStartDateChange($event)"
+        ></ngx-daterangepicker-material>
+    <!-- <ngx-daterangepicker-material
+    *ngIf="showPicker"
+    #picker
+    (choosedDate)="onDatesChanged($event)"
+    [isInvalidDate]="isInvalidDate"
+    [showClearButton]="true"
+    [linkedCalendars]="true"
+    [alwaysShowCalendars]="true"
+    [ranges]="ranges"
+    [autoApply]="true"
+    [locale]="locale"
+    (startDateChanged)="onStartDateChange($event)"
+        ></ngx-daterangepicker-material> -->
+
+    <!-- (choosedDate)="onDateRangeSelected($event)" -->
+    <!-- <input
+    class="custom-date-input"
+    ngxDaterangepickerMd
+    [(ngModel)] = "selected"
+    [ariaSelected]=""
+    [showCustomRangeLabel]="false"
+    [showClearButton]="false"
+    [linkedCalendars]="true"
+    [alwaysShowCalendars]="true"
+    [ranges]="ranges"
+    [locale]="locale"
+    [showCancel]="false"
+    [showDropdowns]="true"
+    [locale]="locale"
+    [ranges]="ranges"
+    (datesUpdated)="onDatesChanged($event)"
+    [autoApply]="true"
+    /> -->
+
+    <!-- <div class="bg-danger text-black"> <p>{{selected.startDate.toDate()}}</p></div> -->
+    <!-- <ngx-daterangepicker-material
       [locale]="locale"
-      [linkedCalendars]="false"
+      [linkedCalendars]="true"
       [alwaysShowCalendars]="true"
       [singleDatePicker]="false"
       [showCustomRangeLabel]="false"
@@ -15,7 +63,7 @@
       [(ngModel)]="selectedDateRange"
       (datesUpdated)="datesUpdated($event)"
     >
-    </ngx-daterangepicker-material>
+    </ngx-daterangepicker-material> -->
 
-    <a class="report-link mt-3" href="#" (click)="clearDates()">Clear Dates</a>
+    <!-- <a class="report-link mt-3"  (click)="clearDates()">Clear Dates</a> -->
   </div>

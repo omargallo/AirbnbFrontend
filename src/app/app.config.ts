@@ -16,6 +16,7 @@ import { HttpLoaderFactory } from '../translate-loader';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { BrowserModule } from '@angular/platform-browser';
+import { CommonPropInfoService } from './pages/property-info/common-prop-info-service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,7 +24,7 @@ export const appConfig: ApplicationConfig = {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    },
+    },CommonPropInfoService,
     provideHttpClient(withInterceptorsFromDi()),
     provideRouter(routes),
     importProvidersFrom(
