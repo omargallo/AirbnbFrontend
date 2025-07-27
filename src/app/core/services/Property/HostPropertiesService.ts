@@ -56,4 +56,7 @@ export class HostPropertiesService {
       .get<ApiResponse<PropertyDisplayDTO[]>>(`${this.apiUrl}/host/cover/${hostId}`)
       .pipe(map(response => response.data));
   }
+
+
+
 }

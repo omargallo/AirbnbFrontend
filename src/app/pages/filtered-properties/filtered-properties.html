@@ -18,13 +18,10 @@
       </div>
     </div>
     <div class="properties-grid">
-      <a
-        *ngFor="let property of properties; trackBy: trackByPropertyId"
-        target="_blank"
-        [routerLink]="['/property', property.id]"
-        style="text-decoration: none;"
-      >
+      <div *ngFor="let property of properties; trackBy: trackByPropertyId">
         <app-slider-card
+          (cardClick)="onPropertyClick($event)"
+          (wishlistClick)="onWishlistClick($event)"
           [imageUrl]="getPropertyImage(property)"
           [title]="property.title"
           [subtitle]="getLocationSubtitle(property)"
@@ -33,9 +30,10 @@
           [isFavourite]="property.isFavourite ?? false"
           (mouseenter)="selectProperty(property)"
           (mouseleave)="selectedProperty = null"
+          [propertyId]="property.id"
         >
         </app-slider-card>
-      </a>
+      </div>
     </div>
     <div class="pagination-container" *ngIf="totalPages > 1">
       <nav class="pagination">
@@ -86,3 +84,14 @@
     <div id="leaflet-map" class="leaflet-map"></div>
   </div>
 </div>
+
+<app-wish-list-modal
+  *ngIf="show"
+  [propertyId]="selectedPropertyId"
+  (close)="onClose()"
+  (finish)="onFinish($event)"
+  [show]="show"
+  [userId]="authService.userId ?? undefined"
+  class="col-12"
+>
+</app-wish-list-modal>
