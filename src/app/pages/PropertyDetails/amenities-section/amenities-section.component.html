@@ -14,13 +14,13 @@
         </div>
         <div class="guest-reviews-summary d-flex align-items-center">
             <div class="rating d-flex align-items-center gap-1">
-                <p class="score">4.92</p> 
                 <div class="stars" aria-label="Rating out of 5 stars">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
+                    <i class="bi bi-star-fill"></i>
                 </div>
+                <p class="score">{{property?.averageRating??0}}</p> 
             </div>
             <div class="reviews-count">Reviews
-                <span class="count">134</span> 
+                <span class="count">{{property?.reviewCount??0}}</span> 
             </div>
         </div>
     </div>
