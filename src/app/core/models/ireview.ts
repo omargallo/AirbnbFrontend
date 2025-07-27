@@ -1,18 +1,29 @@
+export interface UserProfileDto {
+  userId: string;
+  userName: string;
+  email: string;
+  roles: string[];
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+  bio?: string;
+  birthDate?: string;
+  country?: string;
+}
+
 export interface Ireview {
-  id: number;
-  propertyId: number;
-  bookingId: number;
-  userId?: string;
-  comment: string;
-  privateComment?: string;
-  rating: number;
-  cleanliness: number;
-  accuracy: number;
-  communication: number;
-  checkIn: number;
-  location: number;
-  value: number;
-  createdAt?: string;
-  updatedAt?: string;
-  user?: any;
+  id: number; // lowercase alias for Id
+  propertyId: number; // lowercase alias for PropertyId
+  userId?: string; // For frontend convenience
+  comment?: string; // lowercase alias for Comment
+  rating: number; // lowercase alias for Rating
+  cleanliness?: number; // lowercase alias
+  accuracy?: number; // lowercase alias
+  communication?: number; // lowercase alias
+  checkIn?: number; // lowercase alias
+  location?: number; // lowercase alias
+  value?: number; // lowercase alias
+  createdAt?: string; // lowercase alias
+  user?: UserProfileDto; // lowercase alias
+
 }

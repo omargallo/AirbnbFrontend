@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Ireview } from '../../models/ireview';
 import { AddReviewByGuestDTO } from '../../models/ReviewInterfaces/add-review-by-guest-dto';
-import { EditReviewByGuestDTO } from '../../models/ReviewInterfaces/guest-review-dto';
+import { EditReviewByGuestDTO, IGuestReviewDto } from '../../models/ReviewInterfaces/guest-review-dto';
 import { environment } from '../../../../environments/environment.development';
 import { BookingDetailsDTO } from '../Booking/user-booking-service';
 @Injectable({
@@ -18,7 +18,7 @@ export class ReviewService {
 
   constructor(private http: HttpClient) {}
 
-  getAllReviews(): Observable<Ireview[]> {
+  getAllReviews(): Observable<IGuestReviewDto[]> {
     return this.http.get<any>(`${this.baseUrl}/all`).pipe(
       map((response) => {
         if (!response.isSuccess || !response.data) {
@@ -29,7 +29,7 @@ export class ReviewService {
     );
   }
 
-  getReviewById(id: number): Observable<Ireview> {
+  getReviewById(id: number): Observable<IGuestReviewDto> {
     return this.http.get<any>(`${this.baseUrl}/${id}`).pipe(
       map((response) => {
         if (!response.isSuccess || !response.data) {
@@ -40,7 +40,7 @@ export class ReviewService {
     );
   }
 
-  getReviewsByUserId(userId: string): Observable<Ireview[]> {
+  getReviewsByUserId(userId: string): Observable<IGuestReviewDto[]> {
     return this.http.get<any>(`${this.baseUrl}/user/${userId}`).pipe(
       map((response) => {
         if (!response.isSuccess || !response.data) {
@@ -51,7 +51,7 @@ export class ReviewService {
     );
   }
 
-  getReviewsByPropertyId(propertyId: number): Observable<Ireview[]> {
+  getReviewsByPropertyId(propertyId: number): Observable<IGuestReviewDto[]> {
     return this.http.get<any>(`${this.baseUrl}/property/${propertyId}`).pipe(
       map((response) => {
         if (!response.isSuccess || !response.data) {
@@ -62,7 +62,7 @@ export class ReviewService {
     );
   }
 
-  addReview(review: AddReviewByGuestDTO): Observable<Ireview> {
+  addReview(review: AddReviewByGuestDTO): Observable<AddReviewByGuestDTO> {
     return this.http.post<any>(`${this.baseUrl}`, review).pipe(
       map((response) => {
         if (!response.isSuccess || !response.data) {
@@ -73,7 +73,7 @@ export class ReviewService {
     );
   }
 
-  updateReview(id: number, review: EditReviewByGuestDTO): Observable<Ireview> {
+  updateReview(id: number, review: AddReviewByGuestDTO  ): Observable<AddReviewByGuestDTO> {
     return this.http.put<any>(`${this.baseUrl}/${id}`, review).pipe(
       map((response) => {
         if (!response.isSuccess || !response.data) {

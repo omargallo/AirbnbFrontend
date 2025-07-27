@@ -102,6 +102,13 @@
         <div class="header-controls">
           <div>
             <h2 class="reviews-title">{{ totalReviews }} reviews</h2>
+            <button
+              *ngIf="canUserAddReview"
+              (click)="openAddReviewModal()"
+              class="btn btn-primary"
+            >
+              Add Review
+            </button>
             <a href="#" class="learn-link">Learn how reviews work</a>
           </div>
           <div class="dropdown-container">

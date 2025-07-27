@@ -1,155 +1,116 @@
 <div class="reviews-section mt-5">
   <!-- Reviews Header -->
-  <div class="reviews-header">
-    <div class="reviews-title">
-      <h2>Reviews</h2>
-      <div class="reviews-count">
-        <span class="reviews-count-number">{{ reviews.length }}</span>
-        <span class="reviews-count-text">{{
-          reviews.length === 1 ? "review" : "reviews"
-        }}</span>
+  <div class="reviews-title">
+    <!-- Dynamic overall rating -->
+    <div class="overall-rating-display">
+      <div class="overall-rating-stars">
+        <app-star-component
+          [maxStars]="1"
+          [value]="getOverallRating()"
+          [readonly]="true"
+          [fontSize]="'1.5rem'"
+          [starColor]="'black'"
+        ></app-star-component>
+        <h2 class="overall-rating-number mx-2">
+          {{ getOverallRating() | number : "1.1-1" }}
+        </h2>
       </div>
-    </div>
-    <div class="reviews-actions">
-      <ng-container *ngIf="userId; else loginPrompt">
-        <ng-container *ngIf="userExistingReview; else canReviewCheck">
-          <div class="review-status-message">
-            You have already reviewed this property
-          </div>
-        </ng-container>
-        <ng-template #canReviewCheck>
-          <ng-container
-            *ngIf="userCompletedBookings.length > 0; else noBookings"
-          >
-            <button class="btn-add-review" (click)="navigateToAddReview()">
-              Add Review
-            </button>
-          </ng-container>
-          <ng-template #noBookings>
-            <div class="review-status-message">
-              Complete a booking to leave a review
-            </div>
-          </ng-template>
-        </ng-template>
-      </ng-container>
-      <ng-template #loginPrompt>
-        <div class="review-status-message">Log in to leave a review</div>
-      </ng-template>
-
-      <button class="btn-view-reviews" (click)="openReviewsModal()">
-        View All Reviews
-      </button>
+      <div class="reviews-count">
+        <h2>
+          <span class="reviews-count-number">{{ reviews.length }}</span>
+          <span class="reviews-count-text mx-2">{{
+            reviews.length === 1 ? "review" : "reviews"
+          }}</span>
+        </h2>
+      </div>
     </div>
   </div>
 
-  <!-- Reviews Modal - View Only -->
-  <app-reviews-modal
-    *ngIf="showReviewsModal"
-    [reviews]="reviews"
+  <!-- Add Review Call-to-Action -->
+  <!-- <app-add-review-button
+    *ngIf="propertyId"
+    [propertyId]="propertyId"
     [propertyName]="propertyName"
+  >
+  </app-add-review-button> -->
+
+  <!-- Reviews Modal - View Only -->
+
+  <!-- @if(showReviewsModal){
+  <app-reviews-modal
+    [reviews]="reviews"
+    [propertyId]="propertyId"
     (closeModal)="closeReviewsModal()"
   ></app-reviews-modal>
+  }
 
+   -->
   <!-- Summary Row -->
-  <div class="summary-row">
+  <div class="summary-row" *ngIf="reviews.length > 0">
     <!-- Overall Rating Breakdown -->
     <div class="rating-breakdown">
       <h6 class="mb-3">Overall rating</h6>
       <div class="rating-bars">
-        <div class="rating-bar-item">
-          <span class="rating-number">5</span>
+        <div class="rating-bar-item" *ngFor="let rating of [5, 4, 3, 2, 1]">
+          <span class="rating-number">{{ rating }}</span>
           <div class="progress-bar-container">
-            <div class="progress-bar" style="width: 80%"></div>
+            <div
+              class="progress-bar"
+              [style.width.%]="getRatingPercentage(rating)"
+            ></div>
           </div>
-        </div>
-        <div class="rating-bar-item">
-          <span class="rating-number">4</span>
-          <div class="progress-bar-container">
-            <div class="progress-bar" style="width: 15%"></div>
-          </div>
-        </div>
-        <div class="rating-bar-item">
-          <span class="rating-number">3</span>
-          <div class="progress-bar-container">
-            <div class="progress-bar" style="width: 3%"></div>
-          </div>
-        </div>
-        <div class="rating-bar-item">
-          <span class="rating-number">2</span>
-          <div class="progress-bar-container">
-            <div class="progress-bar" style="width: 1%"></div>
-          </div>
-        </div>
-        <div class="rating-bar-item">
-          <span class="rating-number">1</span>
-          <div class="progress-bar-container">
-            <div class="progress-bar" style="width: 1%"></div>
-          </div>
+          <span class="rating-count"
+            >({{ ratingDistribution[rating] || 0 }})</span
+          >
         </div>
       </div>
     </div>
 
     <!-- Category Ratings -->
     <div class="category-ratings">
-      <div class="category-item">
+      <div
+        class="category-item"
+        *ngFor="
+          let category of [
+            'Cleanliness',
+            'Accuracy',
+            'CheckIn',
+            'Communication',
+            'Location',
+            'Value'
+          ]
+        "
+      >
         <div class="category-icon-container">
-          <i class="category-icon bi bi-sparkles"></i>
+          <i [class]="'category-icon ' + getCategoryIcon(category)"></i>
         </div>
         <div class="category-info">
-          <span class="category-label">Cleanliness</span>
-          <span class="category-rating">5.0</span>
-        </div>
-      </div>
-      <div class="category-item">
-        <div class="category-icon-container">
-          <i class="category-icon bi bi-check-circle"></i>
-        </div>
-        <div class="category-info">
-          <span class="category-label">Accuracy</span>
-          <span class="category-rating">5.0</span>
-        </div>
-      </div>
-      <div class="category-item">
-        <div class="category-icon-container">
-          <i class="category-icon bi bi-key"></i>
-        </div>
-        <div class="category-info">
-          <span class="category-label">Check-in</span>
-          <span class="category-rating">5.0</span>
-        </div>
-      </div>
-      <div class="category-item">
-        <div class="category-icon-container">
-          <i class="category-icon bi bi-chat-square-dots"></i>
-        </div>
-        <div class="category-info">
-          <span class="category-label">Communication</span>
-          <span class="category-rating">5.0</span>
-        </div>
-      </div>
-      <div class="category-item">
-        <div class="category-icon-container">
-          <i class="category-icon bi bi-geo-alt"></i>
-        </div>
-        <div class="category-info">
-          <span class="category-label">Location</span>
-          <span class="category-rating">5.0</span>
-        </div>
-      </div>
-      <div class="category-item">
-        <div class="category-icon-container">
-          <i class="category-icon bi bi-tag"></i>
-        </div>
-        <div class="category-info">
-          <span class="category-label">Value</span>
-          <span class="category-rating">4.9</span>
+          <span class="category-label">{{
+            category === "CheckIn" ? "Check-in" : category
+          }}</span>
+          <span class="category-rating">
+            {{
+              categoryAverages[category]
+                ? (categoryAverages[category] | number : "1.1-1")
+                : "N/A"
+            }}
+          </span>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- No Reviews Message -->
+  <div *ngIf="reviews.length === 0" class="no-reviews-message">
+    <div class="text-center py-5">
+      <i class="bi bi-star display-1 text-muted mb-3"></i>
+      <h4 class="text-muted">No reviews yet</h4>
+      <p class="text-muted">Be the first to share your experience!</p>
+    </div>
+  </div>
+
   <!-- Reviews Grid (Show only first 6) -->
-  <div class="reviews-grid">
+  <div class="reviews-grid" *ngIf="reviews.length > 0">
     <div
       *ngFor="let review of reviews | slice : 0 : 6; trackBy: trackByReviewId"
       class="review-card"
@@ -158,28 +119,23 @@
       <div class="review-header">
         <div class="profile-section">
           <div class="profile-avatar">
-            {{ getInitials(review.user?.firstName, review.user?.lastName) }}
+            {{ getInitials(review.user.firstName, review.user.lastName) }}
           </div>
           <div class="profile-info">
             <h6 class="reviewer-name">
-              {{ getFullName(review.user?.firstName, review.user?.lastName) }}
+              {{ getFullName(review.user.firstName, review.user.lastName) }}
             </h6>
-            <p class="reviewer-meta">Guest on Airbnb</p>
+            <p class="reviewer-meta">Guest</p>
           </div>
         </div>
 
         <!-- Actions (Edit, View, Delete) - Only show for user's own reviews -->
-        <div class="review-actions" *ngIf="userId === review.user?.userId">
+        @if(currentUser && currentUser === review.user.userId){
+        <div class="review-actions">
           <i
             (click)="navigateToEditReview(review.id)"
             class="action-icon text-info bi bi-pencil-square"
             title="Edit"
-            style="cursor: pointer"
-          ></i>
-          <i
-            (click)="navigateToViewReview(review.id)"
-            class="action-icon text-warning bi bi-eye-fill"
-            title="View"
             style="cursor: pointer"
           ></i>
           <button
@@ -191,18 +147,24 @@
             <i class="bi bi-trash3-fill"></i>
           </button>
         </div>
+        }
       </div>
 
       <!-- Rating and Date -->
       <div class="review-meta">
         <div class="review-stars">
-          <app-star-component [value]="review.rating" [readonly]="true">
+          <app-star-component
+            [fontSize]="'small'"
+            [starColor]="'black'"
+            [value]="review.rating"
+            [readonly]="true"
+          >
           </app-star-component>
         </div>
         <span class="review-date">{{
           review.createdAt | date : "MMM yyyy"
         }}</span>
-        <span class="review-type">Stayed a few nights</span>
+        <span class="review-type">Guest stay</span>
       </div>
 
       <!-- Review Content -->
@@ -212,6 +174,7 @@
           class="show-more-btn"
           type="button"
           (click)="openReviewsModal()"
+          *ngIf="review.comment && review.comment.length > 150"
         >
           Show more
         </button>
@@ -220,41 +183,152 @@
   </div>
 
   <!-- Bottom Actions -->
-  <div class="bottom-actions">
+  <div class="bottom-actions" *ngIf="reviews.length > 6">
     <button
       class="btn btn-outline-dark btn-lg show-all-btn"
       (click)="openReviewsModal()"
     >
       Show all {{ reviews.length }} reviews
     </button>
-    <div class="learn-container">
-      <a
-        href="#"
-        class="learn-link"
-        (click)="toggleTooltip($event)"
-        [attr.aria-expanded]="showTooltip"
-      >
-        Learn how reviews work
-      </a>
-      <!-- Tooltip -->
-      <div class="tooltip-popup" [class.show]="showTooltip">
-        <div class="tooltip-content">
-          <p>
-            Reviews from past guests help our community learn more about each
-            home. By default, reviews are sorted by relevancy. Relevancy is
-            based on recency, length, and information that you provide to us,
-            such as your booking search, your country, and your language
-            preferences.
-          </p>
-          <p>
-            Only the guest who booked the reservation can leave a review, and
-            Airbnb only moderates reviews flagged for not following our
-            policies. To be eligible for a percentile ranking or guest favorite
-            label, listings need 5 or more recent reviews. Criteria is subject
-            to change.
-          </p>
-        </div>
+  </div>
+
+  @if ( reviews.length > 0) {
+  <div class="reviews-actions text-center">
+    <button class="btn-view-reviews" (click)="openReviewsModal()">
+      View All Reviews
+    </button>
+  </div>
+  }
+
+  <!-- Learn More Section -->
+  <div
+    class="learn-container d-flex justify-content-center"
+    *ngIf="reviews.length > 0"
+  >
+    <a
+      href="#"
+      class="learn-link"
+      (click)="toggleTooltip($event)"
+      [attr.aria-expanded]="showTooltip"
+    >
+      Learn how reviews work
+    </a>
+    <!-- Tooltip -->
+    <div class="tooltip-popup" [class.show]="showTooltip">
+      <div class="tooltip-content">
+        <p>
+          Reviews from past guests help our community learn more about each
+          home. By default, reviews are sorted by relevancy. Relevancy is based
+          on recency, length, and information that you provide to us, such as
+          your booking search, your country, and your language preferences.
+        </p>
+        <p>
+          Only guests who booked a reservation can leave a review, and reviews
+          are moderated for quality and authenticity. To be eligible for a
+          percentile ranking or guest favorite label, listings need 5 or more
+          recent reviews.
+        </p>
       </div>
     </div>
   </div>
 </div>
+
+@if( shouldShowReviewButton()){
+<!-- Add Review Call-to-Action with Animation -->
+<div class="review-cta-container">
+  <div class="character-illustration">
+    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <!-- 3D Character SVG (same as in the artifact above) -->
+      <defs>
+        <linearGradient id="skinGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color: #ffd4b3" />
+          <stop offset="100%" style="stop-color: #fdbf9a" />
+        </linearGradient>
+        <linearGradient id="shirtGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color: #ff6b47" />
+          <stop offset="100%" style="stop-color: #e74c2c" />
+        </linearGradient>
+        <linearGradient id="pantsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color: #5dade2" />
+          <stop offset="100%" style="stop-color: #3498db" />
+        </linearGradient>
+      </defs>
+      <!-- Body -->
+      <ellipse cx="60" cy="75" rx="18" ry="25" fill="url(#shirtGradient)" />
+      <!-- Arms -->
+      <ellipse
+        cx="42"
+        cy="68"
+        rx="8"
+        ry="15"
+        fill="url(#shirtGradient)"
+        transform="rotate(-20 42 68)"
+      />
+      <ellipse
+        cx="78"
+        cy="68"
+        rx="8"
+        ry="15"
+        fill="url(#shirtGradient)"
+        transform="rotate(45 78 68)"
+      />
+      <!-- Hands -->
+      <circle cx="38" cy="60" r="6" fill="url(#skinGradient)" />
+      <circle cx="85" cy="75" r="6" fill="url(#skinGradient)" />
+      <!-- Legs -->
+      <ellipse cx="55" cy="95" rx="7" ry="18" fill="url(#pantsGradient)" />
+      <ellipse cx="65" cy="95" rx="7" ry="18" fill="url(#pantsGradient)" />
+      <!-- Shoes -->
+      <ellipse cx="55" cy="110" rx="8" ry="5" fill="#34495E" />
+      <ellipse cx="65" cy="110" rx="8" ry="5" fill="#34495E" />
+      <!-- Head -->
+      <circle cx="60" cy="40" r="20" fill="url(#skinGradient)" />
+      <!-- Hair -->
+      <path
+        d="M 45 25 Q 60 15 75 25 Q 80 30 75 35 Q 70 20 60 20 Q 50 20 45 35 Q 40 30 45 25"
+        fill="#8B4513"
+      />
+      <!-- Eyes -->
+      <circle cx="54" cy="38" r="3" fill="white" />
+      <circle cx="66" cy="38" r="3" fill="white" />
+      <circle cx="54" cy="38" r="2" fill="black" />
+      <circle cx="66" cy="38" r="2" fill="black" />
+      <!-- Smile -->
+      <path
+        d="M 52 45 Q 60 50 68 45"
+        stroke="#E74C2C"
+        stroke-width="2"
+        fill="none"
+        stroke-linecap="round"
+      />
+      <!-- Waving motion lines -->
+      <path
+        d="M 30 55 Q 35 50 40 55"
+        stroke="#FF385C"
+        stroke-width="2"
+        fill="none"
+        opacity="0.6"
+      />
+      <path
+        d="M 28 58 Q 33 53 38 58"
+        stroke="#FF385C"
+        stroke-width="1.5"
+        fill="none"
+        opacity="0.4"
+      />
+    </svg>
+  </div>
+
+  <div class="review-cta-text">
+    <h3 class="review-cta-title">Share Your Experience</h3>
+    <p class="review-cta-subtitle">Would you like to leave a review for us?</p>
+  </div>
+
+  <button class="review-btn" (click)="navigateToAddReview()">
+    <span class="review-btn-text">
+      <span class="heart-icon">💕</span>
+      Leave a Review
+    </span>
+  </button>
+</div>
+}
