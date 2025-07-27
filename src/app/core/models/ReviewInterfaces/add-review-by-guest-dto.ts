@@ -11,5 +11,5 @@ export interface AddReviewByGuestDTO {
   location: number;
   checkIn: number;
   value: number;
-  // userId: string | null;
+  userId: string | null;
 }

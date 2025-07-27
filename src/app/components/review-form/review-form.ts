@@ -230,6 +230,20 @@ export class ReviewForm implements OnInit {
   reviewHandler() {
     if (!this.reviewForm.valid) {
       this.markFormGroupTouched();
+
+      console.log('Submit handler called', {
+        currentStep: this.currentStep,
+        totalSteps: this.totalSteps,
+        isLoading: this.isLoading,
+        formValid: this.reviewForm.valid,
+      });
+      // Add this to help debug
+      console.log('Form invalid:', this.reviewForm.errors);
+      console.log('Form controls status:', {
+        comment: this.getComment.errors,
+        rating: this.getRating.errors,
+        // ... other controls
+      });
       return;
     }
 
@@ -250,7 +264,7 @@ export class ReviewForm implements OnInit {
       checkIn: this.getCheckIn.value ?? 0,
       location: this.getLocation.value ?? 0,
       value: this.getValue.value ?? 0,
-      // userId: this.userId || null // Use userId from auth service
+      userId: this.userId || null, // Use userId from auth service
     };
 
     if (this.mode === 'add') {
@@ -258,9 +272,14 @@ export class ReviewForm implements OnInit {
       this.reviewService.addReview(reviewData).subscribe({
         next: () => {
           this.isLoading = false;
+          console.log('Redirecting to property:', {
+            propertyId: this.propertyId,
+            route: `property/${this.propertyId}`,
+          });
           this.successMessage = 'Review submitted successfully!';
+
           setTimeout(() => {
-            this.router.navigate(['/properties', this.propertyId]);
+            this.router.navigate([`/property/${this.propertyId}`]);
           }, 1500);
         },
         error: (error: any) => {
@@ -281,7 +300,7 @@ export class ReviewForm implements OnInit {
           this.isLoading = false;
           this.successMessage = 'Review updated successfully!';
           setTimeout(() => {
-            this.router.navigate(['/properties', this.propertyId]);
+            this.router.navigate([['/property', this.propertyId]]);
           }, 1500);
         },
         error: (error: any) => {
@@ -302,7 +321,7 @@ export class ReviewForm implements OnInit {
   // Navigate back to property page
   goBack(): void {
     if (this.propertyId) {
-      this.router.navigate(['/properties', this.propertyId]);
+      this.router.navigate([`/property/${this.propertyId}`]);
     } else {
       this.router.navigate(['/']);
     }

@@ -40,6 +40,7 @@ import { Profile } from './pages/profile/profile';
 import { UpdateProfile } from './pages/update-profile/update-profile';
 import { YourReviews } from './pages/your-reviews/your-reviews';
 import { Notifications } from './pages/notifications/notifications';
+import { ReviewForm } from './components/review-form/review-form';
 
 export const routes: Routes = [
   {
@@ -51,6 +52,7 @@ export const routes: Routes = [
       { path: 'services', component: Home },
       { path: 'FilteredProperties', component: FilteredProperties },
       { path: 'property/:propertyId', component: PropertyInfo },
+
       { path: 'WishLists', component: Wishlists },
       {
         path: 'wishlist/:wishlistId/properties',
@@ -96,6 +98,7 @@ export const routes: Routes = [
   { path: 'guesttbookings', component: UserBookings },
 
   { path: 'propertybookings/:propertyId', component: PropertyBookings },
+  { path: 'review/:id', component: ReviewForm },
 
   {
     path: 'hostsettings',

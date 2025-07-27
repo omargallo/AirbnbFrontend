@@ -137,19 +137,28 @@ export class GuestReviews implements OnInit {
   //then check if there's one who booked show the review button
   // Check if user is logged in using AuthService
   shouldShowReviewButton(): boolean {
+    console.log('Checking if review button should be shown');
+
     if (!this.currentUser) {
+      console.log('No current user found.');
       return false;
+    } else {
+      console.log('Current user:', this.currentUser);
     }
 
     if (this.isLoadingBookings) {
+      console.log('Bookings are still loading.');
       return false;
+    } else {
+      console.log('Bookings loaded:', this.userBookings);
     }
 
     const hasCompletedBooking = this.userBookings.some(
       (booking) =>
         booking.propertyId === this.propertyId &&
-        booking.bookingStatus === 'completed'
+        booking.bookingStatus === 'Completed'
     );
+    // console.log('Has completed booking for property:', hasCompletedBooking);
 
     if (!hasCompletedBooking) {
       return false;
@@ -159,15 +168,34 @@ export class GuestReviews implements OnInit {
       (review) => review.userId === this.currentUser
     );
 
+    // console.log('Has existing review from user:', hasExistingReview);
+
     if (hasExistingReview) {
       return false;
     }
+
+    // console.log('All checks passed. Show review button.');
     return true;
   }
   hasExistingReview(): boolean {
-    return this.reviews.some((review) => review.userId === this.currentUser);
-  }
+    console.log('Current User:', this.currentUser, typeof this.currentUser);
+    console.log(
+      'Reviews with userIds:',
+      this.reviews.map((r) => ({
+        id: r.id,
+        userId: r.userId,
+        userIdType: typeof r.userId,
+      }))
+    );
 
+    return this.reviews.some((review) => {
+      const match = String(review.userId) === String(this.currentUser);
+      console.log(
+        `Comparing: "${review.userId}" === "${this.currentUser}" = ${match}`
+      );
+      return match;
+    });
+  }
   getCompletedBookingForProperty(): BookingDetailsDTO | null {
     return (
       this.userBookings
