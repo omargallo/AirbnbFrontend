@@ -4,6 +4,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-update-profile',
@@ -13,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class UpdateProfile {
   authService = inject(AuthService);
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   userId = this.authService.userId || '';
   firstName: string | null = (() => {
@@ -60,6 +61,7 @@ export class UpdateProfile {
               console.log(res);
               localStorage.setItem('email', res.email);
               localStorage.setItem('user', JSON.stringify(res));
+              this.router.navigate(['/profile/'+this.userId]);
             },
             error: (err) => {
               console.error(err);

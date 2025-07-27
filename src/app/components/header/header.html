@@ -60,9 +60,13 @@
             >
               <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
-            <div *ngIf="isLoggedIn" class="icon-user" (click)="$event.stopPropagation()">
+            <div
+              *ngIf="isLoggedIn"
+              class="icon-user"
+              (click)="$event.stopPropagation()"
+            >
               <a href="#" routerLink="/profile/{{ userId }}"
-                ><span *ngIf="ifImg === ''" [ngStyle]="{padding: '4px'}">{{
+                ><span *ngIf="ifImg === ''" [ngStyle]="{ padding: '4px' }">{{
                   user?.charAt(0)?.toUpperCase() || "K"
                 }}</span>
                 <img
@@ -86,6 +90,16 @@
             }"
             (animationend)="onAnimationEnd()"
           >
+            <li *ngIf="isLoggedIn">
+              <a
+                class="dropdown-item d-flex align-items-center gap-2"
+                href="#"
+                routerLink="/notifications"
+              >
+                <i class="bi bi-bell"></i>
+                {{ "HEADER.notifications" | translate }}
+              </a>
+            </li>
             <li>
               <a
                 class="dropdown-item d-flex align-items-center gap-2"

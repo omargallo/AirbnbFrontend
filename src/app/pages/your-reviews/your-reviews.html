@@ -1,1 +1,21 @@
-<p>your-reviews works!</p>
+<div class="reviews-container">
+  <h2>Your Reviews</h2>
+
+  <div *ngIf="reviews.length === 0" class="no-reviews">
+    No reviews found.
+  </div>
+
+  <div *ngFor="let review of reviews" class="review-card">
+    <p class="comment">“{{ review.comment }}”</p>
+    <p class="private-comment">Private: {{ review.privateComment }}</p>
+
+    <div class="ratings">
+      <div><strong>Cleanliness:</strong> {{ review.cleanliness }}</div>
+      <div><strong>Accuracy:</strong> {{ review.accuracy }}</div>
+      <div><strong>Communication:</strong> {{ review.communication }}</div>
+      <div><strong>Location:</strong> {{ review.location }}</div>
+      <div><strong>Check-In:</strong> {{ review.checkIn }}</div>
+      <div><strong>Value:</strong> {{ review.value }}</div>
+    </div>
+  </div>
+</div>

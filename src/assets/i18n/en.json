@@ -30,7 +30,8 @@
     "GUESTS": "guests",
     "INFANT": "infant",
     "INFANTS": "infants",
-    "LOGOUT": "Logout"
+    "LOGOUT": "Logout",
+    "notifications": "Notifications"
   },
   "login": {
     "welcome": "Welcome back",
@@ -78,5 +79,14 @@
     "travels": "Travels",
     "edit": "Edit",
     "yourReviews": "Your Reviews"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unread": "Unread",
+    "markAllAsRead": "Mark all as read",
+    "clearAll": "Clear all",
+    "noNotifications": "No notifications",
+    "markAsRead": "Mark as read",
+    "delete": "Delete"
   }
 }
