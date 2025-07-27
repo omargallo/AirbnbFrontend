@@ -1,61 +1,67 @@
-mmm
-<div class="profile-container">
-  <form class="profile-form" (ngSubmit)="onUpdateProfile()" #profileForm="ngForm">
-    <div class="form-data">
-      <input
-        type="text"
-        id="firstName"
-        name="firstName"
-        placeholder="{{ 'profile.firstName' | translate }}"
-        [(ngModel)]="firstName"
-      />
-    </div>
-    <div class="form-data">
-      <input
-        type="text"
-        id="lastName"
-        name="lastName"
-        placeholder="{{ 'profile.lastName' | translate }}"
-        [(ngModel)]="lastName"
-      />
-    </div>
-    <div class="form-data">
-      <input
-        type="text"
-        id="phoneNumber"
-        name="phoneNumber"
-        placeholder="{{ 'profile.phoneNumber' | translate }}"
-        [(ngModel)]="phoneNumber"
-      />
-    </div>
-    <div class="form-data">
-      <input
-        type="text"
-        id="country"
-        name="country"
-        placeholder="{{ 'profile.country' | translate }}"
-        [(ngModel)]="country"
-      />
-    </div>
-    <div class="form-data">
-      <input
-        type="date"
-        id="birthDate"
-        name="birthDate"
-        placeholder="{{ 'profile.birthDate' | translate }}"
-        [(ngModel)]="birthDate"
-      />
+<div class="profile">
+  <nav>
+    <ul>
+      <li>
+        <h1>{{ "profile.title" | translate }}</h1>
+      </li>
+      <li>
+        <a
+          (click)="selectedSection = 'aboutMe'"
+          [ngClass]="{ active: selectedSection === 'aboutMe' }"
+        >
+          <span class="letter" *ngIf="ifImg === ''" [ngStyle]="{ padding: '4px' }">{{
+            user?.charAt(0)?.toUpperCase() || "K"
+          }}</span>
+          <img *ngIf="ifImg" [src]="img" alt="user-img" class="user-img" />
+          <span>{{ "profile.aboutMe" | translate }}</span>
+        </a>
+      </li>
+      <li>
+        <a
+          (click)="selectedSection = 'travels'"
+          [ngClass]="{ active: selectedSection === 'travels' }"
+        >
+          <i class="bi bi-bag"></i>
+          {{ "profile.travels" | translate }}
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="about-me" *ngIf="selectedSection === 'aboutMe'">
+      <h1>
+        {{ "profile.aboutMe" | translate }}
+        <a href="#" routerLink="/update-profile/{{ userId }}">{{
+          "profile.edit" | translate
+        }}</a>
+      </h1>
+      <div class="user-info">
+        <div class="user-img">
+          <img *ngIf="ifImg" [src]="img" alt="user-img" />
+          <span class="initial-letter" *ngIf="!ifImg">{{
+            user?.charAt(0)?.toUpperCase() || "K"
+          }}</span>
+          <span
+            class="name"
+            >{{ `${user?.charAt(0)?.toUpperCase()}${user?.slice(1)}` }}</span
+          >
+          <span>{{ roles }}</span>
+        </div>
+        <div class="user-details">
+          <p *ngIf="country"><i class="bi bi-geo-alt"></i> {{ country }}</p>
+          <br />
+          <hr />
+          <a href="#" routerLink="/your-reviews">
+            <i class="bi bi-chat-right-text"></i>
+            <span>
+              {{ "profile.yourReviews" | translate }}
+            </span>
+          </a>
+        </div>
+      </div>
     </div>
 
-    <textarea
-      name="bio"
-      id="bio"
-      placeholder="{{ 'profile.bio' | translate }}"
-      [(ngModel)]="bio"
-    ></textarea>
-
-    <button type="submit" [disabled]="profileForm.invalid">
-      {{ "profile.submit" | translate }}
-    </button>
-  </form>
+    <div class="travels" *ngIf="selectedSection === 'travels'"></div>
+  </main>
 </div>

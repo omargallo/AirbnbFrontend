@@ -50,7 +50,7 @@ export class UserService {
       );
   }
 
-  confirmOtp(payload: { email: string; otp: string }): Observable<any> {
+  confirmOtp(payload: { email: string; code: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/verify-otp`, payload).pipe(
       tap((response: any) => {
         console.log(response);

@@ -1,45 +1,155 @@
-.profile-container {
+.profile {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   height: 100vh;
 }
 
-.profile-form {
+nav {
+  flex: 1;
+  padding: 40px 20px;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+nav ul {
+  list-style: none;
+  width: 70%;
+  padding: 0;
+  margin: 20px 0;
+}
+
+nav li {
+  margin-bottom: 10px;
+}
+
+nav li h1 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+nav a {
+  padding: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 15px;
+}
+
+nav a img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-position: center;
+  background-size: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
+nav a span {
+  margin-left: 10px;
+  font-size: 1.2rem;
+  transition: all 0.3s ease-in-out;
+  text-decoration: none;
+}
+
+.letter{
+  color: var(--bg-color);
+  background-color: var(--primary-text-color);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+nav a.active {
+  background-color: var(--bg);
+}
+
+main {
+  flex: 2;
+  padding: 50px;
+}
+
+.about-me,
+.travels {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.about-me h1,
+.travels h1 {
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
+  gap: 8px;
+  font-weight: bold;
+}
+
+.about-me h1 a,
+.travels h1 a {
+  font-size: 0.9rem;
+  background-color: var(--bg);
+  padding: 7px 10px;
+  border-radius: 5px;
+}
+
+.user-info {
+  padding: 50px;
+}
+.user-info .user-img {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  max-width: 400px;
-  padding: 20px;
+  gap: 10px;
+  margin: auto;
+  box-shadow: 0 2px 20px var(--shadow-color);
   border-radius: 10px;
-  background-color: var(--white);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  height: 250px;
+  margin-bottom: 30px;
 }
 
-.profile-form input,
-.profile-form textarea {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: none;
-  border-radius: 5px;
-  background-color: var(--white);
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+.user-info .user-img img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-position: center;
+  background-size: cover;
 }
 
-.profile-form textarea {
-  height: 150px;
+.user-info .user-img .initial-letter {
+  font-size: 3rem;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 10px 32px;
+  background-color: var(--primary-text-color);
+  color: var(--bg-color);
 }
 
-.profile-form button {
-  padding: 10px 20px;
-  margin-top: 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: var(--primary);
-  color: var(--white);
-  cursor: pointer;
+.user-info .user-img .name {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.user-details a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  height: 100px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

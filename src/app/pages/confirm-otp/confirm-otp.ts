@@ -68,9 +68,9 @@ export class ConfirmOtp {
 
   onConfirmOtp(): void {
     const email = localStorage.getItem('email');
-    if (!email || this.otp.length !== 6) return;
+    if (!email) return;
 
-    this.userService.confirmOtp({ email, otp: this.otp }).subscribe({
+    this.userService.confirmOtp({ email, code: this.otp }).subscribe({
       next: () => {
         alert('OTP verified successfully');
         this.close();
