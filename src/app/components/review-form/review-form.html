@@ -8,16 +8,7 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h3 class="text text-muted mb-0">
-        {{
-          mode === "add"
-            ? "Add Review"
-            : mode === "edit"
-            ? "Edit Review"
-            : "View Review"
-        }}
-        <span *ngIf="mode !== 'view'"
-          >- Step {{ currentStep }} of {{ totalSteps }}</span
-        >
+        {{ mode === "add" ? "Add Review" : "Edit Review" }}
       </h3>
       <button
         type="button"
@@ -26,61 +17,28 @@
       >
         <i class="bi bi-arrow-left me-1"></i>Back
       </button>
-    </div>
 
-    <!-- Alert Messages -->
-    <div *ngIf="errorMessage" class="alert alert-danger mb-3">
-      {{ errorMessage }}
-    </div>
-    <div *ngIf="successMessage" class="alert alert-success mb-3">
-      {{ successMessage }}
-    </div>
-
-    <!-- Loading Spinner -->
-    <div *ngIf="isLoading" class="text-center py-4">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
+      <!-- Alert Messages -->
+      <div *ngIf="errorMessage" class="alert alert-danger mb-3">
+        {{ errorMessage }}
       </div>
-    </div>
+      <div *ngIf="successMessage" class="alert alert-success mb-3">
+        {{ successMessage }}
+      </div>
 
-    <form
-      [formGroup]="reviewForm"
-      (ngSubmit)="reviewHandler()"
-      *ngIf="!isLoading"
-    >
-      <!-- Step 1: Overall Rating and Category Ratings -->
-      <div *ngIf="currentStep === 1" class="step-content">
-        <!-- Booking Selection (Only for Add Mode) -->
-        <div *ngIf="mode === 'add'" class="mb-4">
-          <h4 class="mb-3">Select Your Stay</h4>
-          <div class="mb-3">
-            <label for="bookingId" class="form-label"
-              >Choose the booking you want to review</label
-            >
-            <select
-              id="bookingId"
-              class="form-select"
-              formControlName="bookingId"
-              [class.is-invalid]="getBookingId.invalid && getBookingId.touched"
-            >
-              <option [ngValue]="null" disabled>Select a booking</option>
-              <option
-                *ngFor="let booking of userCompletedBookings"
-                [ngValue]="booking.id"
-              >
-                {{ booking.propertyTitle }} -
-                {{ booking.checkInDate | date : "mediumDate" }} to
-                {{ booking.checkOutDate | date : "mediumDate" }}
-              </option>
-            </select>
-            <div
-              *ngIf="getBookingId.invalid && getBookingId.touched"
-              class="invalid-feedback"
-            >
-              Please select a booking to review.
-            </div>
-          </div>
+      <!-- Loading Spinner -->
+      <div *ngIf="isLoading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
         </div>
+      </div>
+
+      <form
+        [formGroup]="reviewForm"
+        (ngSubmit)="reviewHandler()"
+        *ngIf="!isLoading"
+      >
+        <!-- Step 1: Overall Rating and Category Ratings -->
 
         <div class="mb-4">
           <h4 class="mb-3">Rate Your Overall Experience</h4>
@@ -158,119 +116,118 @@
             </div>
           </div>
         </div>
-      </div>
+        <!-- Step 2: Written Reviews -->
+        <div *ngIf="currentStep === 2" class="step-content">
+          <div class="mb-4">
+            <h4>
+              Write a Public Review for {{ propertyName || "this property" }}
+            </h4>
+            <label for="comment" class="form-label">Your Review</label>
+            <p class="text-muted">
+              Give other travelers a heads-up about what they can expect. After
+              the review period ends, we'll publish this on the host's listing.
+            </p>
 
-      <!-- Step 2: Written Reviews -->
-      <div *ngIf="currentStep === 2" class="step-content">
-        <div class="mb-4">
-          <h4>
-            Write a Public Review for {{ propertyName || "this property" }}
-          </h4>
-          <label for="comment" class="form-label">Your Review</label>
-          <p class="text-muted">
-            Give other travelers a heads-up about what they can expect. After
-            the review period ends, we'll publish this on the host's listing.
-          </p>
+            <textarea
+              id="comment"
+              class="form-control"
+              formControlName="comment"
+              rows="4"
+              placeholder="Write a public review"
+              [class.is-invalid]="getComment.invalid && getComment.touched"
+            ></textarea>
 
-          <textarea
-            id="comment"
-            class="form-control"
-            formControlName="comment"
-            rows="4"
-            placeholder="Write a public review"
-            [class.is-invalid]="getComment.invalid && getComment.touched"
-          ></textarea>
-
-          <div
-            *ngIf="getComment.invalid && getComment.touched"
-            class="invalid-feedback"
-          >
-            <div *ngIf="getComment.errors?.['required']">
-              Review comment is required
+            <div
+              *ngIf="getComment.invalid && getComment.touched"
+              class="invalid-feedback"
+            >
+              <div *ngIf="getComment.errors?.['required']">
+                Review comment is required
+              </div>
+              <div *ngIf="getComment.errors?.['minlength']">
+                Review must be at least 10 characters long
+              </div>
             </div>
-            <div *ngIf="getComment.errors?.['minlength']">
-              Review must be at least 10 characters long
-            </div>
+          </div>
+
+          <div class="mb-4">
+            <h4>Leave a Private Note for {{ propertyName || "the host" }}</h4>
+            <label for="privatecomment" class="form-label"
+              >Private Comment (Optional)</label
+            >
+            <p class="text-muted">
+              Say thanks or offer suggestions. This is just for the host—other
+              guests won't see it.
+            </p>
+            <textarea
+              id="privatecomment"
+              class="form-control"
+              formControlName="privateComment"
+              placeholder="Thank you!"
+              rows="3"
+            ></textarea>
           </div>
         </div>
 
-        <div class="mb-4">
-          <h4>Leave a Private Note for {{ propertyName || "the host" }}</h4>
-          <label for="privatecomment" class="form-label"
-            >Private Comment (Optional)</label
+        <!-- Progress indicator (Hide in view mode) -->
+        <div *ngIf="mode !== 'view'" class="mb-4">
+          <div class="progress">
+            <div
+              class="progress-bar bg-primary"
+              role="progressbar"
+              [style.width.%]="(currentStep / totalSteps) * 100"
+              [attr.aria-valuenow]="currentStep"
+              aria-valuemin="0"
+              [attr.aria-valuemax]="totalSteps"
+            ></div>
+          </div>
+          <small class="text-muted"
+            >Step {{ currentStep }} of {{ totalSteps }}</small
           >
-          <p class="text-muted">
-            Say thanks or offer suggestions. This is just for the host—other
-            guests won't see it.
-          </p>
-          <textarea
-            id="privatecomment"
-            class="form-control"
-            formControlName="privateComment"
-            placeholder="Thank you!"
-            rows="3"
-          ></textarea>
         </div>
-      </div>
 
-      <!-- Progress indicator (Hide in view mode) -->
-      <div *ngIf="mode !== 'view'" class="mb-4">
-        <div class="progress">
-          <div
-            class="progress-bar bg-primary"
-            role="progressbar"
-            [style.width.%]="(currentStep / totalSteps) * 100"
-            [attr.aria-valuenow]="currentStep"
-            aria-valuemin="0"
-            [attr.aria-valuemax]="totalSteps"
-          ></div>
-        </div>
-        <small class="text-muted"
-          >Step {{ currentStep }} of {{ totalSteps }}</small
-        >
-      </div>
-
-      <!-- Navigation Buttons -->
-      <div class="d-flex justify-content-between mt-4">
-        <!-- Previous Button -->
-        <button
-          *ngIf="currentStep > 1 && mode !== 'view'"
-          type="button"
-          class="btn btn-outline-secondary"
-          (click)="previousStep()"
-        >
-          <i class="bi bi-arrow-left me-1"></i>Previous
-        </button>
-        <div *ngIf="currentStep === 1 || mode === 'view'"></div>
-
-        <!-- Next/Submit Button -->
-        <div>
+        <!-- Navigation Buttons -->
+        <div class="d-flex justify-content-between mt-4">
+          <!-- Previous Button -->
           <button
-            *ngIf="currentStep < totalSteps && mode !== 'view'"
+            *ngIf="currentStep > 1 && mode !== 'view'"
             type="button"
-            class="btn btn-primary"
-            (click)="nextStep()"
-            [disabled]="!isCurrentStepValid()"
+            class="btn btn-outline-secondary"
+            (click)="previousStep()"
           >
-            Next<i class="bi bi-arrow-right ms-1"></i>
+            <i class="bi bi-arrow-left me-1"></i>Previous
           </button>
+          <div *ngIf="currentStep === 1 || mode === 'view'"></div>
 
-          <button
-            *ngIf="currentStep === totalSteps && mode !== 'view'"
-            type="submit"
-            class="btn btn-success"
-            [disabled]="!reviewForm.valid || isLoading"
-          >
-            <span
-              *ngIf="isLoading"
-              class="spinner-border spinner-border-sm me-1"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            {{ mode === "edit" ? "Update Review" : "Submit Review" }}
-          </button>
+          <!-- Next/Submit Button -->
+          <div>
+            <button
+              *ngIf="currentStep < totalSteps && mode !== 'view'"
+              type="button"
+              class="btn btn-primary"
+              (click)="nextStep()"
+              [disabled]="!isCurrentStepValid()"
+            >
+              Next<i class="bi bi-arrow-right ms-1"></i>
+            </button>
+
+            <button
+              *ngIf="currentStep === totalSteps && mode !== 'view'"
+              type="submit"
+              class="btn btn-success"
+              [disabled]="!reviewForm.valid || isLoading"
+            >
+              <span
+                *ngIf="isLoading"
+                class="spinner-border spinner-border-sm me-1"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              {{ mode === "edit" ? "Update Review" : "Submit Review" }}
+            </button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>

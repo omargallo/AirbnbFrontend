@@ -1,6 +1,7 @@
 export interface AddReviewByGuestDTO {
   propertyId: number;
-  bookingId: number;
+  // bookingId: number;
+
   comment: string;
   privateComment?: string;
   rating: number;
@@ -10,4 +11,5 @@ export interface AddReviewByGuestDTO {
   location: number;
   checkIn: number;
   value: number;
+  // userId: string | null;
 }

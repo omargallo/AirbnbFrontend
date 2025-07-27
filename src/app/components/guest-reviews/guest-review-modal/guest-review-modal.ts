@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 
 import { Ireview } from '../../../core/models/ireview';
 import { StarComponent } from '../../../shared/components/star-component/star-component';
+import { AuthService } from './../../../core/services/auth.service';
 
 @Component({
   selector: 'app-reviews-modal',
@@ -21,11 +22,20 @@ import { StarComponent } from '../../../shared/components/star-component/star-co
 export class ReviewsModalComponent implements OnInit, OnChanges {
   @Input() reviews: Ireview[] = [];
   @Input() propertyName: string = 'This Property';
+  @Input() propertyId!: string;
   @Output() closeModal = new EventEmitter<void>();
 
   filteredReviews: Ireview[] = [];
   searchQuery: string = '';
   sortOption: string = 'most-relevant';
+  canUserAddReview: boolean = false;
+  errorMessage: string = '';
+
+  showReviewForm = false;
+
+  openAddReviewModal() {
+    this.showReviewForm = true;
+  }
 
   // Rating statistics
   overallRating: number = 0;
@@ -47,14 +57,50 @@ export class ReviewsModalComponent implements OnInit, OnChanges {
     value: 0,
   };
 
+  constructor(
+    private authService: AuthService // Add other services as needed:
+  ) // private reviewService: ReviewService
+  {}
+
   ngOnInit() {
     this.calculateStatistics();
     this.filterReviews();
+    this.checkUserCanReview();
   }
 
   ngOnChanges() {
     this.calculateStatistics();
     this.filterReviews();
+  }
+
+  private checkUserCanReview() {
+    const userId = this.authService.userId;
+
+    if (!userId || !this.propertyId) {
+      this.canUserAddReview = false;
+      return;
+    }
+
+    // Uncomment when reviewService is available
+    // this.reviewService.getUserCompletedBookingsForProperty(userId, this.propertyId)
+    //   .subscribe((bookings) => {
+    //     this.canUserAddReview = bookings.length > 0;
+    //   });
+  }
+
+  addReview(reviewData: any) {
+    // Uncomment when reviewService is available and reviewForm is implemented
+    // this.reviewService.addReview(reviewData).subscribe(
+    //   (review) => {
+    //     console.log('Review added', review);
+    //     this.closeModal.emit();
+    //     this.loadReviews(); // refresh reviews
+    //   },
+    //   (err) => {
+    //     console.error(err);
+    //     this.errorMessage = err.message || 'Failed to add review';
+    //   }
+    // );
   }
 
   calculateStatistics() {

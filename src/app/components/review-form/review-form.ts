@@ -31,9 +31,6 @@ export class ReviewForm implements OnInit {
   currentStep: number = 1;
   totalSteps: number = 2;
 
-  // User bookings for dropdown (only for add mode)
-  userCompletedBookings: BookingDetailsDTO[] = [];
-
   // Loading and error states
   isLoading: boolean = false;
   errorMessage: string = '';
@@ -61,49 +58,24 @@ export class ReviewForm implements OnInit {
       },
     });
 
-    // Check if we're in edit/view mode with route parameters
+    // Check edit mode
     this.activatedRoute.paramMap.subscribe({
       next: (params) => {
         const id = params.get('id');
         if (id && id !== '0') {
           this.reviewId = Number(id);
-          // Determine mode from route
-          const routeMode =
-            this.activatedRoute.snapshot.url[
-              this.activatedRoute.snapshot.url.length - 1
-            ]?.path;
-          this.mode =
-            routeMode === 'edit'
-              ? 'edit'
-              : routeMode === 'view'
-              ? 'view'
-              : 'add';
-        }
-
-        // Reset form for new review
-        if (this.reviewId === 0) {
+          this.mode = 'edit';
+          this.loadExistingReview();
+        } else {
+          // Reset form for new review
           this.resetForm();
         }
       },
       error: (err) => console.log(err),
     });
-
-    // Load existing review data for edit/view mode
-    if (this.reviewId !== 0) {
-      this.loadExistingReview();
-    } else if (this.mode === 'add' && this.propertyId) {
-      // Load user's completed bookings for this property
-      this.loadUserCompletedBookingsForProperty();
-    }
-
-    // Disable form in view mode
-    if (this.mode === 'view') {
-      this.reviewForm.disable();
-    }
   }
 
   reviewForm = new FormGroup({
-    bookingId: new FormControl<number | null>(null, [Validators.required]), // Only for add mode
     comment: new FormControl<string>('', [
       Validators.required,
       Validators.minLength(10),
@@ -174,13 +146,9 @@ export class ReviewForm implements OnInit {
   get getValue() {
     return this.reviewForm.controls['value'];
   }
-  get getBookingId() {
-    return this.reviewForm.controls['bookingId'];
-  }
 
   resetForm(): void {
     this.reviewForm.patchValue({
-      bookingId: null,
       comment: '',
       privateComment: '',
       rating: 0,
@@ -220,29 +188,6 @@ export class ReviewForm implements OnInit {
     });
   }
 
-  loadUserCompletedBookingsForProperty(): void {
-    if (!this.userId || !this.propertyId) return;
-
-    this.reviewService
-      .getUserCompletedBookingsForProperty(this.userId, this.propertyId)
-      .subscribe({
-        next: (bookings) => {
-          // Filter for completed bookings only
-          this.userCompletedBookings = bookings.filter(
-            (booking) => booking.bookingStatus === 'Completed'
-          );
-
-          // Auto-select the first booking if only one exists
-          if (this.userCompletedBookings.length === 1) {
-            this.getBookingId.setValue(this.userCompletedBookings[0].id);
-          }
-        },
-        error: (error) => {
-          console.error('Error loading user bookings:', error);
-        },
-      });
-  }
-
   isCurrentStepValid(): boolean {
     if (this.currentStep === 1) {
       // Step 1: Check overall rating and category ratings
@@ -265,8 +210,7 @@ export class ReviewForm implements OnInit {
     } else if (this.currentStep === 2) {
       // Step 2: Check comment and booking selection (for add mode)
       const commentValid = this.getComment.valid;
-      const bookingValid = this.mode === 'add' ? this.getBookingId.valid : true;
-      return commentValid && bookingValid;
+      return commentValid;
     }
     return false;
   }
@@ -296,7 +240,7 @@ export class ReviewForm implements OnInit {
     // Create review data object
     const reviewData: AddReviewByGuestDTO = {
       propertyId: this.propertyId,
-      bookingId: this.mode === 'add' ? this.getBookingId.value ?? 1 : 1, // Use existing bookingId for edit
+      // bookingId: this.mode === 'add' ? this.getBookingId.value ?? 1 : 1,
       comment: this.getComment.value ?? '',
       privateComment: this.getPrivateNote.value ?? '',
       rating: this.getRating.value ?? 0,
@@ -306,6 +250,7 @@ export class ReviewForm implements OnInit {
       checkIn: this.getCheckIn.value ?? 0,
       location: this.getLocation.value ?? 0,
       value: this.getValue.value ?? 0,
+      // userId: this.userId || null // Use userId from auth service
     };
 
     if (this.mode === 'add') {
