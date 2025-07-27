@@ -2,18 +2,11 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { addDays, format, isSameDay } from 'date-fns';
 import { CalendarComponent, CalendarSettings, DayAvailability } from "../../components/calendar/calendar";
+import { CalendarDateDTO, CalendarService } from '../../core/services/Calendar/calendar.service';
+import { finalize } from 'rxjs';
 import { CalendarFullSettings, CalendarSettingsComponent } from "../../components/calendar-settings/calendar-settings";
+import { parseISO } from 'date-fns';
 
-export interface SelectedNightInfo {
-  nights: number;
-  basePrice: number;
-  totalPrice: number;
-  discountRange?: {
-    min: number;
-    max: number;
-  };
-  hasDiscount: boolean;
-}
 
 @Component({
   selector: 'app-availability',
@@ -23,8 +16,90 @@ export interface SelectedNightInfo {
   styleUrls: ['./availability-page.css'],
 })
 export class Availability implements OnInit {
+
+  isLoading = false;
+  selectedPropertyId: string | null = null;
+
   showBlockOptions = false;
-  constructor(private cd: ChangeDetectorRef) { }
+  constructor(private cd: ChangeDetectorRef, private calendarService: CalendarService) { }
+
+
+  onPropertySelected(propertyId: string) {
+    this.selectedPropertyId = propertyId;
+    this.loadPropertyCalendarData();
+  }
+
+
+  private loadPropertyCalendarData() {
+    if (!this.selectedPropertyId) return;
+
+    this.isLoading = true;
+    const today = new Date();
+    const endDate = addDays(today, 365);
+
+    this.calendarService.getPropertyCalendar(
+      parseInt(this.selectedPropertyId),
+      format(today, 'yyyy-MM-dd'),
+      format(endDate, 'yyyy-MM-dd')
+    ).pipe(
+      finalize(() => {
+        this.isLoading = false;
+        this.cd.markForCheck();
+      })
+    ).subscribe({
+      next: (calendarData: CalendarDateDTO[]) => {
+        this.mapCalendarDataToAvailability(calendarData);
+        // console.log("calendarData", calendarData)
+      },
+      error: (error) => {
+        console.error('Error loading calendar data:', error);
+      }
+    });
+  }
+
+
+  private mapCalendarDataToAvailability(calendarData: CalendarDateDTO[]) {
+    const today = new Date();
+    const availability: DayAvailability[] = [];
+
+    const dataMap = new Map<string, CalendarDateDTO>();
+
+    calendarData.forEach(item => {
+      const normalizedKey = format(parseISO(item.date), 'yyyy-MM-dd');
+      dataMap.set(normalizedKey, item);
+    });
+
+    for (let i = 0; i < 365; i++) {
+      const date = addDays(today, i);
+      const dateKey = format(date, 'yyyy-MM-dd');
+      const backendData = dataMap.get(dateKey);
+
+      // console.log(`Date: ${dateKey} | Found in map:`, !!backendData);
+
+      if (backendData) {
+        availability.push({
+          date,
+          available: backendData.isAvailable ?? true,
+          price: backendData.price ?? 0,
+          originalPrice: undefined,
+        });
+      } else {
+        availability.push({
+          date,
+          available: true,
+          price: 0,
+          originalPrice: undefined,
+        });
+      }
+    }
+    this.calendarSettings = {
+      ...this.calendarSettings,
+      availability: [...availability]
+    };
+    this.cd.detectChanges();
+
+  }
+
 
   calendarSettings: CalendarSettings = {
     viewType: 'year',
@@ -36,32 +111,9 @@ export class Availability implements OnInit {
 
   fullSettings: CalendarFullSettings = {
     pricing: {
-      basePrice: 37,
-      customWeekendPrice: 37,
+      basePrice: 0,
       smartPricingEnabled: false,
       currency: 'USD',
-    },
-    discounts: {
-      weeklyDiscount: {
-        enabled: true,
-        percentage: 10,
-        minNights: 7,
-      },
-      monthlyDiscount: {
-        enabled: true,
-        percentage: 20,
-        minNights: 28,
-      },
-      earlyBirdDiscount: {
-        enabled: false,
-        percentage: 0,
-        daysInAdvance: 30,
-      },
-      lastMinuteDiscount: {
-        enabled: true,
-        percentage: 15,
-        hoursBeforeCheckIn: 24,
-      },
     },
     availability: {
       minNights: 1,
@@ -91,54 +143,11 @@ export class Availability implements OnInit {
     },
   };
 
-  selectedNightInfo: SelectedNightInfo | null = null;
   availabilityMode: 'open' | 'blocked' = 'open';
-
+  selectedDatePrice: number = 0;
   ngOnInit() {
-    this.generateAvailabilityData();
+
     this.syncCalendarSettings();
-  }
-
-  generateAvailabilityData() {
-    const today = new Date();
-    const availability: DayAvailability[] = [];
-
-    // Generate 365 days of availability data
-    for (let i = 0; i < 365; i++) {
-      const date = addDays(today, i);
-      const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-
-      let price = this.fullSettings.pricing.basePrice;
-      let originalPrice = price;
-
-      // Apply weekend pricing
-      if (isWeekend && this.fullSettings.pricing.customWeekendPrice) {
-        price = this.fullSettings.pricing.customWeekendPrice;
-        originalPrice = price;
-      }
-
-      // Randomly make some dates $71 (higher price)
-      if (Math.random() > 0.7) {
-        price = 71;
-        originalPrice = price;
-      }
-
-      // Some dates have discounts
-      const hasDiscount = Math.random() > 0.8;
-      if (hasDiscount) {
-        originalPrice = price;
-        price = Math.round(price * 0.85); // 15% discount
-      }
-
-      availability.push({
-        date,
-        available: Math.random() > 0.1, // 90% availability
-        price,
-        originalPrice: hasDiscount ? originalPrice : undefined,
-      });
-    }
-
-    this.calendarSettings.availability = availability;
   }
 
   syncCalendarSettings() {
@@ -148,40 +157,21 @@ export class Availability implements OnInit {
 
   onDateSelected(selectedDates: Date[]) {
     this.calendarSettings.selectedDates = selectedDates;
-    this.showBlockOptions = true;
+    this.showBlockOptions = selectedDates.length > 0;
 
-    if (selectedDates.length === 2) {
-      const [startDate, endDate] = selectedDates.sort(
-        (a, b) => a.getTime() - b.getTime()
+    // Set price for first selected date
+    if (selectedDates.length > 0) {
+      const firstDate = selectedDates[0];
+      const firstDateAvailability = this.calendarSettings.availability.find(a =>
+        isSameDay(a.date, firstDate)
       );
-      const nights = Math.ceil(
-        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
-      );
-
-      // Calculate pricing
-      const basePrice = this.fullSettings.pricing.basePrice;
-      const totalPrice = basePrice * nights;
-
-      // Check for discounts
-      const hasLastMinuteDiscount =
-        this.fullSettings.discounts.lastMinuteDiscount.enabled;
-      const discountRange = hasLastMinuteDiscount
-        ? {
-          min: Math.round(basePrice * 0.85),
-          max: basePrice,
-        }
-        : undefined;
-
-      this.selectedNightInfo = {
-        nights,
-        basePrice,
-        totalPrice,
-        discountRange,
-        hasDiscount: hasLastMinuteDiscount,
-      };
+      this.selectedDatePrice = firstDateAvailability?.price != null
+        ? firstDateAvailability.price
+        : this.fullSettings.pricing.basePrice;
     } else {
-      this.selectedNightInfo = null;
+      this.selectedDatePrice = 0;
     }
+
     this.cd.markForCheck();
   }
 
@@ -192,58 +182,140 @@ export class Availability implements OnInit {
   onFullSettingsChanged(settings: CalendarFullSettings) {
     this.fullSettings = settings;
     this.syncCalendarSettings();
-    this.generateAvailabilityData(); // Regenerate with new pricing
+    if (this.selectedPropertyId) {
+      this.loadPropertyCalendarData();
+    }
   }
 
   setAvailabilityMode(mode: 'open' | 'blocked') {
     this.availabilityMode = mode;
+    this.cd.markForCheck();
   }
 
+  onPriceChanged(newPrice: number) {
+    this.selectedDatePrice = newPrice;
+  }
   clearSelection() {
     this.calendarSettings.selectedDates = [];
-    this.selectedNightInfo = null;
+    this.showBlockOptions = false;
+
+    this.calendarSettings = {
+      ...this.calendarSettings,
+      selectedDates: []
+    };
+
+    this.cd.detectChanges();
   }
 
-  showDiscountDetails() {
-    console.log('Show discount details modal');
-  }
-
-  showSimilarListings() {
-    console.log('Show similar listings modal');
-  }
-
-  addPrivateNote() {
-    console.log('Add private note modal');
-  }
-
-  addBlockedNote() {
-    console.log('Add blocked note modal');
-  }
 
   saveChanges() {
     if (
-      !this.selectedNightInfo ||
-      this.calendarSettings.selectedDates.length !== 2
+      this.calendarSettings.selectedDates.length === 0 ||
+      !this.selectedPropertyId
     ) {
       return;
     }
 
-    const [startDate, endDate] = this.calendarSettings.selectedDates.sort(
+    const selectedDates = this.calendarSettings.selectedDates.sort(
       (a, b) => a.getTime() - b.getTime()
     );
 
-    // Update availability for selected date range
-    let currentDate = new Date(startDate);
-    while (currentDate < endDate) {
+    const datesToUpdate: CalendarDateDTO[] = [];
+
+    if (selectedDates.length === 1) {
+      const selectedDate = selectedDates[0];
+      const existingAvailability = this.calendarSettings.availability.find((a) =>
+        isSameDay(a.date, selectedDate)
+      );
+
+      const price = this.availabilityMode === 'open'
+        ? (this.fullSettings.pricing.basePrice || existingAvailability?.price || 0)
+        : (existingAvailability?.price || 0);
+
+      datesToUpdate.push({
+        date: format(selectedDate, 'yyyy-MM-dd'),
+        isAvailable: this.availabilityMode === 'open',
+        price: price
+      });
+    }
+    else if (selectedDates.length === 2) {
+      const [startDate, endDate] = selectedDates;
+      let currentDate = new Date(startDate);
+
+      while (currentDate <= endDate) {
+        const existingAvailability = this.calendarSettings.availability.find((a) =>
+          isSameDay(a.date, currentDate)
+        );
+
+        const price = this.availabilityMode === 'open'
+          ? this.selectedDatePrice
+          : (existingAvailability?.price || 0);
+
+
+        datesToUpdate.push({
+          date: format(currentDate, 'yyyy-MM-dd'),
+          isAvailable: this.availabilityMode === 'open',
+          price: price
+        });
+
+        currentDate = addDays(currentDate, 1);
+      }
+    }
+
+    this.isLoading = true;
+    this.calendarService.updatePropertyCalendar(
+      parseInt(this.selectedPropertyId),
+      datesToUpdate
+    ).pipe(
+      finalize(() => {
+        this.isLoading = false;
+        this.cd.markForCheck();
+      })
+    ).subscribe({
+      next: (success) => {
+        if (success) {
+          console.log(datesToUpdate)
+
+          console.log('Calendar updated successfully', success);
+          this.updateLocalAvailability();
+          this.clearSelection();
+        } else {
+          console.error('Failed to update calendar');
+        }
+      },
+      error: (error) => {
+        console.error('Error updating calendar:', error);
+      }
+    });
+  }
+
+  private updateLocalAvailability() {
+    const selectedDates = this.calendarSettings.selectedDates;
+
+    selectedDates.forEach(selectedDate => {
       const existingIndex = this.calendarSettings.availability.findIndex((a) =>
-        isSameDay(a.date, currentDate)
+        isSameDay(a.date, selectedDate)
       );
 
       if (existingIndex >= 0) {
         this.calendarSettings.availability[existingIndex].available =
           this.availabilityMode === 'open';
-      } else {
+
+        this.calendarSettings.availability[existingIndex].price =
+          this.availabilityMode === 'open'
+            ? this.selectedDatePrice
+            : this.calendarSettings.availability[existingIndex].price;
       }
-    }
+    });
+
+    this.calendarSettings = {
+      ...this.calendarSettings,
+      availability: [...this.calendarSettings.availability]
+    };
+
+    this.clearSelection();
+    this.cd.detectChanges();
   }
+
+
 }

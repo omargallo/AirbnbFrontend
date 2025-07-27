@@ -11,29 +11,6 @@ export interface PricingSettings {
   currency: string;
 }
 
-export interface DiscountSettings {
-  weeklyDiscount: {
-    enabled: boolean;
-    percentage: number;
-    minNights: number;
-  };
-  monthlyDiscount: {
-    enabled: boolean;
-    percentage: number;
-    minNights: number;
-  };
-  earlyBirdDiscount: {
-    enabled: boolean;
-    percentage: number;
-    daysInAdvance: number;
-  };
-  lastMinuteDiscount: {
-    enabled: boolean;
-    percentage: number;
-    hoursBeforeCheckIn: number;
-  };
-}
-
 export interface AvailabilitySettings {
   minNights: number;
   maxNights: number;
@@ -47,7 +24,6 @@ export interface AvailabilitySettings {
 
 export interface CalendarFullSettings {
   pricing: PricingSettings;
-  discounts: DiscountSettings;
   availability: AvailabilitySettings;
 }
 
@@ -61,10 +37,15 @@ export interface CalendarFullSettings {
 })
 export class CalendarSettingsComponent implements OnInit, OnDestroy {
 
-  selectedBlockOption: 'open' | 'blocked' = 'blocked';
+  selectedBlockOption: 'open' | 'blocked' = 'open';
+  @Input() selectedDatePrice: number = 0;
+  @Output() priceChanged = new EventEmitter<number>();
+  @Output() saveChanges = new EventEmitter<void>();
+  @Output() clearSelection = new EventEmitter<void>();
 
   setBlockOption(option: 'open' | 'blocked') {
     this.selectedBlockOption = option;
+    this.availabilityModeChanged.emit(option);
     console.log('Selected block option:', option);
   }
 
@@ -76,28 +57,6 @@ export class CalendarSettingsComponent implements OnInit, OnDestroy {
       customWeekendPrice: undefined,
       smartPricingEnabled: false,
       currency: 'USD',
-    },
-    discounts: {
-      weeklyDiscount: {
-        enabled: true,
-        percentage: 10,
-        minNights: 7,
-      },
-      monthlyDiscount: {
-        enabled: true,
-        percentage: 20,
-        minNights: 28,
-      },
-      earlyBirdDiscount: {
-        enabled: false,
-        percentage: 0,
-        daysInAdvance: 30,
-      },
-      lastMinuteDiscount: {
-        enabled: false,
-        percentage: 0,
-        hoursBeforeCheckIn: 24,
-      },
     },
     availability: {
       minNights: 1,
@@ -136,7 +95,6 @@ export class CalendarSettingsComponent implements OnInit, OnDestroy {
   private settingsUpdateSubject = new Subject<CalendarFullSettings>();
   private destroy$ = new Subject<void>();
 
-
   ngOnInit() {
     this.settingsUpdateSubject
       .pipe(
@@ -155,13 +113,26 @@ export class CalendarSettingsComponent implements OnInit, OnDestroy {
 
   setActiveTab(tab: 'pricing' | 'availability') {
     if (this.activeTab === tab) return;
-
     this.activeTab = tab;
-
   }
 
   onSettingsChange() {
-    this.settingsUpdateSubject.next(this.settings);
+    if (this.selectedPropertyId) {
+      this.settingsUpdateSubject.next(this.settings);
+    }
+  }
+
+  onPriceInputChange(newPrice: number) {
+    this.selectedDatePrice = newPrice;
+    this.priceChanged.emit(newPrice);
+  }
+
+  onSaveChanges() {
+    this.saveChanges.emit();
+  }
+
+  onClearSelection() {
+    this.clearSelection.emit();
   }
 
   // Block options methods
@@ -201,29 +172,14 @@ export class CalendarSettingsComponent implements OnInit, OnDestroy {
     this.onSettingsChange();
   }
 
-  showMoreDiscounts() {
-    console.log('Show more discounts modal');
-  }
-
-  showNewListingPromotion() {
-    console.log('Show new listing promotion modal');
-  }
-
-  showCustomTripLengths() {
-    console.log('Show custom trip lengths modal');
-  }
-
-  showMoreAvailabilitySettings() {
-    console.log('Show more availability settings modal');
-  }
-
-  connectCalendar() {
-    console.log('Connect calendar modal');
-  }
-
   trackByIndex(index: number): number {
     return index;
   }
 
+  @Input() selectedPropertyId: string | null = null;
+  @Output() availabilityModeChanged = new EventEmitter<'open' | 'blocked'>();
 
+  onAvailabilityModeChange() {
+    this.availabilityModeChanged.emit(this.selectedBlockOption);
+  }
 }

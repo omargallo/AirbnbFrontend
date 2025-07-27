@@ -31,7 +31,7 @@
     *ngIf="activeTab === 'pricing'"
   >
     <!-- Base Pricing -->
-    <div class="setting-section">
+    <!-- <div class="setting-section">
       <h3>Base price</h3>
       <div class="price-input-group">
         <span class="currency">{{ settings.pricing.currency }}</span>
@@ -39,16 +39,16 @@
           <input
             type="number"
             class="price-input"
+            readonly
             [(ngModel)]="settings.pricing.basePrice "
-            (ngModelChange)="onSettingsChange()"
           />
         </div>
         <span class="price-label">Per night</span>
       </div>
-    </div>
+    </div> -->
 
     <!-- Custom Weekend Price -->
-    <div class="setting-section">
+    <!-- <div class="setting-section">
       <div class="setting-row">
         <span class="setting-label">Custom weekend price</span>
         <button
@@ -78,24 +78,71 @@
       >
         + Add weekend price
       </button>
-    </div>
+    </div> -->
 
     <!-- Block -->
-    <div class="block-options" *ngIf="showBlockOptions">
-      <button
-        class="block-toggle"
-        [class.active]="selectedBlockOption === 'open'"
-        (click)="setBlockOption('open')"
-      >
-        Open night
-      </button>
-      <button
-        class="block-toggle"
-        [class.active]="selectedBlockOption === 'blocked'"
-        (click)="setBlockOption('blocked')"
-      >
-        Blocked
-      </button>
+    <div *ngIf="showBlockOptions" style="border-top: 1px solid #f0f0f0; padding-top: 20px;">
+      <div class="selected-dates-info mb-3">
+        <h4>Selected Dates Options</h4>
+      </div>
+      <div class="block-options mb-3">
+        <button
+          class="block-toggle"
+          [class.active]="selectedBlockOption === 'open'"
+          (click)="setBlockOption('open')"
+        >
+          Open night
+        </button>
+        <button
+          class="block-toggle"
+          [class.active]="selectedBlockOption === 'blocked'"
+          (click)="setBlockOption('blocked')"
+        >
+          Blocked
+        </button>
+      </div>
+      <div class="price-section" *ngIf="selectedBlockOption === 'open'">
+        <div class="price-input-group mt-3">
+          <span class="currency">{{ settings.pricing.currency }}</span>
+          <input
+            id="selectedDatePrice"
+            type="number"
+            class="price-input"
+            [value]="selectedDatePrice"
+            (input)="onPriceInputChange(+$event.target.value)"
+            min="0"
+            step="1"
+          />
+          <!-- <span class="price-label">Per night</span> -->
+        </div>
+        <p class="price-note">Set the price for selected dates</p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <button class="btn btn-outline-dark" (click)="onClearSelection()">
+          Clear Selection
+        </button>
+        <button class="btn btn-dark" (click)="onSaveChanges()">
+          Save Changes
+        </button>
+      </div>
+    </div>
+    <div class="help-section ">
+      <div class="help-card">
+        <h6>💡 Tips:</h6>
+        <ul class="help-list">
+          <li>
+            <strong>Open night:</strong> Guests can book these dates at the
+            specified price
+          </li>
+          <li>
+            <strong>Blocked:</strong> Dates become unavailable for booking
+          </li>
+          <li>You can select single dates or date ranges</li>
+          <li>Price changes only apply to the selected dates</li>
+        </ul>
+      </div>
     </div>
     <!-- Smart Pricing -->
     <!-- <div class="setting-section">
