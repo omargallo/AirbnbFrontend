@@ -1,4 +1,11 @@
-import { Component, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { UserService } from '../../core/services/User/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
@@ -6,6 +13,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
+interface CropperConfig {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 @Component({
   selector: 'app-update-profile',
   imports: [CommonModule, TranslateModule, FormsModule],
@@ -57,16 +70,16 @@ export class UpdateProfile {
       next: (res) => {
         alert('Profile updated successfully');
         this.userService.getProfile(this.userId).subscribe({
-            next: (res) => {
-              console.log(res);
-              localStorage.setItem('email', res.email);
-              localStorage.setItem('user', JSON.stringify(res));
-              this.router.navigate(['/profile/'+this.userId]);
-            },
-            error: (err) => {
-              console.error(err);
-            },
-          });
+          next: (res) => {
+            console.log(res);
+            localStorage.setItem('email', res.email);
+            localStorage.setItem('user', JSON.stringify(res));
+            this.router.navigate(['/profile/' + this.userId]);
+          },
+          error: (err) => {
+            console.error(err);
+          },
+        });
       },
       error: (err) => {
         alert('Profile update failed');

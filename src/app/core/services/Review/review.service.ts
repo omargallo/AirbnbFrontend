@@ -4,7 +4,10 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Ireview } from '../../models/ireview';
 import { AddReviewByGuestDTO } from '../../models/ReviewInterfaces/add-review-by-guest-dto';
-import { EditReviewByGuestDTO, IGuestReviewDto } from '../../models/ReviewInterfaces/guest-review-dto';
+import {
+  EditReviewByGuestDTO,
+  IGuestReviewDto,
+} from '../../models/ReviewInterfaces/guest-review-dto';
 import { environment } from '../../../../environments/environment.development';
 import { BookingDetailsDTO } from '../Booking/user-booking-service';
 @Injectable({
@@ -73,7 +76,10 @@ export class ReviewService {
     );
   }
 
-  updateReview(id: number, review: AddReviewByGuestDTO  ): Observable<AddReviewByGuestDTO> {
+  updateReview(
+    id: number,
+    review: AddReviewByGuestDTO
+  ): Observable<AddReviewByGuestDTO> {
     return this.http.put<any>(`${this.baseUrl}/${id}`, review).pipe(
       map((response) => {
         if (!response.isSuccess || !response.data) {
