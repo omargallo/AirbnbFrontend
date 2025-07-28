@@ -7,7 +7,8 @@ import {
     PropertyFilterDto, 
     PaginatedResult, 
     PropertyImagesCreateContainerDTO,
-    IpLocation 
+    IpLocation, 
+    PropertyDisplayWithHostDataDto
 } from '../models/property.model';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -23,6 +24,7 @@ export class PropertyService {
     getAll(): Observable<PropertyDisplayDTO[]> {
         return this.http.get<PropertyDisplayDTO[]>(this.baseUrl);
     }
+    
 
     getPage(page: number = 1, pageSize: number = 7): Observable<PaginatedResult<PropertyDisplayDTO>> {
         const params = new HttpParams()

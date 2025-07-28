@@ -27,7 +27,7 @@
         </div>
       </div>
     </div>
-    <div class="bookinCalender  position-relative" style="position: relative !important;">
+    <div  class="bookinCalender  position-relative" style="position: relative !important;">
       <!-- <div class="row"> -->
       <!-- <div class="col-md-8">
 
@@ -44,8 +44,10 @@
           [checkIn]="selectedDates.start"
           [checkOut]="selectedDates.end"
           [guests]="guestCount" 
+          [isPreview] = "isPreview"
           (guestChange)="onGuestChange($event)" 
-          (dateChange)="onDateChange($event)">
+          (dateChange)="onDateChange($event)"
+          >
         </app-reverse-section>
 
 
