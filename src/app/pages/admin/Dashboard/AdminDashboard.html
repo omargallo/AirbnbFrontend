@@ -8,7 +8,7 @@
           <span class="brand-text">Admin Dashboard</span>
         </div>
       </div>
-      
+       
       <nav class="sidebar-nav">
         <ul class="nav-list">
           <li 
@@ -26,7 +26,7 @@
           </li>
         </ul>
       </nav>
-      
+       
       <div class="sidebar-footer">
         <div class="user-info">
           <div class="user-avatar">
@@ -43,46 +43,8 @@
 
   <!-- Main Content -->
   <div class="main-content">
-    <!-- Dashboard Overview Section -->
     <div *ngIf="activeSection === 'dashboard'" class="content-section">
-      <div class="dashboard-overview">
-        <div class="overview-header">
-          <h1 class="section-title">
-            <i class="fas fa-tachometer-alt title-icon"></i>
-            Dashboard Overview
-          </h1>
-          <p class="section-subtitle">Welcome to your admin dashboard</p>
-        </div>
-        
-        <div class="overview-stats">
-          <div class="stat-card">
-            <div class="stat-content">
-              <div class="stat-label">Total Users</div>
-            </div>
-            <div class="stat-icon">
-              <i class="fas fa-users"></i>
-            </div>
-          </div>
-          
-          <div class="stat-card">
-            <div class="stat-content">
-              <div class="stat-label">Properties</div>
-            </div>
-            <div class="stat-icon">
-              <i class="fas fa-building"></i>
-            </div>
-          </div>
-          
-          <div class="stat-card">
-            <div class="stat-content">
-              <div class="stat-label">Active Bookings</div>
-            </div>
-            <div class="stat-icon">
-              <i class="fas fa-calendar-check"></i>
-            </div>
-          </div>
-        </div>
-      </div>
+      <app-dashboard></app-dashboard>
     </div>
 
     <!-- Users Section -->

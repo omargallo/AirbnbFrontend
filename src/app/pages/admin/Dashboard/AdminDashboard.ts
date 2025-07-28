@@ -4,6 +4,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { UsersComponent } from '../pages/users/users';
 import { Bookings } from '../pages/booking/bookings';
+import { DashboarDetails } from '../pages/dashboard-details/dashboard-details'; // Import the new Dashboard component
 
 export interface AdminSection {
   id: string;
@@ -15,25 +16,25 @@ export interface AdminSection {
 @Component({
   selector: 'app-AdminDashboard',
   standalone: true,
-  imports: [CommonModule, UsersComponent, Bookings],
+  imports: [CommonModule, UsersComponent, Bookings,DashboarDetails], 
   templateUrl: './AdminDashboard.html',
   styleUrls: ['./AdminDashboard.css']
 })
 export class AdminDashboard implements OnInit {
-  activeSection: string = 'users';
+  activeSection: string = 'dashboard'; // Changed default to 'dashboard'
 
   adminSections: AdminSection[] = [
     {
       id: 'dashboard',
       name: 'Dashboard',
       icon: 'fas fa-tachometer-alt',
-      isActive: false
+      isActive: true // Set dashboard as default active
     },
     {
       id: 'users',
       name: 'Users',
       icon: 'fas fa-users',
-      isActive: true
+      isActive: false // Changed to false
     },
     {
       id: 'properties',
@@ -52,13 +53,14 @@ export class AdminDashboard implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.setActiveSection('users');
+    this.setActiveSection('dashboard'); // Set dashboard as default
   }
 
   setActiveSection(sectionId: string): void {
-    
+    // Reset all sections
     this.adminSections.forEach(section => section.isActive = false);
     
+    // Set the selected section as active
     const section = this.adminSections.find(s => s.id === sectionId);
     if (section) {
       section.isActive = true;

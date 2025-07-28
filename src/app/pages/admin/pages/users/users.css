@@ -464,4 +464,30 @@
   .details-grid {
     grid-template-columns: 1fr;
   }
+} 
+
+/* Modal Loading State */
+.modal-loading {
+  padding: 3rem 2rem;
+  text-align: center;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-loading .loading-spinner {
+  color: #3b82f6;
+}
+
+.modal-loading .loading-spinner i {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.modal-loading .loading-spinner p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+  color: #64748b;
 }
