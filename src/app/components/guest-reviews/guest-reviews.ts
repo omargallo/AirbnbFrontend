@@ -40,7 +40,7 @@ import { ReviewsModalComponent } from './guest-review-modal/guest-review-modal';
   styleUrl: './guest-reviews.css',
 })
 export class GuestReviews implements OnInit {
-  @Input() propertyId?: number;
+  @Input() propertyId!: number;
   // @Input() propertyName: string = 'This Property';
   //@Input() userbookings: any[] = [];
 
@@ -165,7 +165,7 @@ export class GuestReviews implements OnInit {
     }
 
     const hasExistingReview = this.reviews.some(
-      (review) => review.userId === this.currentUser
+      (review) => review.user.userId === this.currentUser
     );
 
     // console.log('Has existing review from user:', hasExistingReview);
@@ -177,25 +177,30 @@ export class GuestReviews implements OnInit {
     // console.log('All checks passed. Show review button.');
     return true;
   }
+  // hasExistingReview(): boolean {
+  //   return this.reviews.some((review) => review.userId === this.currentUser);
+  // }
+
   hasExistingReview(): boolean {
     console.log('Current User:', this.currentUser, typeof this.currentUser);
     console.log(
       'Reviews with userIds:',
       this.reviews.map((r) => ({
         id: r.id,
-        userId: r.userId,
-        userIdType: typeof r.userId,
+        userId: r.user.userId,
+        userIdType: typeof r.user.userId,
       }))
     );
 
     return this.reviews.some((review) => {
-      const match = String(review.userId) === String(this.currentUser);
+      const match = String(review.user.userId) === String(this.currentUser);
       console.log(
-        `Comparing: "${review.userId}" === "${this.currentUser}" = ${match}`
+        `Comparing: "${review.user.userId}" === "${this.currentUser}" = ${match}`
       );
       return match;
     });
   }
+
   getCompletedBookingForProperty(): BookingDetailsDTO | null {
     return (
       this.userBookings
@@ -247,8 +252,9 @@ export class GuestReviews implements OnInit {
     });
   }
 
-  navigateToEditReview(reviewId: number) {
-    this.router.navigate(['/review', reviewId], {
+  navigateToEditReview(review: IGuestReviewDto) {
+    this.router.navigate(['/review', review.id], {
+      state: { reviewData: review },
       queryParams: {
         mode: 'edit',
       },
@@ -260,11 +266,16 @@ export class GuestReviews implements OnInit {
 
     this.ReviewService.getReviewsByPropertyId(this.propertyId!).subscribe({
       next: (response) => {
-        console.log('Reviews data :::::::::::::::::::::::::::::::::', response); // Debug line
+        // console.log('Raw API Response:', response);
+        // console.log('First review object:', response[0]);
+        // console.log('Keys in first review:', Object.keys(response[0] || {}));
 
         this.reviews = response;
         // this.checkUserExistingReview();
         this.cdr.detectChanges();
+        setTimeout(() => {
+          this.cdr.detectChanges();
+        }, 50);
       },
       error: (e) => {
         console.error('Error loading reviews:', e);
@@ -283,21 +294,41 @@ export class GuestReviews implements OnInit {
   //     },
   //   });
   // }
+  // performDelete(reviewId: number) {
+  //   this.ReviewService.deleteReview(reviewId).subscribe({
+  //     next: () => {
+  //       //     this.reviews = this.reviews.filter((review) => review.id !== reviewId);
+  //       // this.userExistingReview = false;
+  //       // Recheck eligibility after deletion
+  //       // this.checkUserReviewEligibility();
+  //       this.reviews = this.reviews.filter((review) => review.id !== reviewId);
+
+  //       this.cdr.detectChanges();
+
+  //       //   this.cdr.detectChanges();
+  //     },
+  //     error: (error) => {
+  //       console.error('Delete failed:', error);
+  //     },
+  //   });
+  // }
   performDelete(reviewId: number) {
+    // Optimistically update UI first
+    this.reviews = this.reviews.filter((review) => review.id !== reviewId);
+    this.cdr.detectChanges();
+
     this.ReviewService.deleteReview(reviewId).subscribe({
       next: () => {
-        this.reviews = this.reviews.filter((review) => review.id !== reviewId);
-        // this.userExistingReview = false;
-        // Recheck eligibility after deletion
-        // this.checkUserReviewEligibility();
-        this.cdr.detectChanges();
+        // Already filtered above
+        console.log('Review deleted successfully');
       },
       error: (error) => {
         console.error('Delete failed:', error);
+        // Revert the UI change on error
+        this.loadReviewsByPropertyId();
       },
     });
   }
-
   deleteHandler(reviewId: number) {
     this.confirmService.show(
       'Delete Your Review?',
@@ -367,7 +398,7 @@ export class GuestReviews implements OnInit {
     const categories = [
       'cleanliness',
       'accuracy',
-      'checkIn',
+      'checkIn', // Note: this should match your DTO property name
       'communication',
       'location',
       'value',
@@ -375,28 +406,40 @@ export class GuestReviews implements OnInit {
     const averages: { [key: string]: number } = {};
 
     categories.forEach((category) => {
-      const sum = this.reviews.reduce(
-        (acc, review) =>
-          acc + (review[category as keyof IGuestReviewDto] as number),
-        0
-      );
-      averages[category] = sum / this.reviews.length;
+      const sum = this.reviews.reduce((acc, review) => {
+        const value = review[category as keyof IGuestReviewDto] as number;
+        return acc + (value || 0); // Handle null/undefined values
+      }, 0);
+      averages[category] =
+        this.reviews.length > 0
+          ? Number((sum / this.reviews.length).toFixed(1))
+          : 0;
     });
 
     return averages;
   }
-
   getCategoryIcon(category: string): string {
     const icons: { [key: string]: string } = {
-      cleanliness: 'bi-house-check',
+      cleanliness: 'bi-droplet', // or 'bi-house-check'
       accuracy: 'bi-check-circle',
       checkIn: 'bi-key',
-      communication: 'bi-chat-dots',
+      communication: 'bi-chat-square-dots',
       location: 'bi-geo-alt',
-      value: 'bi-currency-dollar',
+      value: 'bi-tag',
     };
-    return icons[category] || 'bi-star';
+    return icons[category.toLowerCase()] || 'bi-star';
   }
+  getCleanlinessRatings(): number[] {
+    return this.reviews
+      .map((r) => r.cleanliness)
+      .filter((c): c is number => c !== null && c !== undefined);
+  }
+
+  cleanlinessRatings = this.getCleanlinessRatings();
+
+  averageCleanliness =
+    this.cleanlinessRatings.reduce((sum, value) => sum + value, 0) /
+    (this.cleanlinessRatings.length || 1);
 }
 
 // loadUserCompletedBookings(): void {

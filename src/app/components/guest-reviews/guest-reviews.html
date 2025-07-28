@@ -45,6 +45,12 @@
   }
 
    -->
+  <app-reviews-modal
+    *ngIf="showReviewsModal"
+    [reviews]="reviews"
+    [propertyId]="propertyId"
+    (closeModal)="closeReviewsModal()"
+  ></app-reviews-modal>
   <!-- Summary Row -->
   <div class="summary-row" *ngIf="reviews.length > 0">
     <!-- Overall Rating Breakdown -->
@@ -72,28 +78,24 @@
         class="category-item"
         *ngFor="
           let category of [
-            'Cleanliness',
-            'Accuracy',
-            'CheckIn',
-            'Communication',
-            'Location',
-            'Value'
+            'cleanliness',
+            'accuracy',
+            'checkIn',
+            'communication',
+            'location',
+            'value'
           ]
         "
       >
         <div class="category-icon-container">
-          <i [class]="'category-icon ' + getCategoryIcon(category)"></i>
+          <i [class]="getCategoryIcon(category)" class="category-icon"></i>
         </div>
         <div class="category-info">
           <span class="category-label">{{
-            category === "CheckIn" ? "Check-in" : category
+            category === "checkIn" ? "Check-in" : (category | titlecase)
           }}</span>
           <span class="category-rating">
-            {{
-              categoryAverages[category]
-                ? (categoryAverages[category] | number : "1.1-1")
-                : "N/A"
-            }}
+            {{ categoryAverages[category] || "N/A" }}
           </span>
         </div>
       </div>
@@ -133,14 +135,14 @@
         @if(currentUser && currentUser === review.user.userId){
         <div class="review-actions">
           <i
-            (click)="navigateToEditReview(review.id)"
-            class="action-icon text-info bi bi-pencil-square"
+            (click)="navigateToEditReview(review)"
+            class="action-icon text-dark bi bi-pencil-square"
             title="Edit"
             style="cursor: pointer"
           ></i>
           <button
             type="button"
-            class="btn p-0 action-icon text-danger"
+            class="btn p-0 action-icon text-dark"
             (click)="deleteHandler(review.id)"
             title="Delete"
           >
