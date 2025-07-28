@@ -8,7 +8,6 @@
           <span class="brand-text">Admin Dashboard</span>
         </div>
       </div>
-       
       <nav class="sidebar-nav">
         <ul class="nav-list">
           <li 
@@ -26,7 +25,6 @@
           </li>
         </ul>
       </nav>
-       
       <div class="sidebar-footer">
         <div class="user-info">
           <div class="user-avatar">
@@ -54,26 +52,15 @@
 
     <!-- Properties Section (Placeholder) -->
     <div *ngIf="activeSection === 'properties'" class="content-section">
-      <div class="placeholder-content">
-        <div class="placeholder-header">
-          <h1 class="section-title">
-            <i class="fas fa-building title-icon"></i>
-            Properties Management
-          </h1>
-          <p class="section-subtitle">Manage and monitor all properties</p>
-        </div>
-        <div class="placeholder-message">
-          <i class="fas fa-building placeholder-icon"></i>
-          <h3>Properties Component</h3>
-          <!-- <p>This section will contain the properties management table</p> -->
            <app-property></app-property>
-        </div>
-      </div>
     </div>
 
     <!-- Bookings Section -->
     <div *ngIf="activeSection === 'bookings'" class="content-section">
       <app-bookings></app-bookings>
     </div>
+
+    <div *ngIf="activeSection === 'analytics'" class="content-section">
+      <!-- <app-analytics></app-analytics> -->
   </div>
 </div>

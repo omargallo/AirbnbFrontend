@@ -39,8 +39,20 @@
       <div class="stat-icon">
         <i class="fas fa-check-circle"></i>
       </div>
+    </div> 
+
+
+     <div class="stat-card">
+    <div class="stat-content">
+      <div class="stat-number">{{ confirmedBookingsCount }}</div>
+      <div class="stat-label">Confirmed</div>
     </div>
-    
+    <div class="stat-icon">
+      <i class="fas fa-calendar-check"></i>
+    </div>
+  </div>
+  
+
     <div class="stat-card">
       <div class="stat-content">
         <div class="stat-number">{{ pendingBookingsCount }}</div>
@@ -49,8 +61,20 @@
       <div class="stat-icon">
         <i class="fas fa-clock"></i>
       </div>
-    </div>
+    </div>   
     
+
+     <div class="stat-card">
+    <div class="stat-content">
+      <div class="stat-number">{{ cancelledBookingsCount }}</div>
+      <div class="stat-label">Cancelled</div>
+    </div>
+    <div class="stat-icon">
+      <i class="fas fa-times-circle"></i>
+    </div>
+  </div>
+
+
     <div class="stat-card">
       <div class="stat-content">
         <div class="stat-number">${{ totalRevenue | number:'1.0-0' }}</div>
