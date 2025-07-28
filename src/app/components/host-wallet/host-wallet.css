@@ -2,8 +2,8 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8f9fa;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  /* background-color: #f8f9fa; */
   /* display: flex;
   flex-direction: column;
   justify-content: center;
@@ -31,8 +31,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Error State */
@@ -86,7 +90,11 @@
   background: white;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  /* box-shadow: 0 2px 8px rgba(0,0,0,0.1); */
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+  -ms-border-radius: 12px;
+  -o-border-radius: 12px;
 }
 
 .section-header {
@@ -113,18 +121,23 @@
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
+  border-radius: 30px;
+  /*cursor: pointer;
+  */font-size: 14px;
   font-weight: 500;
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+  -ms-border-radius: 30px;
+  -o-border-radius: 30px;
 }
 
 .tab-btn.active {
-  background: var(--airbnb-red);
+  /* background: var(--airbnb-red); */
 }
 
 /* Tables */
-.payments-table, .transactions-table {
+.payments-table,
+.transactions-table {
   width: 100%;
 }
 
@@ -154,7 +167,7 @@
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   gap: 15px;
   padding: 15px 0;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid #e3eeee;
   align-items: center;
 }
 
@@ -208,7 +221,11 @@
 
 /* Create Account Section */
 .create-account-section {
-  background: linear-gradient(135deg, var(--airbnb-red) 0%, var(--airbnb-dark-red) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--airbnb-red) 0%,
+    var(--airbnb-dark-red) 100%
+  );
   color: white;
   border-radius: 12px;
   padding: 30px;
@@ -247,7 +264,7 @@
 
 .create-account-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .create-account-btn:disabled {
@@ -266,10 +283,13 @@
 
 /* Balance Section */
 .balance-section {
-  background: white;
+  /* background: white; */
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background-color: #f8f9fa;
+  border:1px solid #eee;
+
+  /* box-shadow: 0 2px 8px rgba(0,0,0,0.1); */
 }
 
 .balance-header {
@@ -278,7 +298,8 @@
   gap: 40px;
 }
 
-.total-balance h3, .balance-transactions h3 {
+.total-balance h3,
+.balance-transactions h3 {
   font-size: 20px;
   font-weight: 600;
   color: #333;
@@ -328,12 +349,14 @@
     padding: 15px;
   }
 
-  .table-header, .table-row {
+  .table-header,
+  .table-row {
     grid-template-columns: 1fr;
     gap: 10px;
   }
 
-  .header-col, .col {
+  .header-col,
+  .col {
     padding: 5px 0;
   }
 
