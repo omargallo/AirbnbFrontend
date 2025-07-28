@@ -1,0 +1,130 @@
+<div class="admin-dashboard">
+  <!-- Sidebar -->
+  <div class="sidebar-container">
+    <div class="sidebar">
+      <!-- Logo/Brand Section -->
+      <div class="sidebar-header">
+        <div class="brand-logo">
+          <i class="fas fa-home brand-icon"></i>
+          <span class="brand-text">Admin Dashboard</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <ul class="nav-list">
+          <li 
+            *ngFor="let section of adminSections; trackBy: trackBySection"
+            class="nav-item" 
+            [class.active]="section.isActive"
+            (click)="onMenuSectionClick(section)">
+            <a class="nav-link">
+              <div class="nav-icon">
+                <i [class]="section.icon"></i>
+              </div>
+              <span class="nav-text">{{ section.name }}</span>
+              <div class="nav-indicator"></div>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <div class="user-details">
+            <span class="user-name">Admin</span>
+            <span class="user-role">Dashboard</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="main-content">
+    <!-- Dashboard Overview Section -->
+    <div *ngIf="activeSection === 'dashboard'" class="content-section">
+      <div class="dashboard-overview">
+        <div class="overview-header">
+          <h1 class="section-title">
+            <i class="fas fa-tachometer-alt title-icon"></i>
+            Dashboard Overview
+          </h1>
+          <p class="section-subtitle">Welcome to your admin dashboard</p>
+        </div>
+        
+        <div class="overview-stats">
+          <div class="stat-card">
+            <div class="stat-content">
+              <!-- <div class="stat-number">150</div> -->
+              <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-users"></i>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-content">
+              <!-- <div class="stat-number">85</div> -->
+              <div class="stat-label">Properties</div>
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-building"></i>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-content">
+              <!-- <div class="stat-number">42</div> -->
+              <div class="stat-label">Active Bookings</div>
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Users Section -->
+    <div *ngIf="activeSection === 'users'" class="content-section">
+      <app-users></app-users>
+    </div>
+    <!-- Bookings Section (Placeholder) -->
+    <div *ngIf="activeSection === 'bookings'" class="content-section">
+      <div class="placeholder-content">
+        <div class="placeholder-header">
+          <h1 class="section-title">
+            <i class="fas fa-calendar-check title-icon"></i>
+            Bookings Management
+          </h1>
+          <p class="section-subtitle">Monitor and manage all bookings</p>
+        </div>
+        <div class="placeholder-message">
+          <i class="fas fa-calendar-check placeholder-icon"></i>
+          <h3>Bookings Component</h3>
+          <p>This section will contain the bookings management table</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Properties Section (Placeholder) -->
+    <div *ngIf="activeSection === 'properties'" class="content-section">
+      <div class="placeholder-content">
+        <div class="placeholder-header">
+          <h1 class="section-title">
+            <i class="fas fa-building title-icon"></i>
+            Properties Management
+          </h1>
+          <p class="section-subtitle">Manage all properties in the system</p>
+        </div>
+        <div class="placeholder-message">
+          <i class="fas fa-building placeholder-icon"></i>
+          <h3>Properties Component</h3>
+          <p>This section will contain the properties management table</p>
+        </div>
+      </div>
+    </div>
+
+    
+  </div>
+</div>
