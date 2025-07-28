@@ -1,0 +1,124 @@
+<div class="wallet-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading your payments...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-container">
+    <div class="error-message">
+      <i class="error-icon">⚠️</i>
+      <span>{{ error }}</span>
+    </div>
+    <button class="retry-btn" (click)="loadPayments()">Retry</button>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && !error" class="wallet-content">
+
+    <!-- Pending Payments Section -->
+    <div class="payments-section">
+      <div class="section-header">
+        <h2>Pending transactions</h2>
+        <div class="tab-controls">
+          <button class="tab-btn active">Pending payments</button>
+        </div>
+      </div>
+
+      <div class="payments-table" *ngIf="pendingPayments.length > 0; else noPendingPayments">
+        <div class="table-header">
+          <div class="header-col">BOOKING ID</div>
+          <div class="header-col">MILESTONE</div>
+          <div class="header-col">AMOUNT</div>
+          <div class="header-col">STATUS</div>
+          <div class="header-col">CREATED AT</div>
+        </div>
+
+        <div class="table-row" *ngFor="let payment of getDisplayedPendingPayments()">
+          <div class="col">Booking #{{ payment.bookingId }}</div>
+          <div class="col">Payment received</div>
+          <div class="col">{{ formatAmount(payment.amount) }}</div>
+          <div class="col">
+            <span class="status-badge pending">Pending Transfer</span>
+          </div>
+          <div class="col">{{ formatDate(payment.paymentDate) }}</div>
+        </div>
+
+        <div class="show-more" *ngIf="pendingPayments.length > 5">
+          <button class="show-more-btn" (click)="toggleShowAllPending()">
+            {{ showAllPending ? 'Show less' : 'Show more' }}
+          </button>
+        </div>
+      </div>
+
+      <ng-template #noPendingPayments>
+        <div class="no-transactions">
+          <p>You have no pending transactions yet.</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Create Account Section (if no transferred payments) -->
+    <div *ngIf="transferredPayments.length === 0 && pendingPayments.length > 0" class="create-account-section">
+      <div class="account-prompt">
+        <h3>Setup Payment Account</h3>
+        <p>To receive your payments, please create a Stripe account to enable transfers.</p>
+        <button
+          class="create-account-btn"
+          (click)="createStripeAccount()"
+          [disabled]="isCreatingAccount">
+          <span *ngIf="!isCreatingAccount">Create Stripe Account</span>
+          <span *ngIf="isCreatingAccount">
+            <div class="btn-spinner"></div>
+            Creating Account...
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Balance Section -->
+    <div class="balance-section">
+      <div class="balance-header">
+        <div class="total-balance">
+          <h3>Total balance</h3>
+          <div class="balance-amount">{{ formatAmount(totalBalance) }}</div>
+          <div *ngIf="totalBalance > 0" class="withdrawal-info">
+            <p class="withdrawal-text">To proceed with your withdrawal, please upload your national ID and enter the needed legal info.</p>
+            <button class="withdraw-btn" disabled>Withdraw</button>
+          </div>
+        </div>
+
+        <div class="balance-transactions">
+          <h3>Balance transactions</h3>
+
+          <div class="transactions-table" *ngIf="transferredPayments.length > 0; else noBalanceTransactions">
+            <div class="table-header">
+              <div class="header-col">BOOKING ID</div>
+              <div class="header-col">AMOUNT</div>
+              <div class="header-col">TRANSFERRED AT</div>
+            </div>
+
+            <div class="table-row" *ngFor="let payment of getDisplayedTransferredPayments()">
+              <div class="col">Booking #{{ payment.bookingId }}</div>
+              <div class="col">{{ formatAmount(payment.amount) }}</div>
+              <div class="col">{{ formatDate(payment.paymentDate) }}</div>
+            </div>
+
+            <div class="show-more" *ngIf="transferredPayments.length > 5">
+              <button class="show-more-btn" (click)="toggleShowAllTransferred()">
+                {{ showAllTransferred ? 'Show less' : 'Show more' }}
+              </button>
+            </div>
+          </div>
+
+          <ng-template #noBalanceTransactions>
+            <div class="no-transactions">
+              <p>You have no balance transactions yet.</p>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -41,6 +41,7 @@ import { UpdateProfile } from './pages/update-profile/update-profile';
 import { YourReviews } from './pages/your-reviews/your-reviews';
 import { Notifications } from './pages/notifications/notifications';
 import { ReviewForm } from './components/review-form/review-form';
+import { HostWalletComponent } from './components/host-wallet/host-wallet';
 
 export const routes: Routes = [
   {
@@ -106,6 +107,7 @@ export const routes: Routes = [
     children: [
       { path: 'availability', component: Availability },
       { path: 'Messages', component: Messages },
+      { path: 'Wallet', component: HostWalletComponent }
     ],
   },
 
