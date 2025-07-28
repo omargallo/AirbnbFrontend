@@ -90,8 +90,16 @@
         </button>
       </div>
       
+      <!-- Modal Loading State -->
+      <div class="modal-loading" *ngIf="loadingUserDetails">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Loading user details...</p>
+        </div>
+      </div>
+      
       <!-- Modal Content -->
-      <div class="modal-content" *ngIf="selectedUser">
+      <div class="modal-content" *ngIf="selectedUser && !loadingUserDetails">
         <!-- User Profile Section -->
         <div class="user-profile">
           <div class="profile-avatar">
@@ -154,19 +162,18 @@
       </div>
       
       <!-- Modal Footer -->
-      <div class="modal-footer">
+      <div class="modal-footer" *ngIf="!loadingUserDetails">
         <button 
           class="btn btn-secondary" 
           (click)="closeUserDetails()">
           <i class="fas fa-times"></i>
           Close
         </button>
-        
       </div>
     </div>
   </div>
 
-  <!-- Loading Overlay -->
+  <!-- Main Loading Overlay (Only for users list) -->
   <div class="loading-overlay" *ngIf="loading">
     <div class="loading-spinner">
       <i class="fas fa-spinner fa-spin"></i>
