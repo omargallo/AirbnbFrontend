@@ -2,13 +2,13 @@
   <!-- Sidebar -->
   <div class="sidebar-container">
     <div class="sidebar">
-      <!-- Logo/Brand Section -->
       <div class="sidebar-header">
         <div class="brand-logo">
           <i class="fas fa-home brand-icon"></i>
           <span class="brand-text">Admin Dashboard</span>
         </div>
       </div>
+      
       <nav class="sidebar-nav">
         <ul class="nav-list">
           <li 
@@ -26,6 +26,7 @@
           </li>
         </ul>
       </nav>
+      
       <div class="sidebar-footer">
         <div class="user-info">
           <div class="user-avatar">
@@ -39,6 +40,8 @@
       </div>
     </div>
   </div>
+
+  <!-- Main Content -->
   <div class="main-content">
     <!-- Dashboard Overview Section -->
     <div *ngIf="activeSection === 'dashboard'" class="content-section">
@@ -54,7 +57,6 @@
         <div class="overview-stats">
           <div class="stat-card">
             <div class="stat-content">
-              <!-- <div class="stat-number">150</div> -->
               <div class="stat-label">Total Users</div>
             </div>
             <div class="stat-icon">
@@ -64,7 +66,6 @@
           
           <div class="stat-card">
             <div class="stat-content">
-              <!-- <div class="stat-number">85</div> -->
               <div class="stat-label">Properties</div>
             </div>
             <div class="stat-icon">
@@ -74,7 +75,6 @@
           
           <div class="stat-card">
             <div class="stat-content">
-              <!-- <div class="stat-number">42</div> -->
               <div class="stat-label">Active Bookings</div>
             </div>
             <div class="stat-icon">
@@ -89,23 +89,6 @@
     <div *ngIf="activeSection === 'users'" class="content-section">
       <app-users></app-users>
     </div>
-    <!-- Bookings Section (Placeholder) -->
-    <div *ngIf="activeSection === 'bookings'" class="content-section">
-      <div class="placeholder-content">
-        <div class="placeholder-header">
-          <h1 class="section-title">
-            <i class="fas fa-calendar-check title-icon"></i>
-            Bookings Management
-          </h1>
-          <p class="section-subtitle">Monitor and manage all bookings</p>
-        </div>
-        <div class="placeholder-message">
-          <i class="fas fa-calendar-check placeholder-icon"></i>
-          <h3>Bookings Component</h3>
-          <p>This section will contain the bookings management table</p>
-        </div>
-      </div>
-    </div>
 
     <!-- Properties Section (Placeholder) -->
     <div *ngIf="activeSection === 'properties'" class="content-section">
@@ -115,7 +98,7 @@
             <i class="fas fa-building title-icon"></i>
             Properties Management
           </h1>
-          <p class="section-subtitle">Manage all properties in the system</p>
+          <p class="section-subtitle">Manage and monitor all properties</p>
         </div>
         <div class="placeholder-message">
           <i class="fas fa-building placeholder-icon"></i>
@@ -125,6 +108,9 @@
       </div>
     </div>
 
-    
+    <!-- Bookings Section -->
+    <div *ngIf="activeSection === 'bookings'" class="content-section">
+      <app-bookings></app-bookings>
+    </div>
   </div>
 </div>

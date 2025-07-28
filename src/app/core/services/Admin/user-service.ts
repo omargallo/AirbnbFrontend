@@ -51,4 +51,4 @@ export class UserService {
   getUserProfile(userId: string): Observable<UserProfileDto> {
     return this.http.get<UserProfileDto>(`${this.apiUrl}/profile/${userId}`);
   }
-}
+}  
