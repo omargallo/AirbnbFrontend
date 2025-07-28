@@ -52,13 +52,13 @@ export class PropertyInfo implements OnInit {
     @Input() checkIn!: string;
     @Input() checkOut!: string;
     @Input() guests!: { adults: number, children: number, infants: number };
-
+    @Input() previewPropertyId?: number 
       @Output() guestChange = new EventEmitter<{
         adults: number;
         children: number;
         infants: number;
       }>();
-
+    @Input() isPreview:boolean = false
 
   // State for child components
   activeTab: 'gallery' | 'reviews' | 'amenities' = 'gallery';
@@ -78,11 +78,14 @@ export class PropertyInfo implements OnInit {
       }
       this.route.params.subscribe(params => {
       this.propertyId = +params['propertyId']; // Get propertyId from route params
-      if(this.propertyId <= 0) {
+      if(this.propertyId <= 0 && (!this.previewPropertyId || this.previewPropertyId)) {
+
         this.error = 'Invalid property ID';
         this.isLoading = false;
         return;
-      }
+      }else if(this.previewPropertyId)
+        this.propertyId = this.previewPropertyId
+
       // console.log('Property ID from route:', this.propertyId);
       this.showPropertyDetails(this.propertyId);
       this.getCalendarAvailability()

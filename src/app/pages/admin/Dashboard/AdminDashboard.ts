@@ -4,6 +4,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { UsersComponent } from '../pages/users/users';
 import { Bookings } from '../pages/booking/bookings';
+import { Property } from "../pages/property/property";
 
 export interface AdminSection {
   id: string;
@@ -15,7 +16,7 @@ export interface AdminSection {
 @Component({
   selector: 'app-AdminDashboard',
   standalone: true,
-  imports: [CommonModule, UsersComponent, Bookings],
+  imports: [CommonModule, UsersComponent, Bookings, Property],
   templateUrl: './AdminDashboard.html',
   styleUrls: ['./AdminDashboard.css']
 })
