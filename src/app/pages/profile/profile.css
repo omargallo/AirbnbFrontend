@@ -43,8 +43,7 @@ nav a img {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-position: center;
-  background-size: cover;
+  object-fit: contain;
   transition: transform 0.3s ease-in-out;
 }
 
@@ -118,8 +117,7 @@ main {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background-position: center;
-  background-size: cover;
+  object-fit: contain;
 }
 
 .user-info .user-img .initial-letter {
