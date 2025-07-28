@@ -98,4 +98,14 @@ export class UserService {
       })
     );
   }
+
+  updateToHostRole(userId: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/profile/${userId}/role`, {}).pipe(
+      tap((response: any) => {
+        if (response.roles) {
+          this.authService.setRole(response.roles);
+        }
+      })
+    );
+  }
 }
