@@ -14,7 +14,7 @@ import { UsersComponent } from "./pages/admin/pages/users/users";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Confirm, Login, Register, ResetPassword, AdminDashboard, UsersComponent],
+  imports: [RouterOutlet, Confirm, Login, Register, ResetPassword],
 
   templateUrl: './app.html',
   styleUrl: './app.css'
