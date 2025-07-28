@@ -30,7 +30,6 @@ import { HostProperties } from './components/host-properties/host-properties';
 import { Wishlists } from './pages/wishlist/wishlist';
 import { WishListProperties } from './pages/wishlist-properties/wishlist-properties';
 import { NotFound } from './components/not-found/not-found';
-import { UserBookings } from './pages/booking/userbookings/userbookings';
 import { UpdateList } from './pages/update-list/update-list';
 import { Messages } from './pages/messages/messages';
 import { PropertyBookings } from './pages/booking/property-bookings/property-bookings';
@@ -41,6 +40,11 @@ import { UpdateProfile } from './pages/update-profile/update-profile';
 import { YourReviews } from './pages/your-reviews/your-reviews';
 import { Notifications } from './pages/notifications/notifications';
 import { ReviewForm } from './components/review-form/review-form';
+
+import { UsersComponent } from './pages/admin/pages/users/users';
+import { AdminDashboard } from './pages/admin/Dashboard/AdminDashboard';
+import { HostWalletComponent } from './components/host-wallet/host-wallet';
+
 
 export const routes: Routes = [
   {
@@ -95,10 +99,22 @@ export const routes: Routes = [
   },
   { path: 'take-info/:id', component: UpdateProfile },
   { path: 'host', component: HostProperties },
-  { path: 'guesttbookings', component: UserBookings },
 
   { path: 'propertybookings/:propertyId', component: PropertyBookings },
   { path: 'review/:id', component: ReviewForm },
+
+
+  { path: 'AdminDashboard', component:AdminDashboard },
+
+
+
+    { path: 'AdminDashboard', component: AdminDashboard },
+    { path: 'dashboard', redirectTo: 'AdminDashboard', pathMatch: 'full' },
+
+
+
+
+
 
   {
     path: 'hostsettings',
@@ -106,6 +122,7 @@ export const routes: Routes = [
     children: [
       { path: 'availability', component: Availability },
       { path: 'Messages', component: Messages },
+      { path: 'Wallet', component: HostWalletComponent }
     ],
   },
 
@@ -115,4 +132,7 @@ export const routes: Routes = [
 
   { path: '404', component: NotFound },
   { path: '**', redirectTo: '/404' },
+
+
+
 ];

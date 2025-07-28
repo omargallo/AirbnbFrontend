@@ -25,8 +25,8 @@ hr {
 
 
 :host ::ng-deep .leaflet-container {
-  width: 1200px !important;
-  height: 500px !important;
+  /* width: 1200px !important; */
+  min-height: 500px !important; 
   border-radius: 15px !important;
   margin: 10px !important;
 }

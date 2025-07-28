@@ -14,6 +14,7 @@ import { StarComponent } from '../../../shared/components/star-component/star-co
 import { AuthService } from './../../../core/services/auth.service';
 import { IGuestReviewDto } from '../../../core/models/ReviewInterfaces/guest-review-dto';
 
+
 @Component({
   selector: 'app-reviews-modal',
   imports: [CommonModule, FormsModule, StarComponent],
@@ -23,7 +24,9 @@ import { IGuestReviewDto } from '../../../core/models/ReviewInterfaces/guest-rev
 export class ReviewsModalComponent implements OnInit, OnChanges {
   @Input() reviews: IGuestReviewDto[] = [];
   @Input() propertyName: string = 'This Property';
+
   @Input() propertyId!: number;
+
   @Output() closeModal = new EventEmitter<void>();
 
   filteredReviews: Ireview[] = [];
@@ -59,8 +62,10 @@ export class ReviewsModalComponent implements OnInit, OnChanges {
   };
 
   constructor(
+
     private authService: AuthService // Add other services as needed: // private reviewService: ReviewService
   ) {}
+
 
   ngOnInit() {
     this.calculateStatistics();

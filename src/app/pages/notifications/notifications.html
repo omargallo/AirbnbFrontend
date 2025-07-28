@@ -1,1 +1,60 @@
-<p>notifications works!</p>
+<div class="notifications-container">
+  <div class="notifications-header">
+    <h2>{{ "notifications.title" | translate }}</h2>
+    <div class="header-actions">
+      <span class="unread-count" *ngIf="unreadCount > 0">{{ unreadCount }} {{ "notifications.unread" | translate }}</span>
+      <button
+        class="btn btn-secondary"
+        (click)="markAllAsRead()"
+        [disabled]="unreadCount === 0">
+        {{ "notifications.markAllAsRead" | translate }}
+      </button>
+      <button
+        class="btn btn-danger"
+        (click)="clearAllNotifications()"
+        [disabled]="notifications.length === 0">
+        {{ "notifications.clearAll" | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="notifications-content">
+    <div *ngIf="loading" class="loading">
+      <app-loader [loadingText]="'Loading notifications...'" [showText]="true"></app-loader>
+    </div>
+
+    <div *ngIf="error" class="error">
+      {{ error }}
+    </div>
+
+    <div *ngIf="!loading && !error && notifications.length === 0" class="no-notifications">
+      {{ "notifications.noNotifications" | translate }}
+    </div>
+
+    <div
+      *ngFor="let notification of notifications"
+      class="notification-item"
+      [class.unread]="!notification.isRead"
+      (click)="markAsRead(notification)">
+
+      <div class="notification-content">
+        <div class="notification-message">{{ notification.message }}</div>
+        <div class="notification-date">{{ getFormattedDate(notification.createdAt) }}</div>
+      </div>
+
+      <div class="notification-actions">
+        <button
+          *ngIf="!notification.isRead"
+          class="btn btn-sm btn-primary"
+          (click)="markAsRead(notification); $event.stopPropagation()">
+          {{ "notifications.markAsRead" | translate }}
+        </button>
+        <button
+          class="btn btn-sm btn-danger"
+          (click)="deleteNotification(notification); $event.stopPropagation()">
+          {{ "notifications.delete" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

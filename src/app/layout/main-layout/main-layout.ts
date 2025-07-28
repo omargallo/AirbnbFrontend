@@ -29,7 +29,8 @@ export class MainLayout {
       this.router.url.startsWith('/WishLists') ||
       this.router.url.startsWith('/wishlist')||
       this.router.url.startsWith('/profile') ||
-      this.router.url.startsWith('/update-profile');
+      this.router.url.startsWith('/update-profile')
+      || this.router.url.startsWith('/your-reviews');
   }
   ngAfterViewInit(): void {
     this.router.events.subscribe(() => {

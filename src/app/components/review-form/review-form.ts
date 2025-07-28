@@ -132,6 +132,7 @@ populateForm(review: AddReviewByGuestDTO): void {
 }
 
 reviewForm = new FormGroup({
+
     comment: new FormControl<string>('', [
       Validators.required,
       Validators.minLength(10),
@@ -357,6 +358,7 @@ reviewForm = new FormGroup({
         this.errorMessage = 'Failed to submit review. Please try again.';
       },
 
+
       });
     } else if (this.mode === 'edit') {
       // Edit existing review
@@ -371,6 +373,7 @@ reviewForm = new FormGroup({
           this.successMessage = 'Review updated successfully!';
           setTimeout(() => {
             this.router.navigate(['/property', this.propertyId]);
+
           }, 1500);
         },
         error: (error: any) => {

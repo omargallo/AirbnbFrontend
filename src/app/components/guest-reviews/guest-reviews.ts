@@ -1,5 +1,6 @@
 import { Property } from './../../core/models/Property';
 import { UserBookings } from './../../pages/booking/userbookings/userbookings';
+
 import { UserBookingService } from './../../core/services/Booking/user-booking-service';
 import { Confirm } from './../../shared/components/confirm/confirm';
 import { CommonModule } from '@angular/common';
@@ -25,6 +26,7 @@ import { ConfirmService } from '../../core/services/confirm.service';
 import { Modal } from '../../shared/components/modal/modal';
 import { ReviewsModalComponent } from './guest-review-modal/guest-review-modal';
 
+
 @Component({
   selector: 'app-guest-reviews',
   standalone: true,
@@ -35,12 +37,14 @@ import { ReviewsModalComponent } from './guest-review-modal/guest-review-modal';
     Confirm,
     Modal,
     ReviewsModalComponent,
+
   ],
   templateUrl: './guest-reviews.html',
   styleUrl: './guest-reviews.css',
 })
 export class GuestReviews implements OnInit {
   @Input() propertyId!: number;
+
   // @Input() propertyName: string = 'This Property';
   //@Input() userbookings: any[] = [];
 
@@ -141,6 +145,7 @@ export class GuestReviews implements OnInit {
 
     if (!this.currentUser) {
       console.log('No current user found.');
+
       return false;
     } else {
       console.log('Current user:', this.currentUser);
@@ -166,6 +171,7 @@ export class GuestReviews implements OnInit {
 
     const hasExistingReview = this.reviews.some(
       (review) => review.user.userId === this.currentUser
+
     );
 
     // console.log('Has existing review from user:', hasExistingReview);
@@ -181,6 +187,7 @@ export class GuestReviews implements OnInit {
   //   return this.reviews.some((review) => review.userId === this.currentUser);
   // }
 
+
   hasExistingReview(): boolean {
     console.log('Current User:', this.currentUser, typeof this.currentUser);
     console.log(
@@ -189,6 +196,7 @@ export class GuestReviews implements OnInit {
         id: r.id,
         userId: r.user.userId,
         userIdType: typeof r.user.userId,
+
       }))
     );
 
@@ -196,11 +204,11 @@ export class GuestReviews implements OnInit {
       const match = String(review.user.userId) === String(this.currentUser);
       console.log(
         `Comparing: "${review.user.userId}" === "${this.currentUser}" = ${match}`
+
       );
       return match;
     });
   }
-
   getCompletedBookingForProperty(): BookingDetailsDTO | null {
     return (
       this.userBookings
@@ -255,6 +263,7 @@ export class GuestReviews implements OnInit {
   navigateToEditReview(review: IGuestReviewDto) {
     this.router.navigate(['/review', review.id], {
       state: { reviewData: review },
+
       queryParams: {
         mode: 'edit',
       },
@@ -269,6 +278,7 @@ export class GuestReviews implements OnInit {
         // console.log('Raw API Response:', response);
         // console.log('First review object:', response[0]);
         // console.log('Keys in first review:', Object.keys(response[0] || {}));
+
 
         this.reviews = response;
         // this.checkUserExistingReview();
@@ -294,6 +304,7 @@ export class GuestReviews implements OnInit {
   //     },
   //   });
   // }
+
   // performDelete(reviewId: number) {
   //   this.ReviewService.deleteReview(reviewId).subscribe({
   //     next: () => {
@@ -326,6 +337,7 @@ export class GuestReviews implements OnInit {
         console.error('Delete failed:', error);
         // Revert the UI change on error
         this.loadReviewsByPropertyId();
+
       },
     });
   }
@@ -341,6 +353,7 @@ export class GuestReviews implements OnInit {
       }
     );
   }
+
 
   //   isCurrentUserReview(review: IGuestReviewDto): boolean {
   //   return this.currentUser === review.UserId;
@@ -399,6 +412,7 @@ export class GuestReviews implements OnInit {
       'cleanliness',
       'accuracy',
       'checkIn', // Note: this should match your DTO property name
+
       'communication',
       'location',
       'value',
@@ -414,6 +428,7 @@ export class GuestReviews implements OnInit {
         this.reviews.length > 0
           ? Number((sum / this.reviews.length).toFixed(1))
           : 0;
+
     });
 
     return averages;
@@ -428,6 +443,7 @@ export class GuestReviews implements OnInit {
       value: 'bi-tag',
     };
     return icons[category.toLowerCase()] || 'bi-star';
+
   }
   getCleanlinessRatings(): number[] {
     return this.reviews

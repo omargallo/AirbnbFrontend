@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnChanges } from '@angular/core';
 import { PropertyAmenityService } from '../../../core/services/PropertyAmenity/property-amenity.service';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { HttpParams } from '@angular/common/http';
 import moment from 'moment';
 import { FormsModule } from '@angular/forms';
+import { Property } from '../../../core/models/Property';
 
 // Define interface for the amenity data structure
 interface Amenity {
@@ -21,8 +22,9 @@ interface Amenity {
   templateUrl: './amenities-section.component.html',
   styleUrls: ['./amenities-section.component.css']
 })
-export class AmenitiesSectionComponent implements OnInit {
+export class AmenitiesSectionComponent implements OnInit, OnChanges {
   @Input() propertyId!: number;
+  @Input() property?:Property
   amenities: Amenity[] = [];
   isLoading = true;
   showAllAmenities = false;
@@ -31,6 +33,7 @@ export class AmenitiesSectionComponent implements OnInit {
   constructor(private propertyAmenityService: PropertyAmenityService) { }
 
   ngOnInit(): void {
+    console.log("property form amenties section",this.property)
     if (!this.propertyId) {
       console.error('Property ID is required for AmenitiesSectionComponent');
       this.isLoading = false;
@@ -41,7 +44,9 @@ export class AmenitiesSectionComponent implements OnInit {
    
     
   } //end oninit
-
+ngOnChanges(){
+  console.log("property form amentites section",this.property)
+}
   private loadAmenities(): void {
     this.propertyAmenityService.getAllAmenitiesByPropertyId(this.propertyId).subscribe({
       next: (response: any) => {

@@ -31,6 +31,7 @@ export interface IGuestReviewDto {
   propertyId: number;
   // bookingId: number;
   // userId: string;
+
   comment: string;
   privateComment?: string;
   rating: number;

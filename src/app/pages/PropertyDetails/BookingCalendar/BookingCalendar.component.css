@@ -1,9 +1,8 @@
 /* Calendar Container Styles */
 .airbnb-calendar-container {
-  max-width: 810;
+  /* max-width: 810px; */
   margin: 0 auto;
-  padding: 12px;
-  /* font-family: 'Airbnb Cereal App', -apple-system, BlinkMacSystemFont, sans-serif; */
+  padding: 0.8rem;
   overflow-x: hidden;
 }
 
@@ -16,20 +15,20 @@
 /* Calendar Wrapper */
 .airbnb-calendar-wrapper {
   display: flex;
-  gap: 40px;
+  gap: 1.6rem ;
   justify-content: center;
   align-items: flex-start;
 }
 
 /* Date Quick Options (if needed) */
 .date-quick-options {
-  min-width: 200px;
+  /* min-width: 200px; */
   flex-shrink: 0;
   padding-top: 50px;
 }
 
 /* Main Calendar Styles */
-::ng-deep .daterangepicker {
+/* ::ng-deep .daterangepicker {
   width: 100% !important;
   max-width: 840px !important;
   display: flex !important;
@@ -39,37 +38,41 @@
   border: none !important;
   box-shadow: none !important;
   background: transparent !important;
-}
+} */
 
-::ng-deep .md-drppicker {
+.airbnb-calendar-container ::ng-deep .md-drppicker {
   width: 100% !important;
   background: transparent !important;
   box-shadow: none !important;
 }
 
 /* Calendar Month Styles */
-::ng-deep .drp-calendar {
-  width: 50% !important;
-  max-width: 500px !important;
+.airbnb-calendar-container ::ng-deep .md-drppicker {
+  /* width: 50% !important; */
+  max-width: 5000px !important;
   padding: 0 20px !important;
+  z-index: 0 !important;
+}
+.airbnb-calendar-container>*{
+  /* z-index: 0 !important */
 }
 
-::ng-deep .calendar-table {
+.airbnb-calendar-container ::ng-deep .calendar-table {
   width: 100% !important;
   border: none !important;
   background: transparent !important;
 }
 
 /* Calendar Header */
-::ng-deep .calendar-table .month {
-  font-size: 18px;
-  font-weight: 600;
+.airbnb-calendar-container ::ng-deep .calendar-table .month {
+  font-size: 1.3rem;
+  font-weight: bold;
   color: #222;
   margin-bottom: 20px;
 }
 
 /* Weekday Headers */
-::ng-deep .calendar-table th {
+.airbnb-calendar-container ::ng-deep .calendar-table th {
   font-size: 12px;
   font-weight: 600;
   color: #717171;
@@ -80,127 +83,70 @@
   height: auto !important;
 }
 
-/* Date Cells */
-::ng-deep .calendar-table td {
-  width: 40px !important;
-  height: 40px !important;
-  line-height: 40px !important;
-  font-size: 14px;
-  font-weight: 400;
-  border-radius: 50% !important;
-  transition: all 0.2s ease !important;
-  color: black;
-}
-
-/* Available Dates */
-::ng-deep .calendar-table td.available {
-  color: #222;
-  cursor: pointer;
-}
-
-::ng-deep .calendar-table td.available:hover {
-  background-color: #f7f7f7 !important;
-}
-
 /* Selected Dates */
-::ng-deep .calendar-table td.active,
-::ng-deep .calendar-table td.active:hover,
-::ng-deep .calendar-table td.start-date,
-::ng-deep .calendar-table td.end-date {
-  background-color: #222 !important;
+
+/* Date Range */
+.airbnb-calendar-container ::ng-deep .calendar-table td.in-range {
+  background-color: #e0dbdb !important;
+  /* border-radius: 0 !important; */
+}
+.airbnb-calendar-container ::ng-deep .calendar-table td.start-date, ::ng-deep .calendar-table td.end-date{
+  background-color: #000000 !important;
   color: white !important;
   font-weight: 600 !important;
 }
 
-/* Date Range */
-::ng-deep .calendar-table td.in-range {
-  background-color: #f7f7f7 !important;
-  border-radius: 0 !important;
-}
-
-/* Navigation Arrows */
-::ng-deep .daterangepicker .prev,
-::ng-deep .daterangepicker .next {
-  width: 32px !important;
-  height: 32px !important;
-  border-radius: 50% !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  transition: background-color 0.2s ease !important;
-}
-
-::ng-deep .daterangepicker .prev:hover,
-::ng-deep .daterangepicker .next:hover {
-  background-color: #f7f7f7 !important;
-}
 
 /* Hide Unnecessary Elements */
-::ng-deep .drp-buttons,
-::ng-deep .ranges {
+.airbnb-calendar-container ::ng-deep .drp-buttons,
+.airbnb-calendar-container ::ng-deep .ranges {
   display: none !important;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 1200px) {
-  .airbnb-calendar-wrapper {
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .date-quick-options {
-    width: 100%;
-    padding-top: 0;
-  }
-  
-  ::ng-deep .daterangepicker {
-    flex-direction: column !important;
-  }
-  
-  ::ng-deep .drp-calendar {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 !important;
-  }
+
+.airbnb-calendar-container ::ng-deep .calendar-table td.available {
+  color: #222;
+  cursor: pointer;
 }
 
-@media (max-width: 768px) {
-  ::ng-deep .calendar-table td {
-    width: 36px !important;
-    height: 36px !important;
-    line-height: 36px !important;
-    font-size: 13px;
-  }
-  
-  ::ng-deep .calendar-table th {
-    font-size: 11px;
-  }
-  
-  .airbnb-calendar-container {
-    padding: 10px;
-  }
+.airbnb-calendar-container ::ng-deep .calendar-table td.available:hover {
+  background-color: #f7f7f7 !important;
+}
+
+
+.airbnb-calendar-container ::ng-deep .calendar-table td {
+  /* width: 40px !important; */
+  /* height: 40px !important; */
+  line-height: 40px !important;
+  font-size: 0.8rem;
+  font-weight: bolder;
+  /* border-radius: 50% !important; */
+  transition: all 0.2s ease !important;
+  color: black;
 }
 
 
 
-:host ::ng-deep .calendar-table td.off {
-  visibility: hidden !important;
-  pointer-events: none !important;
-  height: 0 !important;
-  line-height: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: none !important;
+.custom-date-input {
+  padding: 10px 15px;
+  border: 2px solid #007bff;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 100% !important;
+  cursor: pointer;
 }
 
-:host ::ng-deep .calendar-table td.off {
-  visibility: visible !important;
-  color: #bbb !important;
-  text-decoration: line-through !important;
-  cursor: not-allowed !important;
-  opacity: 0.5;
+::ng-deep .invalid ::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  right: 8px;
+  border-top: 2px solid red;
+  transform: translateY(-50%);
+  pointer-events: none;
+  opacity: 0.6;
 }
-
-:host ::ng-deep .calendar-table td.off span {
-  pointer-events: none !important;
+::ng-deep .invalid{
+  opacity: 0.4 !important;
 }

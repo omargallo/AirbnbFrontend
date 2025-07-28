@@ -30,7 +30,8 @@
     "GUESTS": "ضيوف",
     "INFANT": "رضيع",
     "INFANTS": "رُضّع",
-    "LOGOUT": "تسجيل الخروج"
+    "LOGOUT": "تسجيل الخروج",
+    "notifications": "الإشعارات"
   },
   "login": {
     "welcome": "مرحبًا بك مجددا",
@@ -77,6 +78,19 @@
     "aboutMe": "نبذة عني",
     "travels": "الرحلات السابقة",
     "edit": "تعديل",
-    "yourReviews": "التقييمات التي كتبتها"
+    "yourReviews": "التقييمات التي كتبتها",
+    "uploadImage": "تعديل",
+    "previewImage": "معاينة الصورة",
+    "upload": "تحميل",
+    "cancel": "إلغاء"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "unread": "غير مقروء",
+    "markAllAsRead": "تحديد الكل كمقروء",
+    "clearAll": "مسح الكل",
+    "noNotifications": "لا توجد إشعارات",
+    "markAsRead": "تحديد كمقروء",
+    "delete": "حذف"
   }
 }

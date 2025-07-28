@@ -1,42 +1,219 @@
+import { CommonPropInfoService } from './../../property-info/common-prop-info-service';
 import { CommonModule } from '@angular/common';
 import { Property } from './../../../core/models/Property'; // Assuming this path is correct
 import { PropertyService } from './../../../core/services/Property/property.service';
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, output, Output, ViewChild, viewChild, input, AfterViewInit } from '@angular/core';
 import { BookingService } from '../../../core/services/Booking/booking.service';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalendarAvailabilityDto, CalendarAvailabilityService } from '../../../core/services/CalendarAvailability/calendar-availability.service';
 import { OnChanges, SimpleChanges } from '@angular/core';
 import moment from 'moment';
+import { range } from '../BookingCalendar/BookingCalendar.component';
+import { DaterangepickerComponent, DaterangepickerDirective, NgxDaterangepickerMd} from 'ngx-daterangepicker-material';
+// import { DpDatePickerModule } from 'ng2-date-picker';
+import dayjs, { Dayjs } from 'dayjs';
 
 @Component({
   selector: 'app-reverse-section',
-  imports: [CommonModule, FormsModule], 
+  imports: [CommonModule, FormsModule,NgxDaterangepickerMd], 
   templateUrl: './reverse-section.component.html',
   styleUrls: ['./reverse-section.component.css']
 })
 
 export class ReverseSectionComponent implements OnInit ,OnChanges {
   
-constructor(private propertyService: PropertyService, private bookingService: BookingService ,private calendarService: CalendarAvailabilityService) {}
+constructor(
+  private propertyService: PropertyService,
+  private bookingService: BookingService ,
+  private calendarService: CalendarAvailabilityService,
+  private cdr: ChangeDetectorRef,
+  private commonService: CommonPropInfoService
+) {}
   
-    @Input() checkIn!: string;
-    @Input() checkOut!: string;
+    @Input() checkIn?: dayjs.Dayjs;
+    @Input() checkOut?: dayjs.Dayjs;
     @Input() propertyId!: number;
-
+    @Input() isPreview: boolean = false
+    
     @Output() guestChange = new EventEmitter<{
         adults: number;
         children: number;
         infants: number;
     }>();
 
+    @Input() dateMap?: Map<string,CalendarAvailabilityDto>
+    @Output() dateChange = new EventEmitter<range>()
+
     @Input() guests: {
         adults: number;
         children: number;
         infants: number;
     } = { adults: 1, children: 0, infants: 0 }; // Default values
+
+    @ViewChild('picker',{read:DaterangepickerDirective}) picker!: DaterangepickerDirective;
+
+    @ViewChild("element") elemnt!: any
+
+    clickedDate?:dayjs.Dayjs
+    firstUnavailableDate?:dayjs.Dayjs
+
   
+
+
+
+
+    displayMonths = 2;
+
+
+ngOnInit() {
+  this.commonService.clear$.subscribe(()=>{this.clear()})
+    console.log("from ReserveOnInit",this.checkIn,this.checkOut)
+    this.selected = {
+      startDate: undefined,
+      endDate: undefined
+    }
+    // this.picker.nativeElement.nextElementSibling
+    // console.log("this.picker.nativeElement.nextElementSibling",this.picker)
+    // console.log("this.picker.nativeElement.nextElementSibling",this.elemnt)
+      if (!this.propertyId) {
+        console.error('Property ID is required for ReverseSectionComponent');
+      }
+      this.propertyService.getPropertyById(this.propertyId).subscribe({
+      next: (property: Property) => {
+        this.property = property;
+        this.maxGuests = property.maxGuests;
+        this.pricePerNight=property.pricePerNight
+        console.log("price per neight " ,this.pricePerNight) // ✅ update maxGuests from backend
+      },
+      error: (err) => {
+        console.error('Failed to load property data', err);
+      }
+    });
+    
+    // this.generateCalendarDays();
+    // console.log("form reserve-section onInit")
+  }
+ngOnChanges(changes: SimpleChanges): void {
+  // console.log("this.picker.nativeElement.nextElementSibling",this.picker)
+    // console.log("this.picker.nativeElement.nextElementSibling",this.elemnt)
+    let x = {startDate:undefined,endDate:undefined}
+      if (changes['checkIn']) {
+        // console.log('checkIn input changed:', this.checkIn);
+        x.startDate = changes['checkIn'].currentValue
+      }
+      if (changes['checkOut']) {
+        x.endDate = changes['checkOut'].currentValue
+        
+        // console.log('checkOut input changed:', this.checkOut);
+      }
+
+      this.selected=x
+      
+      // console.log(this.picker)
+      this.picker.hide()
+
+      // this.picker.nativeElement.nextElementSibling.setStartDate( dayjs(x.startDate.toDate()));
+      // this.picker.nativeElement.nextElementSibling.setEndDate( dayjs(x.endDate.toDate()));
+  }
+  @HostListener('window:resize', [])
+  onResize() {
+    this.updateDisplayMonths();
+  }
+
+  isInvalidDate = (date: dayjs.Dayjs): boolean => {
+    // console.log("selected start date is ", this.selected.startDate)
+    // if(this.clickedDate ){
+    //   if(date.isBefore(this.clickedDate))
+    //     return true
+    //   if(!this.firstUnavailableDate)
+    //     return false
+    //   if(date.isBefore(this.firstUnavailableDate))
+    //     return false
+    //   return true
+    // }
+
+    if(date.isBefore(dayjs()))
+      return true
+    if(this.dateMap)
+    {
+      // if( !(this.dateMap.get(date.toString())?.isAvailable?? true))
+        // console.log(date, (this.dateMap.get(date.toISOString().slice(0,19))?.isAvailable))
+      return  !(this.dateMap.get(date.toISOString().slice(0,19))?.isAvailable?? true)
+    }
+    // .some(d => dayjs(d.date).isSame(date, 'day') && d.isAvailable )
+    return false
+    
+  }
+
+  onStartDateChange(clickedDate:any){
+    
+    this.clickedDate = clickedDate?.startDate?? undefined
+    if(this.clickedDate)
+    {
+      let date ;
+      for(let i=1;  this.dateMap && i < this.dateMap.size  ;i++)
+      {
+        date =  this.dateMap?.get( dayjs(this.clickedDate)
+                                        .add(i,"day")
+                                        .toISOString().slice(0,19)
+                              ) 
+
+        if(date && !date.isAvailable){
+            this.firstUnavailableDate = dayjs(date.date)
+            console.log("firstUnavailableDate",this.firstUnavailableDate)
+            break;
+        }
+      }
+    }else
+      this.firstUnavailableDate = undefined
+  }
+  onClear(){
+    this.clear()
+    this.commonService.clear()
+    
+  }
+  clear(){
+    console.log("clear")
+    this.selected = {
+      endDate :undefined,
+      startDate: undefined 
+    }         
+    this.picker.picker.clear()
+    
+    this.dateChange.emit({startDate:this.selected.startDate,endDate:this.selected.startDate})
+  }
+  updateDisplayMonths() {
+    this.displayMonths = window.innerWidth < 768 ? 1 : 2;
+  }
+    selected: { startDate?: dayjs.Dayjs, endDate?: dayjs.Dayjs } = {startDate:undefined,endDate:undefined};
+      ranges: any = {
+        Today: [moment().add(1,"month"), moment().add(1,"month")],
+        Yesterday: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+        'This Month': [moment().startOf('month'), moment().endOf('month')],
+        'Last Month': [
+          moment().subtract(1, 'month').startOf('month'),
+          moment().subtract(1, 'month').endOf('month')
+        ]
+      };
+    
+      locale = {
+        format: 'YYYY-MM-D',
+        applyLabel: 'Apply',
+        cancelLabel: 'Cancel',
+        customRangeLabel: 'Custom'
+      };
+    
+      selectedDateRange = {
+        startDate: null as string | null,
+        endDate: null as string | null
+    
+      };
+    
+
     property: any;
-    maxGuests = 4; 
+    maxGuests!:number; 
     totalPrice: any;
     guestCount: number = 1;
     pricePerNight: number = 120; //test
@@ -48,14 +225,16 @@ constructor(private propertyService: PropertyService, private bookingService: Bo
     isDateRangeAvailable: boolean | null = null;
     unavailableDates: string[] = [];
 
-    ngOnChanges(changes: SimpleChanges): void {
-    if (changes['checkIn']) {
-      console.log('checkIn input changed:', this.checkIn);
-    }
-    if (changes['checkOut']) {
-      console.log('checkOut input changed:', this.checkOut);
-    }
+    
+
+  
+  onDatesChanged(range:range){
+    this.firstUnavailableDate = undefined
+    this.clickedDate = undefined
+    this.dateChange.emit(range)
+    // this.picker.clear()
   }
+
 
   // Calendar properties
   currentMonth: Date = new Date(); 
@@ -83,24 +262,7 @@ constructor(private propertyService: PropertyService, private bookingService: Bo
   }
 
 
-  ngOnInit() {
-      if (!this.propertyId) {
-        console.error('Property ID is required for ReverseSectionComponent');
-      }
-      this.propertyService.getPropertyById(this.propertyId).subscribe({
-      next: (property: Property) => {
-        this.property = property;
-        this.maxGuests = property.maxGuests;
-        this.pricePerNight=property.pricePerNight
-        console.log("price per neight " ,this.pricePerNight) // ✅ update maxGuests from backend
-      },
-      error: (err) => {
-        console.error('Failed to load property data', err);
-      }
-    });
-
-    this.generateCalendarDays();
-  }
+  
 
   generateCalendarDays(): void {
   const currentMonthStart = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), 1);
@@ -113,7 +275,7 @@ constructor(private propertyService: PropertyService, private bookingService: Bo
 
   this.calendarService.getAvailability(this.propertyId, format(currentMonthStart), format(nextMonthEnd))
     .subscribe(data => {
-      console.log("data from generatecalender days ")
+      // console.log("data from generatecalender days ")
       const availabilityMap = new Map<string, CalendarAvailabilityDto>();
       data.forEach(item => {
         availabilityMap.set(item.date, item);
@@ -208,7 +370,7 @@ calculateTotalPrice(start: Date, end: Date): void {
 
   const guestCount = this.guests?.adults + this.guests?.children;
   this.totalPrice = total * guestCount; // ✅ Multiply by number of guests
-  console.log("toral price from calculate " ,this.totalPrice)
+  // console.log("toral price from calculate " ,this.totalPrice)
   
 }
 
@@ -251,7 +413,7 @@ findClosestAvailableRange(start: Date, allDays: any[]): { start: Date, end: Date
 
 
     isCheckIn(date: Date): boolean {
-      console.log(" date that is parameter to ischeckin",date);
+      // console.log(" date that is parameter to ischeckin",date);
       return this.checkInDate ? this.isSameDay(this.checkInDate, date) : false;
       console.log("checkin date ", this.checkInDate)
 

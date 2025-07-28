@@ -15,17 +15,42 @@
           </div>
 
   <!-- Check-in / Check-out -->
-  <div class="date-picker mt-4">
-    <label>
+  <div class="date-picker mt-4 d-flex flex-column">
+    <!-- <label>
       <span>Check-in</span>
       <input  type="date" [(ngModel)]="checkInDate"  (ngModelChange)="isCheckIn($event)" />
     </label>
     <label>
       <span>Check-out</span>
       <input type="date" [(ngModel)]="checkOutDate" (ngModelChange)="isCheckOut($event)"/>
-    </label>
-  </div>
+    </label> -->
+    <div class="flex justify-content-end mb-2"(click)="onClear()"><button >clear</button></div>
+    <input
+    #picker
+    [(ngModel)] = "selected"
+    [isInvalidDate]="isInvalidDate"
+    
+    class="custom-date-input text-center fs-6 mx-auto"
+      
+    ngxDaterangepickerMd
+    [useMap]="false"
+    [linkedCalendars]="true"
+    [showClearButton]="false"
+    [alwaysShowCalendars]="true"
+    [ranges]="ranges"
+    [locale]="locale"
+    [autoApply]="true"
+    [showCancel]="false"
+    [showDropdowns]="false"
+    [locale]="locale"
+    (datesUpdated)="onDatesChanged($event)"
+    (startDateChanged)="onStartDateChange($event)"
 
+    />
+  </div>
+   
+  
+  <!-- <input type="date"     > -->
  <!-- Guest Selector Dropdown -->
 <div class="guest-selector-container">
     <div class="guest-selector-trigger" (click)="toggleGuestDropdown()">
@@ -59,7 +84,7 @@
         </div>
       </div>
 
-      <div class="guest-option">
+      <!-- <div class="guest-option">
         <div class="guest-type">
           <div class="guest-label">Infants</div>
           <div class="guest-description">Under 2</div>
@@ -69,7 +94,7 @@
           <span>{{ guests.infants }}</span>
           <button (click)="updateGuests('infants', 1)">+</button>
         </div>
-      </div>
+      </div> -->
    
         <div class="guest-limit-note" *ngIf="maxGuests">
         This place has a maximum of {{ maxGuests }} guests, not including infants. 
@@ -82,8 +107,8 @@
 
     
     </div>
-         <button type="su" class="check-btn" [disabled]="!checkInDate || !checkOutDate " (click)="checkAvailabilityForSelectedRange()">
-          Reverse
+         <button *ngIf="!isPreview" type="su" class="check-btn" [disabled]="!checkInDate || !checkOutDate " (click)="checkAvailabilityForSelectedRange()">
+          Reserve
         </button>  
         <!-- If available -->
 <div *ngIf="isDateRangeAvailable === true" class="mt-2 text-success">

@@ -48,6 +48,7 @@ export class AuthService {
 
   setRole(roles: { name: string }[]) {
     const names = roles.map((r) => r.name);
+    console.log(names)
     sessionStorage.setItem(this.roleKey, JSON.stringify(names));
     this.cookieService.set(this.roleKey, JSON.stringify(names), 7, '/');
     this.roleSubject.next(names);

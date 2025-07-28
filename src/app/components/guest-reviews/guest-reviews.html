@@ -45,12 +45,14 @@
   }
 
    -->
+
   <app-reviews-modal
     *ngIf="showReviewsModal"
     [reviews]="reviews"
     [propertyId]="propertyId"
     (closeModal)="closeReviewsModal()"
   ></app-reviews-modal>
+
   <!-- Summary Row -->
   <div class="summary-row" *ngIf="reviews.length > 0">
     <!-- Overall Rating Breakdown -->
@@ -88,6 +90,7 @@
         "
       >
         <div class="category-icon-container">
+
           <i [class]="getCategoryIcon(category)" class="category-icon"></i>
         </div>
         <div class="category-info">
