@@ -15,7 +15,8 @@ import { Table, TableColumn, TableAction, PaginationInfo } from '../../table/tab
 export class UsersComponent implements OnInit, OnDestroy {
 
   users: User[] = [];
-  loading = false;
+  loading = false; // For main users list loading
+  loadingUserDetails = false; // Separate loading state for user details
   selectedUser: UserProfileDto | null = null;
   showUserDetails = false;
   
@@ -141,7 +142,6 @@ export class UsersComponent implements OnInit, OnDestroy {
       case 'view':
         this.viewUserDetails(row.id);
         break;
-        break;
       case 'delete':
         this.deleteUser(row);
         break;
@@ -157,7 +157,8 @@ export class UsersComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.loading = true;
+    // Use separate loading state for user details
+    this.loadingUserDetails = true;
     
     this.userService.getUserProfile(userId)
       .pipe(takeUntil(this.destroy$))
@@ -165,11 +166,11 @@ export class UsersComponent implements OnInit, OnDestroy {
         next: (userProfile) => {
           this.selectedUser = userProfile;
           this.showUserDetails = true;
-          this.loading = false;
+          this.loadingUserDetails = false;
         },
         error: (error) => {
           console.error('Error loading user details:', error);
-          this.loading = false;
+          this.loadingUserDetails = false;
         }
       });
   }
@@ -194,6 +195,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   closeUserDetails(): void {
     this.showUserDetails = false;
     this.selectedUser = null;
+    this.loadingUserDetails = false; // Reset loading state
   }
 
   

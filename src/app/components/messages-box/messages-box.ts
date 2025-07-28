@@ -16,7 +16,7 @@ interface MessageThread {
   propertyId: number;
   hostId: string;
   userId: string;
-  originalSession: ChatSessionDto; 
+  originalSession: ChatSessionDto;
 }
 
 @Component({
@@ -34,7 +34,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   selectedThreadId: string | null = null;
   isLoading = false;
   error: string | null = null;
-  
+
   // Pagination properties
   currentPage = 1;
   pageSize = 20;
@@ -51,7 +51,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   constructor(
     private chatService: ChatService,
     private signalRService: SignalRService,
-    private authService: AuthService 
+    private authService: AuthService
   ) { }
 
   ngOnDestroy(): void {
@@ -62,7 +62,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Get current user ID
     this.currentUserId = this.authService.userId;
-    
+
     this.loadChatSessions();
     this.subscribeToNewMessages();
     this.setupScrollListener();
@@ -155,17 +155,17 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
     } else {
       this.isLoadingMore = true;
     }
-    
+
     this.error = null;
 
     this.chatService.getChatSessions(page, pageSize).subscribe({
       next: (response: any) => {
         console.log('Chat Sessions loaded:', response);
-        
+
         // Handle different response formats
         let sessions: ChatSessionDto[] = [];
         let total = 0;
-        
+
         if (Array.isArray(response)) {
           // If response is direct array
           sessions = response;
@@ -179,7 +179,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
         }
 
         const newThreads = this.mapSessionsToThreads(sessions);
-        
+
         if (page === 1) {
           // First page - replace all threads
           this.messageThreads = newThreads;
@@ -190,13 +190,13 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
 
         this.totalCount = total;
         this.currentPage = page;
-        
+
         // Check if there's more data
         this.hasMoreData = sessions.length === pageSize && this.messageThreads.length < this.totalCount;
-        
+
         console.log('Mapped Message Threads:', this.messageThreads);
         console.log(`Page ${page} loaded. Total threads: ${this.messageThreads.length}, Has more: ${this.hasMoreData}`);
-        
+
         this.isLoading = false;
         this.isLoadingMore = false;
       },
@@ -223,10 +223,10 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
     return sessions.map(session => {
       // Check if current user ID matches the userId in session
       // If yes, show hostName, otherwise show userName
-      const displayName = this.currentUserId === session.userId 
+      const displayName = this.currentUserId == session.userId
         ? (session.hostName || 'Unknown Host')
         : (session.userName || 'Unknown User');
-      
+
       const profileImage = this.currentUserId === session.userId
         ? (session.hostAvatarUrl || 'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg')
         : (session.userAvatarUrl || 'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg');
@@ -279,7 +279,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
 
     // Emit the selected chat session to parent component
     this.chatSessionSelected.emit(thread.originalSession);
-    
+
   }
 
   getFilteredMessages(): MessageThread[] {

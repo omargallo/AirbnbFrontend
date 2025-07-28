@@ -59,7 +59,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     return userId;
   })();
   handleImgService = inject(HandleImgService);
-  @Input() user: string | null = (() => {
+  user: string | null = (() => {
     const storedUser = localStorage.getItem('user');
     return storedUser
       ? JSON.parse(storedUser)?.firstName ?? JSON.parse(storedUser)?.userName
@@ -71,7 +71,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     return storedUser ? JSON.parse(storedUser)?.profilePictureURL ?? '' : '';
   })();
 
-  @Input() img: string | null = (() => {
+  img: string | null = (() => {
     const storedUser = localStorage.getItem('user');
     return this.handleImgService.handleImage(
       storedUser ? JSON.parse(storedUser)?.profilePictureURL ?? '' : ''

@@ -42,6 +42,7 @@ import { Notifications } from './pages/notifications/notifications';
 import { ReviewForm } from './components/review-form/review-form';
 import { UsersComponent } from './pages/admin/pages/users/users';
 import { AdminDashboard } from './pages/admin/Dashboard/AdminDashboard';
+import { HostWalletComponent } from './components/host-wallet/host-wallet';
 
 export const routes: Routes = [
   {
@@ -104,7 +105,7 @@ export const routes: Routes = [
 
 
 
-    { path: 'AdminDashboard', component: AdminDashboard }, 
+    { path: 'AdminDashboard', component: AdminDashboard },
     { path: 'dashboard', redirectTo: 'AdminDashboard', pathMatch: 'full' },
 
 
@@ -117,6 +118,7 @@ export const routes: Routes = [
     children: [
       { path: 'availability', component: Availability },
       { path: 'Messages', component: Messages },
+      { path: 'Wallet', component: HostWalletComponent }
     ],
   },
 
@@ -126,8 +128,6 @@ export const routes: Routes = [
 
   { path: '404', component: NotFound },
   { path: '**', redirectTo: '/404' },
-
-
 
 
 
