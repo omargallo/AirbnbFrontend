@@ -78,7 +78,11 @@
     "aboutMe": "نبذة عني",
     "travels": "الرحلات السابقة",
     "edit": "تعديل",
-    "yourReviews": "التقييمات التي كتبتها"
+    "yourReviews": "التقييمات التي كتبتها",
+    "uploadImage": "تعديل",
+    "previewImage": "معاينة الصورة",
+    "upload": "تحميل",
+    "cancel": "إلغاء"
   },
   "notifications": {
     "title": "الإشعارات",
