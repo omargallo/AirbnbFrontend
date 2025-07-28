@@ -12,7 +12,7 @@ import { ResetPassword } from "./pages/reset-password/reset-password";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Confirm, Login, Register, SignalrTestComponent, ResetPassword],
+  imports: [RouterOutlet, Confirm, Login, Register, ResetPassword],
 
   templateUrl: './app.html',
   styleUrl: './app.css'

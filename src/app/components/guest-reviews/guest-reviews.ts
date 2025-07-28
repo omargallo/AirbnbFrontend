@@ -1,5 +1,4 @@
 import { Property } from './../../core/models/Property';
-import { UserBookings } from './../../pages/booking/userbookings/userbookings';
 import { UserBookingService } from './../../core/services/Booking/user-booking-service';
 import { Confirm } from './../../shared/components/confirm/confirm';
 import { CommonModule } from '@angular/common';
@@ -20,10 +19,7 @@ import { StarComponent } from '../../shared/components/star-component/star-compo
 import { AuthService } from '../../core/services/auth.service';
 import { BookingDetailsDTO } from '../../core/services/Booking/user-booking-service';
 
-import { Button } from '../../shared/components/button/button';
 import { ConfirmService } from '../../core/services/confirm.service';
-import { Modal } from '../../shared/components/modal/modal';
-import { ReviewsModalComponent } from './guest-review-modal/guest-review-modal';
 
 @Component({
   selector: 'app-guest-reviews',
@@ -32,9 +28,6 @@ import { ReviewsModalComponent } from './guest-review-modal/guest-review-modal';
     CommonModule,
     StarComponent,
     //ReviewsModalComponent ,
-    Confirm,
-    Modal,
-    ReviewsModalComponent,
   ],
   templateUrl: './guest-reviews.html',
   styleUrl: './guest-reviews.css',
