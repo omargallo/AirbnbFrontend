@@ -32,7 +32,8 @@ export class ReviewService {
     );
   }
 
-  getReviewById(id: number): Observable<IGuestReviewDto> {
+  getReviewById(id: number): Observable<AddReviewByGuestDTO> {
+
     return this.http.get<any>(`${this.baseUrl}/${id}`).pipe(
       map((response) => {
         if (!response.isSuccess || !response.data) {
@@ -68,6 +69,10 @@ export class ReviewService {
   addReview(review: AddReviewByGuestDTO): Observable<AddReviewByGuestDTO> {
     return this.http.post<any>(`${this.baseUrl}`, review).pipe(
       map((response) => {
+        console.log('Raw API Response:', response); // Add this line
+        console.log('Response isSuccess:', response.isSuccess); // Add this line
+        console.log('Response data:', response.data); // Add this line
+
         if (!response.isSuccess || !response.data) {
           throw new Error(response.message || 'Failed to add review');
         }
