@@ -4,6 +4,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { UserService, User } from '../../../../core/services/Admin/user-service';
 import { BookingService, BookingDetailsDTO } from '../../../../core/services/Admin/booking-service';
+import { PropertyService } from '../../../../core/services/Property/property.service';
+import { PropertyAcceptStatus, PropertyDisplayWithHostDataDto } from '../../../add-property/models/property.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,12 +26,21 @@ export class DashboarDetails implements OnInit, OnDestroy {
   websiteProfit: number = 0;
   hostProfit: number = 0;
   
+  // Property Statistics
+  totalProperties: number = 0;
+  acceptedProperties: number = 0;
+  pendingProperties: number = 0;
+  rejectedProperties: number = 0;
+  deletedProperties: number = 0;
+  averagePropertyRating: number = 0;
+  
   loading: boolean = false;
   private destroy$ = new Subject<void>();
 
   constructor(
     private userService: UserService,
-    private bookingService: BookingService
+    private bookingService: BookingService,
+    private propertyService: PropertyService
   ) {}
 
   ngOnInit(): void {
@@ -44,11 +55,14 @@ export class DashboarDetails implements OnInit, OnDestroy {
   loadDashboardData(): void {
     this.loading = true;
     
-    // Load users data first
+    // Load users data
     this.loadUsersData();
     
     // Load bookings data
     this.loadBookingsData();
+    
+    // Load properties data
+    this.loadPropertiesData();
   }
 
   private loadUsersData(): void {
@@ -72,7 +86,7 @@ export class DashboarDetails implements OnInit, OnDestroy {
       .subscribe({
         next: (bookings: BookingDetailsDTO[]) => {
           this.processBookingsData(bookings);
-          this.loading = false; // Set loading to false after both requests
+          this.checkLoadingComplete();
         },
         error: (error: any) => {
           console.error('Error loading bookings data:', error);
@@ -82,7 +96,28 @@ export class DashboarDetails implements OnInit, OnDestroy {
           this.totalRevenue = 0;
           this.websiteProfit = 0;
           this.hostProfit = 0;
-          this.loading = false;
+          this.checkLoadingComplete();
+        }
+      });
+  }
+
+  private loadPropertiesData(): void {
+    this.propertyService.getAllForDashboard()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (properties: PropertyDisplayWithHostDataDto[]) => {
+          this.processPropertiesData(properties);
+          this.checkLoadingComplete();
+        },
+        error: (error: any) => {
+          console.error('Error loading properties data:', error);
+          this.totalProperties = 0;
+          this.acceptedProperties = 0;
+          this.pendingProperties = 0;
+          this.rejectedProperties = 0;
+          this.deletedProperties = 0;
+          this.averagePropertyRating = 0;
+          this.checkLoadingComplete();
         }
       });
   }
@@ -125,6 +160,50 @@ export class DashboarDetails implements OnInit, OnDestroy {
     }
   }
 
+  private processPropertiesData(properties: PropertyDisplayWithHostDataDto[]): void {
+    if (Array.isArray(properties)) {
+      this.totalProperties = properties.length;
+      this.acceptedProperties = properties.filter(prop => 
+        prop.status === PropertyAcceptStatus.accepted
+      ).length;
+      this.pendingProperties = properties.filter(prop => 
+        Number(prop.status) === 0
+      ).length;
+      this.rejectedProperties = properties.filter(prop => 
+        prop.status === PropertyAcceptStatus.rejected
+      ).length;
+      this.deletedProperties = properties.filter(prop => 
+        prop.isDeleted
+      ).length;
+      
+      // Calculate average rating for properties with ratings
+      const propertiesWithRatings = properties.filter(prop => 
+        prop.averageRating && prop.averageRating > 0
+      );
+      if (propertiesWithRatings.length > 0) {
+        this.averagePropertyRating = propertiesWithRatings.reduce(
+          (sum, prop) => sum + (prop.averageRating || 0), 0
+        ) / propertiesWithRatings.length;
+      } else {
+        this.averagePropertyRating = 0;
+      }
+    } else {
+      console.error('Properties data is not an array:', properties);
+      this.totalProperties = 0;
+      this.acceptedProperties = 0;
+      this.pendingProperties = 0;
+      this.rejectedProperties = 0;
+      this.deletedProperties = 0;
+      this.averagePropertyRating = 0;
+    }
+  }
+
+  private checkLoadingComplete(): void {
+    // Simple counter to check if all three API calls are complete
+    // You might want to implement a more sophisticated loading state management
+    this.loading = false;
+  }
+
   refreshDashboard(): void {
     this.loadDashboardData();
   }
@@ -139,5 +218,22 @@ export class DashboarDetails implements OnInit, OnDestroy {
 
   getPercentage(part: number, total: number): number {
     return total > 0 ? Math.round((part / total) * 100) : 0;
+  }
+
+  formatRating(rating: number): string {
+    return rating > 0 ? rating.toFixed(1) : '0.0';
+  }
+
+  getPropertyStatusColor(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'accepted':
+        return '#28a745';
+      case 'pending':
+        return '#ffc107';
+      case 'rejected':
+        return '#dc3545';
+      default:
+        return '#6c757d';
+    }
   }
 }

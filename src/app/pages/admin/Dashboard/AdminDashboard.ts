@@ -26,20 +26,20 @@ export interface AdminSection {
   styleUrls: ['./AdminDashboard.css']
 })
 export class AdminDashboard implements OnInit {
-  activeSection: string = 'dashboard'; // Changed default to 'dashboard'
+  activeSection: string = 'dashboard'; 
 
   adminSections: AdminSection[] = [
     {
       id: 'dashboard',
       name: 'Dashboard',
       icon: 'fas fa-tachometer-alt',
-      isActive: true // Set dashboard as default active
+      isActive: true
     },
     {
       id: 'users',
       name: 'Users',
       icon: 'fas fa-users',
-      isActive: false // Changed to false
+      isActive: false 
     },
     {
       id: 'properties',
@@ -52,7 +52,13 @@ export class AdminDashboard implements OnInit {
       name: 'Bookings',
       icon: 'fas fa-calendar-check',
       isActive: false
-    }
+    },
+      {
+      id: 'analytics',
+      name: 'Analytics',
+      icon: 'fas fa-star',
+      isActive: false
+    },  
   ];
 
   constructor(private router: Router) {}
