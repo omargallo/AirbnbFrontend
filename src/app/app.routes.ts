@@ -42,7 +42,7 @@ import { YourReviews } from './pages/your-reviews/your-reviews';
 import { Notifications } from './pages/notifications/notifications';
 import { ReviewForm } from './components/review-form/review-form';
 import { UsersComponent } from './pages/admin/pages/users/users';
-import { AdminDashboard } from './pages/admin/sidebar/AdminDashboard';
+import { AdminDashboard } from './pages/admin/Dashboard/AdminDashboard';
 
 export const routes: Routes = [
   {
