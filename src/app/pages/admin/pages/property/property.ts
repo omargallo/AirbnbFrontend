@@ -22,6 +22,7 @@ export class Property {
   selectedProperty: PropertyDisplayDTO | null = null;
   showUserDetails = false;
   previewPropertyId?:number
+  currentSort: {field:string,direction:"desc"| "asc"} = {field: "title", direction:"asc"}
 
   // Subscription management
   private destroy$ = new Subject<void>();
@@ -29,14 +30,14 @@ export class Property {
   // Table configuration
   columns: TableColumn[] = [
     { 
-      label: 'Title', 
-      field: 'title', 
+      label: '#', 
+      field: 'id', 
       sortable: true 
     },
     { 
-      label: 'Description', 
-      field: 'description', 
-      sortable: false
+      label: 'Title', 
+      field: 'title', 
+      sortable: false 
     },
     { 
       label: 'Country', 
@@ -46,8 +47,8 @@ export class Property {
     { 
       label: 'Status', 
       field: 'status', 
-      pipe: 'boolean', 
-      sortable: true 
+      pipe: 'acceptStatus', 
+      sortable: false 
     },
     { 
       label: 'Deleted', 
@@ -282,6 +283,36 @@ export class Property {
    */
   onSortChange(event: { field: string; direction: 'asc' | 'desc' }): void {
     console.log('Sort change:', event);
+    this.currentSort = event
+    switch(event.field){
+      // case "status":
+      //   if(event.direction== "asc")
+      //     this.properties = this.properties.sort((a,b)=> a.status-b.status )
+      //   else
+      //     this.properties = this.properties.sort((a,b)=> b.status-a.status )
+      //   break;
+
+      case "id":
+        if(event.direction== "asc")
+          this.properties = this.properties.sort((a,b)=> (a.id??0)-(b.id??0) )
+        else
+          this.properties = this.properties.sort((a,b)=> (b.id??0)-(a.id??0) )
+        break;
+      case "averageRating":
+        if(event.direction== "asc")
+          this.properties = this.properties.sort((a,b)=> a.averageRating-b.averageRating )
+        else
+          this.properties = this.properties.sort((a,b)=> b.averageRating-a.averageRating )
+        
+        break;
+      case "isDeleted":
+        if(event.direction== "asc")
+          this.properties = this.properties.sort((a,b)=> a.isDeleted?-1:1 )
+        else
+          this.properties = this.properties.sort((a,b)=> b.isDeleted?-1:1 )
+        console.log("this.currentSort",this.currentSort)
+        break;
+    }
     // TODO: Implement sorting
     // If using server-side sorting, reload data with sort parameters
     // If using client-side sorting, sort the users array
@@ -298,14 +329,13 @@ export class Property {
    * Get count of pending users (not confirmed)
    */
   get pendingPropertyCount(): number {
-    return this.properties.filter(prop => Number(prop.status) == 0).length;
+    return this.properties.filter(prop => prop.status == PropertyAcceptStatus.pending).length;
   }
   get rejectedPropertyCount():number{
     
     return this.properties.filter(prop => prop.status == PropertyAcceptStatus.rejected).length;
   }
   get deletedPropertyCount():number{
-    
     return this.properties.filter(prop => prop.isDeleted).length;
   }
 
