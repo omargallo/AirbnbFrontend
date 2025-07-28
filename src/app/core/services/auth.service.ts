@@ -1,7 +1,13 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
+export interface RefreshTokenResponse{
+  accessToken:string;
+  refreshToken:string
+}
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly accessTokenKey = 'accessToken';
@@ -14,7 +20,7 @@ export class AuthService {
   private userIdSubject = new BehaviorSubject<string | null>(null);
   private roleSubject = new BehaviorSubject<string[] | null>(null);
 
-  constructor(private cookieService: CookieService) {
+  constructor(private cookieService: CookieService,private http:HttpClient) {
   this.accessTokenSubject.next(
     this.cookieService.get(this.accessTokenKey) || null
   );
@@ -81,8 +87,10 @@ export class AuthService {
     return this.accessTokenSubject.asObservable();
   }
 
-  get refreshToken$() {
-    return this.refreshTokenSubject.asObservable();
+  get refreshToken$():Observable<RefreshTokenResponse>{
+    
+    return this.http.post<RefreshTokenResponse>(environment.baseUrl+'/user/refresh-token',{}, {withCredentials:true} );
+    // return this.refreshTokenSubject.asObservable();
   }
 
   get userId$() {
@@ -105,3 +113,5 @@ export class AuthService {
     this.roleSubject.next(null);
   }
 }
+
+
