@@ -40,6 +40,8 @@ import { UpdateProfile } from './pages/update-profile/update-profile';
 import { YourReviews } from './pages/your-reviews/your-reviews';
 import { Notifications } from './pages/notifications/notifications';
 import { ReviewForm } from './components/review-form/review-form';
+import { UsersComponent } from './pages/admin/pages/users/users';
+import { AdminDashboard } from './pages/admin/sidebar/AdminDashboard';
 
 export const routes: Routes = [
   {
@@ -98,6 +100,17 @@ export const routes: Routes = [
   { path: 'propertybookings/:propertyId', component: PropertyBookings },
   { path: 'review/:id', component: ReviewForm },
 
+  { path: 'AdminDashboard', component:AdminDashboard },
+
+
+
+    { path: 'AdminDashboard', component: AdminDashboard }, 
+    { path: 'dashboard', redirectTo: 'AdminDashboard', pathMatch: 'full' },
+
+
+
+
+
   {
     path: 'hostsettings',
     component: Host,
@@ -113,4 +126,9 @@ export const routes: Routes = [
 
   { path: '404', component: NotFound },
   { path: '**', redirectTo: '/404' },
+
+
+
+
+
 ];
