@@ -61,47 +61,7 @@ export class PropertyCreationService {
     );
   }
 
-  uploadPropertyImages(propertyId: number, files: File[]): Observable<any> {
-    if (!files || files.length === 0) {
-      return throwError(() => new Error('No files provided for upload'));
-    }
-
-    const formData = new FormData();
-    files.forEach((file, index) => {
-      formData.append(`files`, file, file.name);
-    });
-    formData.append('propertyId', propertyId.toString());
-    formData.append('hostId', this.authService.userId || '');
-
-    return this.http.post<ImageUploadResponse>(`${this.baseUrl}/upload-images`, formData, {
-      reportProgress: true,
-      observe: 'events'
-    }).pipe(
-      catchError(error => {
-        console.error('Image upload failed:', error);
-        return throwError(() => new Error('Failed to upload images'));
-      })
-    );
-  }
-
-  savePhotosToProperty(propertyId: number, imageUrls: string[]): Observable<any> {
-    if (!imageUrls || imageUrls.length === 0) {
-      return throwError(() => new Error('No image URLs provided'));
-    }
-
-    return this.http.post(`${this.baseUrl}/${propertyId}/save-images`, {
-      images: imageUrls.map((url, index) => ({
-        imageUrl: url,
-        isCover: index === 0, // First image is cover
-        groupName: 'property_images'
-      }))
-    }).pipe(
-      catchError(error => {
-        console.error('Failed to save photos:', error);
-        return throwError(() => new Error('Failed to save photos to property'));
-      })
-    );
-  }
+  // ...existing code...
 
   buildPropertyFromWizard(): Omit<PropertyDisplayDTO, 'id'> {
     const formData = this.formStorage.getFormData();
