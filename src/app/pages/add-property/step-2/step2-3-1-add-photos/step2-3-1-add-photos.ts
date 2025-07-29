@@ -2,7 +2,7 @@ import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Step232PhotosModal } from '../step2-3-2-photos-modal/step2-3-2-photos-modal';
 import { Router } from '@angular/router';
-import { PhotosService } from '../../../../core/services/photos.service';
+// ...existing code...
 import { PropertyFormStorageService } from '../../../../core/services/ListingWizard/property-form-storage.service';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { Subscription } from 'rxjs';
@@ -19,7 +19,7 @@ export class Step23AddPhotos implements OnInit, OnDestroy {
   photos: string[] = [];
 
   constructor(
-    public photosService: PhotosService,
+    // ...existing code...
     private router: Router,
     private formStorage: PropertyFormStorageService,
     private wizardService: ListingWizardService
