@@ -59,7 +59,11 @@ export class Home {
         `Section: "${section.title}" includes:\n` +
         section.properties.slice(0, 3).map(p => {
           const url = `${environment.domainBaseUrl}/property/${p.id}`;
-          return `• <strong>${p.title}</strong> in ${p.city}, ${p.country} - $${p.pricePerNight}/night<br><a href="${url}" class="view-link" target="_blank">View Property</a>`;
+          return `• <strong>${p.title}</strong> in ${p.city},
+           ${p.country}  , Descrption ${p.description}  , AVerage Rating${p.averageRating}, 
+            Max guests ${p.maxGuests},Reviews  ${p.reviewCount} 
+          - $${p.pricePerNight}
+          /night<br><a href="${url}" class="view-link" target="_blank">View Property</a>`;
         }).join('\n');
 
 
