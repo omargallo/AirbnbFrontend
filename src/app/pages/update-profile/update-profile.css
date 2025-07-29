@@ -182,12 +182,12 @@
 }
 
 .preview-canvas {
-  border: 2px solid var(--shadow-color);
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
+  border: 2px solid var(--shadow-color);
   background: white;
-  object-fit: contain;
-  background-size: cover;
-  background-position: center;
+  display: block;
 }
 
 .dialog-buttons {
