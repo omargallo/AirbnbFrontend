@@ -134,69 +134,77 @@ export class DashboarDetails implements OnInit, OnDestroy {
   }
 
   private processBookingsData(bookings: BookingDetailsDTO[]): void {
-    if (Array.isArray(bookings)) {
-      this.totalBookings = bookings.length;
-      this.pendingBookings = bookings.filter((booking: BookingDetailsDTO) => 
-        booking.bookingStatus?.toLowerCase() === 'pending'
-      ).length;
-      this.completedBookings = bookings.filter((booking: BookingDetailsDTO) => 
-        booking.bookingStatus?.toLowerCase() === 'completed'
-      ).length;
-      this.totalRevenue = bookings.reduce((sum: number, booking: BookingDetailsDTO) => 
-        sum + (booking.totalPrice || 0), 0
-      );
-      
-      // Calculate profits - Website gets 10%, Host gets 90%
-      this.websiteProfit = this.totalRevenue * 0.10;
-      this.hostProfit = this.totalRevenue * 0.90;
-    } else {
-      console.error('Bookings data is not an array:', bookings);
-      this.totalBookings = 0;
-      this.pendingBookings = 0;
-      this.completedBookings = 0;
-      this.totalRevenue = 0;
-      this.websiteProfit = 0;
-      this.hostProfit = 0;
-    }
+  if (Array.isArray(bookings)) {
+    this.totalBookings = bookings.length;
+    this.pendingBookings = bookings.filter((booking: BookingDetailsDTO) => 
+      booking.bookingStatus?.toLowerCase() === 'pending'
+    ).length;
+    this.completedBookings = bookings.filter((booking: BookingDetailsDTO) => 
+      booking.bookingStatus?.toLowerCase() === 'completed'
+    ).length;
+    
+    // Calculate revenue ONLY from completed bookings
+    const completedBookingsList = bookings.filter((booking: BookingDetailsDTO) => 
+      booking.bookingStatus?.toLowerCase() === 'completed'
+    );
+    
+    this.totalRevenue = completedBookingsList.reduce((sum: number, booking: BookingDetailsDTO) => 
+      sum + (booking.totalPrice || 0), 0
+    );
+    
+    // Calculate profits based on completed bookings revenue - Website gets 10%, Host gets 90%
+    this.websiteProfit = this.totalRevenue * 0.10;
+    this.hostProfit = this.totalRevenue * 0.90;
+  } else {
+    console.error('Bookings data is not an array:', bookings);
+    this.totalBookings = 0;
+    this.pendingBookings = 0;
+    this.completedBookings = 0;
+    this.totalRevenue = 0;
+    this.websiteProfit = 0;
+    this.hostProfit = 0;
   }
-
-  private processPropertiesData(properties: PropertyDisplayWithHostDataDto[]): void {
-    if (Array.isArray(properties)) {
-      this.totalProperties = properties.length;
-      this.acceptedProperties = properties.filter(prop => 
-        prop.status === PropertyAcceptStatus.accepted
-      ).length;
-      this.pendingProperties = properties.filter(prop => 
-        Number(prop.status) === 0
-      ).length;
-      this.rejectedProperties = properties.filter(prop => 
-        prop.status === PropertyAcceptStatus.rejected
-      ).length;
-      this.deletedProperties = properties.filter(prop => 
-        prop.isDeleted
-      ).length;
-      
-      // Calculate average rating for properties with ratings
-      const propertiesWithRatings = properties.filter(prop => 
-        prop.averageRating && prop.averageRating > 0
-      );
-      if (propertiesWithRatings.length > 0) {
-        this.averagePropertyRating = propertiesWithRatings.reduce(
-          (sum, prop) => sum + (prop.averageRating || 0), 0
-        ) / propertiesWithRatings.length;
-      } else {
-        this.averagePropertyRating = 0;
-      }
+}
+ private processPropertiesData(properties: PropertyDisplayWithHostDataDto[]): void {
+  if (Array.isArray(properties)) {
+    this.totalProperties = properties.length;
+    this.acceptedProperties = properties.filter(prop => 
+      prop.status === PropertyAcceptStatus.accepted
+    ).length;
+    
+    // Fix: Use the same logic as in property.component.ts
+    this.pendingProperties = properties.filter(prop => 
+      prop.status === PropertyAcceptStatus.pending
+    ).length;
+    
+    this.rejectedProperties = properties.filter(prop => 
+      prop.status === PropertyAcceptStatus.rejected
+    ).length;
+    this.deletedProperties = properties.filter(prop => 
+      prop.isDeleted
+    ).length;
+    
+    // Calculate average rating for properties with ratings
+    const propertiesWithRatings = properties.filter(prop => 
+      prop.averageRating && prop.averageRating > 0
+    );
+    if (propertiesWithRatings.length > 0) {
+      this.averagePropertyRating = propertiesWithRatings.reduce(
+        (sum, prop) => sum + (prop.averageRating || 0), 0
+      ) / propertiesWithRatings.length;
     } else {
-      console.error('Properties data is not an array:', properties);
-      this.totalProperties = 0;
-      this.acceptedProperties = 0;
-      this.pendingProperties = 0;
-      this.rejectedProperties = 0;
-      this.deletedProperties = 0;
       this.averagePropertyRating = 0;
     }
+  } else {
+    console.error('Properties data is not an array:', properties);
+    this.totalProperties = 0;
+    this.acceptedProperties = 0;
+    this.pendingProperties = 0;
+    this.rejectedProperties = 0;
+    this.deletedProperties = 0;
+    this.averagePropertyRating = 0;
   }
+}
 
   private checkLoadingComplete(): void {
     // Simple counter to check if all three API calls are complete

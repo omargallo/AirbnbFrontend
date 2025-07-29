@@ -633,3 +633,31 @@
   margin-left: 1rem;
 }
 
+/* Add these styles to your bookings.css file */
+
+.stat-card.pending-revenue {
+  border-left: 4px solid #ffc107;
+  background: linear-gradient(135deg, #fff3cd 0%, #ffffff 100%);
+}
+
+.stat-card.total-revenue {
+  border-left: 4px solid #28a745;
+  background: linear-gradient(135deg, #d4edda 0%, #ffffff 100%);
+}
+
+.stat-sublabel {
+  font-size: 0.75rem;
+  color: #6c757d;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+/* Highlight the main revenue card */
+.stat-card.total-revenue .stat-number {
+  color: #28a745;
+  font-weight: 700;
+}
+
+.stat-card.pending-revenue .stat-number {
+  color: #856404;
+}

@@ -47,7 +47,8 @@ export class Bookings implements OnInit, OnDestroy {
       label: 'Check-out', 
       field: 'checkOutDate', 
       pipe: 'date', 
-      sortable: true 
+      sortable: true  ,
+      
     },
     { 
       label: 'Status', 
@@ -185,23 +186,47 @@ export class Bookings implements OnInit, OnDestroy {
   }
 
   get pendingBookingsCount(): number {
-    return this.bookings.filter(booking => booking.bookingStatus === 'Pending').length;
+    return this.bookings.filter(booking => booking.bookingStatus?.toLowerCase() === 'pending').length;
   }
 
   get completedBookingsCount(): number {
-    return this.bookings.filter(booking => booking.bookingStatus === 'Completed').length;
+    return this.bookings.filter(booking => booking.bookingStatus?.toLowerCase() === 'completed').length;
   }
 
   get cancelledBookingsCount(): number {
-    return this.bookings.filter(booking => booking.bookingStatus === 'Cancelled').length;
+    return this.bookings.filter(booking => booking.bookingStatus?.toLowerCase() === 'cancelled').length;
   }
 
   get confirmedBookingsCount(): number {
-    return this.bookings.filter(booking => booking.bookingStatus === 'Confirmed').length;
+    return this.bookings.filter(booking => booking.bookingStatus?.toLowerCase() === 'confirmed').length;
   }
 
+  // Revenue from completed bookings only (this is the main total)
   get totalRevenue(): number {
-    return this.bookings.reduce((sum, booking) => sum + booking.totalPrice, 0);
+    return this.bookings
+      .filter(booking => booking.bookingStatus?.toLowerCase() === 'completed')
+      .reduce((sum, booking) => sum + booking.totalPrice, 0);
+  }
+
+  // Revenue from pending bookings (potential revenue)
+  get pendingRevenue(): number {
+    return this.bookings
+      .filter(booking => booking.bookingStatus?.toLowerCase() === 'pending')
+      .reduce((sum, booking) => sum + booking.totalPrice, 0);
+  }
+
+  // Revenue from confirmed bookings
+  get confirmedRevenue(): number {
+    return this.bookings
+      .filter(booking => booking.bookingStatus?.toLowerCase() === 'confirmed')
+      .reduce((sum, booking) => sum + booking.totalPrice, 0);
+  }
+
+  // Revenue from cancelled bookings (for reference)
+  get cancelledRevenue(): number {
+    return this.bookings
+      .filter(booking => booking.bookingStatus?.toLowerCase() === 'cancelled')
+      .reduce((sum, booking) => sum + booking.totalPrice, 0);
   }
 
   refreshBookings(): void {
@@ -227,6 +252,7 @@ export class Bookings implements OnInit, OnDestroy {
         return '#6c757d';
     }
   }
+
   getStatusBadgeClass(status: string): string {
     switch (status?.toLowerCase()) {
       case 'completed':
@@ -257,6 +283,7 @@ export class Bookings implements OnInit, OnDestroy {
         return 'fas fa-circle';
     }
   }
+
   getDaysDifference(checkIn: string, checkOut: string): number {
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);
