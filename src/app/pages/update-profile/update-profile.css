@@ -79,10 +79,10 @@
 }
 
 .user-img .initial-letter {
-  font-size: 3rem;
+  font-size: 5.5rem;
   font-weight: bold;
   border-radius: 50%;
-  padding: 10px 30px;
+  padding: 55px 90px;
   background-color: var(--primary-text-color);
   color: var(--bg-color);
 }
@@ -186,6 +186,8 @@
   border-radius: 50%;
   background: white;
   object-fit: contain;
+  background-size: cover;
+  background-position: center;
 }
 
 .dialog-buttons {

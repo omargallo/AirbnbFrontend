@@ -1,5 +1,4 @@
 import { Property } from './../../core/models/Property';
-import { UserBookings } from './../../pages/booking/userbookings/userbookings';
 
 import { UserBookingService } from './../../core/services/Booking/user-booking-service';
 import { Confirm } from './../../shared/components/confirm/confirm';
