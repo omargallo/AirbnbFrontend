@@ -33,7 +33,8 @@ constructor(
     @Input() checkIn?: dayjs.Dayjs;
     @Input() checkOut?: dayjs.Dayjs;
     @Input() propertyId!: number;
-
+    @Input() isPreview: boolean = false
+    
     @Output() guestChange = new EventEmitter<{
         adults: number;
         children: number;

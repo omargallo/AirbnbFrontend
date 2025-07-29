@@ -31,6 +31,7 @@ export class Register {
           this.close();
           this.dialogService.openDialog('confirmOtp');
           (window as any).startOtpTimerR?.();
+          localStorage.removeItem('user')
         },
         error: (err) => {
           alert('Register failed');

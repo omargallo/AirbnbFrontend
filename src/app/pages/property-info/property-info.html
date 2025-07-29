@@ -3,7 +3,7 @@
 
 <div class="container-lg d-flex flex-column">
 
-  <div class="property-details-box mt-2 d-flex justify-content-between ">
+  <div class="property-details-box mt-2 d-flex justify-content-between flex-wrap ">
     <div class="d-flex flex-column ">
       <div class="col-md-12">
         <!-- property info, description, amenities, etc. -->
@@ -27,7 +27,7 @@
         </div>
       </div>
     </div>
-    <div class="bookinCalender  position-relative" style="position: relative !important;">
+    <div  class="bookinCalender  position-relative" style="position: relative !important;">
       <!-- <div class="row"> -->
       <!-- <div class="col-md-8">
 
@@ -44,8 +44,10 @@
           [checkIn]="selectedDates.start"
           [checkOut]="selectedDates.end"
           [guests]="guestCount" 
+          [isPreview] = "isPreview"
           (guestChange)="onGuestChange($event)" 
-          (dateChange)="onDateChange($event)">
+          (dateChange)="onDateChange($event)"
+          >
         </app-reverse-section>
 
 
@@ -90,6 +92,7 @@
         Amenities
       </button>
     </div>
+
     <hr style="color: black; width: 5px;">
    </div>
 

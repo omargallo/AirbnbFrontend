@@ -8,13 +8,12 @@
           <span class="brand-text">Admin Dashboard</span>
         </div>
       </div>
-       
       <nav class="sidebar-nav">
         <ul class="nav-list">
           <li 
-            *ngFor="let section of adminSections; trackBy: trackBySection"
+             *ngFor="let section of adminSections; trackBy: trackBySection"
             class="nav-item" 
-            [class.active]="section.isActive"
+             [class.active]="section.isActive"
             (click)="onMenuSectionClick(section)">
             <a class="nav-link">
               <div class="nav-icon">
@@ -26,7 +25,6 @@
           </li>
         </ul>
       </nav>
-       
       <div class="sidebar-footer">
         <div class="user-info">
           <div class="user-avatar">
@@ -40,39 +38,31 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- Main Content -->
   <div class="main-content">
     <div *ngIf="activeSection === 'dashboard'" class="content-section">
       <app-dashboard></app-dashboard>
     </div>
-
+ 
     <!-- Users Section -->
     <div *ngIf="activeSection === 'users'" class="content-section">
       <app-users></app-users>
     </div>
-
-    <!-- Properties Section (Placeholder) -->
-    <div *ngIf="activeSection === 'properties'" class="content-section">
-      <div class="placeholder-content">
-        <div class="placeholder-header">
-          <h1 class="section-title">
-            <i class="fas fa-building title-icon"></i>
-            Properties Management
-          </h1>
-          <p class="section-subtitle">Manage and monitor all properties</p>
-        </div>
-        <div class="placeholder-message">
-          <i class="fas fa-building placeholder-icon"></i>
-          <h3>Properties Component</h3>
-          <p>This section will contain the properties management table</p>
-        </div>
-      </div>
+ 
+    <!-- Properties Section -->
+    <div *ngIf="activeSection === 'properties'" class="content-section">           
+      <app-property></app-property>
     </div>
-
+ 
     <!-- Bookings Section -->
     <div *ngIf="activeSection === 'bookings'" class="content-section">
       <app-bookings></app-bookings>
+    </div>
+ 
+    <!-- Analytics Section -->
+    <div *ngIf="activeSection === 'analytics'" class="content-section">
+      <app-analytics></app-analytics>
     </div>
   </div>
 </div>

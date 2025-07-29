@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, inject, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
+import { PropertyAcceptStatus } from '../../add-property/models/property.model';
 
 
 
@@ -200,6 +201,7 @@ export class Table implements OnChanges {
         return value;
     }
   }
+
 
   Math = Math;
 

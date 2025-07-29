@@ -33,7 +33,9 @@ export class SignalRService {
       .build();
 
     this.setupEventHandlers();
+    
   }
+
 
   private setupEventHandlers(): void {
     // Message received event
@@ -56,10 +58,23 @@ export class SignalRService {
       this.connectionStatusSubject.next(HubConnectionState.Reconnecting);
     });
 
-    this.connection.onreconnected((connectionId) => {
+    this.connection.onreconnected(async(connectionId) => {
       console.log('SignalR - Reconnected:', connectionId);
       this.connectionStatusSubject.next(HubConnectionState.Connected);
+
+      // ✅ Notify backend with new connectionId
+      await this.notifyReconnected();
+
     });
+  }
+  public async notifyReconnected(): Promise<void> {
+    try {
+      await this.connection.invoke('NotifyReconnected');
+      console.log('SignalR - Notified backend of reconnection');
+    } catch (error: any) {
+      console.error('SignalR - NotifyReconnected error:', error);
+      this.errorSubject.next(`NotifyReconnected failed: ${error.message}`);
+    }
   }
 
   public async startConnection(): Promise<void> {

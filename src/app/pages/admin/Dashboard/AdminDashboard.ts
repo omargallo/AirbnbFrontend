@@ -4,7 +4,9 @@ import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { UsersComponent } from '../pages/users/users';
 import { Bookings } from '../pages/booking/bookings';
-import { DashboarDetails } from '../pages/dashboard-details/dashboard-details'; // Import the new Dashboard component
+import { Property } from "../pages/property/property";
+import { DashboarDetails } from '../pages/dashboard-details/dashboard-details';
+import { AnalyticsComponent } from '../pages/analytics/analytics'; // Import the new Analytics component
 
 export interface AdminSection {
   id: string;
@@ -15,26 +17,33 @@ export interface AdminSection {
 
 @Component({
   selector: 'app-AdminDashboard',
-  standalone: true,
-  imports: [CommonModule, UsersComponent, Bookings,DashboarDetails], 
+  standalone: true, 
+  imports: [
+    CommonModule, 
+    UsersComponent, 
+    Bookings,
+    DashboarDetails,
+    Property,
+    AnalyticsComponent  // Add AnalyticsComponent to imports
+  ],    
   templateUrl: './AdminDashboard.html',
   styleUrls: ['./AdminDashboard.css']
 })
 export class AdminDashboard implements OnInit {
-  activeSection: string = 'dashboard'; // Changed default to 'dashboard'
-
+  activeSection: string = 'dashboard';
+    
   adminSections: AdminSection[] = [
     {
       id: 'dashboard',
       name: 'Dashboard',
       icon: 'fas fa-tachometer-alt',
-      isActive: true // Set dashboard as default active
+      isActive: true
     },
     {
       id: 'users',
       name: 'Users',
       icon: 'fas fa-users',
-      isActive: false // Changed to false
+      isActive: false
     },
     {
       id: 'properties',
@@ -47,7 +56,13 @@ export class AdminDashboard implements OnInit {
       name: 'Bookings',
       icon: 'fas fa-calendar-check',
       isActive: false
-    }
+    },
+    {
+      id: 'analytics',
+      name: 'Analytics',
+      icon: 'fas fa-chart-bar',  // Updated icon for analytics
+      isActive: false
+    },
   ];
 
   constructor(private router: Router) {}
@@ -59,7 +74,7 @@ export class AdminDashboard implements OnInit {
   setActiveSection(sectionId: string): void {
     // Reset all sections
     this.adminSections.forEach(section => section.isActive = false);
-    
+        
     // Set the selected section as active
     const section = this.adminSections.find(s => s.id === sectionId);
     if (section) {

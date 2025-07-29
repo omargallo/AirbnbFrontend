@@ -47,12 +47,13 @@ export class Bookings implements OnInit, OnDestroy {
       label: 'Check-out', 
       field: 'checkOutDate', 
       pipe: 'date', 
-      sortable: true 
+      sortable: true  ,
+      
     },
     { 
       label: 'Status', 
       field: 'bookingStatus', 
-      sortable: true 
+      sortable: true
     },
     { 
       label: 'Total Price', 
@@ -69,7 +70,6 @@ export class Bookings implements OnInit, OnDestroy {
       type: 'view', 
       color: '#007bff' 
     },
-    
   ];
 
   paginationInfo: PaginationInfo = {
@@ -97,7 +97,7 @@ export class Bookings implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (bookings) => {
-          console.log('Received bookings:', bookings); // Debug log
+          console.log('Received bookings:', bookings);
           
           if (Array.isArray(bookings)) {
             this.bookings = this.transformBookingsForTable(bookings);
@@ -120,7 +120,6 @@ export class Bookings implements OnInit, OnDestroy {
   }
 
   private transformBookingsForTable(bookings: BookingDetailsDTO[]): any[] {
-    // Add safety check
     if (!Array.isArray(bookings)) {
       console.error('Expected array but received:', typeof bookings, bookings);
       return [];
@@ -164,8 +163,6 @@ export class Bookings implements OnInit, OnDestroy {
     this.showBookingDetails = true;
   }
 
-  
-
   closeBookingDetails(): void {
     this.showBookingDetails = false;
     this.selectedBooking = null;
@@ -181,7 +178,6 @@ export class Bookings implements OnInit, OnDestroy {
 
   onSortChange(event: { field: string; direction: 'asc' | 'desc' }): void {
     console.log('Sort change:', event);
-    // Implement sorting functionality
   }
 
   // Statistics getters
@@ -190,15 +186,47 @@ export class Bookings implements OnInit, OnDestroy {
   }
 
   get pendingBookingsCount(): number {
-    return this.bookings.filter(booking => booking.bookingStatus === 'Pending').length;
+    return this.bookings.filter(booking => booking.bookingStatus?.toLowerCase() === 'pending').length;
   }
 
   get completedBookingsCount(): number {
-    return this.bookings.filter(booking => booking.bookingStatus === 'Completed').length;
+    return this.bookings.filter(booking => booking.bookingStatus?.toLowerCase() === 'completed').length;
   }
 
+  get cancelledBookingsCount(): number {
+    return this.bookings.filter(booking => booking.bookingStatus?.toLowerCase() === 'cancelled').length;
+  }
+
+  get confirmedBookingsCount(): number {
+    return this.bookings.filter(booking => booking.bookingStatus?.toLowerCase() === 'confirmed').length;
+  }
+
+  // Revenue from completed bookings only (this is the main total)
   get totalRevenue(): number {
-    return this.bookings.reduce((sum, booking) => sum + booking.totalPrice, 0);
+    return this.bookings
+      .filter(booking => booking.bookingStatus?.toLowerCase() === 'completed')
+      .reduce((sum, booking) => sum + booking.totalPrice, 0);
+  }
+
+  // Revenue from pending bookings (potential revenue)
+  get pendingRevenue(): number {
+    return this.bookings
+      .filter(booking => booking.bookingStatus?.toLowerCase() === 'pending')
+      .reduce((sum, booking) => sum + booking.totalPrice, 0);
+  }
+
+  // Revenue from confirmed bookings
+  get confirmedRevenue(): number {
+    return this.bookings
+      .filter(booking => booking.bookingStatus?.toLowerCase() === 'confirmed')
+      .reduce((sum, booking) => sum + booking.totalPrice, 0);
+  }
+
+  // Revenue from cancelled bookings (for reference)
+  get cancelledRevenue(): number {
+    return this.bookings
+      .filter(booking => booking.bookingStatus?.toLowerCase() === 'cancelled')
+      .reduce((sum, booking) => sum + booking.totalPrice, 0);
   }
 
   refreshBookings(): void {
@@ -209,6 +237,7 @@ export class Bookings implements OnInit, OnDestroy {
     return booking.id;
   }
 
+  // Enhanced method for getting status colors and styles
   getStatusColor(status: string): string {
     switch (status?.toLowerCase()) {
       case 'completed':
@@ -221,6 +250,37 @@ export class Bookings implements OnInit, OnDestroy {
         return '#17a2b8';
       default:
         return '#6c757d';
+    }
+  }
+
+  getStatusBadgeClass(status: string): string {
+    switch (status?.toLowerCase()) {
+      case 'completed':
+        return 'status-badge status-completed';
+      case 'pending':
+        return 'status-badge status-pending';
+      case 'cancelled':
+        return 'status-badge status-cancelled';
+      case 'confirmed':
+        return 'status-badge status-confirmed';
+      default:
+        return 'status-badge status-default';
+    }
+  }
+
+  // Method to get status icon
+  getStatusIcon(status: string): string {
+    switch (status?.toLowerCase()) {
+      case 'completed':
+        return 'fas fa-check-circle';
+      case 'pending':
+        return 'fas fa-clock';
+      case 'cancelled':
+        return 'fas fa-times-circle';
+      case 'confirmed':
+        return 'fas fa-calendar-check';
+      default:
+        return 'fas fa-circle';
     }
   }
 

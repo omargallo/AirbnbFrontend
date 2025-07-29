@@ -94,7 +94,11 @@ export class UserService {
     );
   }
   uploadProfileImage(payload: { userId: string; file: File }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/profile/image`, payload).pipe(
+    const formData = new FormData();
+    formData.append('UserId', payload.userId);
+    formData.append('File', payload.file);
+
+    return this.http.post(`${this.baseUrl}/profile/image`, formData).pipe(
       tap((response: any) => {
         console.log(response);
       })
