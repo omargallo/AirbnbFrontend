@@ -126,20 +126,20 @@ export const routes: Routes = [
   {
     path: 'AdminDashboard',
     component: AdminDashboard,
-    canActivate: [authGuard, RoleGuard],
+    //canActivate: [authGuard, RoleGuard],
     data: {
-      roles: ['Admin'],
+     // roles: ['Admin'],
     },
   },
 
-  {
-    path: 'AdminDashboard',
-    component: AdminDashboard,
-    canActivate: [authGuard, RoleGuard],
-    data: {
-      roles: ['Admin'],
-    },
-  },
+  // {
+  //   path: 'AdminDashboard',
+  //   component: AdminDashboard,
+  //   canActivate: [authGuard, RoleGuard],
+  //   data: {
+  //     roles: ['Admin'],
+  //   },
+  // },
   {
     path: 'dashboard',
     redirectTo: 'AdminDashboard',

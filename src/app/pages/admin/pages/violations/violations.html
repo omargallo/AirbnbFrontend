@@ -1,0 +1,267 @@
+<div class="violations-container">
+  <!-- Header Section -->
+  <div class="violations-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="fas fa-exclamation-triangle title-icon"></i>
+        Violations Management
+      </h1>
+      <p class="page-subtitle">Monitor and manage property violations</p>
+    </div>
+    <div class="header-actions">
+      <button 
+        class="btn btn-primary" 
+        (click)="refreshViolations()"
+        [disabled]="loading">
+        <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-content">
+        <div class="stat-number">{{ paginationInfo.totalItems }}</div>
+        <div class="stat-label">Total Violations</div>
+      </div>
+      <div class="stat-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-content">
+        <div class="stat-number">{{ pendingViolationsCount }}</div>
+        <div class="stat-label">Pending</div>
+      </div>
+      <div class="stat-icon" style="color: #fbbf24;">
+        <i class="fas fa-clock"></i>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-content">
+        <div class="stat-number">{{ solvedViolationsCount }}</div>
+        <div class="stat-label">Solved</div>
+      </div>
+      <div class="stat-icon" style="color: #10b981;">
+        <i class="fas fa-check-circle"></i>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-content">
+        <div class="stat-number">{{ dismissedViolationsCount }}</div>
+        <div class="stat-label">Dismissed</div>
+      </div>
+      <div class="stat-icon" style="color: #ef4444;">
+        <i class="fas fa-times-circle"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Violations Table -->
+  <div class="table-section">
+    <app-table
+      [columns]="columns"
+      [data]="violations"
+      [actions]="actions"
+      [loading]="loading"
+      [paginationInfo]="paginationInfo"
+      [useBackendPagination]="false"
+      caption="All Property Violations"
+      (actionClick)="onActionClick($event)"
+      (pageChange)="onPageChange($event)"
+      (sortChange)="onSortChange($event)">
+    </app-table>
+  </div>
+
+  <!-- Violation Details Modal -->
+  <div 
+    class="modal-overlay" 
+    *ngIf="showViolationDetails" 
+    (click)="closeViolationDetails()">
+    <div 
+      class="modal-container" 
+      (click)="$event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i class="fas fa-exclamation-triangle"></i>
+          Violation Details
+        </h3>
+        <button 
+          class="modal-close" 
+          (click)="closeViolationDetails()"
+          aria-label="Close modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <!-- Modal Loading State -->
+      <div class="modal-loading" *ngIf="loadingViolationDetails">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Loading violation details...</p>
+        </div>
+      </div>
+      
+      <!-- Modal Content -->
+      <div class="modal-content" *ngIf="selectedViolation && !loadingViolationDetails">
+        <!-- Violation Info Section -->
+        <div class="violation-info">
+          <div class="info-header">
+            <div class="violation-id">
+              <h4>Violation #{{ selectedViolation.id }}</h4>
+              <span class="status-badge" [style.background-color]="getStatusColor(selectedViolation.status)">
+                {{ getStatusLabel(selectedViolation.status) }}
+              </span>
+            </div>
+            <div class="violation-date">
+              {{ selectedViolation.createdAt | date:'medium' }}
+            </div>
+          </div>
+        </div>
+        
+        <!-- Details Grid -->
+        <div class="details-grid">
+          <div class="detail-item">
+            <label class="detail-label">Property</label>
+            <span class="detail-value">{{ selectedViolation.propertyTitle }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <label class="detail-label">Property ID</label>
+            <span class="detail-value">{{ selectedViolation.propertyId }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <label class="detail-label">User</label>
+            <span class="detail-value">{{ selectedViolation.firstName }} {{ selectedViolation.lastName }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <label class="detail-label">User Email</label>
+            <span class="detail-value">{{ selectedViolation.userEmail }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <label class="detail-label">Location</label>
+            <span class="detail-value">{{ selectedViolation.city }}, {{ selectedViolation.country }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <label class="detail-label">Status</label>
+            <span class="detail-value">
+              <span class="status-badge" [style.background-color]="getStatusColor(selectedViolation.status)">
+                {{ getStatusLabel(selectedViolation.status) }}
+              </span>
+            </span>
+          </div>
+          
+          <div class="detail-item full-width">
+            <label class="detail-label">Violation Reason</label>
+            <span class="detail-value violation-reason">{{ selectedViolation.reason }}</span>
+          </div>
+          
+          <div class="detail-item full-width" *ngIf="selectedViolation.adminNotes">
+            <label class="detail-label">Admin Notes</label>
+            <span class="detail-value admin-notes">{{ selectedViolation.adminNotes }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="modal-footer" *ngIf="!loadingViolationDetails">
+        <button 
+          class="btn btn-secondary" 
+          (click)="closeViolationDetails()">
+          <i class="fas fa-times"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Violation Modal -->
+  <div 
+    class="modal-overlay" 
+    *ngIf="showEditModal" 
+    (click)="closeEditModal()">
+    <div 
+      class="modal-container" 
+      (click)="$event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i class="fas fa-edit"></i>
+          Edit Violation #{{ editForm.id }}
+        </h3>
+        <button 
+          class="modal-close" 
+          (click)="closeEditModal()"
+          aria-label="Close modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <!-- Edit Form -->
+      <div class="modal-content">
+        <form class="edit-form" (ngSubmit)="saveViolation()">
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select 
+              class="form-control" 
+              [(ngModel)]="editForm.status" 
+              name="status" 
+              required>
+              <option *ngFor="let option of getStatusOptions()" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Admin Notes</label>
+            <textarea 
+              class="form-control textarea"
+              [(ngModel)]="editForm.adminNotes" 
+              name="adminNotes"
+              placeholder="Add notes about this violation..."
+              rows="5">
+            </textarea>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button 
+          class="btn btn-primary" 
+          (click)="saveViolation()"
+          [disabled]="loading">
+          <i class="fas fa-save" [class.fa-spin]="loading"></i>
+          Save Changes
+        </button>
+        <button 
+          class="btn btn-secondary" 
+          (click)="closeEditModal()">
+          <i class="fas fa-times"></i>
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Loading Overlay -->
+  <div class="loading-overlay" *ngIf="loading && !showEditModal">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Loading violations...</p>
+    </div>
+  </div>
+</div>
