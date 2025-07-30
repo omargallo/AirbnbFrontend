@@ -156,25 +156,65 @@ export class UpdateProfile {
   setupCropArea() {
     if (!this.cropContainer || !this.imageElement) return;
 
-    this.containerBounds =
-      this.cropContainer.nativeElement.getBoundingClientRect();
+    // Get container dimensions
+    const containerEl = this.cropContainer.nativeElement;
+    const containerWidth = containerEl.offsetWidth;
+    const containerHeight = containerEl.offsetHeight;
 
-    // Center the crop area
-    const containerWidth = this.containerBounds.width;
-    const containerHeight = this.containerBounds.height;
+    // Calculate how the image is displayed (object-fit: contain behavior)
+    const imageAspect =
+      this.imageElement.naturalWidth / this.imageElement.naturalHeight;
+    const containerAspect = containerWidth / containerHeight;
 
-    this.cropArea = {
-      x: (containerWidth - 200) / 2,
-      y: (containerHeight - 200) / 2,
-      width: 200,
-      height: 200,
+    let displayWidth: number;
+    let displayHeight: number;
+    let offsetX: number = 0;
+    let offsetY: number = 0;
+
+    if (imageAspect > containerAspect) {
+      // Image is wider - fit to width
+      displayWidth = containerWidth;
+      displayHeight = containerWidth / imageAspect;
+      offsetY = (containerHeight - displayHeight) / 2;
+    } else {
+      // Image is taller - fit to height
+      displayHeight = containerHeight;
+      displayWidth = containerHeight * imageAspect;
+      offsetX = (containerWidth - displayWidth) / 2;
+    }
+
+    // Store display properties for calculations
+    this.imageDisplayProps = {
+      width: displayWidth,
+      height: displayHeight,
+      offsetX: offsetX,
+      offsetY: offsetY,
     };
 
+    // Center the crop area within the displayed image
+    const cropSize = Math.min(200, displayWidth * 0.6, displayHeight * 0.6);
+
+    this.cropArea = {
+      x: offsetX + (displayWidth - cropSize) / 2,
+      y: offsetY + (displayHeight - cropSize) / 2,
+      width: cropSize,
+      height: cropSize,
+    };
+
+    this.containerBounds = containerEl.getBoundingClientRect();
     this.drawCroppedImage();
   }
 
+  // Add this property to store image display properties
+  imageDisplayProps: {
+    width: number;
+    height: number;
+    offsetX: number;
+    offsetY: number;
+  } | null = null;
+
   onMouseDown(event: MouseEvent) {
-    if (!this.containerBounds) return;
+    if (!this.containerBounds || !this.imageDisplayProps) return;
 
     const rect = this.cropContainer.nativeElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -188,74 +228,103 @@ export class UpdateProfile {
       y <= this.cropArea.y + this.cropArea.height
     ) {
       this.isDragging = true;
-
-      // Store offset for smooth dragging
       this.cropArea.offsetX = x - this.cropArea.x;
       this.cropArea.offsetY = y - this.cropArea.y;
+
+      // Prevent default to avoid image dragging
+      event.preventDefault();
     }
   }
 
   onMouseMove(event: MouseEvent) {
-    if (!this.isDragging || !this.containerBounds) return;
+    if (!this.isDragging || !this.containerBounds || !this.imageDisplayProps)
+      return;
 
     const rect = this.cropContainer.nativeElement.getBoundingClientRect();
     const x = event.clientX - rect.left - (this.cropArea.offsetX || 0);
     const y = event.clientY - rect.top - (this.cropArea.offsetY || 0);
 
-    // Keep crop area within bounds
-    this.cropArea.x = Math.max(
-      0,
-      Math.min(x, this.containerBounds.width - this.cropArea.width)
-    );
-    this.cropArea.y = Math.max(
-      0,
-      Math.min(y, this.containerBounds.height - this.cropArea.height)
-    );
+    // Constrain crop area within the displayed image bounds
+    const minX = this.imageDisplayProps.offsetX;
+    const minY = this.imageDisplayProps.offsetY;
+    const maxX =
+      this.imageDisplayProps.offsetX +
+      this.imageDisplayProps.width -
+      this.cropArea.width;
+    const maxY =
+      this.imageDisplayProps.offsetY +
+      this.imageDisplayProps.height -
+      this.cropArea.height;
+
+    this.cropArea.x = Math.max(minX, Math.min(x, maxX));
+    this.cropArea.y = Math.max(minY, Math.min(y, maxY));
 
     this.drawCroppedImage();
-  }
-
-  onMouseUp() {
-    this.isDragging = false;
+    event.preventDefault();
   }
 
   drawCroppedImage() {
-    if (!this.cropCanvas || !this.imageElement || !this.containerBounds) return;
+    if (!this.cropCanvas || !this.imageElement || !this.imageDisplayProps)
+      return;
 
     const canvas = this.cropCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas size
-    canvas.width = 200;
-    canvas.height = 200;
+    // Set canvas size to desired output size
+    const outputSize = 200;
+    canvas.width = outputSize;
+    canvas.height = outputSize;
 
-    // Calculate scale factors
-    const containerWidth = this.containerBounds.width;
-    const containerHeight = this.containerBounds.height;
-    const scaleX = this.imageElement.naturalWidth / containerWidth;
-    const scaleY = this.imageElement.naturalHeight / containerHeight;
+    // Calculate the crop area relative to the displayed image
+    const relativeX = this.cropArea.x - this.imageDisplayProps.offsetX;
+    const relativeY = this.cropArea.y - this.imageDisplayProps.offsetY;
+
+    // Calculate scale factors from displayed image to original image
+    const scaleX =
+      this.imageElement.naturalWidth / this.imageDisplayProps.width;
+    const scaleY =
+      this.imageElement.naturalHeight / this.imageDisplayProps.height;
 
     // Calculate source coordinates on the original image
-    const sourceX = this.cropArea.x * scaleX;
-    const sourceY = this.cropArea.y * scaleY;
+    const sourceX = relativeX * scaleX;
+    const sourceY = relativeY * scaleY;
     const sourceWidth = this.cropArea.width * scaleX;
     const sourceHeight = this.cropArea.height * scaleY;
 
-    // Clear canvas
-    ctx.clearRect(0, 0, 200, 200);
+    // Ensure source coordinates are within image bounds
+    const clampedSourceX = Math.max(
+      0,
+      Math.min(sourceX, this.imageElement.naturalWidth - sourceWidth)
+    );
+    const clampedSourceY = Math.max(
+      0,
+      Math.min(sourceY, this.imageElement.naturalHeight - sourceHeight)
+    );
+    const clampedSourceWidth = Math.min(
+      sourceWidth,
+      this.imageElement.naturalWidth - clampedSourceX
+    );
+    const clampedSourceHeight = Math.min(
+      sourceHeight,
+      this.imageElement.naturalHeight - clampedSourceY
+    );
+
+    // Clear canvas with white background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, outputSize, outputSize);
 
     // Draw cropped portion
     ctx.drawImage(
       this.imageElement,
-      sourceX,
-      sourceY,
-      sourceWidth,
-      sourceHeight,
+      clampedSourceX,
+      clampedSourceY,
+      clampedSourceWidth,
+      clampedSourceHeight,
       0,
       0,
-      200,
-      200
+      outputSize,
+      outputSize
     );
 
     // Convert to blob for upload
@@ -266,6 +335,67 @@ export class UpdateProfile {
       'image/jpeg',
       0.9
     );
+  }
+
+  // Add zoom functionality
+  zoomOut() {
+    if (!this.imageDisplayProps) return;
+
+    const maxSize =
+      Math.min(this.imageDisplayProps.width, this.imageDisplayProps.height) *
+      0.8;
+    const newSize = Math.min(this.cropArea.width + 20, maxSize);
+
+    // Keep crop area centered when zooming
+    const deltaSize = newSize - this.cropArea.width;
+    this.cropArea.x -= deltaSize / 2;
+    this.cropArea.y -= deltaSize / 2;
+    this.cropArea.width = newSize;
+    this.cropArea.height = newSize;
+
+    // Ensure crop area stays within bounds
+    this.constrainCropArea();
+    this.drawCroppedImage();
+  }
+
+  zoomIn() {
+    if (!this.imageDisplayProps) return;
+
+    const minSize = 100;
+    const newSize = Math.max(this.cropArea.width - 20, minSize);
+
+    // Keep crop area centered when zooming
+    const deltaSize = newSize - this.cropArea.width;
+    this.cropArea.x -= deltaSize / 2;
+    this.cropArea.y -= deltaSize / 2;
+    this.cropArea.width = newSize;
+    this.cropArea.height = newSize;
+
+    // Ensure crop area stays within bounds
+    this.constrainCropArea();
+    this.drawCroppedImage();
+  }
+
+  private constrainCropArea() {
+    if (!this.imageDisplayProps) return;
+
+    const minX = this.imageDisplayProps.offsetX;
+    const minY = this.imageDisplayProps.offsetY;
+    const maxX =
+      this.imageDisplayProps.offsetX +
+      this.imageDisplayProps.width -
+      this.cropArea.width;
+    const maxY =
+      this.imageDisplayProps.offsetY +
+      this.imageDisplayProps.height -
+      this.cropArea.height;
+
+    this.cropArea.x = Math.max(minX, Math.min(this.cropArea.x, maxX));
+    this.cropArea.y = Math.max(minY, Math.min(this.cropArea.y, maxY));
+  }
+
+  onMouseUp() {
+    this.isDragging = false;
   }
 
   confirmUpload() {

@@ -2,11 +2,10 @@ import {
   Component,
   AfterViewInit,
   HostListener,
-  OnDestroy,
   inject,
   ElementRef,
-  Input,
   ChangeDetectorRef,
+  OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -21,6 +20,7 @@ import { DialogService } from '../../core/services/dialog.service';
 import { HandleImgService } from '../../core/services/handleImg.service';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/User/user.service';
+import { MenuHeader } from '../menu-header/menu-header';
 
 @Component({
   selector: 'app-header',
@@ -33,11 +33,12 @@ import { UserService } from '../../core/services/User/user.service';
     TranslateModule,
     TopNavComponent,
     SearchFilterGroupComponent,
+    MenuHeader,
   ],
   templateUrl: './header.html',
   styleUrls: ['./header.css'],
 })
-export class HeaderComponent implements AfterViewInit, OnDestroy {
+export class HeaderComponent implements AfterViewInit, OnInit {
   isDarkMode = false;
   isSearchBarSticky = false;
   wasFilterClicked = false;
@@ -48,57 +49,15 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   constructor(
     public lang: LangService,
     public theme: ThemeService,
-    private elementRef: ElementRef,
-    private router: Router,
-    private userService: UserService,
-    private cdr: ChangeDetectorRef
+    private router: Router
   ) {}
-
-  userId: any = (() => {
-    const userId = this.authService.userId;
-    return userId;
-  })();
-  handleImgService = inject(HandleImgService);
-  user: string | null = (() => {
-    const storedUser = localStorage.getItem('user');
-    return storedUser
-      ? JSON.parse(storedUser)?.firstName ?? JSON.parse(storedUser)?.userName
-      : '';
-  })();
-
-  ifImg: string | null = (() => {
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser)?.profilePictureURL ?? '' : '';
-  })();
-
-  img: string | null = (() => {
-    const storedUser = localStorage.getItem('user');
-    return this.handleImgService.handleImage(
-      storedUser ? JSON.parse(storedUser)?.profilePictureURL ?? '' : ''
-    );
-  })();
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    if (this.dropdownOpen) {
-      this.closeDropdown();
-    }
-
     if (!this.wasFilterClicked) {
       this.isSearchBarSticky = window.scrollY > 80;
     }
   }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event) {
-    const target = event.target as HTMLElement;
-    const dropdown = this.elementRef.nativeElement.querySelector('.dropdown');
-
-    if (this.dropdownOpen && dropdown && !dropdown.contains(target)) {
-      this.closeDropdown();
-    }
-  }
-  ngOnDestroy(): void {}
 
   navItems = [
     {
@@ -162,37 +121,15 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       isNew: true,
     },
   ];
-  dropdownOpen = false;
-  dropdownClosing = false;
-
-  toggleDropdown() {
-    this.dropdownOpen = !this.dropdownOpen;
-    this.dropdownClosing = !this.dropdownOpen;
-  }
-
-  openDropdown() {
-    this.dropdownOpen = true;
-    this.dropdownClosing = false;
-  }
-
-  closeDropdown() {
-    this.dropdownClosing = true;
-    this.dropdownOpen = false;
-  }
-
-  onAnimationEnd() {
-    if (this.dropdownClosing) {
-      this.dropdownClosing = false;
-    }
-  }
-
-  isLoggedIn = false;
 
   ngOnInit() {
-    this.isDarkMode = document.body.classList.contains('dark');
     this.checkIfMessagesRoute();
-    this.isLoggedIn =
-      this.userId === null || this.userId === undefined ? false : true;
+  }
+
+  ngAfterViewInit(): void {
+    this.router.events.subscribe(() => {
+      this.checkIfMessagesRoute();
+    });
   }
 
   checkIfMessagesRoute() {
@@ -204,47 +141,5 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       this.router.url.startsWith('/update-profile') ||
       this.router.url.startsWith('/your-reviews') ||
       this.router.url.startsWith('/notifications');
-  }
-
-  ngAfterViewInit(): void {
-    this.router.events.subscribe(() => {
-      this.checkIfMessagesRoute();
-    });
-    this.isLoggedIn =
-      this.userId === null || this.userId === undefined ? false : true;
-    (window as any).Logging = () => {
-      this.isLoggedIn =
-        this.userId === null || this.userId === undefined ? false : true;
-    };
-  }
-
-  changeLanguage(lang: string) {
-    this.lang.switchLang(lang);
-    if (lang == 'ar') {
-      document.body.classList.contains('dRTL');
-      console.log(true);
-    } else {
-      document.body.classList.contains('dLTR');
-    }
-  }
-
-  toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
-    this.theme.toggleTheme();
-  }
-
-  openLoginDialog() {
-    this.dialogService.openDialog('login');
-  }
-
-  openRegisterDialog() {
-    this.dialogService.openDialog('register');
-  }
-
-  logout() {
-    this.authService.clear();
-    this.userService.Logout();
-    this.isLoggedIn = false;
-    this.router.navigate(['/']);
   }
 }

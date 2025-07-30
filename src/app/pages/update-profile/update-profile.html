@@ -3,32 +3,57 @@
     <h3>{{ "profile.previewImage" | translate }}</h3>
 
     <div class="crop-section">
-      <div
-        #cropContainer
-        class="crop-container"
-        (mousedown)="onMouseDown($event)"
-        (mousemove)="onMouseMove($event)"
-        (mouseup)="onMouseUp()"
-        (mouseleave)="onMouseUp()"
-      >
-        <img
-          *ngIf="previewImageUrl"
-          [src]="previewImageUrl"
-          class="original-img"
-          draggable="false"
-        />
-
+      <!-- Original image with crop overlay -->
+      <div class="image-cropper-container">
         <div
-          class="crop-overlay"
-          [style.left.px]="cropArea.x"
-          [style.top.px]="cropArea.y"
-          [style.width.px]="cropArea.width"
-          [style.height.px]="cropArea.height"
+          #cropContainer
+          class="crop-container"
+          (mousedown)="onMouseDown($event)"
+          (mousemove)="onMouseMove($event)"
+          (mouseup)="onMouseUp()"
+          (mouseleave)="onMouseUp()"
         >
-          <div class="crop-handle"></div>
+          <img
+            *ngIf="previewImageUrl"
+            [src]="previewImageUrl"
+            class="original-img"
+            draggable="false"
+          />
+
+          <!-- Crop overlay -->
+          <div
+            class="crop-overlay"
+            [style.left.px]="cropArea.x"
+            [style.top.px]="cropArea.y"
+            [style.width.px]="cropArea.width"
+            [style.height.px]="cropArea.height"
+          >
+            <div class="crop-handle"></div>
+          </div>
+        </div>
+
+        <!-- Zoom controls -->
+        <div class="zoom-controls">
+          <button
+            type="button"
+            class="zoom-btn"
+            (click)="zoomIn()"
+            title="Zoom Out"
+          >
+            <span>+</span>
+          </button>
+          <button
+            type="button"
+            class="zoom-btn"
+            (click)="zoomOut()"
+            title="Zoom In"
+          >
+            <span>-</span>
+          </button>
         </div>
       </div>
 
+      <!-- Preview of cropped image -->
       <div class="preview-section">
         <canvas #cropCanvas class="preview-canvas" width="200" height="200">
         </canvas>
@@ -36,7 +61,11 @@
     </div>
 
     <div class="dialog-buttons">
-      <button class="upload-btn" (click)="confirmUpload()">
+      <button
+        class="upload-btn"
+        (click)="confirmUpload()"
+        [disabled]="!croppedImageBlob"
+      >
         {{ "profile.upload" | translate }}
       </button>
       <button class="cancel-btn" (click)="closeDialog()">
@@ -44,6 +73,7 @@
       </button>
     </div>
   </dialog>
+
   <form
     class="profile-form"
     (ngSubmit)="onUpdateProfile()"
@@ -52,7 +82,7 @@
     <div class="user-img">
       <img *ngIf="ifImg" [src]="img" alt="user-img" />
       <span class="initial-letter" *ngIf="!ifImg">
-        {{ user?.charAt(0)?.toUpperCase() || "K" }}
+        {{ user?.charAt(0)?.toUpperCase() || "." }}
       </span>
 
       <div class="upload-btn-container">
