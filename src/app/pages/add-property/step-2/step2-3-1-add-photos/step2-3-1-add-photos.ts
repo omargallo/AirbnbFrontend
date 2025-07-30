@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { Step232PhotosModal } from '../step2-3-2-photos-modal/step2-3-2-photos-modal';
 import { Router } from '@angular/router';
 // ...existing code...
-import { PropertyFormStorageService } from '../../../../core/services/ListingWizard/property-form-storage.service';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { Subscription } from 'rxjs';
+import { PropertyFormStorageService } from '../../services/property-form-storage.service';
 
 @Component({
   selector: 'app-step2-3-add-photos',
