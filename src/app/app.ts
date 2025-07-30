@@ -11,11 +11,10 @@ import { SignalrTestComponent } from "./signal-rtest/signal-rtest";
 import { ResetPassword } from "./pages/reset-password/reset-password";
 import { AdminDashboard } from "./pages/admin/Dashboard/AdminDashboard";
 import { UsersComponent } from "./pages/admin/pages/users/users";
-import { ChatBot } from "./components/chat-bot/chat-bot";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Confirm, Login, Register, ResetPassword, ChatBot],
+  imports: [RouterOutlet, Confirm, Login, Register, ResetPassword],
 
   templateUrl: './app.html',
   styleUrl: './app.css'

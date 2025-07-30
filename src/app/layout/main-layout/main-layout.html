@@ -2,12 +2,13 @@
   <app-header></app-header>
   <!-- <app-host-properties> </app-host-properties> -->
   <main
-  class="bg"
+    class="bg"
     [ngClass]="{
     'mt': !(isMessagesRoute || isSecondRoute),
     'nomt':isSecondRoute
   }"
   >
+    <app-chat-bot></app-chat-bot>
     <router-outlet></router-outlet>
   </main>
   <div *ngIf="!isMessagesRoute">

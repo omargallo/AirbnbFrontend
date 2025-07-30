@@ -47,15 +47,28 @@ export class HostWalletComponent implements OnInit {
   constructor(
     private paymentService: PaymentService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.currentUserId = this.authService.userId;
     this.userEmail = localStorage.getItem('email') || '';
     if (this.currentUserId) {
+      this.checkStripeAccountStatus(this.currentUserId);
       this.loadPayments();
     }
   }
+  checkStripeAccountStatus(userId: string) {
+    this.paymentService.checkStripeAccountStatus(userId).subscribe({
+      next: (response) => {
+        this.needsToCreateStripeAccount = !response.accountCompleted;
+      },
+      error: (err) => {
+        console.error('Error checking Stripe account status:', err);
+        this.error = 'Unable to verify Stripe account status.';
+      },
+    });
+  }
+
 
   loadPayments() {
     if (!this.currentUserId) return;
@@ -83,12 +96,8 @@ export class HostWalletComponent implements OnInit {
             (p) => p.transferStatus === TransferStatus.PendingTransfer
           );
 
-          this.shouldShowPendingSection =
-            this.transferredPayments.length === 0 ||
-            pendingTransferPayments.length === 0;
-          this.needsToCreateStripeAccount =
-            this.shouldShowPendingSection &&
-            this.transferredPayments.length == 0;
+          this.shouldShowPendingSection = this.pendingPayments.length > 0;
+
 
           this.totalBalance = this.transferredPayments.reduce(
             (sum, payment) => {
