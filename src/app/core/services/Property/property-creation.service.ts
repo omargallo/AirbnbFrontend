@@ -8,6 +8,7 @@ import { PropertyDisplayDTO } from '../../models/PropertyDisplayDTO';
 import { AuthService } from '../auth.service';
 import { UserService } from '../User/user.service';
 import { PropertyFormStorageService } from '../../../pages/add-property/services/property-form-storage.service';
+import { AmenityService } from '../Amenity/amenity.service';
 
 interface ApiResponse<T> {
   isSuccess: boolean;
@@ -32,7 +33,8 @@ export class PropertyCreationService {
     private http: HttpClient,
     private formStorage: PropertyFormStorageService,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private amenityService: AmenityService
   ) { }
 
   createProperty(property: Omit<Property, 'id' | 'isFavourite'>): Observable<PropertyDisplayDTO> {
@@ -87,15 +89,36 @@ export class PropertyCreationService {
             console.log(`Proceeding to upload ${imageFiles.length} images...`);
 
             return this.uploadPropertyImages(createdProperty.id, hostId, imageFiles, 'property_images', coverIndex).pipe(
-              map((uploadResponse) => {
+              switchMap((uploadResponse) => {
                 console.log('Upload response:', uploadResponse);
                 if (uploadResponse.success) {
                   console.log('Images uploaded successfully!');
-                  this.formStorage.clearFormData();
                 } else {
                   console.error('Upload failed:', uploadResponse.message);
                 }
-                return createdProperty;
+                
+                // Get selected amenities from step2-2
+                const step2_2Data = allFormData['step2-2'];
+                const selectedAmenityIds = step2_2Data?.selectedAmenityIds || [];
+                
+                if (selectedAmenityIds.length > 0) {
+                  return this.amenityService.assignAmenitiesToProperty(createdProperty.id, selectedAmenityIds).pipe(
+                    map(() => {
+                      console.log('Amenities assigned successfully!');
+                      this.formStorage.clearFormData();
+                      return createdProperty;
+                    }),
+                    catchError(amenityError => {
+                      console.error('Failed to assign amenities:', amenityError);
+                      // Still return the created property even if amenity assignment fails
+                      this.formStorage.clearFormData();
+                      return of(createdProperty);
+                    })
+                  );
+                }
+                
+                this.formStorage.clearFormData();
+                return of(createdProperty);
               }),
               catchError(uploadError => {
                 console.error('Image upload failed:', uploadError);

@@ -1,14 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { Subscription } from 'rxjs';
 import { PropertyFormStorageService } from '../../services/property-form-storage.service';
-
-// Define an interface for type safety
-interface Amenity {
-  name: string;
-  icon: string;
-}
+import { AmenityService, AmenityDTO } from '../../../../core/services/Amenity/amenity.service';
+import { HandleImgService } from '../../../../core/services/handleImg.service';
+import { createGlobalPositionStrategy } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-step2-2-tell-guests',
@@ -18,41 +15,43 @@ interface Amenity {
 })
 export class Step22TellGuests implements OnInit, OnDestroy {
   private subscription!: Subscription;
-  // Amenity categories with image paths
-  guestFavorites: Amenity[] = [
-    { name: 'Wifi', icon: 'https://img.icons8.com/?size=100&id=Wtw8719Lene4&format=png&color=000000' },
-    { name: 'TV', icon: 'https://img.icons8.com/?size=100&id=1Pp9bo7ydgBz&format=png&color=000000' },
-    { name: 'Kitchen', icon: 'https://img.icons8.com/?size=100&id=1HozBADAhgjc&format=png&color=000000' },
-    { name: 'Washer', icon: 'https://img.icons8.com/?size=100&id=103440&format=png&color=000000' },
-    { name: 'Free parking on premises', icon: 'https://img.icons8.com/?size=100&id=Atb5mR0Y5hAu&format=png&color=000000' }
-  ];
+  private loadingSubscription?: Subscription;
+  handleImgService = inject(HandleImgService);
 
-  standoutAmenities: Amenity[] = [
-    { name: 'Pool', icon: 'https://img.icons8.com/?size=100&id=25980&format=png&color=000000' },
-    { name: 'Hot tub', icon: 'https://img.icons8.com/?size=100&id=yzvkL1jvY3pe&format=png&color=000000' },
-    { name: 'Patio', icon: 'https://www.svgrepo.com/show/489314/patio.svg' }
-  ];
+  // All amenities from backend
+  amenities: AmenityDTO[] = [];
+  isLoading = true;
+  error: string | null = null;
 
-  safetyItems: Amenity[] = [
-    { name: 'Smoke alarm', icon: 'https://img.icons8.com/?size=100&id=ruyATKFXOKXR&format=png&color=000000' },
-    { name: 'First aid kit', icon: 'https://img.icons8.com/?size=100&id=112253&format=png&color=000000' },
-    { name: 'Fire extinguisher', icon: 'https://img.icons8.com/?size=100&id=mKoQHtzDltfs&format=png&color=000000' }
-  ];
-
-  // Selected amenities are stored by name for efficient lookup
-  selectedAmenities: Set<string> = new Set();
+  // Selected amenities are stored by ID for efficient lookup
+  selectedAmenityIds: Set<number> = new Set();
 
   constructor(
     private formStorage: PropertyFormStorageService,
-    private wizardService: ListingWizardService
+    private wizardService: ListingWizardService,
+    private amenityService: AmenityService
   ) {}
 
   ngOnInit(): void {
     // Load saved data
     const savedData = this.formStorage.getStepData('step2-2');
-    if (savedData?.selectedAmenities) {
-      this.selectedAmenities = new Set(savedData.selectedAmenities);
+    if (savedData?.selectedAmenityIds) {
+      this.selectedAmenityIds = new Set(savedData.selectedAmenityIds);
     }
+
+    // Load amenities from backend
+    this.loadingSubscription = this.amenityService.getAllAmenities().subscribe({
+      next: (amenities) => {
+        this.amenities = amenities;
+        this.isLoading = false;
+        console.log('Amenities loaded:', this.amenities);
+      },
+      error: (error) => {
+        console.error('Failed to load amenities:', error);
+        this.error = 'Failed to load amenities. Please try again.';
+        this.isLoading = false;
+      }
+    });
 
     // Subscribe to next step event
     this.subscription = this.wizardService.nextStep$.subscribe(() => {
@@ -64,27 +63,42 @@ export class Step22TellGuests implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+    if (this.loadingSubscription) {
+      this.loadingSubscription.unsubscribe();
+    }
   }
 
   // Method to toggle amenity selection
-  toggleAmenity(amenity: Amenity): void {
-    if (this.selectedAmenities.has(amenity.name)) {
-      this.selectedAmenities.delete(amenity.name);
+  toggleAmenity(amenity: AmenityDTO): void {
+    if (this.selectedAmenityIds.has(amenity.id)) {
+      this.selectedAmenityIds.delete(amenity.id);
     } else {
-      this.selectedAmenities.add(amenity.name);
+      this.selectedAmenityIds.add(amenity.id);
     }
     this.saveFormData();
   }
 
   private saveFormData(): void {
     const data = {
-      selectedAmenities: Array.from(this.selectedAmenities)
+      selectedAmenityIds: Array.from(this.selectedAmenityIds),
+      selectedAmenities: this.amenities.filter(a => this.selectedAmenityIds.has(a.id))
     };
     this.formStorage.saveFormData('step2-2', data);
   }
 
-  // Method to check if amenity is selected by its name
-  isAmenitySelected(amenity: Amenity): boolean {
-    return this.selectedAmenities.has(amenity.name);
+  // Method to check if amenity is selected
+  isAmenitySelected(amenity: AmenityDTO): boolean {
+    return this.selectedAmenityIds.has(amenity.id);
+  }
+
+  // Get the amenities for property creation
+  getSelectedAmenities(): AmenityDTO[] {
+    return this.amenities.filter(amenity => this.selectedAmenityIds.has(amenity.id));
+  }
+
+  getAmenitiesImg(image:string): string {
+    return this.handleImgService.handleImage(
+      image? image : ''
+    );
   }
 }

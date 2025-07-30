@@ -10,6 +10,79 @@
   max-width: 630px;
 }
 
+/* Loading State */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 32px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #222;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error State */
+.error-state {
+  text-align: center;
+  padding: 32px;
+  background-color: #fff3f3;
+  border-radius: 12px;
+  margin: 32px 0;
+}
+
+.error-message {
+  color: #e31c5f;
+  margin-bottom: 16px;
+}
+
+.retry-button {
+  background-color: #222;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.retry-button:hover {
+  background-color: #000;
+}
+
+/* Default icon for amenities without icons */
+.default-icon {
+  width: 32px;
+  height: 32px;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Amenity description */
+.amenity-description {
+  font-size: 14px;
+  color: #717171;
+  margin-top: 4px;
+  display: block;
+}
+
 .page-header {
   margin-bottom: 32px;
 }
