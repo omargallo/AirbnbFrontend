@@ -4,10 +4,9 @@ import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 
-
-export interface RefreshTokenResponse{
-  accessToken:string;
-  refreshToken:string
+export interface RefreshTokenResponse {
+  accessToken: string;
+  refreshToken: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -22,25 +21,14 @@ export class AuthService {
   private userIdSubject = new BehaviorSubject<string | null>(null);
   private roleSubject = new BehaviorSubject<string[] | null>(null);
 
-  constructor(
-    private cookieService: CookieService,
-    private http: HttpClient
-  
-  ) {
-  this.accessTokenSubject.next(
-    this.cookieService.get(this.accessTokenKey) || null
-  );
-  this.refreshTokenSubject.next(
-    this.cookieService.get(this.refreshTokenKey) || null
-  );
-  this.userIdSubject.next(this.cookieService.get(this.userIdKey) || null);
-
-  const rolesJson = this.cookieService.get(this.roleKey);
-  if (rolesJson) {
-    const roles = JSON.parse(rolesJson);
-    this.roleSubject.next(roles);
-  }
-}
+  constructor(private cookieService: CookieService, private http: HttpClient) {
+    this.accessTokenSubject.next(
+      this.cookieService.get(this.accessTokenKey) || null
+    );
+    this.refreshTokenSubject.next(
+      this.cookieService.get(this.refreshTokenKey) || null
+    );
+    this.userIdSubject.next(this.cookieService.get(this.userIdKey) || null);
 
     const rolesJson = this.cookieService.get(this.roleKey);
     if (rolesJson) {
@@ -101,8 +89,12 @@ export class AuthService {
   get refreshToken$() {
     return this.refreshTokenSubject.asObservable();
   }
-  get refreshTokenBackend$(){
-    return this.http.post<RefreshTokenResponse>(environment.baseUrl+'/user/refresh-token',{}, {withCredentials:true} );
+  get refreshTokenBackend$() {
+    return this.http.post<RefreshTokenResponse>(
+      environment.baseUrl + '/user/refresh-token',
+      {},
+      { withCredentials: true }
+    );
     // return this.refreshTokenSubject.asObservable()
   }
 
