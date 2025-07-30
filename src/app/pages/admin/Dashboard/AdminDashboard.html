@@ -38,31 +38,30 @@
       </div>
     </div>
   </div>
- 
   <!-- Main Content -->
   <div class="main-content">
     <div *ngIf="activeSection === 'dashboard'" class="content-section">
       <app-dashboard></app-dashboard>
     </div>
- 
     <!-- Users Section -->
     <div *ngIf="activeSection === 'users'" class="content-section">
       <app-users></app-users>
     </div>
- 
     <!-- Properties Section -->
     <div *ngIf="activeSection === 'properties'" class="content-section">           
       <app-property></app-property>
     </div>
- 
     <!-- Bookings Section -->
     <div *ngIf="activeSection === 'bookings'" class="content-section">
       <app-bookings></app-bookings>
     </div>
- 
     <!-- Analytics Section -->
     <div *ngIf="activeSection === 'analytics'" class="content-section">
       <app-analytics></app-analytics>
+    </div>
+    <!-- Violations Section -->
+    <div *ngIf="activeSection === 'violations'" class="content-section">
+      <app-violations></app-violations>
     </div>
   </div>
 </div>
