@@ -35,6 +35,7 @@ export interface DayAvailability {
   available: boolean;
   price: number;
   originalPrice?: number;
+  isBooked?: boolean;
 }
 
 export interface CalendarSettings {
@@ -54,6 +55,7 @@ interface ProcessedDay {
   isHighlighted: boolean;
   price: number | null;
   dateKey: string;
+  isBooked?: boolean;
 }
 
 interface ProcessedMonth {
@@ -98,13 +100,19 @@ export class CalendarComponent implements OnInit, OnChanges {
   >();
 
   showViewDropdown = false;
-  tempViewType: 'month' | 'year' = 'year';
+  // tempViewType: 'month' | 'year' = 'year';
+  tempViewType!: 'month' | 'year';
+
   showPropertyDropdown = false;
   // selectedProperty: String = '';
 
   ngOnInit() {
     this.currentYear = this.currentMonth.getFullYear();
-    this.tempViewType = this.settings.viewType;
+    // this.tempViewType = this.settings.viewType;
+    const screenWidth = window.innerWidth;
+    this.tempViewType = screenWidth < 1024 ? 'month' : 'year';
+
+    this.settings.viewType = this.tempViewType;
     this.updateCaches();
     this.processAllData();
 
@@ -152,18 +160,93 @@ export class CalendarComponent implements OnInit, OnChanges {
     return months;
   }
 
+  // private generateProcessedMonth(monthDate: Date): ProcessedMonth {
+  //   const monthKey = format(monthDate, 'yyyy-MM');
+
+  //   // Get or generate month days
+  //   let monthDays = this.monthDaysCache.get(monthKey);
+  //   if (!monthDays) {
+  //     const start = startOfWeek(startOfMonth(monthDate));
+  //     const end = endOfWeek(endOfMonth(monthDate));
+  //     monthDays = eachDayOfInterval({ start, end }).map((date) => ({
+  //       date,
+  //       inCurrentMonth: isSameMonth(date, monthDate),
+  //     }));
+  //     this.monthDaysCache.set(monthKey, monthDays);
+  //   }
+
+  //   // Process each day
+  //   const processedDays: ProcessedDay[] = monthDays.map((day) => {
+  //     const dateKey = format(day.date, 'yyyy-MM-dd');
+  //     const availability = this.availabilityMap.get(dateKey);
+  //     const today = startOfDay(new Date());
+
+  //     const isDisabled = isBefore(day.date, today);
+  //     const isAvailable =
+  //       !isDisabled && (availability ? availability.available : true);
+  //     const isSelected = this.selectedDatesSet.has(dateKey);
+  //     const isHighlighted = this.calculateIsHighlighted(day.date);
+  //     const price = availability ? availability.price : null;
+
+  //     const isBooked = availability?.isBooked ?? false;
+
+  //     return {
+  //       date: day.date,
+  //       inCurrentMonth: day.inCurrentMonth,
+  //       isDisabled,
+  //       isAvailable,
+  //       isSelected,
+  //       isHighlighted,
+  //       price,
+  //       dateKey,
+  //       isBooked,
+  //     };
+  //   });
+
+  //   return {
+  //     month: monthDate,
+  //     days: processedDays,
+  //   };
+  // }
+
+
+
+
+  private getCachedMonthDays(monthKey: string): { date: string; inCurrentMonth: boolean }[] | null {
+    const cached = localStorage.getItem(`month-${monthKey}`);
+    return cached ? JSON.parse(cached) : null;
+  }
+
+  private cacheMonthDays(monthKey: string, data: { date: string; inCurrentMonth: boolean }[]) {
+    localStorage.setItem(`month-${monthKey}`, JSON.stringify(data));
+  }
+
   private generateProcessedMonth(monthDate: Date): ProcessedMonth {
     const monthKey = format(monthDate, 'yyyy-MM');
 
     // Get or generate month days
     let monthDays = this.monthDaysCache.get(monthKey);
+
     if (!monthDays) {
-      const start = startOfWeek(startOfMonth(monthDate));
-      const end = endOfWeek(endOfMonth(monthDate));
-      monthDays = eachDayOfInterval({ start, end }).map((date) => ({
-        date,
-        inCurrentMonth: isSameMonth(date, monthDate),
-      }));
+      const cached = this.getCachedMonthDays(monthKey);
+      if (cached) {
+        monthDays = cached.map((d) => ({
+          date: new Date(d.date),
+          inCurrentMonth: d.inCurrentMonth
+        }));
+      } else {
+        const start = startOfWeek(startOfMonth(monthDate));
+        const end = endOfWeek(endOfMonth(monthDate));
+        monthDays = eachDayOfInterval({ start, end }).map((date) => ({
+          date,
+          inCurrentMonth: isSameMonth(date, monthDate),
+        }));
+        this.cacheMonthDays(monthKey, monthDays.map(d => ({
+          date: d.date.toISOString(),
+          inCurrentMonth: d.inCurrentMonth
+        })));
+      }
+
       this.monthDaysCache.set(monthKey, monthDays);
     }
 
@@ -179,6 +262,9 @@ export class CalendarComponent implements OnInit, OnChanges {
       const isSelected = this.selectedDatesSet.has(dateKey);
       const isHighlighted = this.calculateIsHighlighted(day.date);
       const price = availability ? availability.price : null;
+
+      const isBooked = availability?.isBooked ?? false;
+
       return {
         date: day.date,
         inCurrentMonth: day.inCurrentMonth,
@@ -188,6 +274,7 @@ export class CalendarComponent implements OnInit, OnChanges {
         isHighlighted,
         price,
         dateKey,
+        isBooked,
       };
     });
 
@@ -206,8 +293,16 @@ export class CalendarComponent implements OnInit, OnChanges {
   }
 
   selectDate(date: Date) {
+
     const today = startOfDay(new Date());
     if (isBefore(date, today)) return;
+
+
+    const dateKey = format(date, 'yyyy-MM-dd');
+    const availability = this.availabilityMap.get(dateKey);
+
+    if (availability?.isBooked) return;
+
 
     const index = this.settings.selectedDates.findIndex((d) =>
       isSameDay(d, date)
@@ -322,7 +417,7 @@ export class CalendarComponent implements OnInit, OnChanges {
     private hostPropertiesService: HostPropertiesService,
     private router: Router,
     private authService: AuthService
-  ) {}
+  ) { }
 
   loadHostProperties(): void {
     // Check if hostId is available
@@ -342,6 +437,7 @@ export class CalendarComponent implements OnInit, OnChanges {
           this.selectedPropertyId = this.properties[0].id.toString();
           this.propertySelected.emit(this.selectedPropertyId);
         }
+        console.log("properties", properties)
         this.isLoading = false;
       },
       error: (err) => {

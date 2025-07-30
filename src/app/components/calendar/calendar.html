@@ -124,7 +124,8 @@
               class="day-cell"
               *ngFor="let day of monthData.days; trackBy: trackByDate"
               [class.other-month]="!day.inCurrentMonth"
-              [class.disabled]="day.isDisabled"
+              [class.disabled]="day.isDisabled || day.isBooked"
+              [class.booked]="day.isBooked"
               [class.available]="day.isAvailable"
               [class.not-available]="
                 !day.isAvailable && day.inCurrentMonth && !day.isDisabled
@@ -193,7 +194,8 @@
             class="day-cell"
             *ngFor="let day of processedCurrentMonth.days; trackBy: trackByDate"
             [class.other-month]="!day.inCurrentMonth"
-            [class.disabled]="day.isDisabled"
+            [class.disabled]="day.isDisabled || day.isBooked"
+            [class.booked]="day.isBooked"
             [class.available]="day.isAvailable"
             [class.not-available]="
               !day.isAvailable && day.inCurrentMonth && !day.isDisabled

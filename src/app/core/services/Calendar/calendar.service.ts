@@ -7,6 +7,7 @@ export interface CalendarDateDTO {
   date: string;
   isAvailable: boolean;
   price: number;
+  isBooked?: boolean;
 }
 
 interface ApiResponse<T> {

@@ -1,7 +1,7 @@
 .availability-page {
   display: flex !important;
   flex-direction: row;
-  align-items: flex-start;
+  /* align-items: flex-start; */
   max-width: 100%;
   box-sizing: border-box;
   /* max-height: 100vh; */
@@ -9,17 +9,37 @@
   /* border: 1px solid red; */
   /* height: 87vh; */
   /* background-color: green; */
-
 }
+@media (min-width: 1024px) {
+  .availability-page {
+    align-items: flex-start !important;
+  }
+  .calendar-area {
+    flex: 2;
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* padding: 24px; */
+    /* max-height: 100vh; */
+  }
+  .settings-area {
+    flex: 1;
+    /* max-width: 400px; */
+    max-width: 300px;
+    /* background-color: pink; */
+    /* border-left: 1px solid #e9ecef; */
 
-.calendar-area {
-  flex: 2;
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* padding: 24px; */
-  /* max-height: 100vh; */
+
+    /* padding: 24px; */
+    /* max-height: 100vh; */
+    /* box-shadow: -1px 0 3px rgba(0, 0, 0, 0.05); */
+  }
 }
+.settings-area {
+  border-top: 1px solid #eee;
+  border-left: 1px solid #eee;
 
+  overflow-y: auto;
+}
 .selected-nights-panel {
   margin-top: 24px;
   background-color: #f8f9fa;
@@ -27,21 +47,6 @@
   padding: 20px;
   border-radius: 12px;
   width: 100%;
-}
-
-.settings-area {
-  flex: 1;
-  /* max-width: 400px; */
-  max-width: 300px;
-  /* background-color: pink; */
-  /* border-left: 1px solid #e9ecef; */
-  border-top: 1px solid #eee;
-  border-left: 1px solid #eee;
-
-  /* padding: 24px; */
-  /* max-height: 100vh; */
-  overflow-y: auto;
-  /* box-shadow: -1px 0 3px rgba(0, 0, 0, 0.05); */
 }
 
 .availability-toggle {
@@ -139,7 +144,7 @@
   }
 
   .calendar-area {
-    flex: none;
+    flex: none !important;
     min-height: auto;
   }
 
@@ -160,8 +165,6 @@
     padding: 16px;
   }
 }
-
-
 
 .loading-indicator {
   position: fixed;
@@ -188,8 +191,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .calendar-area.loading {
