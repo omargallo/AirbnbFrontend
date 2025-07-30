@@ -104,7 +104,7 @@
   background-color: var(--hover-background);
   border-color: #e9ecef;
   /* transform: translateY(-1px); */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Selected thread styling */
@@ -444,7 +444,7 @@
 
 .btn-outline-primary.btn-sm:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
 }
 
 /* End of data indicator */

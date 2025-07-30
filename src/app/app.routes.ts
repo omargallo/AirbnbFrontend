@@ -44,6 +44,8 @@ import { ReviewForm } from './components/review-form/review-form';
 import { UsersComponent } from './pages/admin/pages/users/users';
 import { AdminDashboard } from './pages/admin/Dashboard/AdminDashboard';
 import { HostWalletComponent } from './components/host-wallet/host-wallet';
+import { authGuard } from './core/guards/auth.guard';
+import { RoleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -56,21 +58,36 @@ export const routes: Routes = [
       { path: 'FilteredProperties', component: FilteredProperties },
       { path: 'property/:propertyId', component: PropertyInfo },
 
-      { path: 'WishLists', component: Wishlists },
+      { path: 'WishLists', component: Wishlists, canActivate: [authGuard] },
       {
         path: 'wishlist/:wishlistId/properties',
         component: WishListProperties,
+        canActivate: [authGuard],
       },
       { path: 'Messages', component: Messages },
-      { path: 'profile/:id', component: Profile },
-      { path: 'update-profile/:id', component: UpdateProfile },
-      { path: 'your-reviews', component: YourReviews },
-      { path: 'notifications', component: Notifications },
+      { path: 'profile/:id', component: Profile, canActivate: [authGuard] },
+      {
+        path: 'update-profile/:id',
+        component: UpdateProfile,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'your-reviews',
+        component: YourReviews,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'notifications',
+        component: Notifications,
+        canActivate: [authGuard],
+      },
     ],
   },
   {
     path: 'listing-wizard',
     component: ListingWizardLayoutComponent,
+    canActivateChild: [authGuard],
+    canActivate: [authGuard],
     children: [
       { path: '', component: StepsPage },
       { path: 'step1-1-tell-us', component: Step1TellUs },
@@ -96,30 +113,76 @@ export const routes: Routes = [
       { path: 'step3-6-safety', component: Step36Safety },
     ],
   },
-  { path: 'take-info/:id', component: UpdateProfile },
-  { path: 'host', component: HostProperties },
+  { path: 'take-info/:id', component: UpdateProfile, canActivate: [authGuard] },
+  { path: 'host', component: HostProperties, canActivate: [authGuard] },
 
-  { path: 'propertybookings/:propertyId', component: PropertyBookings },
-  { path: 'review/:id', component: ReviewForm },
+  {
+    path: 'propertybookings/:propertyId',
+    component: PropertyBookings,
+    canActivate: [authGuard],
+  },
+  { path: 'review/:id', component: ReviewForm, canActivate: [authGuard] },
 
-  { path: 'AdminDashboard', component: AdminDashboard },
+  {
+    path: 'AdminDashboard',
+    component: AdminDashboard,
+    canActivate: [authGuard, RoleGuard],
+    data: {
+      roles: ['Admin'],
+    },
+  },
 
-  { path: 'AdminDashboard', component: AdminDashboard },
-  { path: 'dashboard', redirectTo: 'AdminDashboard', pathMatch: 'full' },
+  {
+    path: 'AdminDashboard',
+    component: AdminDashboard,
+    canActivate: [authGuard, RoleGuard],
+    data: {
+      roles: ['Admin'],
+    },
+  },
+  {
+    path: 'dashboard',
+    redirectTo: 'AdminDashboard',
+    pathMatch: 'full',
+  },
 
   {
     path: 'hostsettings',
     component: Host,
+    canActivateChild: [authGuard, RoleGuard],
+
     children: [
-      { path: 'availability', component: Availability },
-      { path: 'Messages', component: Messages },
-      { path: 'Wallet', component: HostWalletComponent },
+      {
+        path: 'availability',
+        component: Availability,
+        data: {
+          roles: ['Host'],
+        },
+      },
+      {
+        path: 'Messages',
+        component: Messages,
+        data: {
+          roles: ['Host'],
+        },
+      },
+      {
+        path: 'Wallet',
+        component: HostWalletComponent,
+        data: {
+          roles: ['Host'],
+        },
+      },
     ],
   },
 
-  { path: 'updatelist', component: UpdateList },
+  { path: 'updatelist', component: UpdateList, canActivate: [authGuard] },
 
-  { path: 'updatelist/:propertyId', component: UpdateList },
+  {
+    path: 'updatelist/:propertyId',
+    component: UpdateList,
+    canActivate: [authGuard],
+  },
 
   { path: '404', component: NotFound },
   { path: '**', redirectTo: '/404' },

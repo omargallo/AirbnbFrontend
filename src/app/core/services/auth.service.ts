@@ -42,14 +42,20 @@ export class AuthService {
   }
 }
 
+    const rolesJson = this.cookieService.get(this.roleKey);
+    if (rolesJson) {
+      const roles = JSON.parse(rolesJson);
+      this.roleSubject.next(roles);
+    }
+  }
 
   setAccessToken(token: string) {
-    // this.cookieService.set(this.accessTokenKey, token, 7, '/');
+    this.cookieService.set(this.accessTokenKey, token, 7, '/');
     this.accessTokenSubject.next(token);
   }
 
   setRefreshToken(token: string) {
-    // this.cookieService.set(this.refreshTokenKey, token, 7, '/');
+    this.cookieService.set(this.refreshTokenKey, token, 7, '/');
     this.refreshTokenSubject.next(token);
   }
 
@@ -60,7 +66,6 @@ export class AuthService {
 
   setRole(roles: { name: string }[]) {
     const names = roles.map((r) => r.name);
-    console.log(names)
     sessionStorage.setItem(this.roleKey, JSON.stringify(names));
     this.cookieService.set(this.roleKey, JSON.stringify(names), 7, '/');
     this.roleSubject.next(names);
