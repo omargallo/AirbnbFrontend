@@ -33,7 +33,6 @@ export class ReviewService {
   }
 
   getReviewById(id: number): Observable<AddReviewByGuestDTO> {
-
     return this.http.get<any>(`${this.baseUrl}/${id}`).pipe(
       map((response) => {
         if (!response.isSuccess || !response.data) {

@@ -30,4 +30,8 @@ export class YourReviews implements OnInit {
       },
     });
   }
+  getStars(rating: number): number[] {
+  return Array(rating).fill(0);
+}
+
 }

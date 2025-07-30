@@ -6,5 +6,4 @@ import { App } from './app/app';
 import 'zone.js';
 import 'swiper/element/bundle';
 
-bootstrapApplication(App, appConfig)
-  .catch((err) => console.error(err));
+bootstrapApplication(App, appConfig).catch((err) => console.error(err));
