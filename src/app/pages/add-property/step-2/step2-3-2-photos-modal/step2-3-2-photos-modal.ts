@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PhotosService } from '../../../../core/services/photos.service';
+// ...existing code...
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -15,7 +15,7 @@ export class Step232PhotosModal {
   hasUploadedPhotos: boolean = false;
 
   constructor(
-    public photosService: PhotosService,
+    // ...existing code...
     private router: Router
   ) {}
 
@@ -43,15 +43,11 @@ export class Step232PhotosModal {
   }
 
   private readFile(file: File): void {
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      this.photosService.addPhoto(e.target.result);
-    };
-    reader.readAsDataURL(file);
+    // ...existing code...
   }
 
   removePhoto(index: number): void {
-    this.photosService.removePhoto(index);
+    // ...existing code...
   }
 
   continueToTaDa(): void {

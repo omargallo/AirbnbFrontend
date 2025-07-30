@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { ConfirmService } from './../../core/services/confirm.service';
 import { CommonModule } from '@angular/common';
-import { Component, resource } from '@angular/core';
+import { Component, inject, resource } from '@angular/core';
 import { WishListModal } from "../../components/wish-list-modal/wish-list-modal";
 import { PropertySwiperComponent } from "../../components/mainswiper/mainswiper";
 import { Property } from '../../core/models/Property';
@@ -12,6 +12,8 @@ import { WishlistService } from '../../core/services/Wishlist/wishlist.service';
 import { AuthService } from '../../core/services/auth.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ChatContextService } from '../../core/chatbot/chat-context.service';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-home',
@@ -26,7 +28,9 @@ export class Home {
   selectedPropertyId!: number;
   show = false;
   isLoading = false;
+  private contextLoaded = false;
 
+  private readonly contextService = inject(ChatContextService);
   constructor(
     private confirm: ConfirmService,
     private propertyService: PropertyService,
@@ -40,9 +44,34 @@ export class Home {
   ngOnInit() {
     this.sections = this.shuffleArray(this.sections);
     this.loadAllSections();
-
   }
 
+
+  private prepareHomeContext() {
+    let result: string[] = [];
+
+    result.push(`On the home page, we show popular property sections:`);
+
+    for (const section of this.sectionProperties) {
+      if (section.properties.length === 0) continue;
+
+      const sectionText =
+        `Section: "${section.title}" includes:\n` +
+        section.properties.slice(0, 3).map(p => {
+          const url = `${environment.domainBaseUrl}/property/${p.id}`;
+          return `• <strong>${p.title}</strong> in ${p.city},
+           ${p.country}  , Descrption ${p.description}  , AVerage Rating${p.averageRating}, 
+            Max guests ${p.maxGuests},Reviews  ${p.reviewCount} 
+          - $${p.pricePerNight}
+          /night<br><a href="${url}" class="view-link" target="_blank">View Property</a>`;
+        }).join('\n');
+
+
+      result.push(sectionText);
+    }
+
+    this.contextService.setHomeContext(result.join('\n\n'));
+  }
   sections = [
     { title: 'Popular homes in Cairo', search: { country: 'Egypt', city: 'Cairo' } },
     { title: 'Available in Hurghada next weekend', search: { country: 'Egypt', city: 'Hurghada', startDate: this.getNextWeekend() } },
@@ -84,6 +113,8 @@ export class Home {
 
 
   loadAllSections() {
+    let completed = 0;
+
     this.sections.forEach((section, index) => {
       this.sectionProperties.push({
         title: section.title,
@@ -98,6 +129,13 @@ export class Home {
             this.sectionProperties[index].properties = res.data.items;
           }
           this.sectionProperties[index].isLoading = false;
+
+          completed++;
+
+          if (completed === this.sections.length && !this.contextLoaded) {
+            this.prepareHomeContext();
+            this.contextLoaded = true;
+          }
         },
         error: () => {
           this.sectionProperties[index].isLoading = false;

@@ -1,7 +1,7 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PhotosService } from '../../../../core/services/photos.service';
+// ...existing code...
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { PropertyFormStorageService } from '../../../../core/services/ListingWizard/property-form-storage.service';
 import { Subscription } from 'rxjs';
@@ -14,20 +14,19 @@ import { Subscription } from 'rxjs';
 })
 export class Step233PhotosTaDa implements OnInit, OnDestroy {
   private subscription!: Subscription;
+  photos: string[] = [];
+  dragStartIndex: number | null = null;
 
   constructor(
-    public photosService: PhotosService,
     private formStorage: PropertyFormStorageService,
     private wizardService: ListingWizardService
   ) {}
-
-  dragStartIndex: number | null = null;
 
   ngOnInit(): void {
     // Load saved data
     const savedData = this.formStorage.getStepData('step2-3-3');
     if (savedData?.photos) {
-      this.photosService.photos = savedData.photos;
+      this.photos = savedData.photos;
     }
 
     // Subscribe to next step event
@@ -44,7 +43,7 @@ export class Step233PhotosTaDa implements OnInit, OnDestroy {
 
   private saveFormData(): void {
     const data = {
-      photos: this.photosService.photos
+      photos: this.photos
     };
     this.formStorage.saveFormData('step2-3-3', data);
   }
@@ -65,13 +64,13 @@ export class Step233PhotosTaDa implements OnInit, OnDestroy {
   private readFile(file: File): void {
     const reader = new FileReader();
     reader.onload = (e: any) => {
-      this.photosService.addPhoto(e.target.result);
+      this.photos.push(e.target.result);
     };
     reader.readAsDataURL(file);
   }
 
   removePhoto(index: number): void {
-    this.photosService.removePhoto(index);
+    this.photos.splice(index, 1);
     this.saveFormData();
   }
 
@@ -81,7 +80,8 @@ export class Step233PhotosTaDa implements OnInit, OnDestroy {
 
   onDrop(index: number): void {
     if (this.dragStartIndex !== null && this.dragStartIndex !== index) {
-      this.photosService.reorderPhotos(this.dragStartIndex, index);
+      const movedPhoto = this.photos.splice(this.dragStartIndex, 1)[0];
+      this.photos.splice(index, 0, movedPhoto);
       this.saveFormData();
     }
     this.dragStartIndex = null;
