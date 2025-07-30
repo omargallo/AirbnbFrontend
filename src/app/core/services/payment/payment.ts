@@ -67,6 +67,31 @@ export interface SinglePaymentResponse {
   message?: string;
 }
 
+export interface StripeAccountStatusResponse {
+  accountCompleted: boolean;
+}
+export interface AdminPaymentDTO {
+  paymentId: number;
+  hostAccountCompleted: boolean;
+  guestName: string;
+  hostName: string;
+  amount: number;
+  platformFee: number;
+  hostAmount: number;
+  paymentStatus: string;
+  transferStatus: string;
+  paymentDate: string;
+}
+
+export interface PaymentMetaData {
+  page: number;
+  pageSize: number;
+  total: number;
+}
+export interface AllPaymentsResponse {
+  items: AdminPaymentDTO[];
+  metaData: PaymentMetaData;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -130,5 +155,18 @@ export class PaymentService {
   // Get payment by booking ID
   getPaymentByBookingId(bookingId: number): Observable<SinglePaymentResponse> {
     return this.http.get<SinglePaymentResponse>(`${this.apiUrl}/booking/${bookingId}`);
+  }
+
+  checkStripeAccountStatus(userId: string): Observable<StripeAccountStatusResponse> {
+    const params = new HttpParams().set('userId', userId);
+    return this.http.get<StripeAccountStatusResponse>(`${this.apiUrl}/stripe-account-completed`, { params });
+  }
+
+  getAllPayments(page: number = 1, pageSize: number = 10): Observable<AllPaymentsResponse> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+
+    return this.http.get<AllPaymentsResponse>(`${this.apiUrl}/payments`, { params });
   }
 }
