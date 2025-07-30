@@ -6,7 +6,10 @@ import { UsersComponent } from '../pages/users/users';
 import { Bookings } from '../pages/booking/bookings';
 import { Property } from "../pages/property/property";
 import { DashboarDetails } from '../pages/dashboard-details/dashboard-details';
-import { AnalyticsComponent } from '../pages/analytics/analytics'; // Import the new Analytics component
+import { AnalyticsComponent } from '../pages/analytics/analytics'; 
+import { ViolationsComponent } from '../pages/violations/violations';
+
+
 
 export interface AdminSection {
   id: string;
@@ -24,7 +27,8 @@ export interface AdminSection {
     Bookings,
     DashboarDetails,
     Property,
-    AnalyticsComponent  // Add AnalyticsComponent to imports
+    AnalyticsComponent ,
+     ViolationsComponent 
   ],    
   templateUrl: './AdminDashboard.html',
   styleUrls: ['./AdminDashboard.css']
@@ -60,9 +64,16 @@ export class AdminDashboard implements OnInit {
     {
       id: 'analytics',
       name: 'Analytics',
-      icon: 'fas fa-chart-bar',  // Updated icon for analytics
+      icon: 'fas fa-chart-bar',  
       isActive: false
     },
+    {
+      id:'violations',
+      name: 'Violations',
+      icon: 'fas fa-exclamation-triangle',
+      isActive: false
+    }
+    
   ];
 
   constructor(private router: Router) {}
@@ -70,19 +81,14 @@ export class AdminDashboard implements OnInit {
   ngOnInit(): void {
     this.setActiveSection('dashboard'); // Set dashboard as default
   }
-
   setActiveSection(sectionId: string): void {
-    // Reset all sections
     this.adminSections.forEach(section => section.isActive = false);
-        
-    // Set the selected section as active
-    const section = this.adminSections.find(s => s.id === sectionId);
+            const section = this.adminSections.find(s => s.id === sectionId);
     if (section) {
       section.isActive = true;
       this.activeSection = sectionId;
     }
   }
-
   onMenuSectionClick(section: AdminSection): void {
     this.setActiveSection(section.id);
   }
