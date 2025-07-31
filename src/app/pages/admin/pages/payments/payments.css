@@ -1,4 +1,4 @@
-/* Payments Component Styles */
+/* Payments Component Styles - Blue Color Scheme */
 .payments-container {
   padding: 2rem;
   background: #f8fafc;
@@ -29,7 +29,7 @@
 
 .title-icon {
   margin-right: 0.75rem;
-  color: #10b981;
+  color: #3b82f6;
 }
 
 .page-subtitle {
@@ -51,12 +51,12 @@
 }
 
 .btn-primary {
-  background: #10b981;
+  background: #3b82f6;
   color: white;
 }
 
 .btn-primary:hover {
-  background: #059669;
+  background: #2563eb;
   transform: translateY(-1px);
 }
 
@@ -105,7 +105,7 @@
 
 .stat-icon {
   font-size: 2.5rem;
-  color: #10b981;
+  color: #3b82f6;
   opacity: 0.8;
 }
 
@@ -125,7 +125,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #10b981, #059669);
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
 }
 
 /* Modal Styles */
@@ -190,7 +190,7 @@
 
 .modal-title i {
   margin-right: 0.75rem;
-  color: #10b981;
+  color: #3b82f6;
 }
 
 .modal-close {
@@ -281,7 +281,7 @@
 
 .section-title i {
   margin-right: 0.75rem;
-  color: #10b981;
+  color: #3b82f6;
 }
 
 .detail-item {
@@ -313,11 +313,11 @@
   font-weight: 500;
 }
 
-/* Amount Highlights */
+/* Amount Highlights - Updated to Blue Theme */
 .amount-highlight {
-  background: #ecfdf5 !important;
-  border-color: #10b981 !important;
-  color: #065f46 !important;
+  background: #dbeafe !important;
+  border-color: #3b82f6 !important;
+  color: #1e40af !important;
   font-weight: 700 !important;
   font-size: 1.1rem !important;
 }
@@ -330,14 +330,14 @@
 }
 
 .host-amount-highlight {
-  background: #dbeafe !important;
-  border-color: #3b82f6 !important;
-  color: #1e40af !important;
+  background: #ede9fe !important;
+  border-color: #8b5cf6 !important;
+  color: #5b21b6 !important;
   font-weight: 700 !important;
   font-size: 1.1rem !important;
 }
 
-/* Badge Styles */
+/* Badge Styles - Updated Primary Success to Blue */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -350,9 +350,9 @@
 }
 
 .badge-success {
-  background: #dcfce7;
-  color: #166534;
-  border: 1px solid #bbf7d0;
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
 }
 
 .badge-warning {
@@ -422,12 +422,12 @@
 }
 
 .btn-success {
-  background: #10b981;
+  background: #3b82f6;
   color: white;
 }
 
 .btn-success:hover {
-  background: #059669;
+  background: #2563eb;
   transform: translateY(-1px);
 }
 
@@ -454,7 +454,7 @@
 
 .loading-spinner {
   text-align: center;
-  color: #10b981;
+  color: #3b82f6;
 }
 
 .loading-spinner i {
@@ -501,13 +501,13 @@
 }
 
 .btn:not(:disabled):hover {
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 /* Focus States for Accessibility */
 .btn:focus,
 .modal-close:focus {
-  outline: 2px solid #10b981;
+  outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
 
@@ -596,13 +596,13 @@
   background: #94a3b8;
 }
 
-/* Transfer Confirmation Modal Styles */
+/* Transfer Confirmation Modal Styles - Updated to Blue Theme */
 .transfer-modal {
   max-width: 600px;
 }
 
 .transfer-header {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   color: white;
 }
 
@@ -681,11 +681,11 @@
 }
 
 .transfer-item.highlight {
-  background: #ecfdf5;
+  background: #dbeafe;
   margin: 0 -1.5rem;
   padding: 1rem 1.5rem;
   border-radius: 8px;
-  border: 1px solid #10b981;
+  border: 1px solid #3b82f6;
 }
 
 .transfer-label {
@@ -701,7 +701,7 @@
 
 .transfer-value.amount {
   font-size: 1.25rem;
-  color: #065f46;
+  color: #1e40af;
   font-weight: 700;
 }
 
@@ -711,23 +711,23 @@
 }
 
 .transfer-confirm-btn {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   border: none;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
   font-weight: 700;
 }
 
 .transfer-confirm-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #059669, #047857);
+  background: linear-gradient(135deg, #2563eb, #1e40af);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
 }
 
 /* Transfer Animation */
 .transfer-animation {
   margin-top: 2rem;
   padding: 1.5rem;
-  background: #ecfdf5;
+  background: #dbeafe;
   border-radius: 12px;
   text-align: center;
 }
@@ -742,14 +742,14 @@
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: #d1fae5;
+  background: #bfdbfe;
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #10b981, #059669);
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
   border-radius: 4px;
   animation: progressFill 2s ease-in-out infinite;
 }
@@ -762,19 +762,19 @@
 
 .transfer-progress p {
   margin: 0;
-  color: #065f46;
+  color: #1e40af;
   font-weight: 600;
   font-size: 1rem;
 }
 
-/* Success Modal Styles */
+/* Success Modal Styles - Updated to Blue Theme */
 .success-overlay {
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(59, 130, 246, 0.1);
 }
 
 .success-modal {
   max-width: 400px;
-  border: 3px solid #10b981;
+  border: 3px solid #3b82f6;
 }
 
 .success-content {
@@ -788,7 +788,7 @@
 
 .success-icon i {
   font-size: 4rem;
-  color: #10b981;
+  color: #3b82f6;
   animation: successPulse 0.6s ease-out;
 }
 
@@ -807,14 +807,14 @@
 }
 
 .success-title {
-  color: #065f46;
+  color: #1e40af;
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0 0 1rem 0;
 }
 
 .success-message {
-  color: #047857;
+  color: #2563eb;
   font-size: 1rem;
   margin: 0 0 2rem 0;
   line-height: 1.5;

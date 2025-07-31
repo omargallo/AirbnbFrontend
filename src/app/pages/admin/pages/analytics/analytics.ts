@@ -209,7 +209,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
   // UPDATED: Financial metrics calculation with profit breakdown
   private calculateFinancialMetrics(): void {
     const completedBookings = this.bookings.filter(b => 
-      b.bookingStatus?.toLowerCase() === 'completed'
+      b.bookingStatus?.toLowerCase() === 'confirmed'
     );
     
     // Count total completed bookings
@@ -299,7 +299,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
     
     // Booking conversion rate (completed vs total)
     const completedBookings = this.bookings.filter(b => 
-      b.bookingStatus?.toLowerCase() === 'completed'
+      b.bookingStatus?.toLowerCase() === 'confirmed'
     ).length;
     
     this.analytics.bookingConversionRate = this.bookings.length > 0 
@@ -406,7 +406,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
         const bookingDate = new Date(booking.checkInDate);
         return bookingDate.getMonth() === index && 
                bookingDate.getFullYear() === currentYear &&
-               booking.bookingStatus?.toLowerCase() === 'completed';
+               booking.bookingStatus?.toLowerCase() === 'confirmed';
       });
       
       const monthlyRevenue = monthlyBookings.reduce((sum, booking) => 
@@ -509,7 +509,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
     
     const todayBookings = this.bookings.filter(booking => {
       const bookingDate = new Date(booking.checkInDate).toISOString().split('T')[0];
-      return bookingDate === todayStr && booking.bookingStatus?.toLowerCase() === 'completed';
+      return bookingDate === todayStr && booking.bookingStatus?.toLowerCase() === 'confirmed';
     });
     
     return todayBookings.reduce((sum, booking) => sum + (booking.totalPrice || 0), 0);
