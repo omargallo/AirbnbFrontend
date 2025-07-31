@@ -204,7 +204,7 @@ export class Bookings implements OnInit, OnDestroy {
   // Revenue from completed bookings only (this is the main total)
   get totalRevenue(): number {
     return this.bookings
-      .filter(booking => booking.bookingStatus?.toLowerCase() === 'completed')
+      .filter(booking => booking.bookingStatus?.toLowerCase() === 'confirmed')
       .reduce((sum, booking) => sum + booking.totalPrice, 0);
   }
 
