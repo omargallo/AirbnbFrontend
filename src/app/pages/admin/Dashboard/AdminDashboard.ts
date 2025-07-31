@@ -9,6 +9,7 @@ import { DashboarDetails } from '../pages/dashboard-details/dashboard-details';
 import { AnalyticsComponent } from '../pages/analytics/analytics';
 import { ViolationsComponent } from '../pages/violations/violations';
 import { PaymentsComponent } from '../pages/payments/payments';
+import { AuthService } from '../../../core/services/auth.service'; 
 
 export interface AdminSection {
   id: string;
@@ -81,7 +82,10 @@ export class AdminDashboard implements OnInit {
     }
   ];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService // Inject AuthService
+  ) {}
 
   ngOnInit(): void {
     this.setActiveSection('dashboard'); // Set dashboard as default
@@ -118,5 +122,14 @@ export class AdminDashboard implements OnInit {
 
   trackBySection(index: number, section: AdminSection): string {
     return section.id;
+  }
+
+  // Add logout method
+  logout(): void {
+    // Clear authentication data
+    this.authService.clear();
+    
+    // Navigate to login page (adjust the route as needed)
+    this.router.navigate(['']);
   }
 }
