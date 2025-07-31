@@ -124,12 +124,9 @@ export class AdminDashboard implements OnInit {
     return section.id;
   }
 
-  // Add logout method
   logout(): void {
-    // Clear authentication data
     this.authService.clear();
     
-    // Navigate to login page (adjust the route as needed)
     this.router.navigate(['']);
   }
 }
