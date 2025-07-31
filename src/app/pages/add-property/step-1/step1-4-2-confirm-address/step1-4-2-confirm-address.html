@@ -40,6 +40,7 @@
             id="apt"
             class="form-input"
             placeholder=" "
+            required
             [(ngModel)]="apt"
             (ngModelChange)="onAptChange($event)"
             name="apt"
@@ -52,7 +53,6 @@
             id="city"
             class="form-input"
             placeholder=" "
-            required
             [(ngModel)]="city"
             (ngModelChange)="onCityChange($event)"
             name="city"
@@ -74,12 +74,18 @@
         </div>
         <div class="form-field full-width">
           <input
-            type="text"
+            type="number"
             id="zipcode"
             class="form-input"
             placeholder=" "
+            required
+            minlength="3"
+            maxlength="10"
+            pattern="[0-9]*"
             [(ngModel)]="zipcode"
             (ngModelChange)="onZipcodeChange($event)"
+            (input)="validateZipcode($event)"
+            (keypress)="onZipcodeKeyPress($event)"
             name="zipcode"
           />
           <label for="zipcode" class="form-label">Postal code</label>

@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import { ListingWizardService } from '../../core/services/ListingWizard/listing-wizard.service';
 import { PropertyCreationService } from '../../core/services/Property/property-creation.service';
 import { PropertyFormStorageService } from '../../pages/add-property/services/property-form-storage.service';
+import { ListingValidationService } from '../../core/services/ListingWizard/listing-validation.service';
 
 @Component({
   selector: 'app-listing-wizard-layout',
@@ -17,7 +18,7 @@ export class ListingWizardLayoutComponent {
   @Input() showFooter = true;
   @Input() isFirstStep = false;
   @Input() isLastStep = false;
-  @Input() canProceed = true;
+  canProceed = true;
   @Input() currentStep = 1;
   @Input() totalSteps = 3;
   @Input() progressPercentage = 0;
@@ -56,14 +57,20 @@ export class ListingWizardLayoutComponent {
     private router: Router,
     private formStorage: PropertyFormStorageService,
     private wizardService: ListingWizardService,
-    private propertyCreationService: PropertyCreationService
+    private propertyCreationService: PropertyCreationService,
+    private validationService: ListingValidationService
   ) {
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe(() => {
         this.updateProgress();
         this.updateStepState();
+        this.validateCurrentStep();
       });
+
+    this.validationService.canProceed$.subscribe(canProceed => {
+      this.canProceed = canProceed;
+    });
   }
 
   handleSubmit() {
@@ -151,8 +158,21 @@ export class ListingWizardLayoutComponent {
     this.showBackButton = currentIndex > 0;
   }
 
+  private validateCurrentStep(): void {
+    const currentRoute = this.stepRoutes[this.getCurrentStepIndex()];
+    if (currentRoute) {
+      this.validationService.validateStep(currentRoute);
+    }
+  }
+
   navigateToNextStep(): void {
     const currentIndex = this.getCurrentStepIndex();
+    const currentRoute = this.stepRoutes[currentIndex];
+    
+    if (currentRoute && !this.validationService.validateStep(currentRoute)) {
+      return; // Stop if validation fails
+    }
+
     if (currentIndex > -1 && currentIndex < this.stepRoutes.length - 1) {
       // Trigger saving in the current component
       this.wizardService.triggerNextStep();

@@ -26,6 +26,25 @@ h1 {
   overflow-wrap: break-word;
 }
 
+/* --- Loading and Error States --- */
+.loading-state,
+.error-state {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1rem;
+  color: #484848;
+  background-color: #f7f7f7;
+  border-radius: 12px;
+  margin: 1rem 0;
+  width: 100%;
+}
+
+.error-state {
+  color: #ff4d4f;
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+}
+
 /* --- Property Selection Grid --- */
 .property-selector {
   display: flex;
