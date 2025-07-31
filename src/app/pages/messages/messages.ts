@@ -75,7 +75,7 @@ export class Messages implements OnInit, OnDestroy {
 
     console.log(reserveRequest)
     if (!this.isHost) {
-      this.messageService.reserveProperty(reserveRequest).subscribe({
+      this.messageService.getSessionForHost(session.id).subscribe({
         next: (res) => {
           console.log("reserveRequest", reserveRequest)
           console.log("res", res.data)
@@ -86,9 +86,11 @@ export class Messages implements OnInit, OnDestroy {
             this.ReservationWithProperty = res?.data;
             this.isLoadingChat = false;
           }, 200);
-
+          console.log("from next !ishost",this.authService.userId)
+          
         },
         error: (err) => {
+          console.log("from error !ishost",this.authService.userId)
           console.error('Error reserving property:', err);
           this.isLoadingChat = false;
         }
