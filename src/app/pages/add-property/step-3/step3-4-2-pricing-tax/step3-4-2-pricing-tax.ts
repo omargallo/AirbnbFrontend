@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { Subscription } from 'rxjs';
 import { PropertyFormStorageService } from '../../services/property-form-storage.service';
+import { ListingValidationService } from '../../../../core/services/ListingWizard/listing-validation.service';
 
 @Component({
   selector: 'app-step3-4-2-pricing-tax',
@@ -22,7 +23,8 @@ export class Step342PricingTax implements OnInit, OnDestroy {
 
   constructor(
     private formStorage: PropertyFormStorageService,
-    private wizardService: ListingWizardService
+    private wizardService: ListingWizardService,
+    private validationService: ListingValidationService
   ) {}
 
   ngOnInit() {
@@ -42,6 +44,9 @@ export class Step342PricingTax implements OnInit, OnDestroy {
     this.subscription = this.wizardService.nextStep$.subscribe(() => {
       this.saveFormData();
     });
+
+    // Initial validation and save
+    this.saveFormData();
   }
 
   ngOnDestroy(): void {
@@ -52,9 +57,12 @@ export class Step342PricingTax implements OnInit, OnDestroy {
 
   private saveFormData(): void {
     const data = {
-      premiumPercent: this.premiumPercent
+      premiumPercent: this.premiumPercent,
+      weekendPrice: this.weekendPrice
     };
     this.formStorage.saveFormData('step3-4-2', data);
+    // Always enable next button
+    this.validationService.validateStep('step3-4-2');
   }
 
   get weekendPrice(): number {

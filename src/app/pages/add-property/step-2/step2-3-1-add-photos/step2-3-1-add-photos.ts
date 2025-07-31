@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { Subscription } from 'rxjs';
 import { PropertyFormStorageService } from '../../services/property-form-storage.service';
+import { ListingValidationService } from '../../../../core/services/ListingWizard/listing-validation.service';
 
 @Component({
   selector: 'app-step2-3-add-photos',
@@ -19,10 +20,10 @@ export class Step23AddPhotos implements OnInit, OnDestroy {
   photos: string[] = [];
 
   constructor(
-    // ...existing code...
     private router: Router,
     private formStorage: PropertyFormStorageService,
-    private wizardService: ListingWizardService
+    private wizardService: ListingWizardService,
+    private validationService: ListingValidationService
   ) {}
 
   @ViewChild('photosModal') photosModal!: Step232PhotosModal;
@@ -34,6 +35,9 @@ export class Step23AddPhotos implements OnInit, OnDestroy {
     this.subscription = this.wizardService.nextStep$.subscribe(() => {
       this.saveFormData();
     });
+
+    // Initial validation
+    this.saveFormData();
   }
 
   ngOnDestroy(): void {
@@ -51,9 +55,11 @@ export class Step23AddPhotos implements OnInit, OnDestroy {
 
   private saveFormData() {
     const data = {
-      photos: this.photos
+      photos: this.photos,
+      isValid: true  // Always valid to allow proceeding
     };
     this.formStorage.saveFormData('step2-3-1', data);
+    this.validationService.validateStep('step2-3-1-add-photos');
   }
 
   openPhotosModal(): void {

@@ -12,10 +12,11 @@
         #titleInput
         class="title-textarea"
         rows="3"
-        maxlength="32"
+        [maxlength]="maxLength"
         placeholder=" "
         [(ngModel)]="title"
         (input)="onInput()"
+        (keypress)="onKeyPress($event)"
       ></textarea>
       <div class="character-counter" [class.limit-reached]="limitReached">
         <span>{{ charCount }}</span>/{{ maxLength }}
