@@ -133,26 +133,26 @@ export class DashboarDetails implements OnInit, OnDestroy {
     }
   }
 
-  private processBookingsData(bookings: BookingDetailsDTO[]): void {
+ private processBookingsData(bookings: BookingDetailsDTO[]): void {
   if (Array.isArray(bookings)) {
     this.totalBookings = bookings.length;
     this.pendingBookings = bookings.filter((booking: BookingDetailsDTO) => 
       booking.bookingStatus?.toLowerCase() === 'pending'
     ).length;
     this.completedBookings = bookings.filter((booking: BookingDetailsDTO) => 
-      booking.bookingStatus?.toLowerCase() === 'completed'
+      booking.bookingStatus?.toLowerCase() === 'confirmed'
     ).length;
     
-    // Calculate revenue ONLY from completed bookings
-    const completedBookingsList = bookings.filter((booking: BookingDetailsDTO) => 
-      booking.bookingStatus?.toLowerCase() === 'completed'
+    // Calculate revenue ONLY from CONFIRMED bookings (changed from completed)
+    const confirmedBookingsList = bookings.filter((booking: BookingDetailsDTO) => 
+      booking.bookingStatus?.toLowerCase() === 'confirmed'
     );
     
-    this.totalRevenue = completedBookingsList.reduce((sum: number, booking: BookingDetailsDTO) => 
+    this.totalRevenue = confirmedBookingsList.reduce((sum: number, booking: BookingDetailsDTO) => 
       sum + (booking.totalPrice || 0), 0
     );
     
-    // Calculate profits based on completed bookings revenue - Website gets 10%, Host gets 90%
+    // Calculate profits based on confirmed bookings revenue - Website gets 10%, Host gets 90%
     this.websiteProfit = this.totalRevenue * 0.10;
     this.hostProfit = this.totalRevenue * 0.90;
   } else {
