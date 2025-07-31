@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChatSessionDto, MessageDto, ReservationRequest, ChatService } from '../../core/services/Message/message.service';
 import { HandleImgService } from '../../core/services/handleImg.service';
 import { SignalRService } from '../../core/services/SignalRService/signal-rservice';
+import { ConfirmService } from '../../core/services/confirm.service';
 
 @Component({
   selector: 'app-reservation-box',
@@ -41,12 +42,15 @@ export class ReservationBoxComponent implements OnInit, OnChanges {
     nights: 0,
     subtotal: '0.00 ج.م',
     taxes: '0.00 ج.م',
-    total: '0.00 ج.م'
+    total: '0.00 ج.م',
+    userName:'',
+    userAvatar:""
   };
 
   constructor(
     private chatService: ChatService,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    private confirm: ConfirmService,
   ) { }
 
   ngOnInit(): void {
@@ -65,6 +69,7 @@ export class ReservationBoxComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+
     if (changes['ReservationWithProperty'] && changes['ReservationWithProperty'].currentValue) {
       console.log("🟢 ReservationWithProperty changed:", changes['ReservationWithProperty'].currentValue);
       this.loadReservationData();
@@ -117,10 +122,16 @@ export class ReservationBoxComponent implements OnInit, OnChanges {
         // Host details
         hostName: data.chatSession?.hostName || '',
         hostReviews: `${data.proeprty?.reviewCount || 0} reviews`,
-        hostAvatar: data.proeprty?.hostPicture ?
+        hostAvatar: data.chatSession?.userAvatarUrl ?
           this.handleImgService.handleImage(data.proeprty.hostPicture) :
           'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg',
-
+          
+        // User Details
+        userName: data.chatSession?.userName || '',
+        userAvatar: data.proeprty?.userAvatarUrl ?
+          this.handleImgService.handleImage(data.proeprty.hostPicture) :
+          'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg',
+        
         // Check-in/out details
         checkIn: this.formatDate(data.latestReservationRequest?.checkInDate),
         checkOut: this.formatDate(data.latestReservationRequest?.checkOutDate),
@@ -219,5 +230,49 @@ export class ReservationBoxComponent implements OnInit, OnChanges {
   reportHost(): void {
     console.log('Report host clicked');
     // TODO: Implement report host functionality
+  }
+
+  acceptReservation(){
+    let requestId = this.ReservationWithProperty?.latestReservationRequest.id
+    console.log("Reservation requestId",requestId)
+    this.chatService
+      .accept(requestId)
+      .subscribe({
+        next:(res)=>{
+          if(res.data)
+          {
+            this.confirm.success("Request accepted","")
+            this.ReservationWithProperty.latestReservationRequest.requestStatus = 2
+
+            return 
+          }
+          this.confirm.fail(res.message,"")
+        },
+        error:(res)=>{
+          console.log(res)
+          this.confirm.fail("Somthing went wrong, try again!","");
+        }
+      })
+  }
+  declineReservation(){
+
+    let requestId = this.ReservationWithProperty?.latestReservationRequest.id
+    this.chatService
+      .decline(requestId)
+      .subscribe({
+        next:(res)=>{
+          if(res.data)
+          {
+            this.confirm.success("Request declined","")
+            this.ReservationWithProperty.latestReservationRequest.requestStatus = 3
+            return 
+          }
+          this.confirm.fail(res.message,"")
+        },
+        error:(res)=>{
+          console.log(res)
+          this.confirm.fail("Somthing went wrong, try again!","");
+        }
+      })
   }
 }

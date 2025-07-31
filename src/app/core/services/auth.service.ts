@@ -38,17 +38,17 @@ export class AuthService {
   }
 
   setAccessToken(token: string) {
-    this.cookieService.set(this.accessTokenKey, token, 7, '/');
+    this.cookieService.set(this.accessTokenKey, token, 100, '/');
     this.accessTokenSubject.next(token);
   }
 
   setRefreshToken(token: string) {
-    this.cookieService.set(this.refreshTokenKey, token, 7, '/');
+    this.cookieService.set(this.refreshTokenKey, token, 100, '/');
     this.refreshTokenSubject.next(token);
   }
 
   setUserId(userId: string) {
-    this.cookieService.set(this.userIdKey, userId, 7, '/');
+    this.cookieService.set(this.userIdKey, userId, 100, '/');
     this.userIdSubject.next(userId);
   }
 

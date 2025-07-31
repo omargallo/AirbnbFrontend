@@ -125,9 +125,16 @@
 
  
 </div>
-        <div class="report-listing">
-            <i class="fa-regular fa-flag"></i> <a href="#" class="report-link">Report this listing</a>
+        <div class="report-listing"
+        (click)="showViolationModalFn()"
+        >
+            <i class="fa-regular fa-flag"></i> <a class="report-link">Report this listing</a>
         </div>
+<app-violation-modal 
+    [show]="showViolationModal"
+    [propertyId]="propertyId"
+    (close)="closeViolationModal()"
+></app-violation-modal>
   
   
   

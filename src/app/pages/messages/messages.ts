@@ -95,17 +95,34 @@ export class Messages implements OnInit, OnDestroy {
       });
     } else {
       this.selectedChatSession = session;
-      this.messageService.getChatMessages(session.id, 1, 50).subscribe({
-        next: (messages: MessageDto[]) => {
-          this.initialMessages = messages || [];
-          this.isLoadingChat = false;
-        },
-        error: (err) => {
-          console.error('Error loading host messages:', err);
-          this.isLoadingChat = false;
-          this.initialMessages = [];
-        }
-      });
+      // this.messageService.getChatMessages(session.id, 1, 50).subscribe({
+      //   next: (messages: MessageDto[]) => {
+      //     this.initialMessages = messages || [];
+      //     this.isLoadingChat = false;
+      //   },
+      //   error: (err) => {
+      //     console.error('Error loading host messages:', err);
+      //     this.isLoadingChat = false;
+      //     this.initialMessages = [];
+      //   }
+      // });
+
+      this.messageService
+            .getSessionForHost(session.id)
+            .subscribe({
+              next:(res)=>{
+                console.log("chat for host ",res.data)
+                setTimeout(() => {
+                    this.selectedChatSession = res?.data?.chatSession;
+                    this.initialMessages = res?.data?.messages;
+                    this.ReservationWithProperty = res?.data;
+                    this.isLoadingChat = false;
+                  }, 200);
+              },
+              error:(res)=>{
+                  console.log(res)
+              }
+            })
     }
 
   }

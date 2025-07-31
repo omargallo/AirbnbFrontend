@@ -68,11 +68,11 @@
       >
         {{ getInquiryTitle() }}
       </h3>
-      <p class="inquiry-message">{{ reservation.hostMessage }}</p>
+      <p class="inquiry-message">{{ !selectedChatSession.isHost? reservation.hostMessage:'' }}</p>
 
       <!-- Action button based on status -->
       <button
-        *ngIf="isDeclined"
+        *ngIf="isDeclined && !selectedChatSession.isHost"
         class="keep-searching-btn"
         (click)="keepSearching()"
       >
@@ -81,11 +81,29 @@
       <button *ngIf="isPending" class="pending-btn" disabled>
         Waiting for response
       </button>
-      <button *ngIf="isApproved" class="approved-btn">
+      <button *ngIf="isApproved && !selectedChatSession.isHost" class="approved-btn">
         View booking details
       </button>
     </div>
-
+    <div 
+      *ngIf="selectedChatSession.isHost && isPending" 
+      class="d-flex justify-content-center mb-2">
+      <button 
+        class="btn btn-primary me-3 py-0 px-2 rounded-5 m-0" 
+        title="Accept"
+        (click)="acceptReservation()"
+        > 
+        <i class="bi bi-check fs-2 m-0 rounded-5">          
+        </i>
+      </button>
+      <button 
+        class="btn btn-secondary ms-3 py-0 px-2 rounded-5 m-0" 
+        title="Decline"
+        (click)="declineReservation()"
+        >
+         <i class="bi bi-x fs-2 m-0 rounded-5"></i>
+      </button>
+    </div>
     <!-- Trip Details Section -->
     <div class="trip-details-section" *ngIf="hasReservation">
       <h3 class="section-title">Trip Details</h3>
@@ -99,13 +117,24 @@
       </div>
 
       <!-- Host Info in Trip Details -->
-      <div class="host-info">
+      <div class="host-info" *ngIf="!selectedChatSession.isHost">
         <div class="host-details d-flex align-items-start justify-content-center gap-1 flex-column">
           <span class="host-label">Hosted by {{ reservation.hostName }}</span>
           <span class="host-reviews">{{ reservation.hostReviews }}</span>
         </div>
         <div class="host-avatar">
           <img [src]="reservation.hostAvatar" alt="Host" class="avatar-img" />
+          <div class="host-badge"></div>
+        </div>
+      </div>
+      <!-- User Info -->
+      <div class="host-info" *ngIf="selectedChatSession.isHost">
+        <div class="host-details d-flex align-items-start justify-content-center gap-1 flex-column">
+          <span class="host-label">Request by {{ reservation.userName }}</span>
+          <span class="host-reviews">{{ reservation.hostReviews }}</span>
+        </div>
+        <div class="host-avatar">
+          <img [src]="reservation.userAvatar" alt="Host" class="avatar-img" />
           <div class="host-badge"></div>
         </div>
       </div>
