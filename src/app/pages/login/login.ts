@@ -75,9 +75,12 @@ export class Login {
               console.log(res);
               localStorage.setItem('email', res.email);
               localStorage.setItem('user', JSON.stringify(res));
-              const message = `Welcome to Airbnb ${
-                res.firstName || res.userName
-              }`;
+              let message = '';
+              if (res.firstName === null) {
+                message = `Welcome to Airbnb`;
+              } else {
+                message = `Welcome to Airbnb ${res.firstName || res.userName}`;
+              }
               this.notificationService
                 .createNotification({
                   userId,
