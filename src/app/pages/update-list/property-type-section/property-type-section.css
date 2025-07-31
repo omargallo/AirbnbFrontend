@@ -80,9 +80,38 @@
   font-size: 14px;
   font-weight: 500;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  min-height: 60px;
+  min-height: 120px;
+  gap: 10px;
+}
+
+.icon-wrapper {
+  height: 45px;
+  width: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.property-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.property-label {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #222222;
+  word-break: break-word;
+}
+
+.check-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 
 .property-type-btn:hover {

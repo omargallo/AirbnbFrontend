@@ -1,8 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { Subscription } from 'rxjs';
 import { PropertyFormStorageService } from '../../services/property-form-storage.service';
+import { PropertyService, PropertyTypeDto } from '../../../../core/services/Property/property.service';
+import { HandleImgService } from '../../../../core/services/handleImg.service';
+import { ListingValidationService } from '../../../../core/services/ListingWizard/listing-validation.service';
 
 @Component({
   selector: 'app-step1-2-which-of',
@@ -13,53 +16,42 @@ import { PropertyFormStorageService } from '../../services/property-form-storage
 })
 export class Step12WhichOf implements OnInit, OnDestroy {
   private subscription!: Subscription;
-  propertyTypes = [
-    { name: 'House', icon: 'https://cdn-icons-png.flaticon.com/512/1946/1946488.png' },
-    { name: 'apartment', icon: 'https://cdn-icons-png.flaticon.com/512/17306/17306200.png' },
-    { name: 'Barn', icon: 'https://img.icons8.com/?size=100&id=11483&format=png&color=000000' },
-    { name: 'Bed & breakfast', icon: 'https://cdn-icons-png.flaticon.com/512/676/676020.png' },
-    { name: 'Boat', icon: 'https://img.icons8.com/?size=100&id=17857&format=png&color=000000' },
-    { name: 'Cabin', icon: 'https://img.icons8.com/?size=100&id=wQqzfT1j8jJc&format=png&color=000000' },
-    { name: 'Camper/RV', icon: 'https://cdn-icons-png.flaticon.com/512/1880/1880863.png' },
-    { name: 'Casa particular', icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTM0A4GPV6PDQHc-fW_fsYFkF9Yl86dZWhPvg&s' },
-    { name: 'Castle', icon: 'https://cdn-icons-png.flaticon.com/512/2717/2717310.png' },
-    { name: 'Cave', icon: 'https://cdn-icons-png.flaticon.com/512/4423/4423268.png' },
-    { name: 'Container', icon: 'https://img.icons8.com/?size=100&id=16796&format=png&color=000000' },
-    { name: 'Cycladic home', icon: 'https://www.svgrepo.com/show/489294/cycladic-home.svg' },
-    { name: 'Dammuso', icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyiAfza-7cLz59seWbbnxdWJsS9mFdyqS_HQ&s' },
-    { name: 'Dome', icon: 'https://png.pngtree.com/png-vector/20230421/ourmid/pngtree-dome-line-icon-vector-png-image_6718036.png' },
-    { name: 'Earth home', icon: 'https://cdn-icons-png.flaticon.com/512/2701/2701479.png' },
-    { name: 'Farm', icon: 'https://thumbs.dreamstime.com/b/black-line-icon-farm-land-ground-soil-earth-field-plot-farmland-169457723.jpg' },
-    { name: 'Guesthouse', icon: 'https://www.svgrepo.com/show/489304/guest-house.svg' },
-    { name: 'Hotel', icon: 'https://cdn-icons-png.flaticon.com/512/13061/13061464.png' },
-    { name: 'Houseboat', icon: 'https://cdn-icons-png.flaticon.com/512/9041/9041775.png' },
-    { name: 'Kezhan', icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdGmgvGZHes8_OGPc4_n_uCy6bYRI6VAWzyA&s' },
-    { name: 'Minsu', icon: 'https://www.svgrepo.com/show/489313/minsu.svg' },
-    { name: 'Riad', icon: 'https://static.vecteezy.com/system/resources/previews/050/718/360/non_2x/simple-black-and-white-icon-of-a-moroccan-riad-building-with-plants-vector.jpg' },
-    { name: 'Ryokan', icon: 'https://www.svgrepo.com/show/489320/ryokan.svg' },
-    { name: 'Shepherd\'s hut', icon: 'https://cdn.iconscout.com/icon/premium/png-256-thumb/shephers-hut-icon-download-in-svg-png-gif-file-formats--ryokan-japan-japanese-places-amenities-pack-user-interface-icons-11123693.png?f=webp&w=256' },
-    { name: 'Tent', icon: 'https://img.icons8.com/?size=100&id=2574&format=png&color=000000' },
-    { name: 'Tiny home', icon: 'https://img.icons8.com/?size=100&id=4xaQiLrwHm4L&format=png&color=000000' },
-    { name: 'Tower', icon: 'https://static.thenounproject.com/png/251444-200.png' },
-    { name: 'Treehouse', icon: 'https://static.thenounproject.com/png/1705999-200.png' },
-    { name: 'Trullo', icon: 'https://www.svgrepo.com/show/489330/trullo.svg' },
-    { name: 'Windmill', icon: 'https://img.icons8.com/?size=100&id=32429&format=png&color=000000' },
-    { name: 'Yurt', icon: 'https://img.freepik.com/premium-vector/yurt-vector-illustration_1186366-53086.jpg' }
-  ];
-
-  selectedType: { name: string, icon: string } = this.propertyTypes[0] || { name: 'House', icon: 'https://cdn-icons-png.flaticon.com/512/1946/1946488.png' };
+  isLoading = true;
+  error: string | null = null;
+  propertyTypes: PropertyTypeDto[] = [];
+  selectedType: PropertyTypeDto | null = null;
+  handleImgService = inject(HandleImgService);
 
   constructor(
     private formStorage: PropertyFormStorageService,
-    private wizardService: ListingWizardService
+    private wizardService: ListingWizardService,
+    private propertyService: PropertyService,
+    private validationService: ListingValidationService
   ) {}
 
   ngOnInit(): void {
-    // Load saved data
-    const savedData = this.formStorage.getStepData('step1-2');
-    if (savedData?.selectedType) {
-      this.selectedType = savedData.selectedType;
-    }
+    // Load property types from backend
+    this.isLoading = true;
+    this.propertyService.getAllPropertyTypes().subscribe({
+      next: (types) => {
+        this.propertyTypes = types;
+        this.isLoading = false;
+        // After loading types, restore any previously saved selection
+        const savedData = this.formStorage.getStepData('step1-2');
+        if (savedData?.selectedType) {
+          this.selectedType = this.propertyTypes.find(t => t.id === savedData.selectedType.id) || null;
+        }
+        // Validate step when initializing
+        this.validationService.validateStep('step1-2-which-of');
+      },
+      error: (err) => {
+        console.error('Failed to load property types:', err);
+        this.error = 'Failed to load property types. Please try again.';
+        this.isLoading = false;
+        // Mark step as invalid when there's an error
+        this.wizardService.updateStepValidation('step1-2', false);
+      }
+    });
 
     // Subscribe to next step event
     this.subscription = this.wizardService.nextStep$.subscribe(() => {
@@ -73,16 +65,26 @@ export class Step12WhichOf implements OnInit, OnDestroy {
     }
   }
 
-  selectType(type: { name: string, icon: string }) {
+  selectType(type: PropertyTypeDto) {
     this.selectedType = type;
     this.saveData();
+    // Manually trigger validation after saving
+    this.validationService.validateStep('step1-2-which-of');
   }
 
   private saveData(): void {
     // Save to property_form_data in storage
-    const data = {
-      selectedType: this.selectedType
-    };
+    const data = this.selectedType ? {
+      selectedType: this.selectedType,
+      propertyTypeId: this.selectedType.id
+    } : null;
+    
     this.formStorage.saveFormData('step1-2', data);
+  }
+
+  getPropertyTypeImg(image: string): string {
+    return this.handleImgService.handleImage(
+      image ? image : ''
+    );
   }
 }

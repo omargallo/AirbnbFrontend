@@ -73,16 +73,16 @@ export class PropertyTypeSectionComponent implements OnInit, OnDestroy {
           
           // Fallback to hardcoded types if API fails
           this.propertyTypes = [
-            { id: 1, name: 'House' },
-            { id: 2, name: 'Apartment' },
-            { id: 3, name: 'Condo' },
-            { id: 4, name: 'Villa' },
-            { id: 5, name: 'Townhouse' },
-            { id: 6, name: 'Cabin' },
-            { id: 7, name: 'Loft' },
-            { id: 8, name: 'Studio' },
-            { id: 9, name: 'Guesthouse' },
-            { id: 10, name: 'Hotel' }
+            { id: 1, name: 'House', iconURL: 'assets/images/property-types/house.png' },
+            { id: 2, name: 'Apartment', iconURL: 'assets/images/property-types/apartment.png' },
+            { id: 3, name: 'Condo', iconURL: 'assets/images/property-types/condo.png' },
+            { id: 4, name: 'Villa', iconURL: 'assets/images/property-types/villa.png' },
+            { id: 5, name: 'Townhouse', iconURL: 'assets/images/property-types/townhouse.png' },
+            { id: 6, name: 'Cabin', iconURL: 'assets/images/property-types/cabin.png' },
+            { id: 7, name: 'Loft', iconURL: 'assets/images/property-types/loft.png' },
+            { id: 8, name: 'Studio', iconURL: 'assets/images/property-types/studio.png' },
+            { id: 9, name: 'Guesthouse', iconURL: 'assets/images/property-types/guesthouse.png' },
+            { id: 10, name: 'Hotel', iconURL: 'assets/images/property-types/hotel.png' }
           ];
         }
       });

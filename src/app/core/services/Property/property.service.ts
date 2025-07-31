@@ -53,10 +53,11 @@ export interface PropertyImageDisplayDTO {
   propertyId: number;
 }
 
-// NEW: Property Type DTO interface
+// Property Type DTO interface
 export interface PropertyTypeDto {
   id: number;
   name: string;
+  iconURL: string;
 }
 
 export interface Country {
