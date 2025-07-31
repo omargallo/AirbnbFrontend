@@ -3,7 +3,7 @@
     <header class="page-header">
       <h1 class="page-title">Now, set a weekday base price</h1>
       <p class="page-subtitle">
-        Tip: $35. You’ll set a weekend price next.
+        Tip: $50. You’ll set a weekend price next.
       </p>
     </header>
 
@@ -13,9 +13,10 @@
         <input
           type="text"
           class="price-input"
-          maxlength="4"
+          maxlength="5"
           [value]="price"
           (input)="onPriceInput($event)"
+          (blur)="onPriceBlur($event)"
         />
       </div>
 

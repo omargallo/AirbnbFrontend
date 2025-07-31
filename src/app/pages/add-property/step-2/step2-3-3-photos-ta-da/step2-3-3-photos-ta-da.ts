@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { Subscription } from 'rxjs';
 import { PropertyFormStorageService } from '../../../add-property/services/property-form-storage.service';
+import { ListingValidationService } from '../../../../core/services/ListingWizard/listing-validation.service';
 
 @Component({
   selector: 'app-step2-3-3-photos-ta-da',
@@ -17,7 +18,8 @@ export class Step233PhotosTaDa implements OnInit, OnDestroy {
 
   constructor(
     private formStorage: PropertyFormStorageService,
-    private wizardService: ListingWizardService
+    private wizardService: ListingWizardService,
+    private validationService: ListingValidationService
   ) {}
 
   ngOnInit(): void {
@@ -35,6 +37,9 @@ export class Step233PhotosTaDa implements OnInit, OnDestroy {
     this.subscription = this.wizardService.nextStep$.subscribe(() => {
       this.saveFormData();
     });
+
+    // Initial validation
+    this.saveFormData();
   }
 
   ngOnDestroy(): void {
@@ -52,9 +57,11 @@ export class Step233PhotosTaDa implements OnInit, OnDestroy {
 
   private saveFormData(): void {
     const data = {
-      photos: this.photos
+      photos: this.photos,
+      isValid: this.photos.length >= 5
     };
     this.formStorage.saveFormData('step2-3-3', data);
+    this.validationService.validateStep('step2-3-3-photos-ta-da');
   }
 
   addPhotos(event: Event): void {
@@ -75,14 +82,22 @@ export class Step233PhotosTaDa implements OnInit, OnDestroy {
   }
 
   removePhoto(index: number): void {
-    this.photos.splice(index, 1);
+    // Only allow removal if we have more than 5 photos
+    if (this.photos.length > 5) {
+      // Clean up object URL if it's a blob
+      if (this.photos[index].startsWith('blob:')) {
+        URL.revokeObjectURL(this.photos[index]);
+      }
 
-    const currentFiles = this.formStorage.getImageFiles();
-    const updatedFiles = [...currentFiles];
-    updatedFiles.splice(index, 1);
-    this.formStorage.setImageFiles(updatedFiles);
+      this.photos.splice(index, 1);
 
-    this.saveFormData();
+      const currentFiles = this.formStorage.getImageFiles();
+      const updatedFiles = [...currentFiles];
+      updatedFiles.splice(index, 1);
+      this.formStorage.setImageFiles(updatedFiles);
+
+      this.saveFormData();
+    }
   }
 
   onDragStart(index: number): void {

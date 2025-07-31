@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { PropertyService, PropertyTypeDto } from '../../../core/services/Property/property.service';
+import { HandleImgService } from '../../../core/services/handleImg.service';
 
 export interface PropertyTypeSectionData {
   propertyTypeId: number;
@@ -30,11 +31,17 @@ export class PropertyTypeSectionComponent implements OnInit, OnDestroy {
   isLoadingPropertyTypes = false;
   propertyTypesError: string | null = null;
 
+  handleImgService = inject(HandleImgService);
+
   constructor(
     private fb: FormBuilder,
     private propertyService: PropertyService
   ) {
     this.initializeForm();
+  }
+
+  getPropertyTypeImg(url: string): string {
+    return this.handleImgService.handleImage(url);
   }
 
   ngOnInit(): void {
@@ -70,20 +77,6 @@ export class PropertyTypeSectionComponent implements OnInit, OnDestroy {
           console.error('Failed to load property types:', error);
           this.propertyTypesError = 'Failed to load property types';
           this.isLoadingPropertyTypes = false;
-          
-          // Fallback to hardcoded types if API fails
-          this.propertyTypes = [
-            { id: 1, name: 'House', iconURL: 'assets/images/property-types/house.png' },
-            { id: 2, name: 'Apartment', iconURL: 'assets/images/property-types/apartment.png' },
-            { id: 3, name: 'Condo', iconURL: 'assets/images/property-types/condo.png' },
-            { id: 4, name: 'Villa', iconURL: 'assets/images/property-types/villa.png' },
-            { id: 5, name: 'Townhouse', iconURL: 'assets/images/property-types/townhouse.png' },
-            { id: 6, name: 'Cabin', iconURL: 'assets/images/property-types/cabin.png' },
-            { id: 7, name: 'Loft', iconURL: 'assets/images/property-types/loft.png' },
-            { id: 8, name: 'Studio', iconURL: 'assets/images/property-types/studio.png' },
-            { id: 9, name: 'Guesthouse', iconURL: 'assets/images/property-types/guesthouse.png' },
-            { id: 10, name: 'Hotel', iconURL: 'assets/images/property-types/hotel.png' }
-          ];
         }
       });
   }

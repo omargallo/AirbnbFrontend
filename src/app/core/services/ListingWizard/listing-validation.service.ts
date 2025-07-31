@@ -47,6 +47,11 @@ export class ListingValidationService {
         );
         break;
 
+      case 'step3-2':
+        const step3BookingData = formData['step3-2'];
+        isValid = !!step3BookingData?.selected;
+        break;
+
       case 'step1-5-basic-about':
         const basicData = formData['step1-5'];
         isValid = !!(basicData?.guests && basicData?.bedrooms && basicData?.beds && basicData?.bathrooms);
@@ -58,15 +63,17 @@ export class ListingValidationService {
         break;
 
       case 'step2-3-1-add-photos':
-        const step23Data = formData['step2-3'];
-        isValid = !!(step23Data && 
-          ((step23Data.imageFiles && step23Data.imageFiles.length >= 5) ||
-           (step23Data.images && step23Data.images.length >= 5)));
+        isValid = true; // Always valid to allow proceeding
+        break;
+
+      case 'step2-3-3-photos-ta-da':
+        const photosTaDaData = formData['step2-3-3'];
+        isValid = !!(photosTaDaData?.photos && photosTaDaData.photos.length >= 5);
         break;
 
       case 'step2-4-title':
-        const title = formData['step2-4']?.title;
-        isValid = !!(title && title.length >= 5 && title.length <= 50);
+        const title = formData['step2-4']?.title?.trim();
+        isValid = !!(title && title.length >= 5 && title.length <= 20);
         break;
 
       case 'step2-6-description':
@@ -80,15 +87,23 @@ export class ListingValidationService {
         isValid = !!bookingData?.selected;
         break;
 
-      case 'step3-3-choose-welcome':
+      case 'step3-3':
         // Validate welcome message selection
         const welcomeData = formData['step3-3'];
         isValid = !!welcomeData?.selected;
+        this.canProceedSubject.next(isValid);
         break;
 
       case 'step3-4-1-pricing':
-        const price = formData['step3-4-1']?.price;
-        isValid = !!(price && price >= 10);
+        // Always valid since we enforce minimum price in the component
+        isValid = true;
+        this.canProceedSubject.next(true);
+        break;
+
+      case 'step3-4-2':
+        // Always valid since we want to allow proceeding
+        isValid = true;
+        this.canProceedSubject.next(true);
         break;
 
       case 'step3-4-2-pricing-tax':

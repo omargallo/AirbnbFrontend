@@ -53,7 +53,7 @@ html {
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  margin-left: 65px;
+  margin-right: 50px;
   color: #222;
 }
 
@@ -70,8 +70,8 @@ html {
   border: none;
   background: transparent;
   outline: none;
-  width: 240px; /* Adjust width as needed */
-  text-align: left;
+  width: 350px;
+  text-align: center;
   line-height: 1;
   padding: 0;
   letter-spacing: -3px;

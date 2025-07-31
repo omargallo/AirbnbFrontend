@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { PropertyFormStorageService } from '../../services/property-form-storage.service';
 import { AmenityService, AmenityDTO } from '../../../../core/services/Amenity/amenity.service';
 import { HandleImgService } from '../../../../core/services/handleImg.service';
+import { ListingValidationService } from '../../../../core/services/ListingWizard/listing-validation.service';
 import { createGlobalPositionStrategy } from '@angular/cdk/overlay';
 
 @Component({
@@ -29,7 +30,8 @@ export class Step22TellGuests implements OnInit, OnDestroy {
   constructor(
     private formStorage: PropertyFormStorageService,
     private wizardService: ListingWizardService,
-    private amenityService: AmenityService
+    private amenityService: AmenityService,
+    private validationService: ListingValidationService
   ) {}
 
   ngOnInit(): void {
@@ -57,6 +59,11 @@ export class Step22TellGuests implements OnInit, OnDestroy {
     this.subscription = this.wizardService.nextStep$.subscribe(() => {
       this.saveFormData();
     });
+
+    // Initial validation if there are saved selections
+    if (this.selectedAmenityIds.size > 0) {
+      this.validationService.validateStep('step2-2-tell-guests');
+    }
   }
 
   ngOnDestroy(): void {
@@ -76,6 +83,7 @@ export class Step22TellGuests implements OnInit, OnDestroy {
       this.selectedAmenityIds.add(amenity.id);
     }
     this.saveFormData();
+    this.validationService.validateStep('step2-2-tell-guests');
   }
 
   private saveFormData(): void {

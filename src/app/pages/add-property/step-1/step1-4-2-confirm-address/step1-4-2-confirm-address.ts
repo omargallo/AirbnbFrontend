@@ -1,9 +1,8 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import * as L from 'leaflet';
 import { PropertyFormStorageService } from '../../services/property-form-storage.service';
 import { ListingValidationService } from '../../../../core/services/ListingWizard/listing-validation.service';
 
@@ -14,11 +13,8 @@ import { ListingValidationService } from '../../../../core/services/ListingWizar
   templateUrl: './step1-4-2-confirm-address.html',
   styleUrl: './step1-4-2-confirm-address.css'
 })
-export class Step142ConfirmAddress implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
+export class Step142ConfirmAddress implements OnInit, OnDestroy {
   private subscription!: Subscription;
-  private map: L.Map | null = null;
-  private marker: L.Marker | null = null;
   // Address fields
   country: string = '';
   street: string = '';
@@ -97,49 +93,9 @@ export class Step142ConfirmAddress implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {
-    this.initMap();
-  }
-
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
-    }
-    if (this.map) {
-      this.map.remove();
-    }
-  }
-
-  private initMap(): void {
-    if (this.mapContainer && this.mapContainer.nativeElement && !this.map) {
-      this.map = L.map(this.mapContainer.nativeElement, {
-        center: [this.latitude || 26.82055, this.longitude || 30.8025],
-        zoom: 15,
-        zoomControl: true,
-        attributionControl: false,
-        dragging: false,
-        scrollWheelZoom: false,
-        touchZoom: false
-      });
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-      }).addTo(this.map);
-
-      if (this.latitude && this.longitude) {
-        this.addMarker(this.latitude, this.longitude);
-      }
-    }
-  }
-
-  private addMarker(lat: number, lng: number): void {
-    if (this.map) {
-      if (this.marker) {
-        this.marker.remove();
-      }
-
-      this.marker = L.marker([lat, lng]).addTo(this.map);
-      this.map.setView([lat, lng], 15);
     }
   }
 
