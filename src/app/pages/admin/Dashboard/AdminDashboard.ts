@@ -6,10 +6,9 @@ import { UsersComponent } from '../pages/users/users';
 import { Bookings } from '../pages/booking/bookings';
 import { Property } from "../pages/property/property";
 import { DashboarDetails } from '../pages/dashboard-details/dashboard-details';
-import { AnalyticsComponent } from '../pages/analytics/analytics'; 
+import { AnalyticsComponent } from '../pages/analytics/analytics';
 import { ViolationsComponent } from '../pages/violations/violations';
-
-
+import { PaymentsComponent } from '../pages/payments/payments';
 
 export interface AdminSection {
   id: string;
@@ -20,22 +19,23 @@ export interface AdminSection {
 
 @Component({
   selector: 'app-AdminDashboard',
-  standalone: true, 
+  standalone: true,
   imports: [
-    CommonModule, 
-    UsersComponent, 
+    CommonModule,
+    UsersComponent,
     Bookings,
     DashboarDetails,
     Property,
-    AnalyticsComponent ,
-     ViolationsComponent 
-  ],    
+    AnalyticsComponent,
+    ViolationsComponent,
+    PaymentsComponent
+  ],
   templateUrl: './AdminDashboard.html',
   styleUrls: ['./AdminDashboard.css']
 })
 export class AdminDashboard implements OnInit {
   activeSection: string = 'dashboard';
-    
+
   adminSections: AdminSection[] = [
     {
       id: 'dashboard',
@@ -62,18 +62,23 @@ export class AdminDashboard implements OnInit {
       isActive: false
     },
     {
-      id: 'analytics',
-      name: 'Analytics',
-      icon: 'fas fa-chart-bar',  
+      id: 'payments',
+      name: 'Payments',
+      icon: 'fas fa-money-check-alt',
       isActive: false
     },
     {
-      id:'violations',
+      id: 'analytics',
+      name: 'Analytics',
+      icon: 'fas fa-chart-bar',
+      isActive: false
+    },
+    {
+      id: 'violations',
       name: 'Violations',
       icon: 'fas fa-exclamation-triangle',
       isActive: false
     }
-    
   ];
 
   constructor(private router: Router) {}
@@ -81,14 +86,17 @@ export class AdminDashboard implements OnInit {
   ngOnInit(): void {
     this.setActiveSection('dashboard'); // Set dashboard as default
   }
+
   setActiveSection(sectionId: string): void {
     this.adminSections.forEach(section => section.isActive = false);
-            const section = this.adminSections.find(s => s.id === sectionId);
+    
+    const section = this.adminSections.find(s => s.id === sectionId);
     if (section) {
       section.isActive = true;
       this.activeSection = sectionId;
     }
   }
+
   onMenuSectionClick(section: AdminSection): void {
     this.setActiveSection(section.id);
   }

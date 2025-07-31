@@ -10,10 +10,10 @@
       </div>
       <nav class="sidebar-nav">
         <ul class="nav-list">
-          <li 
-             *ngFor="let section of adminSections; trackBy: trackBySection"
-            class="nav-item" 
-             [class.active]="section.isActive"
+          <li
+            *ngFor="let section of adminSections; trackBy: trackBySection"
+            class="nav-item"
+            [class.active]="section.isActive"
             (click)="onMenuSectionClick(section)">
             <a class="nav-link">
               <div class="nav-icon">
@@ -38,27 +38,38 @@
       </div>
     </div>
   </div>
+
   <!-- Main Content -->
   <div class="main-content">
     <div *ngIf="activeSection === 'dashboard'" class="content-section">
       <app-dashboard></app-dashboard>
     </div>
+    
     <!-- Users Section -->
     <div *ngIf="activeSection === 'users'" class="content-section">
       <app-users></app-users>
     </div>
+    
     <!-- Properties Section -->
-    <div *ngIf="activeSection === 'properties'" class="content-section">           
+    <div *ngIf="activeSection === 'properties'" class="content-section">
       <app-property></app-property>
     </div>
+    
     <!-- Bookings Section -->
     <div *ngIf="activeSection === 'bookings'" class="content-section">
       <app-bookings></app-bookings>
     </div>
+    
+    <!-- Payments Section -->
+    <div *ngIf="activeSection === 'payments'" class="content-section">
+      <app-payments></app-payments>
+    </div>
+    
     <!-- Analytics Section -->
     <div *ngIf="activeSection === 'analytics'" class="content-section">
       <app-analytics></app-analytics>
     </div>
+    
     <!-- Violations Section -->
     <div *ngIf="activeSection === 'violations'" class="content-section">
       <app-violations></app-violations>
