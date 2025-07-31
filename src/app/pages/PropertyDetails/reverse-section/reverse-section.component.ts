@@ -1,3 +1,4 @@
+import { DialogService } from './../../../core/services/dialog.service';
 import { CommonPropInfoService } from './../../property-info/common-prop-info-service';
 import { CommonModule } from '@angular/common';
 import { Property } from './../../../core/models/Property'; // Assuming this path is correct
@@ -16,16 +17,17 @@ import { ChatService } from '../../../core/services/Message/message.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentService } from '../../../core/services/payment/payment';
 import { AuthService } from '../../../core/services/auth.service';
+import { ViolationModal } from "../violation-modal/violation-modal";
 
 @Component({
   selector: 'app-reverse-section',
-  imports: [CommonModule, FormsModule,NgxDaterangepickerMd], 
+  imports: [CommonModule, FormsModule, NgxDaterangepickerMd, ViolationModal], 
   templateUrl: './reverse-section.component.html',
   styleUrls: ['./reverse-section.component.css']
 })
 
 export class ReverseSectionComponent implements OnInit ,OnChanges {
-  
+  showViolationModal:boolean = false
 constructor(
   private propertyService: PropertyService,
   private bookingService: BookingService ,
@@ -36,7 +38,8 @@ constructor(
   private route: ActivatedRoute,  // used to read current route params
   private router: Router ,    
   private   paymentService :PaymentService,
-  private auth :AuthService
+  private auth :AuthService,
+  private dialogService:DialogService
 ) {}
   
     @Input() checkIn?: dayjs.Dayjs;
@@ -564,6 +567,18 @@ findClosestAvailableRange(start: Date, allDays: any[]): { start: Date, end: Date
 
 
 
+  showViolationModalFn(){
+    if(!this.auth.accessToken && !this.auth.refreshToken){
+        this.dialogService.openDialog("login")
+        return;
+    }
+    console.log(this.showViolationModal)
+    this.showViolationModal = true;
+  }
+
+  closeViolationModal(){
+    this.showViolationModal= false
+  }
 }
 
 

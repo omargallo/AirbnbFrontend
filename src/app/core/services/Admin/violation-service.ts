@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment.development';
+import { Result } from '../Wishlist/wishlist.service';
 
 export interface PropertyViolationDetailsDTO {
   id: number;
@@ -26,6 +27,13 @@ export interface UpdateViolationDTO {
   status: string;
 }
 
+export interface SubmitViolationDTO{
+  
+  reason: string,
+  userId: string,
+  propertyId: number
+
+}
 export interface ApiResponse<T> {
   data: T;
   isSuccess: boolean;
@@ -102,5 +110,12 @@ export class ViolationService {
   getStatusLabel(status: string): string {
     const statusOption = this.getStatusOptions().find(option => option.value === status);
     return statusOption?.label || status;
+  }
+
+  sendViolation(violationDto:SubmitViolationDTO):Observable<Result<string>>{
+    return this.http.post<Result<string>>(this.baseUrl,violationDto)
+  }
+  canSubmit(propertyId:number):Observable<Result<boolean>>{
+    return this.http.get<Result<boolean>>(`${this.baseUrl}/can-submit/${propertyId}`)
   }
 }

@@ -1,0 +1,71 @@
+<div>
+    <div 
+    class="modal-overlay" 
+    *ngIf="!isLoading  && show" 
+    (click)="closeModal()">
+    <div 
+      class="modal-container" 
+      (click)="$event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i class="fas fa-edit"></i>
+          Submit Violation 
+        </h3>
+        <button 
+          class="modal-close" 
+          (click)="closeModal()"
+          aria-label="Close modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <!-- Edit Form -->
+      <div class="modal-content">
+        <form class="edit-form" (ngSubmit)="saveViolation()">          
+          <div class="form-group">
+            <label class="form-label">Violation</label>
+            <textarea 
+              class="form-control textarea"
+              [formControl]= "vaiolationText" 
+              name="vaiolationText"
+              placeholder="Add vailation about this property or the host..."
+              rows="5">
+            </textarea>
+            <div 
+                class="d-flex justify-content-end small"
+                *ngIf="vaiolationText.errors"
+                ><span class="small text-danger">can't be empty</span></div>
+
+          </div>
+        </form>
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button 
+          class="btn btn-primary" 
+          (click)="saveViolation()"
+          [disabled]="isLoading">
+          <i class="fas fa-save" [class.fa-spin]="isLoading"></i>
+          Submit violation
+        </button>
+        <!-- <button 
+          class="btn btn-secondary" 
+          (click)="closeModal()">
+          <i class="fas fa-times"></i>
+          Cancel
+        </button> -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Loading Overlay -->
+  <div class="loading-overlay" *ngIf="isLoading && canSubmit == undefined && show">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Loading violations...</p>
+    </div>
+  </div>
+</div>

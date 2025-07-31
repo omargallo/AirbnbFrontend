@@ -27,6 +27,7 @@ export interface ChatSessionDto {
   unreadCount: number;
   hasPendingRequests: boolean;
   isActive: boolean;
+  isHost:boolean
 }
 
 export interface ReactionUser {
@@ -186,4 +187,19 @@ export class ChatService {
   reserveProperty(request: ReservePropertyRequest): Observable<Result<ReservePropertyResponse>> {
     return this.http.post<Result<ReservePropertyResponse>>(`${this.baseUrl}/reserve`, request);
   }
+
+  getSessionForHost(sessionId:string):Observable<Result<ReservePropertyResponse>>{
+    return this.http
+              .get<Result<ReservePropertyResponse>>(`${this.baseUrl}/session/host/${sessionId}`)
+  }
+  
+  accept(requestId:string):Observable<Result<boolean>>{
+    return this.http
+              .post<Result<boolean>>(`${this.baseUrl}/accept/${requestId}`,{})
+  }
+  decline(requestId:string):Observable<Result<boolean>>{
+    return this.http
+              .post<Result<boolean>>(`${this.baseUrl}/decline/${requestId}`,{})
+  }
+
 }
