@@ -42,10 +42,12 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (this.data) {
       this.internalData = { ...this.data };
-      this.loadPropertyImages(); 
+      this.loadPropertyImages().catch(error => {
+        console.error('Failed to load initial images:', error);
+      });
     }
     
-    // UPDATED: Initial validation check
+    // Initial validation check
     this.updateValidation();
   }
 
@@ -59,7 +61,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
     this.previewUrls.clear();
   }
 
-  // NEW: Method to check if section is valid (has at least 5 photos)
+  // Method to check if section is valid (has at least 5 photos)
   private updateValidation(): void {
     const totalPhotos = this.getTotalPhotoCount();
     const isValid = totalPhotos >= 5;
@@ -97,7 +99,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
       console.warn(`Maximum ${maxPhotos} photos allowed`);
     }
 
-    // UPDATED: Emit changes and validation
+    // Emit changes and validation
     this.updateHasChanges();
     this.updateValidation();
     event.target.value = '';
@@ -119,7 +121,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
     }
     this.selectedFiles.splice(index, 1);
     this.updateHasChanges();
-    this.updateValidation(); // UPDATED: Check validation after removing file
+    this.updateValidation();
   }
 
   clearSelectedFiles() {
@@ -132,7 +134,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
     });
     this.selectedFiles = [];
     this.updateHasChanges();
-    this.updateValidation(); // UPDATED: Check validation after clearing files
+    this.updateValidation();
   }
 
   // Toggle delete mode
@@ -141,7 +143,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
     if (!this.deleteMode) {
       this.imagesToDelete.clear();
       this.updateHasChanges();
-      this.updateValidation(); // UPDATED: Check validation when exiting delete mode
+      this.updateValidation();
     }
   }
 
@@ -153,7 +155,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
       this.imagesToDelete.add(imageId);
     }
     this.updateHasChanges();
-    this.updateValidation(); // UPDATED: Check validation when toggling deletion
+    this.updateValidation();
   }
 
   // Check if image is selected for deletion
@@ -167,7 +169,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
 
     const imageIds = Array.from(this.imagesToDelete);
     
-    // UPDATED: Check minimum images considering the 5 image requirement
+    // Check minimum images considering the 5 image requirement
     const remainingImages = (this.internalData.photos?.length || 0) - imageIds.length;
     if (remainingImages < 5) {
       alert('You must keep at least 5 photos for your property.');
@@ -203,7 +205,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
           this.dataChange.emit({ ...this.internalData! });
           this.saveComplete.emit();
           this.updateHasChanges();
-          this.updateValidation(); // UPDATED: Check validation after successful delete
+          this.updateValidation();
           
         } else {
           const message = result?.message || 'Delete operation failed';
@@ -237,7 +239,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
           this.dataChange.emit({ ...this.internalData! });
           this.saveComplete.emit();
           this.updateHasChanges();
-          this.updateValidation(); // UPDATED: Check validation after successful delete
+          this.updateValidation();
           return;
         }
         
@@ -297,16 +299,20 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
         } else if (event.type === HttpEventType.Response) {
           console.log('Upload successful!', event.body);
           
-          // Clear selected files
+          // Clear selected files first
           this.clearSelectedFiles();
           this.uploading = false;
           this.uploadProgress = 0;
           
-          // Notify parent that save is complete
-          this.saveComplete.emit();
-          
-          // Reload images to get updated list
-          this.loadPropertyImages();
+          // FIXED: Wait for image reload to complete before emitting saveComplete
+          this.loadPropertyImages().then(() => {
+            // Only emit saveComplete after images are reloaded
+            this.saveComplete.emit();
+          }).catch((error) => {
+            console.error('Failed to reload images after upload:', error);
+            // Still emit saveComplete even if reload fails to prevent hanging
+            this.saveComplete.emit();
+          });
         }
       },
       error: (error: HttpErrorResponse) => {
@@ -327,29 +333,37 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
     });
   }
 
-  private loadPropertyImages() {
-    if (this.internalData?.propertyId) {
-      console.log('Loading images for property:', this.internalData.propertyId);
-      
-      this.propertyService.getImagesByPropertyId(this.internalData.propertyId).subscribe({
-        next: (images) => {
-          console.log('Loaded images:', images);
-          
-          if (this.internalData) {
-            this.internalData.photos = images;
+  // UPDATED: Make loadPropertyImages return a Promise
+  private loadPropertyImages(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.internalData?.propertyId) {
+        console.log('Loading images for property:', this.internalData.propertyId);
+        
+        this.propertyService.getImagesByPropertyId(this.internalData.propertyId).subscribe({
+          next: (images) => {
+            console.log('Loaded images:', images);
             
-            // Emit the updated data to parent
-            this.dataChange.emit({ ...this.internalData });
+            if (this.internalData) {
+              this.internalData.photos = images;
+              
+              // Emit the updated data to parent
+              this.dataChange.emit({ ...this.internalData });
+              
+              // Check validation after loading images
+              this.updateValidation();
+            }
             
-            // UPDATED: Check validation after loading images
-            this.updateValidation();
+            resolve(); // Resolve the promise when images are loaded
+          },
+          error: (err) => {
+            console.error('Failed to reload images:', err);
+            reject(err); // Reject the promise on error
           }
-        },
-        error: (err) => {
-          console.error('Failed to reload images:', err);
-        }
-      });
-    }
+        });
+      } else {
+        resolve(); // Resolve immediately if no property ID
+      }
+    });
   }
 
   getTotalPhotoCount(): number {
@@ -361,7 +375,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
   // Method to handle external save trigger (called by parent)
   handleSave(): Promise<void> {
     return new Promise((resolve, reject) => {
-      // UPDATED: Check validation before saving
+      // Check validation before saving
       if (this.getTotalPhotoCount() < 5) {
         reject(new Error('At least 5 photos are required'));
         return;
