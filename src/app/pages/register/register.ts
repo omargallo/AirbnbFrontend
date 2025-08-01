@@ -21,7 +21,10 @@ export class Register {
 
   dialogService = inject(DialogService);
 
-  constructor(private userService: UserService, private snackBar: MatSnackBar) {}
+  constructor(
+    private userService: UserService,
+    private snackBar: MatSnackBar
+  ) {}
   private showToast(
     message: string,
     vertical: 'top' | 'bottom',
@@ -36,6 +39,21 @@ export class Register {
   }
 
   onRegister() {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{12,}$/;
+    if (!passwordRegex.test(this.password)) {
+      this.showToast(
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 12 characters long.',
+        'bottom',
+        'left'
+      );
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(this.email)) {
+      this.showToast('Please enter a valid email address', 'bottom', 'left');
+      return;
+    }
     this.userService
       .register({ email: this.email, password: this.password })
       .subscribe({
@@ -45,7 +63,7 @@ export class Register {
           this.close();
           this.dialogService.openDialog('confirmOtp');
           (window as any).startOtpTimerR?.();
-          localStorage.removeItem('user')
+          localStorage.removeItem('user');
         },
         error: (err) => {
           this.showToast('Register failed', 'bottom', 'left');
