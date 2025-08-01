@@ -1,7 +1,12 @@
 <div class="d-flex align-items-center position-relative">
-  <a class="switch-to-hosting-btn d-none d-lg-block" routerLink="/host">{{
-    "HEADER.SWITCH_TO_HOSTING" | translate
-  }}</a>
+  <a class="switch-to-hosting-btn d-none d-lg-block" (click)="switchMode()">
+    {{
+      currentRoute.includes("/host")
+        ? ("HEADER.SWITCH_TO_TRAVELLER" | translate)
+        : ("HEADER.SWITCH_TO_HOSTING" | translate)
+    }}
+  </a>
+
   <div class="dropdown" [ngClass]="{ show: dropdownOpen }">
     <button
       class="user-menu-button"
@@ -43,6 +48,48 @@
       }"
       (animationend)="onAnimationEnd()"
     >
+      <!-- يظهر فقط على الشاشات الصغيرة وفي وضع /host -->
+      <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          routerLink="/today"
+        >
+          <i class="bi bi-calendar-day"></i> Today
+        </a>
+      </li>
+      <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          routerLink="/hostsettings/availability"
+        >
+          <i class="bi bi-calendar3"></i> Calendar
+        </a>
+      </li>
+      <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          routerLink="/host"
+        >
+          <i class="bi bi-house-door"></i> Listings
+        </a>
+      </li>
+      <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          routerLink="/hostsettings/Messages"
+        >
+          <i class="bi bi-chat-dots"></i> Messages
+        </a>
+      </li>
+      <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          routerLink="/hostsettings/Wallet"
+        >
+          <i class="bi bi-wallet2"></i> Wallet
+        </a>
+      </li>
+
       <li *ngIf="isLoggedIn">
         <a
           class="dropdown-item d-flex align-items-center gap-2"

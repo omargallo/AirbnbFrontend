@@ -179,3 +179,15 @@
   fill: none;
   stroke: currentColor;
 }
+
+.nav-middle {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+@media (max-width: 991px) {
+  .nav-middle {
+    display: none !important;
+  }
+}

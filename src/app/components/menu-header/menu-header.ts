@@ -8,13 +8,14 @@ import {
 } from '@angular/core';
 import { LangService } from '../../core/services/lang.service';
 import { ThemeService } from '../../core/services/theme.service';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { UserService } from '../../core/services/User/user.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { AuthService } from '../../core/services/auth.service';
 import { HandleImgService } from '../../core/services/handleImg.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-menu-header',
@@ -29,6 +30,7 @@ export class MenuHeader implements AfterViewInit, OnInit {
   dialogService = inject(DialogService);
   authService = inject(AuthService);
   isMessagesRoute = false;
+  currentRoute: string = '';
 
   constructor(
     public lang: LangService,
@@ -36,7 +38,21 @@ export class MenuHeader implements AfterViewInit, OnInit {
     private elementRef: ElementRef,
     private router: Router,
     private userService: UserService
-  ) {}
+  ) {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.currentRoute = event.urlAfterRedirects;
+      });
+  }
+
+  switchMode() {
+    if (this.currentRoute.includes('/host')) {
+      this.router.navigate(['/']); // Navigate to traveller mode
+    } else {
+      this.router.navigate(['/host']); // Navigate to host mode
+    }
+  }
 
   userId: any = (() => {
     const userId = this.authService.userId;
