@@ -271,7 +271,7 @@ export class ReservationBoxComponent implements OnInit, OnChanges {
         },
         error:(res)=>{
           console.log(res)
-          this.confirm.fail("Somthing went wrong, try again!","");
+          this.confirm.fail(res?.errors[0]?.data??"Somthing went wrong, try again!","");
         }
       })
   }
