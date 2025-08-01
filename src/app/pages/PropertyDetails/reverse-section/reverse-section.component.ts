@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Property } from './../../../core/models/Property'; // Assuming this path is correct
 import { PropertyService } from './../../../core/services/Property/property.service';
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, output, Output, ViewChild, viewChild, input, AfterViewInit } from '@angular/core';
-import { BookingService } from '../../../core/services/Booking/booking.service';
+import { BookingDTO, BookingService } from '../../../core/services/Booking/booking.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalendarAvailabilityDto, CalendarAvailabilityService } from '../../../core/services/CalendarAvailability/calendar-availability.service';
 import { OnChanges, SimpleChanges } from '@angular/core';
@@ -524,13 +524,16 @@ findClosestAvailableRange(start: Date, allDays: any[]): { start: Date, end: Date
     // this.isDateRangeAvailable = allAvailable;
       // if(startDate ==undefined || endDate == undefined) return;
       this.calculateTotalPrice(); // assumes this.totalPrice is calculated
-      let userId=this.auth.userId;
+    //   let userId=this.auth.userId;
 
-      if(!userId){
-        console.log("there is no userid") //login
-        return;
-      }
-    //     let bookingDTO: BookingDTO = {
+    //   if (!this.auth.accessToken || !userId ) 
+    //     {
+    //       console.log("User not logged in. Opening login dialog..."); 
+    //       // this.dialogService.openDialog('login');
+    //       return;
+    //     }
+
+    //   let bookingDTO: BookingDTO = {
     //       propertyId: this.propertyId,
     //       userId:userId,
     //       checkInDate: startDate.toDate().toUTCString(),
@@ -544,11 +547,11 @@ findClosestAvailableRange(start: Date, allDays: any[]): { start: Date, end: Date
     //   const bookingId = bookingRes.data.id;
     //   const totalAmount = bookingRes.data.totalPrice;
 
-    //   this.paymentService.createCheckoutSession(bookingId, totalAmount, 'usd').subscribe({
+    //   this.paymentService.createCheckout(bookingId).subscribe({
     //     next: (res) => {
     //       console.log("payment service ",res);
 
-    //       window.location.href = res.data.checkoutUrl;
+    //       window.location.href = res.url;
 
     //     },
     //     error: (err) => {
@@ -559,6 +562,45 @@ findClosestAvailableRange(start: Date, allDays: any[]): { start: Date, end: Date
     // });
 
   }
+
+  // reserveFunction() :void{
+  //       let userId=this.auth.userId;
+
+  //     if (!this.auth.accessToken || !userId ) 
+  //       {
+  //         console.log("User not logged in. Opening login dialog..."); 
+  //         // this.dialogService.openDialog('login');
+  //         return;
+  //       }
+
+  //     let bookingDTO: BookingDTO = {
+  //         propertyId: this.propertyId,
+  //         userId:userId,
+  //         checkInDate: startDate.toDate().toUTCString(),
+  //         checkOutDate: endDate.toDate().toUTCString(),
+  //         numberOfGuests: guestCount,
+  //       };
+        
+  //   this.bookingService.createBooking(bookingDTO).subscribe(bookingRes => {
+  //       console.log("booking result" ,bookingRes);
+      
+  //     const bookingId = bookingRes.data.id;
+  //     const totalAmount = bookingRes.data.totalPrice;
+
+  //     this.paymentService.createCheckout(bookingId).subscribe({
+  //       next: (res) => {
+  //         console.log("payment service ",res);
+
+  //         window.location.href = res.url;
+
+  //       },
+  //       error: (err) => {
+  //         console.error("Checkout session creation failed", err);
+  //       }
+  //     });
+
+  //   });
+  // }
 
 
 
@@ -579,6 +621,7 @@ findClosestAvailableRange(start: Date, allDays: any[]): { start: Date, end: Date
   closeViolationModal(){
     this.showViolationModal= false
   }
+
 }
 
 

@@ -84,7 +84,7 @@ onSave() {
     // Proceed to save
     console.log('Saved!');
   } else {
-    // 🔓 Open login dialog instead of navigating
+    
     this.dialogService.openDialog('login');
   }
 }
