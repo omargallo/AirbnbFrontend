@@ -6,6 +6,7 @@ import { ListingWizardService } from '../../core/services/ListingWizard/listing-
 import { PropertyCreationService } from '../../core/services/Property/property-creation.service';
 import { PropertyFormStorageService } from '../../pages/add-property/services/property-form-storage.service';
 import { ListingValidationService } from '../../core/services/ListingWizard/listing-validation.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-listing-wizard-layout',
@@ -58,7 +59,8 @@ export class ListingWizardLayoutComponent {
     private formStorage: PropertyFormStorageService,
     private wizardService: ListingWizardService,
     private propertyCreationService: PropertyCreationService,
-    private validationService: ListingValidationService
+    private validationService: ListingValidationService,
+    private snackBar: MatSnackBar
   ) {
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
@@ -70,6 +72,19 @@ export class ListingWizardLayoutComponent {
 
     this.validationService.canProceed$.subscribe(canProceed => {
       this.canProceed = canProceed;
+    });
+  }
+
+  private showToast(
+    message: string,
+    vertical: 'top' | 'bottom',
+    horizontal: 'left' | 'right'
+  ) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: horizontal,
+      verticalPosition: vertical,
+      panelClass: ['custom-snackbar'],
     });
   }
 
@@ -104,7 +119,7 @@ export class ListingWizardLayoutComponent {
 
     if (!hasImages) {
       console.error('❌ No images found!');
-      alert('Please upload at least one image before submitting the property.');
+      this.showToast('Please upload at least one image before submitting the property.', 'bottom', 'left');
       return;
     }
 
@@ -126,7 +141,7 @@ export class ListingWizardLayoutComponent {
       },
       error: (error) => {
         console.error('❌ Error creating property:', error);
-        alert('Failed to create property: ' + error.message);
+        this.showToast('Failed to create property: ' + error.message, 'bottom', 'left');
       }
     });
   }
@@ -168,7 +183,7 @@ export class ListingWizardLayoutComponent {
   navigateToNextStep(): void {
     const currentIndex = this.getCurrentStepIndex();
     const currentRoute = this.stepRoutes[currentIndex];
-    
+
     if (currentRoute && !this.validationService.validateStep(currentRoute)) {
       return; // Stop if validation fails
     }

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogService } from '../../core/services/dialog.service';
 import { UserService } from '../../core/services/User/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-reset-password',
@@ -21,22 +22,37 @@ export class ResetPassword {
   resendDisabled: boolean = true;
   timerInterval: any;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService,     private snackBar: MatSnackBar
+) {}
+
+  private showToast(
+    message: string,
+    vertical: 'top' | 'bottom',
+    horizontal: 'left' | 'right'
+  ) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: horizontal,
+      verticalPosition: vertical,
+      panelClass: ['custom-snackbar'],
+    });
+  }
+
   onResetPassword() {
     const email = localStorage.getItem('email');
     if (!email) {
-      alert('Email not found');
+      this.showToast('Email not found', 'bottom', 'left');
       return;
     }
     this.userService
       .resetPass({ email, newPassword: this.password, code: this.otp })
       .subscribe({
         next: () => {
-          alert('Password reset successfully');
+          this.showToast('Password reset successfully', 'bottom', 'left');
           this.close();
         },
         error: (err) => {
-          alert('Password reset failed');
+          this.showToast('Password reset failed', 'bottom', 'left');
           console.error(err);
         },
       });

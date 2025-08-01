@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogService } from '../../core/services/dialog.service';
 import { UserService } from '../../core/services/User/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-confirm-otp',
@@ -20,6 +21,20 @@ export class ConfirmOtp {
   timer: number = 60;
   resendDisabled: boolean = true;
   timerInterval: any;
+
+  constructor(private snackBar: MatSnackBar) {}
+  private showToast(
+    message: string,
+    vertical: 'top' | 'bottom',
+    horizontal: 'left' | 'right'
+  ) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: horizontal,
+      verticalPosition: vertical,
+      panelClass: ['custom-snackbar'],
+    });
+  }
 
   ngAfterViewInit(): void {
     (window as any).startOtpTimerR = () => {
@@ -72,12 +87,12 @@ export class ConfirmOtp {
 
     this.userService.confirmOtp({ email, code: this.otp }).subscribe({
       next: () => {
-        alert('OTP verified successfully');
+        this.showToast('OTP verified successfully', 'bottom', 'left');
         this.close();
         this.dialogService.openDialog('login');
       },
       error: (err) => {
-        alert('OTP verification failed');
+        this.showToast('OTP verification failed', 'bottom', 'left');
         console.error(err);
       },
     });

@@ -1,9 +1,17 @@
-import { Component, Input, Output, EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment.development';
 import { PropertyService } from '../../../core/services/Property/property.service';
 import { PropertyImage } from '../../../core/models/PropertyImage';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface PhotosSectionData {
   photos: PropertyImage[];
@@ -32,27 +40,43 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
   deleting: boolean = false;
   baseUrl = environment.base;
   private previewUrls: Map<File, string> = new Map();
-  
+
   // Track images to be deleted
   imagesToDelete: Set<number> = new Set();
   deleteMode: boolean = false;
 
-  constructor(private propertyService: PropertyService) {}
+  constructor(
+    private propertyService: PropertyService,
+    private snackBar: MatSnackBar
+  ) {}
+
+  private showToast(
+    message: string,
+    vertical: 'top' | 'bottom',
+    horizontal: 'left' | 'right'
+  ) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: horizontal,
+      verticalPosition: vertical,
+      panelClass: ['custom-snackbar'],
+    });
+  }
 
   ngOnInit(): void {
     if (this.data) {
       this.internalData = { ...this.data };
-      this.loadPropertyImages().catch(error => {
+      this.loadPropertyImages().catch((error) => {
         console.error('Failed to load initial images:', error);
       });
     }
-    
+
     // Initial validation check
     this.updateValidation();
   }
 
   ngOnDestroy(): void {
-    this.selectedFiles.forEach(file => {
+    this.selectedFiles.forEach((file) => {
       const url = this.previewUrls.get(file);
       if (url) {
         URL.revokeObjectURL(url);
@@ -70,11 +94,11 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
 
   onFilesSelected(event: any) {
     const files = Array.from(event.target.files) as File[];
-    const imageFiles = files.filter(file => file.type.startsWith('image/'));
-    
+    const imageFiles = files.filter((file) => file.type.startsWith('image/'));
+
     this.selectedFiles = [...this.selectedFiles, ...imageFiles];
-    
-    imageFiles.forEach(file => {
+
+    imageFiles.forEach((file) => {
       if (!this.previewUrls.has(file)) {
         this.previewUrls.set(file, URL.createObjectURL(file));
       }
@@ -88,7 +112,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
       const allowedNew = maxPhotos - currentPhotos;
       const removedFiles = this.selectedFiles.splice(allowedNew);
 
-      removedFiles.forEach(file => {
+      removedFiles.forEach((file) => {
         const url = this.previewUrls.get(file);
         if (url) {
           URL.revokeObjectURL(url);
@@ -125,7 +149,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
   }
 
   clearSelectedFiles() {
-    this.selectedFiles.forEach(file => {
+    this.selectedFiles.forEach((file) => {
       const url = this.previewUrls.get(file);
       if (url) {
         URL.revokeObjectURL(url);
@@ -168,97 +192,108 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
     if (this.imagesToDelete.size === 0 || !this.internalData) return;
 
     const imageIds = Array.from(this.imagesToDelete);
-    
+
     // Check minimum images considering the 5 image requirement
-    const remainingImages = (this.internalData.photos?.length || 0) - imageIds.length;
+    const remainingImages =
+      (this.internalData.photos?.length || 0) - imageIds.length;
     if (remainingImages < 5) {
-      alert('You must keep at least 5 photos for your property.');
+      this.showToast(
+        'You must keep at least 5 photos for your property.',
+        'bottom',
+        'left'
+      );
       return;
     }
 
-    if (!confirm(`Are you sure you want to delete ${imageIds.length} image(s)?`)) {
+    if (
+      !confirm(`Are you sure you want to delete ${imageIds.length} image(s)?`)
+    ) {
       return;
     }
 
     this.deleting = true;
 
-    this.propertyService.deletePropertyImages(this.internalData.propertyId, imageIds).subscribe({
-      next: (result) => {
-        console.log('Delete response:', result);
-        
-        if (result && result.isSuccess === true) {
-          console.log('Images deleted successfully');
-          
-          // Remove deleted images from local data
-          if (this.internalData?.photos) {
-            this.internalData.photos = this.internalData.photos.filter(
-              photo => !this.imagesToDelete.has(photo.id)
-            );
+    this.propertyService
+      .deletePropertyImages(this.internalData.propertyId, imageIds)
+      .subscribe({
+        next: (result) => {
+          console.log('Delete response:', result);
+
+          if (result && result.isSuccess === true) {
+            console.log('Images deleted successfully');
+
+            // Remove deleted images from local data
+            if (this.internalData?.photos) {
+              this.internalData.photos = this.internalData.photos.filter(
+                (photo) => !this.imagesToDelete.has(photo.id)
+              );
+            }
+
+            // Clear selection and exit delete mode
+            this.imagesToDelete.clear();
+            this.deleteMode = false;
+            this.deleting = false;
+
+            // Emit updated data
+            this.dataChange.emit({ ...this.internalData! });
+            this.saveComplete.emit();
+            this.updateHasChanges();
+            this.updateValidation();
+          } else {
+            const message = result?.message || 'Delete operation failed';
+            console.error('Delete failed:', message);
+            this.showToast(`Delete failed: ${message}`, 'bottom', 'left');
+            this.deleting = false;
           }
-          
-          // Clear selection and exit delete mode
-          this.imagesToDelete.clear();
-          this.deleteMode = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          this.showToast('Failed to delete image', 'bottom', 'left');
+          console.error('Delete error:', error);
           this.deleting = false;
-          
-          // Emit updated data
-          this.dataChange.emit({ ...this.internalData! });
-          this.saveComplete.emit();
-          this.updateHasChanges();
-          this.updateValidation();
-          
-        } else {
-          const message = result?.message || 'Delete operation failed';
-          console.error('Delete failed:', message);
-          alert(`Delete failed: ${message}`);
-          this.deleting = false;
-        }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Delete error:', error);
-        this.deleting = false;
-        
-        let errorMessage = 'Failed to delete images';
-        
-        if (error.status === 204) {
-          console.log('Delete successful (204 No Content)');
-          
-          // Remove deleted images from local data
-          if (this.internalData?.photos) {
-            this.internalData.photos = this.internalData.photos.filter(
-              photo => !this.imagesToDelete.has(photo.id)
-            );
+
+          let errorMessage = 'Failed to delete images';
+
+          if (error.status === 204) {
+            this.showToast('Images deleted successfully', 'bottom', 'left');
+            console.log('Delete successful (204 No Content)');
+
+            // Remove deleted images from local data
+            if (this.internalData?.photos) {
+              this.internalData.photos = this.internalData.photos.filter(
+                (photo) => !this.imagesToDelete.has(photo.id)
+              );
+            }
+
+            // Clear selection and exit delete mode
+            this.imagesToDelete.clear();
+            this.deleteMode = false;
+            this.deleting = false;
+
+            // Emit updated data
+            this.dataChange.emit({ ...this.internalData! });
+            this.saveComplete.emit();
+            this.updateHasChanges();
+            this.updateValidation();
+            return;
           }
-          
-          // Clear selection and exit delete mode
-          this.imagesToDelete.clear();
-          this.deleteMode = false;
-          this.deleting = false;
-          
-          // Emit updated data
-          this.dataChange.emit({ ...this.internalData! });
-          this.saveComplete.emit();
-          this.updateHasChanges();
-          this.updateValidation();
-          return;
-        }
-        
-        // Handle other error cases
-        if (error.status === 401) {
-          errorMessage = 'Unauthorized: You don\'t have permission to delete these images';
-        } else if (error.status === 404) {
-          errorMessage = 'Images not found';
-        } else if (error.status === 400) {
-          errorMessage = 'Bad request: Invalid image IDs or property ID';
-        } else if (error.status === 500) {
-          errorMessage = 'Server error: Please try again later';
-        } else if (error.error?.message) {
-          errorMessage = error.error.message;
-        }
-        
-        alert(`Delete Error: ${errorMessage}`);
-      }
-    });
+
+          // Handle other error cases
+          if (error.status === 401) {
+            errorMessage =
+              "Unauthorized: You don't have permission to delete these images";
+          } else if (error.status === 404) {
+            errorMessage = 'Images not found';
+          } else if (error.status === 400) {
+            errorMessage = 'Bad request: Invalid image IDs or property ID';
+          } else if (error.status === 500) {
+            errorMessage = 'Server error: Please try again later';
+          } else if (error.error?.message) {
+            errorMessage = error.error.message;
+          }
+
+          this.showToast(`Delete Error: ${errorMessage}`, 'bottom', 'left');
+        },
+      });
   }
 
   private updateHasChanges() {
@@ -274,7 +309,11 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
 
     // Validate and append files
     this.selectedFiles.forEach((file) => {
-      if (file.size === 0 || file.size > 10 * 1024 * 1024 || !file.type.startsWith('image/')) {
+      if (
+        file.size === 0 ||
+        file.size > 10 * 1024 * 1024 ||
+        !file.type.startsWith('image/')
+      ) {
         console.error('Invalid file:', file.name);
         return;
       }
@@ -295,31 +334,33 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
     this.propertyService.uploadPhotos(formData).subscribe({
       next: (event) => {
         if (event.type === HttpEventType.UploadProgress && event.total) {
-          this.uploadProgress = Math.round(100 * event.loaded / event.total);
+          this.uploadProgress = Math.round((100 * event.loaded) / event.total);
         } else if (event.type === HttpEventType.Response) {
           console.log('Upload successful!', event.body);
-          
+
           // Clear selected files first
           this.clearSelectedFiles();
           this.uploading = false;
           this.uploadProgress = 0;
-          
+
           // FIXED: Wait for image reload to complete before emitting saveComplete
-          this.loadPropertyImages().then(() => {
-            // Only emit saveComplete after images are reloaded
-            this.saveComplete.emit();
-          }).catch((error) => {
-            console.error('Failed to reload images after upload:', error);
-            // Still emit saveComplete even if reload fails to prevent hanging
-            this.saveComplete.emit();
-          });
+          this.loadPropertyImages()
+            .then(() => {
+              // Only emit saveComplete after images are reloaded
+              this.saveComplete.emit();
+            })
+            .catch((error) => {
+              console.error('Failed to reload images after upload:', error);
+              // Still emit saveComplete even if reload fails to prevent hanging
+              this.saveComplete.emit();
+            });
         }
       },
       error: (error: HttpErrorResponse) => {
         console.error('Upload failed:', error);
         this.uploading = false;
         this.uploadProgress = 0;
-        
+
         let errorMessage = 'Upload failed';
         if (error.status === 400 && error.error?.errors) {
           const validationErrors = error.error.errors;
@@ -327,9 +368,9 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
         } else if (error.error?.message) {
           errorMessage = error.error.message;
         }
-        
-        alert(`Upload Error: ${errorMessage}`);
-      }
+
+        this.showToast(`Upload Error: ${errorMessage}`, 'bottom', 'left');
+      },
     });
   }
 
@@ -337,29 +378,34 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
   private loadPropertyImages(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.internalData?.propertyId) {
-        console.log('Loading images for property:', this.internalData.propertyId);
-        
-        this.propertyService.getImagesByPropertyId(this.internalData.propertyId).subscribe({
-          next: (images) => {
-            console.log('Loaded images:', images);
-            
-            if (this.internalData) {
-              this.internalData.photos = images;
-              
-              // Emit the updated data to parent
-              this.dataChange.emit({ ...this.internalData });
-              
-              // Check validation after loading images
-              this.updateValidation();
-            }
-            
-            resolve(); // Resolve the promise when images are loaded
-          },
-          error: (err) => {
-            console.error('Failed to reload images:', err);
-            reject(err); // Reject the promise on error
-          }
-        });
+        console.log(
+          'Loading images for property:',
+          this.internalData.propertyId
+        );
+
+        this.propertyService
+          .getImagesByPropertyId(this.internalData.propertyId)
+          .subscribe({
+            next: (images) => {
+              console.log('Loaded images:', images);
+
+              if (this.internalData) {
+                this.internalData.photos = images;
+
+                // Emit the updated data to parent
+                this.dataChange.emit({ ...this.internalData });
+
+                // Check validation after loading images
+                this.updateValidation();
+              }
+
+              resolve(); // Resolve the promise when images are loaded
+            },
+            error: (err) => {
+              console.error('Failed to reload images:', err);
+              reject(err); // Reject the promise on error
+            },
+          });
       } else {
         resolve(); // Resolve immediately if no property ID
       }
@@ -367,7 +413,8 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
   }
 
   getTotalPhotoCount(): number {
-    const existingPhotos = (this.internalData?.photos?.length || 0) - this.imagesToDelete.size;
+    const existingPhotos =
+      (this.internalData?.photos?.length || 0) - this.imagesToDelete.size;
     const selectedPhotos = this.selectedFiles.length;
     return existingPhotos + selectedPhotos;
   }
@@ -389,7 +436,7 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
         this.deleteSelectedImages();
         const deleteSubscription = this.saveComplete.subscribe(() => {
           deleteSubscription.unsubscribe();
-          
+
           // After delete, do upload
           const uploadSubscription = this.saveComplete.subscribe(() => {
             uploadSubscription.unsubscribe();
