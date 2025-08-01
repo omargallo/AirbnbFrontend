@@ -13,7 +13,7 @@
             class="letter"
             *ngIf="ifImg === ''"
             [ngStyle]="{ padding: '4px' }"
-            >{{ user?.charAt(0)?.toUpperCase() || "K" }}</span
+            >{{ user?.charAt(0)?.toUpperCase() || "." }}</span
           >
           <img *ngIf="ifImg" [src]="img" alt="user-img" class="user-img" />
           <span>{{ "profile.aboutMe" | translate }}</span>
@@ -43,7 +43,7 @@
         <div class="user-img">
           <img *ngIf="ifImg" [src]="img" alt="user-img" />
           <span class="initial-letter" *ngIf="!ifImg">{{
-            user?.charAt(0)?.toUpperCase() || "K"
+            user?.charAt(0)?.toUpperCase() || "."
           }}</span>
           <span
             class="name"

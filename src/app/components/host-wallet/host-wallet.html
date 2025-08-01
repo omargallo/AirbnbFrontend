@@ -17,7 +17,7 @@
   <!-- Main Content -->
   <div *ngIf="!isLoading && !error" class="wallet-content">
     <!-- Pending Payments Section -->
-    <div *ngIf="shouldShowPendingSection"  class="payments-section">
+    <div *ngIf="shouldShowPendingSection" class="payments-section">
       <div class="section-header">
         <h2>Pending transactions</h2>
         <div class="tab-controls">
@@ -52,7 +52,7 @@
 
         <div class="show-more" *ngIf="pendingPayments.length > 5">
           <button class="show-more-btn" (click)="toggleShowAllPending()">
-            {{ showAllPending ? 'Show less' : 'Show more' }}
+            {{ showAllPending ? "Show less" : "Show more" }}
           </button>
         </div>
       </div>
@@ -102,7 +102,7 @@
         </div>
 
         <div class="balance-transactions">
-          <h3 style="text-align: center;">Balance transactions</h3>
+          <h3 style="text-align: center">Balance transactions</h3>
 
           <div
             class="transactions-table"
@@ -128,7 +128,7 @@
                 class="show-more-btn"
                 (click)="toggleShowAllTransferred()"
               >
-                {{ showAllTransferred ? 'Show less' : 'Show more' }}
+                {{ showAllTransferred ? "Show less" : "Show more" }}
               </button>
             </div>
           </div>
@@ -138,6 +138,7 @@
               <p>You have no balance transactions yet.</p>
             </div>
           </ng-template>
+        </div>
       </div>
     </div>
   </div>

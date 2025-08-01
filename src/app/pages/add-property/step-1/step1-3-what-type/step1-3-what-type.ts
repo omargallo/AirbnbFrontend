@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PropertyFormStorageService } from '../../../../core/services/ListingWizard/property-form-storage.service';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { Subscription } from 'rxjs';
+import { PropertyFormStorageService } from '../../services/property-form-storage.service';
+import { ListingValidationService } from '../../../../core/services/ListingWizard/listing-validation.service';
 
 @Component({
   selector: 'app-step1-3-what-type',
@@ -29,7 +30,8 @@ export class Step13WhatType implements OnInit, OnDestroy {
   
   constructor(
     private formStorage: PropertyFormStorageService,
-    private wizardService: ListingWizardService
+    private wizardService: ListingWizardService,
+    private validationService: ListingValidationService
   ) {}
 
   // List of place options for UI selection
@@ -52,7 +54,7 @@ export class Step13WhatType implements OnInit, OnDestroy {
   ];
 
   // Currently selected place type for UI
-  selectedPlace: string = 'entire';
+  selectedPlace: string | null = null;
 
   ngOnInit(): void {
     // Load saved data
@@ -63,6 +65,9 @@ export class Step13WhatType implements OnInit, OnDestroy {
     if (savedData?.selectedPlace) {
       this.selectedPlace = savedData.selectedPlace;
     }
+
+    // Validate initial state
+    this.validationService.validateStep('step1-3-what-type');
 
     // Subscribe to next step event
     this.subscription = this.wizardService.nextStep$.subscribe(() => {
@@ -86,6 +91,8 @@ export class Step13WhatType implements OnInit, OnDestroy {
   selectPlace(key: string): void {
     this.selectedPlace = key;
     this.saveFormData();
+    // Validate immediately after selection
+    this.validationService.validateStep('step1-3-what-type');
   }
 
   private saveFormData(): void {
@@ -94,5 +101,7 @@ export class Step13WhatType implements OnInit, OnDestroy {
       selectedPlace: this.selectedPlace
     };
     this.formStorage.saveFormData('step1-3', data);
+    // Trigger validation after saving
+    this.validationService.validateStep('step1-3-what-type');
   }
 }

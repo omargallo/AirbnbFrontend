@@ -85,12 +85,12 @@ html {
   font-weight: 700;
 }
 
-.photo-options-btn {
+.delete-button {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 8px;
+  right: 8px;
   background-color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: none;
   border-radius: 50%;
   width: 32px;
   height: 32px;
@@ -98,6 +98,69 @@ html {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.delete-button:hover {
+  transform: scale(1.1);
+  background-color: #fff;
+}
+
+.delete-button svg {
+  width: 16px;
+  height: 16px;
+  stroke: #484848;
+}
+
+.delete-button:hover svg {
+  stroke: #222;
+}
+
+.photo-item:hover .delete-button {
+  opacity: 1;
+  visibility: visible;
+}
+
+.delete-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.delete-button:hover {
+  transform: scale(1.1);
+  background-color: #fff;
+}
+
+.delete-button svg {
+  width: 16px;
+  height: 16px;
+  stroke: #484848;
+}
+
+.delete-button:hover svg {
+  stroke: #222;
+}
+
+.photo-item:hover .delete-button {
+  opacity: 1;
+  visibility: visible;
   padding: 0;
 }
 

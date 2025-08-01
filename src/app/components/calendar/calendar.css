@@ -2,12 +2,16 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: white;
   margin: 0 auto;
-  height: 87vh;
+  /* height: 87vh; */
 
   display: flex;
   flex-direction: column;
 }
-
+@media (min-width: 1024px) {
+  .calendar-container {
+    height: 87vh !important;
+  }
+}
 .calendar-header {
   display: flex;
   justify-content: space-between;
@@ -109,7 +113,7 @@
   overflow-y: scroll;
   scrollbar-width: thin;
   scrollbar-color: #c3bfbf #fff;
-  width: max-content!important;
+  width: max-content !important;
 }
 
 .view-dropdown-2.show {
@@ -464,3 +468,13 @@
   border-color: #ddd;
 }
 
+
+.booked {
+  background-color: #ff385c !important;
+  color: white !important;
+  cursor: not-allowed;
+  /* opacity: 0.6; */
+}
+.booked .day-number{
+  color: white !important;
+}

@@ -5,7 +5,7 @@ import { CalendarComponent, CalendarSettings, DayAvailability } from "../../comp
 import { CalendarDateDTO, CalendarService } from '../../core/services/Calendar/calendar.service';
 import { finalize } from 'rxjs';
 import { CalendarFullSettings, CalendarSettingsComponent } from "../../components/calendar-settings/calendar-settings";
-import { parseISO } from 'date-fns';
+// import { parseISO } from 'date-fns';
 
 
 @Component({
@@ -49,14 +49,13 @@ export class Availability implements OnInit {
     ).subscribe({
       next: (calendarData: CalendarDateDTO[]) => {
         this.mapCalendarDataToAvailability(calendarData);
-        // console.log("calendarData", calendarData)
+        console.log("calendarData", calendarData)
       },
       error: (error) => {
         console.error('Error loading calendar data:', error);
       }
     });
   }
-
 
   private mapCalendarDataToAvailability(calendarData: CalendarDateDTO[]) {
     const today = new Date();
@@ -65,7 +64,8 @@ export class Availability implements OnInit {
     const dataMap = new Map<string, CalendarDateDTO>();
 
     calendarData.forEach(item => {
-      const normalizedKey = format(parseISO(item.date), 'yyyy-MM-dd');
+      // const normalizedKey = format(parseISO(item.date), 'yyyy-MM-dd');
+      const normalizedKey = item.date.slice(0, 10);
       dataMap.set(normalizedKey, item);
     });
 
@@ -74,14 +74,13 @@ export class Availability implements OnInit {
       const dateKey = format(date, 'yyyy-MM-dd');
       const backendData = dataMap.get(dateKey);
 
-      // console.log(`Date: ${dateKey} | Found in map:`, !!backendData);
-
       if (backendData) {
         availability.push({
           date,
           available: backendData.isAvailable ?? true,
           price: backendData.price ?? 0,
           originalPrice: undefined,
+          isBooked: backendData.isBooked ?? false
         });
       } else {
         availability.push({
@@ -89,16 +88,18 @@ export class Availability implements OnInit {
           available: true,
           price: 0,
           originalPrice: undefined,
+          isBooked: false
         });
       }
     }
+
     this.calendarSettings = {
       ...this.calendarSettings,
       availability: [...availability]
     };
     this.cd.detectChanges();
-
   }
+
 
 
   calendarSettings: CalendarSettings = {

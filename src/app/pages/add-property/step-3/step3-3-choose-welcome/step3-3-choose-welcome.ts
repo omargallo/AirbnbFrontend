@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PropertyFormStorageService } from '../../../../core/services/ListingWizard/property-form-storage.service';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { Subscription } from 'rxjs';
+import { PropertyFormStorageService } from '../../services/property-form-storage.service';
+import { ListingValidationService } from '../../../../core/services/ListingWizard/listing-validation.service';
 
 @Component({
   selector: 'app-step3-3-choose-welcome',
@@ -24,7 +25,7 @@ export class Step33ChooseWelcome implements OnInit, OnDestroy {
       description: 'For your first guest, welcome someone with a good track record on Airbnb who can offer tips for how to be a great Host.'
     }
   ];
-  selected: string = 'any';
+  selected: string | null = null;
 
   isSelected(key: string): boolean {
     return this.selected === key;
@@ -32,7 +33,8 @@ export class Step33ChooseWelcome implements OnInit, OnDestroy {
 
   constructor(
     private formStorage: PropertyFormStorageService,
-    private wizardService: ListingWizardService
+    private wizardService: ListingWizardService,
+    private validationService: ListingValidationService
   ) {}
 
   ngOnInit(): void {
@@ -41,11 +43,14 @@ export class Step33ChooseWelcome implements OnInit, OnDestroy {
     if (savedData?.selected) {
       this.selected = savedData.selected;
     }
-
+    
     // Subscribe to next step event
     this.subscription = this.wizardService.nextStep$.subscribe(() => {
       this.saveFormData();
     });
+
+    // Initial validation
+    this.saveFormData();
   }
 
   ngOnDestroy(): void {
@@ -64,5 +69,6 @@ export class Step33ChooseWelcome implements OnInit, OnDestroy {
       selected: this.selected
     };
     this.formStorage.saveFormData('step3-3', data);
+    this.validationService.validateStep('step3-3');
   }
 }

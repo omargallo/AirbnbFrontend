@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { PropertyService, PropertyTypeDto } from '../../../core/services/Property/property.service';
+import { HandleImgService } from '../../../core/services/handleImg.service';
 
 export interface PropertyTypeSectionData {
   propertyTypeId: number;
@@ -30,11 +31,17 @@ export class PropertyTypeSectionComponent implements OnInit, OnDestroy {
   isLoadingPropertyTypes = false;
   propertyTypesError: string | null = null;
 
+  handleImgService = inject(HandleImgService);
+
   constructor(
     private fb: FormBuilder,
     private propertyService: PropertyService
   ) {
     this.initializeForm();
+  }
+
+  getPropertyTypeImg(url: string): string {
+    return this.handleImgService.handleImage(url);
   }
 
   ngOnInit(): void {
@@ -70,20 +77,6 @@ export class PropertyTypeSectionComponent implements OnInit, OnDestroy {
           console.error('Failed to load property types:', error);
           this.propertyTypesError = 'Failed to load property types';
           this.isLoadingPropertyTypes = false;
-          
-          // Fallback to hardcoded types if API fails
-          this.propertyTypes = [
-            { id: 1, name: 'House' },
-            { id: 2, name: 'Apartment' },
-            { id: 3, name: 'Condo' },
-            { id: 4, name: 'Villa' },
-            { id: 5, name: 'Townhouse' },
-            { id: 6, name: 'Cabin' },
-            { id: 7, name: 'Loft' },
-            { id: 8, name: 'Studio' },
-            { id: 9, name: 'Guesthouse' },
-            { id: 10, name: 'Hotel' }
-          ];
         }
       });
   }

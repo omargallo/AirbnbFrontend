@@ -27,6 +27,7 @@ export interface ChatSessionDto {
   unreadCount: number;
   hasPendingRequests: boolean;
   isActive: boolean;
+  isHost:boolean
 }
 
 export interface ReactionUser {
@@ -125,6 +126,9 @@ export interface ReservePropertyResponse {
   messages: MessageDto[];
 }
 
+const params = new HttpParams({fromObject:{"targetLang":"arb_Arab"}})
+
+let targetLang:string = 'arb_Arab'
 @Injectable({
   providedIn: 'root'
 })
@@ -156,8 +160,8 @@ export class ChatService {
   ): Observable<MessageDto[]> {
     const params = new HttpParams()
       .set('page', page.toString())
-      .set('pageSize', pageSize.toString());
-
+      .set('pageSize', pageSize.toString())
+      .set('targetLang',targetLang)
     return this.http
       .get<MessageDto[]>(`${this.baseUrl}/sessions/${chatSessionId}/messages`, { params });
   }
@@ -184,6 +188,21 @@ export class ChatService {
 
   // Reserve a property (creates chat session and reservation request)
   reserveProperty(request: ReservePropertyRequest): Observable<Result<ReservePropertyResponse>> {
-    return this.http.post<Result<ReservePropertyResponse>>(`${this.baseUrl}/reserve`, request);
+    return this.http.post<Result<ReservePropertyResponse>>(`${this.baseUrl}/reserve`, request,{params});
   }
+
+  getSessionForHost(sessionId:string, targetLang?:string):Observable<Result<ReservePropertyResponse>>{
+    return this.http
+              .get<Result<ReservePropertyResponse>>(`${this.baseUrl}/session/host/${sessionId}`,{params})
+  }
+  
+  accept(requestId:string):Observable<Result<boolean>>{
+    return this.http
+              .post<Result<boolean>>(`${this.baseUrl}/accept/${requestId}`,{})
+  }
+  decline(requestId:string):Observable<Result<boolean>>{
+    return this.http
+              .post<Result<boolean>>(`${this.baseUrl}/decline/${requestId}`,{})
+  }
+
 }

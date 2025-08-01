@@ -6,7 +6,10 @@ import { UsersComponent } from '../pages/users/users';
 import { Bookings } from '../pages/booking/bookings';
 import { Property } from "../pages/property/property";
 import { DashboarDetails } from '../pages/dashboard-details/dashboard-details';
-import { AnalyticsComponent } from '../pages/analytics/analytics'; // Import the new Analytics component
+import { AnalyticsComponent } from '../pages/analytics/analytics';
+import { ViolationsComponent } from '../pages/violations/violations';
+import { PaymentsComponent } from '../pages/payments/payments';
+import { AuthService } from '../../../core/services/auth.service'; 
 
 export interface AdminSection {
   id: string;
@@ -17,21 +20,23 @@ export interface AdminSection {
 
 @Component({
   selector: 'app-AdminDashboard',
-  standalone: true, 
+  standalone: true,
   imports: [
-    CommonModule, 
-    UsersComponent, 
+    CommonModule,
+    UsersComponent,
     Bookings,
     DashboarDetails,
     Property,
-    AnalyticsComponent  // Add AnalyticsComponent to imports
-  ],    
+    AnalyticsComponent,
+    ViolationsComponent,
+    PaymentsComponent
+  ],
   templateUrl: './AdminDashboard.html',
   styleUrls: ['./AdminDashboard.css']
 })
 export class AdminDashboard implements OnInit {
   activeSection: string = 'dashboard';
-    
+
   adminSections: AdminSection[] = [
     {
       id: 'dashboard',
@@ -58,24 +63,37 @@ export class AdminDashboard implements OnInit {
       isActive: false
     },
     {
-      id: 'analytics',
-      name: 'Analytics',
-      icon: 'fas fa-chart-bar',  // Updated icon for analytics
+      id: 'payments',
+      name: 'Payments',
+      icon: 'fas fa-money-check-alt',
       isActive: false
     },
+    {
+      id: 'analytics',
+      name: 'Analytics',
+      icon: 'fas fa-chart-bar',
+      isActive: false
+    },
+    {
+      id: 'violations',
+      name: 'Violations',
+      icon: 'fas fa-exclamation-triangle',
+      isActive: false
+    }
   ];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService // Inject AuthService
+  ) {}
 
   ngOnInit(): void {
     this.setActiveSection('dashboard'); // Set dashboard as default
   }
 
   setActiveSection(sectionId: string): void {
-    // Reset all sections
     this.adminSections.forEach(section => section.isActive = false);
-        
-    // Set the selected section as active
+    
     const section = this.adminSections.find(s => s.id === sectionId);
     if (section) {
       section.isActive = true;
@@ -104,5 +122,11 @@ export class AdminDashboard implements OnInit {
 
   trackBySection(index: number, section: AdminSection): string {
     return section.id;
+  }
+
+  logout(): void {
+    this.authService.clear();
+    
+    this.router.navigate(['']);
   }
 }

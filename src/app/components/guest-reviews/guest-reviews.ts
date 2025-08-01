@@ -32,8 +32,10 @@ import { ReviewsModalComponent } from './guest-review-modal/guest-review-modal';
     CommonModule,
     StarComponent,
     //ReviewsModalComponent ,
+
     // Confirm,
     //  Modal,
+
     ReviewsModalComponent,
   ],
   templateUrl: './guest-reviews.html',
@@ -138,14 +140,14 @@ export class GuestReviews implements OnInit {
   //then check if there's one who booked show the review button
   // Check if user is logged in using AuthService
   shouldShowReviewButton(): boolean {
-    console.log('Checking if review button should be shown');
+    // console.log('Checking if review button should be shown');
 
     if (!this.currentUser) {
-      console.log('No current user found.');
+      // console.log('No current user found.');
 
       return false;
     } else {
-      console.log('Current user:', this.currentUser);
+      // console.log('Current user:', this.currentUser);
     }
 
     if (this.isLoadingBookings) {

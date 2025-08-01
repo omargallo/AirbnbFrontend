@@ -1,4 +1,13 @@
-import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  ChangeDetectionStrategy,
+  OnDestroy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -33,10 +42,9 @@ export interface CalendarFullSettings {
   imports: [CommonModule, FormsModule],
   templateUrl: './calendar-settings.html',
   styleUrls: ['./calendar-settings.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarSettingsComponent implements OnInit, OnDestroy {
-
   selectedBlockOption: 'open' | 'blocked' = 'open';
   @Input() selectedDatePrice: number = 0;
   @Output() priceChanged = new EventEmitter<number>();
@@ -49,7 +57,7 @@ export class CalendarSettingsComponent implements OnInit, OnDestroy {
     console.log('Selected block option:', option);
   }
 
-  constructor(private cd: ChangeDetectorRef) { }
+  constructor(private cd: ChangeDetectorRef) {}
 
   @Input() settings: CalendarFullSettings = {
     pricing: {
@@ -97,11 +105,8 @@ export class CalendarSettingsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.settingsUpdateSubject
-      .pipe(
-        debounceTime(100),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(settings => {
+      .pipe(debounceTime(100), takeUntil(this.destroy$))
+      .subscribe((settings) => {
         this.settingsChanged.emit(settings);
       });
   }

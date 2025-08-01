@@ -43,20 +43,19 @@ export class PropertyInfo implements OnInit {
     guestCount = {
       adults: 1,
       children: 0,
-      infants: 0
+      // infants: 0
   }
 
-
+  hostID! :string;
 
 
     @Input() checkIn!: string;
     @Input() checkOut!: string;
-    @Input() guests!: { adults: number, children: number, infants: number };
+    @Input() guests!: { adults: number, children: number };
     @Input() previewPropertyId?: number 
-      @Output() guestChange = new EventEmitter<{
+    @Output() guestChange = new EventEmitter<{
         adults: number;
-        children: number;
-        infants: number;
+        children: number
       }>();
     @Input() isPreview:boolean = false
 
@@ -142,7 +141,7 @@ export class PropertyInfo implements OnInit {
   }
 
 
-onGuestUpdate(type: 'adults' | 'children' | 'infants', delta: number) {
+onGuestUpdate(type: 'adults' | 'children' , delta: number) {
   this.guests[type] += delta;
   this.guestChange.emit(this.guests);
 }
@@ -171,7 +170,7 @@ customClasses = (date: dayjs.Dayjs): string => {
 //   }
 
   // Handle guest update from Reverse Section
-  onGuestChange(updatedGuests: { adults: number; children: number; infants: number }) {
+  onGuestChange(updatedGuests: { adults: number; children: number  }) {
     this.guestCount = updatedGuests;
   }
 

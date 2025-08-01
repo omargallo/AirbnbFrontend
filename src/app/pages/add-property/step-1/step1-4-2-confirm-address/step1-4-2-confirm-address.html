@@ -40,6 +40,7 @@
             id="apt"
             class="form-input"
             placeholder=" "
+            required
             [(ngModel)]="apt"
             (ngModelChange)="onAptChange($event)"
             name="apt"
@@ -52,7 +53,6 @@
             id="city"
             class="form-input"
             placeholder=" "
-            required
             [(ngModel)]="city"
             (ngModelChange)="onCityChange($event)"
             name="city"
@@ -74,35 +74,23 @@
         </div>
         <div class="form-field full-width">
           <input
-            type="text"
+            type="number"
             id="zipcode"
             class="form-input"
             placeholder=" "
+            required
+            minlength="3"
+            maxlength="10"
+            pattern="[0-9]*"
             [(ngModel)]="zipcode"
             (ngModelChange)="onZipcodeChange($event)"
+            (input)="validateZipcode($event)"
+            (keypress)="onZipcodeKeyPress($event)"
             name="zipcode"
           />
           <label for="zipcode" class="form-label">Postal code</label>
         </div>
       </div>
     </form>
-
-    <div class="location-preference">
-      <div class="preference-text">
-        <h2 class="preference-title">Show your specific location</h2>
-        <p class="preference-description">
-          Make it clear to guests where your place is located. We'll only share your address after they've made a reservation.
-          <a href="#" class="learn-more-link">Learn more</a>
-        </p>
-      </div>
-      <label class="toggle-switch">
-        <input type="checkbox" [(ngModel)]="showSpecificLocation" (ngModelChange)="onLocationPreferenceChange($event)" name="showSpecificLocation" />
-        <span class="slider"></span>
-      </label>
-    </div>
-
-    <div class="map-display">
-      <div #mapContainer id="map" class="map-container"></div>
-    </div>
   </main>
 </div>

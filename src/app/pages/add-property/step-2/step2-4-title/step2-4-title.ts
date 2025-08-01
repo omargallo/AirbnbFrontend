@@ -1,8 +1,9 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { PropertyFormStorageService } from '../../../../core/services/ListingWizard/property-form-storage.service';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { Subscription } from 'rxjs';
+import { PropertyFormStorageService } from '../../services/property-form-storage.service';
+import { ListingValidationService } from '../../../../core/services/ListingWizard/listing-validation.service';
 
 @Component({
   selector: 'app-step2-4-title',
@@ -13,12 +14,14 @@ import { Subscription } from 'rxjs';
 export class Step24Title implements AfterViewInit, OnInit, OnDestroy {
   private subscription!: Subscription;
   title: string = '';
-  maxLength: number = 32;
+  maxLength: number = 20;
+  minLength: number = 5;
   @ViewChild('titleInput') titleInput!: ElementRef<HTMLTextAreaElement>;
 
   constructor(
     private formStorage: PropertyFormStorageService,
-    private wizardService: ListingWizardService
+    private wizardService: ListingWizardService,
+    private validationService: ListingValidationService
   ) {}
 
   ngOnInit() {
@@ -28,6 +31,9 @@ export class Step24Title implements AfterViewInit, OnInit, OnDestroy {
     this.subscription = this.wizardService.nextStep$.subscribe(() => {
       this.saveFormData();
     });
+
+    // Initial validation
+    this.saveFormData();
   }
 
   ngOnDestroy(): void {
@@ -44,10 +50,13 @@ export class Step24Title implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private saveFormData() {
+    const trimmedTitle = this.title.trim();
     const data = {
-      title: this.title
+      title: trimmedTitle,
+      isValid: trimmedTitle.length >= this.minLength && trimmedTitle.length <= this.maxLength
     };
     this.formStorage.saveFormData('step2-4', data);
+    this.validationService.validateStep('step2-4-title');
   }
 
   get charCount(): number {
@@ -69,6 +78,12 @@ export class Step24Title implements AfterViewInit, OnInit, OnDestroy {
   onInput() {
     this.autoResize();
     this.saveFormData();
+  }
+
+  onKeyPress(event: KeyboardEvent): void {
+    if (this.title.length >= this.maxLength && event.key !== 'Backspace' && event.key !== 'Delete') {
+      event.preventDefault();
+    }
   }
 
   autoResize() {

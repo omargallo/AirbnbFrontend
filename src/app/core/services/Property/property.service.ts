@@ -23,6 +23,12 @@ export interface Result<T> {
   message: string;
 }
 
+export interface AmenityDTO {
+  id: number;
+  name: string;
+  iconUrl: string;
+}
+
 export interface PropertyDisplayDTO {
   id: number;
   title: string;
@@ -53,10 +59,11 @@ export interface PropertyImageDisplayDTO {
   propertyId: number;
 }
 
-// NEW: Property Type DTO interface
+// Property Type DTO interface
 export interface PropertyTypeDto {
   id: number;
   name: string;
+  iconURL: string;
 }
 
 export interface Country {
@@ -135,7 +142,7 @@ export class PropertyService {
       .pipe(
         map(response => response.data)
       );
-  }
+  } 
 
   getPropertyById(propertyId: number): Observable<Property> {
     const url = `${this.propertyUrl}/${propertyId}`;
@@ -239,6 +246,7 @@ export class PropertyService {
         Object.assign(dto, sectionData);
     }
 
+
     console.log(`Created complete DTO for ${sectionType}:`, dto);
     return dto;
   }
@@ -298,7 +306,11 @@ export class PropertyService {
         reportProgress: false,
         withCredentials: true
       }
-    );
+    );  
+
+    
+
+
 
     return this.http.request<Result<boolean>>(request).pipe(
       map((event: any): Result<boolean> => {
@@ -347,4 +359,34 @@ export class PropertyService {
       })
     );
   }
+ getAllAmenities(): Observable<AmenityDTO[]> {
+  return this.http.get<Result<AmenityDTO[]>>(`${environment.baseUrl}/Amenity/all`, {
+    withCredentials: true
+  }).pipe(
+    map(response => response.data)
+  );
+}
+
+/**
+ * Get amenities for a specific property
+ */
+getAmenitiesByPropertyId(propertyId: number): Observable<AmenityDTO[]> {
+  return this.http.get<Result<AmenityDTO[]>>(`${environment.baseUrl}/Amenity/property/${propertyId}/amenities`, {
+    withCredentials: true
+  }).pipe(
+    map(response => response.data)
+  );
+}
+
+/**
+ * Toggle amenity for a property (add/remove)
+ * Fixed the typo in the endpoint URL
+ */
+togglePropertyAmenity(amenityId: number, propertyId: number): Observable<Result<boolean>> {
+  return this.http.post<Result<boolean>>(
+    `${environment.baseUrl}/Amenity/assign/${amenityId}/porperty/${propertyId}`, // FIXED: 'porperty' to match backend typo
+    {}, 
+    { withCredentials: true }
+  );
+}
 }

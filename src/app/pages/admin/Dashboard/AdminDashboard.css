@@ -373,4 +373,73 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}/* Add these styles to your AdminDashboard.css file */
+
+.logout-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+/* .logout-btn:hover {
+  background-color: #f5f5f5;
+  color: #dc3545;
+  transform: translateX(4px);
+} */
+
+.logout-btn:active {
+  transform: translateX(2px);
+}
+
+.logout-btn i {
+  margin-right: 12px;
+  font-size: 16px;
+}
+
+.logout-text {
+  font-weight: 500;
+}
+
+/* Dark theme support (if you have dark mode) */
+@media (prefers-color-scheme: dark) {
+  .logout-section {
+    border-top-color: #333;
+  }
+  
+  .logout-btn {
+    color: #ccc;
+  }
+  
+  .logout-btn:hover {
+    background-color: #2a2a2a;
+    color: #ff6b6b;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .logout-btn {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  
+  .logout-btn i {
+    margin-right: 10px;
+    font-size: 14px;
+  }
 }

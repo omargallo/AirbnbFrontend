@@ -1,0 +1,422 @@
+<div class="payments-container">
+  <!-- Header Section -->
+  <div class="payments-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="fas fa-money-check-alt title-icon"></i>
+        Payment Management
+      </h1>
+      <p class="page-subtitle">Monitor and manage all payment transactions</p>
+    </div>
+
+    <div class="header-actions">
+      <button 
+        class="btn btn-primary" 
+        (click)="refreshPayments()"
+        [disabled]="loading">
+        <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-content">
+        <div class="stat-number">{{ totalPaymentsCount }}</div>
+        <div class="stat-label">Total Payments</div>
+      </div>
+      <div class="stat-icon">
+        <i class="fas fa-credit-card"></i>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-content">
+        <div class="stat-number">{{ completedPaymentsCount }}</div>
+        <div class="stat-label">Completed</div>
+      </div>
+      <div class="stat-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-content">
+        <div class="stat-number">{{ pendingTransfersCount }}</div>
+        <div class="stat-label">Pending Transfers</div>
+      </div>
+      <div class="stat-icon">
+        <i class="fas fa-clock"></i>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-content">
+        <div class="stat-number">${{ totalRevenue | number:'1.2-2' }}</div>
+        <div class="stat-label">Total Revenue</div>
+      </div>
+      <div class="stat-icon">
+        <i class="fas fa-dollar-sign"></i>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-content">
+        <div class="stat-number">${{ totalPlatformFees | number:'1.2-2' }}</div>
+        <div class="stat-label">Platform Fees</div>
+      </div>
+      <div class="stat-icon">
+        <i class="fas fa-percentage"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payments Table -->
+  <div class="table-section">
+    <app-table
+      [columns]="columns"
+      [data]="payments"
+      [actions]="actions"
+      [loading]="loading"
+      [paginationInfo]="paginationInfo"
+      [useBackendPagination]="true"
+      caption="All Payment Transactions"
+      (actionClick)="onActionClick($event)"
+      (pageChange)="onPageChange($event)"
+      (sortChange)="onSortChange($event)">
+    </app-table>
+  </div>
+
+  <!-- Payment Details Modal -->
+  <div 
+    class="modal-overlay" 
+    *ngIf="showPaymentDetails" 
+    (click)="closePaymentDetails()">
+    <div 
+      class="modal-container payment-modal" 
+      (click)="$event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i class="fas fa-receipt"></i>
+          Payment Details
+        </h3>
+        <button 
+          class="modal-close" 
+          (click)="closePaymentDetails()"
+          aria-label="Close modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <!-- Modal Content -->
+      <div class="modal-content" *ngIf="selectedPayment">
+        <!-- Payment Summary -->
+        <div class="payment-summary">
+          <div class="summary-header">
+            <div class="payment-id">
+              <span class="label">Payment ID:</span>
+              <span class="value">#{{ selectedPayment.paymentId }}</span>
+            </div>
+            <div class="payment-badges">
+              <span class="badge" [class]="getStatusBadgeClass(selectedPayment.paymentStatus)">
+                {{ selectedPayment.paymentStatus }}
+              </span>
+              <span class="badge" [class]="getStatusBadgeClass(selectedPayment.transferStatus)">
+                {{ selectedPayment.transferStatus }}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Payment Details Grid -->
+        <div class="details-grid">
+          <!-- Booking Information Section -->
+          <div class="detail-section">
+            <h4 class="section-title">
+              <i class="fas fa-calendar-check"></i>
+              Booking Information
+            </h4>
+            <div class="detail-item">
+              <label class="detail-label">Booking ID</label>
+              <span class="detail-value">#{{ selectedPayment.bookingId }}</span>
+            </div>
+            <div class="detail-item">
+              <label class="detail-label">Payment Date</label>
+              <span class="detail-value">{{ selectedPayment.paymentDate | date:'medium' }}</span>
+            </div>
+          </div>
+
+          <!-- Parties Involved Section -->
+          <div class="detail-section">
+            <h4 class="section-title">
+              <i class="fas fa-users"></i>
+              Parties Involved
+            </h4>
+            <div class="detail-item">
+              <label class="detail-label">Guest Name</label>
+              <span class="detail-value">{{ selectedPayment.guestName }}</span>
+            </div>
+            <div class="detail-item">
+              <label class="detail-label">Host Name</label>
+              <span class="detail-value">{{ selectedPayment.hostName }}</span>
+            </div>
+            <div class="detail-item">
+              <label class="detail-label">Host ID</label>
+              <span class="detail-value">{{ selectedPayment.hostId || 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+              <label class="detail-label">Host Account Status</label>
+              <span class="detail-value">
+                <span class="badge" [class]="selectedPayment.hostAccountCompleted ? 'badge-success' : 'badge-warning'">
+                  {{ selectedPayment.hostAccountCompleted ? 'Completed' : 'Incomplete' }}
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Financial Breakdown Section -->
+          <div class="detail-section">
+            <h4 class="section-title">
+              <i class="fas fa-calculator"></i>
+              Financial Breakdown
+            </h4>
+            <div class="detail-item">
+              <label class="detail-label">Total Amount</label>
+              <span class="detail-value amount-highlight">${{ selectedPayment.amount | number:'1.2-2' }}</span>
+            </div>
+            <div class="detail-item">
+              <label class="detail-label">Platform Fee</label>
+              <span class="detail-value fee-highlight">${{ selectedPayment.platformFee | number:'1.2-2' }}</span>
+            </div>
+            <div class="detail-item">
+              <label class="detail-label">Host Amount</label>
+              <span class="detail-value host-amount-highlight">${{ selectedPayment.hostAmount | number:'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <!-- Transaction Status Section -->
+          <div class="detail-section">
+            <h4 class="section-title">
+              <i class="fas fa-info-circle"></i>
+              Transaction Status
+            </h4>
+            <div class="detail-item">
+              <label class="detail-label">Payment Status</label>
+              <span class="detail-value">
+                <span class="badge" [class]="getStatusBadgeClass(selectedPayment.paymentStatus)">
+                  {{ selectedPayment.paymentStatus }}
+                </span>
+              </span>
+            </div>
+            <div class="detail-item">
+              <label class="detail-label">Transfer Status</label>
+              <span class="detail-value">
+                <span class="badge" [class]="getStatusBadgeClass(selectedPayment.transferStatus)">
+                  {{ selectedPayment.transferStatus }}
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transfer Action Section -->
+        <div class="transfer-section" *ngIf="selectedPayment.paymentStatus === 'Succeeded' && 
+                                              selectedPayment.transferStatus === 'NotTransferred' && 
+                                              selectedPayment.hostAccountCompleted">
+          <div class="transfer-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>This payment is ready to be transferred to the host.</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button 
+          class="btn btn-secondary" 
+          (click)="closePaymentDetails()">
+          <i class="fas fa-times"></i>
+          Close
+        </button>
+        
+        <button 
+          *ngIf="selectedPayment?.paymentStatus === 'Succeeded' && 
+                 selectedPayment?.transferStatus === 'NotTransferred' && 
+                 selectedPayment?.hostAccountCompleted"
+          class="btn btn-success" 
+         
+          [disabled]="transferringPayment">
+          <i class="fas fa-hand-holding-usd"></i>
+          Transfer to Host
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transfer Confirmation Modal -->
+  <div 
+    class="modal-overlay" 
+    *ngIf="showTransferModal" 
+    (click)="closeTransferModal()">
+    <div 
+      class="modal-container transfer-modal" 
+      (click)="$event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div class="modal-header transfer-header">
+        <h3 class="modal-title">
+          <i class="fas fa-hand-holding-usd transfer-icon"></i>
+          Confirm Transfer
+        </h3>
+        <button 
+          class="modal-close" 
+          (click)="closeTransferModal()"
+          [disabled]="transferringPayment"
+          aria-label="Close modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <!-- Modal Content -->
+      <div class="modal-content transfer-content" *ngIf="selectedPayment">
+        <!-- Transfer Warning -->
+        <div class="transfer-confirmation-warning">
+          <div class="warning-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="warning-content">
+            <h4>You are about to transfer funds</h4>
+            <p>This action cannot be undone. Please review the details carefully.</p>
+          </div>
+        </div>
+
+        <!-- Transfer Details -->
+        <div class="transfer-details">
+          <div class="transfer-item">
+            <span class="transfer-label">Payment ID:</span>
+            <span class="transfer-value">#{{ selectedPayment.paymentId }}</span>
+          </div>
+          
+          <div class="transfer-item">
+            <span class="transfer-label">Booking ID:</span>
+            <span class="transfer-value">#{{ selectedPayment.bookingId }}</span>
+          </div>
+          
+          <div class="transfer-item">
+            <span class="transfer-label">Host:</span>
+            <span class="transfer-value">{{ selectedPayment.hostName }}</span>
+          </div>
+          
+          <div class="transfer-item">
+            <span class="transfer-label">Guest:</span>
+            <span class="transfer-value">{{ selectedPayment.guestName }}</span>
+          </div>
+          
+          <div class="transfer-item highlight">
+            <span class="transfer-label">Transfer Amount:</span>
+            <span class="transfer-value amount">${{ selectedPayment.hostAmount | number:'1.2-2' }}</span>
+          </div>
+          
+          <div class="transfer-item">
+            <span class="transfer-label">Platform Fee:</span>
+            <span class="transfer-value">${{ selectedPayment.platformFee | number:'1.2-2' }}</span>
+          </div>
+        </div>
+
+        <!-- Transfer Process Animation (shown when transferring) -->
+        <div class="transfer-animation" *ngIf="transferringPayment">
+          <div class="transfer-progress">
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+            <p>Processing transfer...</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="modal-footer transfer-footer">
+        <button 
+          class="btn btn-secondary" 
+          (click)="closeTransferModal()"
+          [disabled]="transferringPayment">
+          <i class="fas fa-times"></i>
+          Cancel
+        </button>
+        
+        <button 
+          class="btn btn-success transfer-confirm-btn" 
+          (click)="transferToHost(selectedPayment!)"
+          [disabled]="transferringPayment">
+          <i class="fas fa-spinner fa-spin" *ngIf="transferringPayment"></i>
+          <i class="fas fa-hand-holding-usd" *ngIf="!transferringPayment"></i>
+          {{ transferringPayment ? 'Transferring...' : 'Confirm Transfer' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div 
+    class="modal-overlay success-overlay" 
+    *ngIf="showSuccessMessage" 
+    (click)="closeMessageModal()">
+    <div 
+      class="modal-container success-modal" 
+      (click)="$event.stopPropagation()">
+      
+      <div class="success-content">
+        <div class="success-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h3 class="success-title">Transfer Successful!</h3>
+        <p class="success-message">{{ modalMessage }}</p>
+        
+        <button 
+          class="btn btn-success" 
+          (click)="closeMessageModal()">
+          <i class="fas fa-check"></i>
+          Great!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Modal -->
+  <div 
+    class="modal-overlay error-overlay" 
+    *ngIf="showErrorMessage" 
+    (click)="closeMessageModal()">
+    <div 
+      class="modal-container error-modal" 
+      (click)="$event.stopPropagation()">
+      
+      <div class="error-content">
+        <div class="error-icon">
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <h3 class="error-title">Transfer Failed</h3>
+        <p class="error-message">{{ modalMessage }}</p>
+        
+        <button 
+          class="btn btn-danger" 
+          (click)="closeMessageModal()">
+          <i class="fas fa-times"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Loading Overlay -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Loading payments...</p>
+    </div>
+  </div>
+</div>

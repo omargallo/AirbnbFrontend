@@ -2,9 +2,10 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { PropertyFormStorageService } from '../../core/services/ListingWizard/property-form-storage.service';
 import { ListingWizardService } from '../../core/services/ListingWizard/listing-wizard.service';
 import { PropertyCreationService } from '../../core/services/Property/property-creation.service';
+import { PropertyFormStorageService } from '../../pages/add-property/services/property-form-storage.service';
+import { ListingValidationService } from '../../core/services/ListingWizard/listing-validation.service';
 
 @Component({
   selector: 'app-listing-wizard-layout',
@@ -17,7 +18,7 @@ export class ListingWizardLayoutComponent {
   @Input() showFooter = true;
   @Input() isFirstStep = false;
   @Input() isLastStep = false;
-  @Input() canProceed = true;
+  canProceed = true;
   @Input() currentStep = 1;
   @Input() totalSteps = 3;
   @Input() progressPercentage = 0;
@@ -56,43 +57,79 @@ export class ListingWizardLayoutComponent {
     private router: Router,
     private formStorage: PropertyFormStorageService,
     private wizardService: ListingWizardService,
-    private propertyCreationService: PropertyCreationService
+    private propertyCreationService: PropertyCreationService,
+    private validationService: ListingValidationService
   ) {
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe(() => {
         this.updateProgress();
         this.updateStepState();
+        this.validateCurrentStep();
       });
+
+    this.validationService.canProceed$.subscribe(canProceed => {
+      this.canProceed = canProceed;
+    });
   }
 
   handleSubmit() {
-    // Build property data from wizard form storage
+    console.log('=== STARTING PROPERTY SUBMISSION ===');
+
+    const localStorageData = localStorage.getItem('property_form_data');
+    console.log('📂 localStorage data:', localStorageData ? JSON.parse(localStorageData) : 'No data');
+
+    const allFormData = this.formStorage.getFormData();
+    console.log('📋 All form data from service:', allFormData);
+
+    const step23Data = allFormData['step2-3'];
+    console.log('📸 Step 2-3 data specifically:', step23Data);
+
+    const hasImages = !!(
+      step23Data &&
+      (
+        (step23Data.imageFiles && step23Data.imageFiles.length > 0) ||
+        (step23Data.images && step23Data.images.length > 0)
+      )
+    );
+
+    const imageCount =
+      step23Data?.imageFiles?.length ??
+      step23Data?.images?.length ??
+      0;
+
+    console.log('🔍 Image check results:');
+    console.log('  - hasImages:', hasImages);
+    console.log('  - imageCount:', imageCount);
+
+    if (!hasImages) {
+      console.error('❌ No images found!');
+      alert('Please upload at least one image before submitting the property.');
+      return;
+    }
+
+    console.log(`✅ Found ${imageCount} images, proceeding...`);
+
     const propertyData = this.propertyCreationService.buildPropertyFromWizard();
-    
-    // Ensure images array exists
     const finalPropertyData = {
       ...propertyData,
       images: propertyData.images || []
     };
-    
-    // Create the property
+
     this.propertyCreationService.createProperty(finalPropertyData).subscribe({
       next: (response) => {
-        // Clear form storage
+        console.log('✅ Property created successfully:', response);
         this.formStorage.clearFormData();
-        // Clear local storage
         localStorage.removeItem('property_form_data');
-        // Navigate to success page or property listing
+        // alert('Property created successfully!');
         this.router.navigate(['/host']);
       },
       error: (error) => {
-        console.error('Error creating property:', error);
-        // Handle error (show error message to user)
+        console.error('❌ Error creating property:', error);
+        alert('Failed to create property: ' + error.message);
       }
     });
   }
-
   private getCurrentStepIndex(): number {
     const url = this.router.url;
     const wizardBasePath = '/listing-wizard';
@@ -121,12 +158,25 @@ export class ListingWizardLayoutComponent {
     this.showBackButton = currentIndex > 0;
   }
 
+  private validateCurrentStep(): void {
+    const currentRoute = this.stepRoutes[this.getCurrentStepIndex()];
+    if (currentRoute) {
+      this.validationService.validateStep(currentRoute);
+    }
+  }
+
   navigateToNextStep(): void {
     const currentIndex = this.getCurrentStepIndex();
+    const currentRoute = this.stepRoutes[currentIndex];
+    
+    if (currentRoute && !this.validationService.validateStep(currentRoute)) {
+      return; // Stop if validation fails
+    }
+
     if (currentIndex > -1 && currentIndex < this.stepRoutes.length - 1) {
       // Trigger saving in the current component
       this.wizardService.triggerNextStep();
-      
+
       // Let any parent components know
       this.onNextStep.emit();
 
@@ -147,7 +197,7 @@ export class ListingWizardLayoutComponent {
       const prevStep = this.stepRoutes[currentIndex - 1];
       this.router.navigate(['/listing-wizard', prevStep]);
     }
-    
+
     this.onPrevStep.emit();
   }
 }

@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PropertyFormStorageService } from '../../../../core/services/ListingWizard/property-form-storage.service';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { Subscription } from 'rxjs';
+import { PropertyFormStorageService } from '../../services/property-form-storage.service';
+import { ListingValidationService } from '../../../../core/services/ListingWizard/listing-validation.service';
 
 @Component({
   selector: 'app-step3-4-1-pricing',
@@ -12,8 +13,9 @@ import { Subscription } from 'rxjs';
 })
 export class Step341Pricing implements OnInit, OnDestroy {
   private subscription!: Subscription;
-  price: number = 35;
-  maxLength: number = 4;
+  price: number = 50;
+  minPrice: number = 50;
+  maxPrice: number = 10000;
   guestFeePercent: number = 0.14;
   hostFeePercent: number = 0.03;
   view: 'guest' | 'host' = 'guest';
@@ -21,7 +23,8 @@ export class Step341Pricing implements OnInit, OnDestroy {
 
   constructor(
     private formStorage: PropertyFormStorageService,
-    private wizardService: ListingWizardService
+    private wizardService: ListingWizardService,
+    private validationService: ListingValidationService
   ) {}
 
   ngOnInit() {
@@ -48,6 +51,8 @@ export class Step341Pricing implements OnInit, OnDestroy {
       price: this.price
     };
     this.formStorage.saveFormData('step3-4-1', data);
+    // Since we're enforcing the minimum price, we can always enable the next button
+    this.validationService.validateStep('step3-4-1');
   }
 
   get guestServiceFee(): number {
@@ -68,10 +73,30 @@ export class Step341Pricing implements OnInit, OnDestroy {
 
   onPriceInput(event: Event) {
     const input = (event.target as HTMLInputElement).value.replace(/[^0-9]/g, '');
-    let value = parseInt(input, 10) || 0;
-    if (value > 9999) value = 9999;
+    let value = parseInt(input, 10);
+    
+    // Allow empty input while typing
+    if (isNaN(value)) {
+      value = 0;
+    }
+
+    // Only enforce maximum price while typing
+    if (value > this.maxPrice) {
+      value = this.maxPrice;
+      (event.target as HTMLInputElement).value = value.toString();
+    }
+
     this.price = value;
     this.saveFormData();
+  }
+
+  onPriceBlur(event: Event) {
+    // When input loses focus, enforce minimum price
+    if (this.price < this.minPrice) {
+      this.price = this.minPrice;
+      (event.target as HTMLInputElement).value = this.minPrice.toString();
+      this.saveFormData();
+    }
   }
 
   toggleView() {

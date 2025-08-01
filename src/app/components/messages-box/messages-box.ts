@@ -1,6 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Output, EventEmitter, OnDestroy, ElementRef, ViewChild } from '@angular/core';
-import { ChatService, ChatSessionDto, MessageDto } from '../../core/services/Message/message.service';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  OnDestroy,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
+import {
+  ChatService,
+  ChatSessionDto,
+  MessageDto,
+} from '../../core/services/Message/message.service';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { SignalRService } from '../../core/services/SignalRService/signal-rservice';
 import { AuthService } from '../../core/services/auth.service'; // Add this import
@@ -23,11 +35,12 @@ interface MessageThread {
   selector: 'app-messages-box',
   templateUrl: './messages-box.html',
   styleUrls: ['./messages-box.css'],
-  imports: [CommonModule]
+  imports: [CommonModule],
 })
 export class MessagesBoxComponent implements OnInit, OnDestroy {
   @Output() chatSessionSelected = new EventEmitter<ChatSessionDto>();
-  @ViewChild('messagesContainer', { static: false }) messagesContainer!: ElementRef;
+  @ViewChild('messagesContainer', { static: false })
+  messagesContainer!: ElementRef;
 
   activeFilter: 'all' | 'unread' = 'all';
   messageThreads: MessageThread[] = [];
@@ -52,7 +65,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
     private chatService: ChatService,
     private signalRService: SignalRService,
     private authService: AuthService
-  ) { }
+  ) {}
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -77,13 +90,11 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
 
   private setupScrollListener(): void {
     // Subscribe to scroll events with debounce
-    this.scrollSubject.pipe(
-      debounceTime(100),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe(() => {
-      this.checkScrollPosition();
-    });
+    this.scrollSubject
+      .pipe(debounceTime(100), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.checkScrollPosition();
+      });
   }
 
   onScroll(event: Event): void {
@@ -119,7 +130,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
 
   private updateThreadWithNewMessage(newMessage: MessageDto): void {
     const threadIndex = this.messageThreads.findIndex(
-      thread => thread.id === newMessage.chatSessionId
+      (thread) => thread.id === newMessage.chatSessionId
     );
 
     if (threadIndex !== -1) {
@@ -128,7 +139,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
         ...this.messageThreads[threadIndex],
         preview: newMessage.messageText,
         time: this.formatTime(newMessage.createdAt),
-        isUnread: !newMessage.isOwnMessage // Mark as unread if not own message
+        isUnread: !newMessage.isOwnMessage, // Mark as unread if not own message
       };
 
       // Move thread to top of list
@@ -192,10 +203,14 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
         this.currentPage = page;
 
         // Check if there's more data
-        this.hasMoreData = sessions.length === pageSize && this.messageThreads.length < this.totalCount;
+        this.hasMoreData =
+          sessions.length === pageSize &&
+          this.messageThreads.length < this.totalCount;
 
         console.log('Mapped Message Threads:', this.messageThreads);
-        console.log(`Page ${page} loaded. Total threads: ${this.messageThreads.length}, Has more: ${this.hasMoreData}`);
+        console.log(
+          `Page ${page} loaded. Total threads: ${this.messageThreads.length}, Has more: ${this.hasMoreData}`
+        );
 
         this.isLoading = false;
         this.isLoadingMore = false;
@@ -205,7 +220,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
         this.error = 'Failed to load messages. Please try again.';
         this.isLoading = false;
         this.isLoadingMore = false;
-      }
+      },
     });
   }
 
@@ -220,16 +235,20 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   }
 
   private mapSessionsToThreads(sessions: ChatSessionDto[]): MessageThread[] {
-    return sessions.map(session => {
+    return sessions.map((session) => {
       // Check if current user ID matches the userId in session
       // If yes, show hostName, otherwise show userName
-      const displayName = this.currentUserId == session.userId
-        ? (session.hostName || 'Unknown Host')
-        : (session.userName || 'Unknown User');
+      const displayName =
+        this.currentUserId == session.userId
+          ? session.hostName || 'Unknown Host'
+          : session.userName || 'Unknown User';
 
-      const profileImage = this.currentUserId === session.userId
-        ? (session.hostAvatarUrl || 'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg')
-        : (session.userAvatarUrl || 'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg');
+      const profileImage =
+        this.currentUserId === session.userId
+          ? session.hostAvatarUrl ||
+            'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg'
+          : session.userAvatarUrl ||
+            'https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg';
 
       return {
         id: session.id,
@@ -242,7 +261,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
         propertyId: session.propertyId,
         hostId: session.hostId,
         userId: session.userId,
-        originalSession: session
+        originalSession: session,
       };
     });
   }
@@ -252,7 +271,9 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
 
     const date = new Date(dateString);
     const now = new Date();
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    const diffInHours = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60)
+    );
 
     if (diffInHours < 1) {
       return 'Just now';
@@ -279,18 +300,17 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
 
     // Emit the selected chat session to parent component
     this.chatSessionSelected.emit(thread.originalSession);
-
   }
 
   getFilteredMessages(): MessageThread[] {
     if (this.activeFilter === 'unread') {
-      return this.messageThreads.filter(thread => thread.isUnread);
+      return this.messageThreads.filter((thread) => thread.isUnread);
     }
     return this.messageThreads;
   }
 
   getUnreadMessages(): MessageThread[] {
-    return this.messageThreads.filter(thread => thread.isUnread);
+    return this.messageThreads.filter((thread) => thread.isUnread);
   }
 
   getUnreadCount(): number {
@@ -332,7 +352,8 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   getLoadingInfo(): string {
     if (this.isLoading) return 'Loading messages...';
     if (this.isLoadingMore) return 'Loading more messages...';
-    if (!this.hasMoreData && this.messageThreads.length > 0) return 'All messages loaded';
+    if (!this.hasMoreData && this.messageThreads.length > 0)
+      return 'All messages loaded';
     return '';
   }
 
@@ -346,7 +367,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
     if (this.messagesContainer) {
       this.messagesContainer.nativeElement.scrollTo({
         top: 0,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     }
   }
@@ -357,7 +378,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
     if (element) {
       element.scrollIntoView({
         behavior: 'smooth',
-        block: 'center'
+        block: 'center',
       });
     }
   }

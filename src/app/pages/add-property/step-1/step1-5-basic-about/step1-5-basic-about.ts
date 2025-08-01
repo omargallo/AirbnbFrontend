@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { PropertyFormStorageService } from '../../../../core/services/ListingWizard/property-form-storage.service';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { Subscription } from 'rxjs';
+import { PropertyFormStorageService } from '../../services/property-form-storage.service';
+import { ListingValidationService } from '../../../../core/services/ListingWizard/listing-validation.service';
 
 @Component({
   selector: 'app-step1-5-basic-about',
@@ -20,7 +21,8 @@ export class Step15BasicAbout implements OnInit, OnDestroy {
 
   constructor(
     private formStorage: PropertyFormStorageService,
-    private wizardService: ListingWizardService
+    private wizardService: ListingWizardService,
+    private validationService: ListingValidationService
   ) {}
 
   ngOnInit(): void {
@@ -37,6 +39,10 @@ export class Step15BasicAbout implements OnInit, OnDestroy {
     this.subscription = this.wizardService.nextStep$.subscribe(() => {
       this.saveFormData();
     });
+
+    // Initial validation
+    this.saveFormData();
+    this.validationService.validateStep('step1-5-basic-about');
   }
 
   ngOnDestroy(): void {
@@ -50,7 +56,8 @@ export class Step15BasicAbout implements OnInit, OnDestroy {
       guests: this.guests,
       bedrooms: this.bedrooms,
       beds: this.beds,
-      bathrooms: this.bathrooms
+      bathrooms: this.bathrooms,
+      isValid: true // This step is always valid as long as values are within range
     };
     
     this.formStorage.saveFormData('step1-5', data);
@@ -79,6 +86,7 @@ export class Step15BasicAbout implements OnInit, OnDestroy {
         break;
     }
     this.saveFormData();
+    this.validationService.validateStep('step1-5-basic-about');
   }
 
   decreaseCounter(type: 'guests' | 'bedrooms' | 'beds' | 'bathrooms'): void {
@@ -97,5 +105,6 @@ export class Step15BasicAbout implements OnInit, OnDestroy {
         break;
     }
     this.saveFormData();
+    this.validationService.validateStep('step1-5-basic-about');
   }
 }

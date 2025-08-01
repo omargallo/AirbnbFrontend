@@ -63,20 +63,21 @@ export class UpdateList implements OnInit, OnDestroy {
 
   propertyId: number = 0;
   isLoading = false;
+  
+  // Initial loader state
+  isInitialLoading = true;
+  showContent = false;
 
   // Menu sections
   menuSections: MenuSection[] = [
-        { id: 'title', label: 'Title', icon: '📝', isActive: true, hasChanges: false, isSaving: false, isValid: true },
-
+    { id: 'title', label: 'Title', icon: '📝', isActive: true, hasChanges: false, isSaving: false, isValid: true },
     { id: 'photos', label: 'Photos', icon: '📸', isActive: false, hasChanges: false, isSaving: false, isValid: true },
     { id: 'propertyId', label: 'Property type', icon: '🏠', isActive: false, hasChanges: false, isSaving: false, isValid: true },
-      { id: 'rooms', label: 'Rooms & beds', icon: '🛏️', isActive: false, hasChanges: false, isSaving: false, isValid: true }, // ADD THIS LINE
-
+    { id: 'rooms', label: 'Rooms & beds', icon: '🛏️', isActive: false, hasChanges: false, isSaving: false, isValid: true },
     { id: 'price', label: 'Pricing', icon: '💰', isActive: false, hasChanges: false, isSaving: false, isValid: true },
     { id: 'maxGuests', label: 'Guests', icon: '👥', isActive: false, hasChanges: false, isSaving: false, isValid: true },
     { id: 'description', label: 'Description', icon: '📄', isActive: false, hasChanges: false, isSaving: false, isValid: true },
     { id: 'amenities', label: 'Amenities', icon: '✨', isActive: false, hasChanges: false, isSaving: false, isValid: true },
-    
     { id: 'location', label: 'Location', icon: '📍', isActive: false, hasChanges: false, isSaving: false, isValid: true }
   ];
 
@@ -99,17 +100,26 @@ export class UpdateList implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    console.log('UpdateList ngOnInit called');
+    
     this.activatedRoute.params.subscribe({
       next: (params) => {
         const id = params["propertyId"];
+        console.log('Route params received:', params);
+        
         if (id) {
-          this.propertyId = id as number;
+          this.propertyId = Number(id);
+          console.log('Property ID from route:', this.propertyId);
+          console.log('Active section on init:', this.activeSection);
+          
           this.isLoading = true;
           this.loadProperty();
         }
       },
-      error: () => {
+      error: (error) => {
+        console.error('Route params error:', error);
         this.isLoading = false;
+        this.hideInitialLoader();
         this.cdr.detectChanges();
       }
     });
@@ -123,75 +133,106 @@ export class UpdateList implements OnInit, OnDestroy {
   private loadProperty(): void {
     if (!this.propertyId) return;
 
+    console.log('Loading property with ID:', this.propertyId);
     this.isLoading = true;
+    
     this.propertyService.getPropertyById(this.propertyId).subscribe({
       next: (response) => {
+        console.log('Loaded property:', response);
+        console.log('Property title:', response.title);
+        
         this.originalProperty = response;
         this.property = response;
         this.mapPropertyToSectionData(response);
+        
+        console.log('Title data after mapping:', this.titleData);
+        console.log('Active section after mapping:', this.activeSection);
+        
         this.isLoading = false;
-        this.cdr.detectChanges();
+        
+        // Show content after a brief delay to ensure everything is properly initialized
+        this.showContentWithDelay();
       },
       error: (err) => {
         console.error('Failed to load property:', err);
         this.isLoading = false;
+        this.hideInitialLoader();
       }
     });
   }
 
+  private showContentWithDelay(): void {
+    setTimeout(() => {
+      this.showContent = true;
+      this.isInitialLoading = false;
+      this.cdr.detectChanges();
+    }, 500); 
+  }
+
+  private hideInitialLoader(): void {
+    this.showContent = true;
+    this.isInitialLoading = false;
+    this.cdr.detectChanges();
+  }
+
   private mapPropertyToSectionData(property: Property): void {
-    // Load images first, then map data
+    // Initialize all non-image data immediately (synchronously)
+    this.titleData = {
+      title: property.title
+    };
+
+    this.propertyTypeData = {
+      propertyTypeId: property.propertyTypeId
+    };
+
+    this.priceData = {
+      price: property.pricePerNight
+    };
+
+    this.guestsData = {
+      maxGuests: property.maxGuests || 1
+    };
+
+    this.roomsData = {
+      bedrooms: property.bedrooms || 1,
+      beds: property.beds || 1,
+      bathrooms: property.bathrooms || 1
+    };
+
+    this.descriptionData = {
+      description: property.description
+    };
+
+    this.amenitiesData = {
+      amenities: [] // Component will load actual amenities from API
+    };
+
+    this.locationData = {
+      location: {
+        address: property.state,
+        city: property.city,
+        country: property.country,
+        coordinates: {
+          lat: property.latitude,
+          lng: property.longitude
+        }
+      }
+    };
+
+    console.log('Mapped property data synchronously, title data:', this.titleData);
+    
+    // Trigger change detection for immediate data
+    this.cdr.detectChanges();
+
+    // Load images asynchronously (separate from other data)
     this.loadPropertyImages(property.id).then((images) => {
       this.photosData = {
         photos: images || [],
         propertyId: property.id,
         hostId: property.hostId
       };
-
-      // Map other section data...
-      this.titleData = {
-        title: property.title
-      };
-
-      this.propertyTypeData = {
-        propertyTypeId: property.propertyTypeId
-      };
-
-      this.priceData = {
-        price: property.pricePerNight
-      };
-
-      this.guestsData = {
-        maxGuests: property.maxGuests || 1
-      };
-
-      this.roomsData = {
-      bedrooms: property.bedrooms || 1,
-      beds: property.beds || 1,
-      bathrooms: property.bathrooms || 1
-      };
-
-
-      this.descriptionData = {
-        description: property.description
-      };
-
-      this.amenitiesData = {
-        amenities: [] // Add amenities to your Property model
-      };
-
-      this.locationData = {
-        location: {
-          address: property.state,
-          city: property.city,
-          country: property.country,
-          coordinates: {
-            lat: property.latitude,
-            lng: property.longitude
-          }
-        }
-      };
-
+      
+      console.log('Loaded property images:', images);
       this.cdr.detectChanges();
     });
   }
@@ -213,14 +254,14 @@ export class UpdateList implements OnInit, OnDestroy {
   }
 
   onRoomsDataChange(data: RoomsSectionData): void {
-  this.roomsData = data;
-  // Also update the main property object for consistency
-  if (this.property) {
-    this.property.bedrooms = data.bedrooms;
-    this.property.beds = data.beds;
-    this.property.bathrooms = data.bathrooms;
+    this.roomsData = data;
+    // Also update the main property object for consistency
+    if (this.property) {
+      this.property.bedrooms = data.bedrooms;
+      this.property.beds = data.beds;
+      this.property.bathrooms = data.bathrooms;
+    }
   }
-}
 
   // Menu navigation
   onMenuSectionClick(section: MenuSection): void {
@@ -267,8 +308,16 @@ export class UpdateList implements OnInit, OnDestroy {
     this.descriptionData = data;
   }
 
+  // Enhanced amenities data change handler
   onAmenitiesDataChange(data: AmenitiesSectionData): void {
+    console.log('Amenities data changed:', data);
     this.amenitiesData = data;
+    
+    // Update the main property object for consistency if needed
+    if (this.property) {
+      // Note: You might need to add amenities field to your Property model
+      // this.property.amenities = data.amenities;
+    }
   }
 
   onLocationDataChange(data: LocationSectionData): void {
@@ -280,6 +329,7 @@ export class UpdateList implements OnInit, OnDestroy {
     const section = this.menuSections.find(s => s.id === sectionId);
     if (section) {
       section.hasChanges = hasChanges;
+      console.log(`Section ${sectionId} has changes:`, hasChanges);
     }
   }
 
@@ -299,77 +349,87 @@ export class UpdateList implements OnInit, OnDestroy {
     }
   }
 
-  // Save functionality
- private async saveSection(section: MenuSection): Promise<void> {
-  section.isSaving = true;
-  
-  try {
-    // Handle photos section specially
-    if (section.id === 'photos') {
-      if (this.photosComponent) {
-        await this.photosComponent.handleSave();
+  // Enhanced save functionality
+  private async saveSection(section: MenuSection): Promise<void> {
+    section.isSaving = true;
+    
+    try {
+      // Handle photos section specially
+      if (section.id === 'photos') {
+        if (this.photosComponent) {
+          await this.photosComponent.handleSave();
+          
+          // Update section state
+          section.hasChanges = false;
+          section.isSaving = false;
+          section.lastSaved = new Date();
+          
+          console.log('Successfully saved photos');
+        }
+      } else if (section.id === 'amenities') {
+        // Amenities don't need saving via the main API
+        // They are saved individually via the toggle API in the component
+        console.log('Amenities are saved automatically via toggle API');
         
-        // Update section state
+        // Just update the section state
         section.hasChanges = false;
         section.isSaving = false;
         section.lastSaved = new Date();
         
-        console.log('Successfully saved photos');
+      } else {
+        // Handle other sections with API calls
+        const sectionData = this.getSectionDataForSave(section.id);
+        
+        if (this.originalProperty && sectionData !== null && sectionData !== undefined) {
+          await this.propertyService.updatePropertySection(
+            this.originalProperty,
+            sectionData,
+            section.id
+          ).toPromise();
+
+          // Update section state
+          section.hasChanges = false;
+          section.isSaving = false;
+          section.lastSaved = new Date();
+
+          // Update original property data
+          this.updateOriginalPropertyData(section.id, sectionData);
+          
+          console.log(`Successfully saved ${section.id}`);
+        }
       }
-    } else {
-      // Handle other sections with API calls
-      const sectionData = this.getSectionDataForSave(section.id);
+    } catch (error: any) {
+      section.isSaving = false;
+      console.error(`Error saving ${section.id}:`, error);
       
-      if (this.originalProperty && sectionData !== null && sectionData !== undefined) {
-        // UPDATED: Remove propertyId parameter since it's now in the DTO body
-        await this.propertyService.updatePropertySection(
-          this.originalProperty,
-          sectionData,
-          section.id
-        ).toPromise();
-
-        // Update section state
-        section.hasChanges = false;
-        section.isSaving = false;
-        section.lastSaved = new Date();
-
-        // Update original property data
-        this.updateOriginalPropertyData(section.id, sectionData);
-        
-        console.log(`Successfully saved ${section.id}`);
+      // Enhanced error handling
+      const httpError = error?.error || error;
+      const status = error?.status || httpError?.status;
+      const message = httpError?.message || error?.message || 'Unknown error';
+      
+      if (status === 401) {
+        alert(`Unauthorized: You don't have permission to update this property`);
+      } else if (status === 404) {
+        alert(`Property not found`);
+      } else if (status === 409) {
+        alert(`Conflict: There was a reference conflict while updating`);
+      } else {
+        alert(`Failed to save ${section.label}: ${message}`);
       }
     }
-  } catch (error: any) { // Type assertion to 'any' to access error properties
-    section.isSaving = false;
-    console.error(`Error saving ${section.id}:`, error);
     
-    // Enhanced error handling with proper typing
-    const httpError = error?.error || error;
-    const status = error?.status || httpError?.status;
-    const message = httpError?.message || error?.message || 'Unknown error';
-    
-    if (status === 401) {
-      alert(`Unauthorized: You don't have permission to update this property`);
-    } else if (status === 404) {
-      alert(`Property not found`);
-    } else if (status === 409) {
-      alert(`Conflict: There was a reference conflict while updating`);
-    } else {
-      alert(`Failed to save ${section.label}: ${message}`);
+    this.cdr.detectChanges();
+  }
+
+  // Save button functionality
+  onSaveCurrentSection(): void {
+    const activeSection = this.getActiveSectionObject();
+    if (activeSection && activeSection.hasChanges && !activeSection.isSaving) {
+      this.saveSection(activeSection);
     }
   }
-  
-  this.cdr.detectChanges();
-}
 
-// Also add this method to your component for the Save button functionality
-onSaveCurrentSection(): void {
-  const activeSection = this.getActiveSectionObject();
-  if (activeSection && activeSection.hasChanges && !activeSection.isSaving) {
-    this.saveSection(activeSection);
-  }
-}
-
+  // Enhanced getSectionDataForSave method
   private getSectionDataForSave(sectionId: string): any {
     switch (sectionId) {
       case 'title':
@@ -383,10 +443,11 @@ onSaveCurrentSection(): void {
       case 'description':
         return this.descriptionData?.description;
       case 'amenities':
-        return this.amenitiesData?.amenities;
+        // Amenities are handled separately via toggle API
+        return null;
       case 'location':
         return this.locationData?.location;
-        case 'rooms':
+      case 'rooms':
         return this.roomsData;
       default:
         return null;
@@ -412,13 +473,11 @@ onSaveCurrentSection(): void {
       case 'propertyId':
         this.originalProperty.propertyTypeId = Number(data);
         break;
-        case 'rooms':
+      case 'rooms':
         this.originalProperty.bedrooms = Number(data.bedrooms);
         this.originalProperty.beds = Number(data.beds);
         this.originalProperty.bathrooms = Number(data.bathrooms);
-         break;
-
-
+        break;
       case 'location':
         this.originalProperty.city = data.city;
         this.originalProperty.country = data.country;

@@ -1,10 +1,9 @@
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PhotosService } from '../../../../core/services/photos.service';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
-import { PropertyFormStorageService } from '../../../../core/services/ListingWizard/property-form-storage.service';
 import { Subscription } from 'rxjs';
+import { PropertyFormStorageService } from '../../../add-property/services/property-form-storage.service';
+import { ListingValidationService } from '../../../../core/services/ListingWizard/listing-validation.service';
 
 @Component({
   selector: 'app-step2-3-3-photos-ta-da',
@@ -14,65 +13,91 @@ import { Subscription } from 'rxjs';
 })
 export class Step233PhotosTaDa implements OnInit, OnDestroy {
   private subscription!: Subscription;
-
-  constructor(
-    public photosService: PhotosService,
-    private formStorage: PropertyFormStorageService,
-    private wizardService: ListingWizardService
-  ) {}
-
+  photos: string[] = [];
   dragStartIndex: number | null = null;
 
+  constructor(
+    private formStorage: PropertyFormStorageService,
+    private wizardService: ListingWizardService,
+    private validationService: ListingValidationService
+  ) {}
+
   ngOnInit(): void {
-    // Load saved data
     const savedData = this.formStorage.getStepData('step2-3-3');
     if (savedData?.photos) {
-      this.photosService.photos = savedData.photos;
+      this.photos = [...savedData.photos];
     }
 
-    // Subscribe to next step event
+    const imageFiles = this.formStorage.getImageFiles();
+    imageFiles.forEach(file => {
+      const objectUrl = URL.createObjectURL(file);
+      this.photos.push(objectUrl);
+    });
+
     this.subscription = this.wizardService.nextStep$.subscribe(() => {
       this.saveFormData();
     });
+
+    // Initial validation
+    this.saveFormData();
   }
 
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+
+    // Clean up object URLs
+    this.photos.forEach(photo => {
+      if (photo.startsWith('blob:')) {
+        URL.revokeObjectURL(photo);
+      }
+    });
   }
 
   private saveFormData(): void {
     const data = {
-      photos: this.photosService.photos
+      photos: this.photos,
+      isValid: this.photos.length >= 5
     };
     this.formStorage.saveFormData('step2-3-3', data);
+    this.validationService.validateStep('step2-3-3-photos-ta-da');
   }
 
   addPhotos(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input?.files) return;
-    const files = input.files;
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      if (file.type.startsWith('image/')) {
-        this.readFile(file);
-      }
-    }
-    this.saveFormData();
-  }
+    const files = Array.from(input.files);
 
-  private readFile(file: File): void {
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      this.photosService.addPhoto(e.target.result);
-    };
-    reader.readAsDataURL(file);
+    files.forEach(file => {
+      if (file.type.startsWith('image/')) {
+        const objectUrl = URL.createObjectURL(file);
+        this.photos.push(objectUrl);
+        const currentFiles = this.formStorage.getImageFiles();
+        this.formStorage.setImageFiles([...currentFiles, file]);
+      }
+    });
+
+    this.saveFormData();
   }
 
   removePhoto(index: number): void {
-    this.photosService.removePhoto(index);
-    this.saveFormData();
+    // Only allow removal if we have more than 5 photos
+    if (this.photos.length > 5) {
+      // Clean up object URL if it's a blob
+      if (this.photos[index].startsWith('blob:')) {
+        URL.revokeObjectURL(this.photos[index]);
+      }
+
+      this.photos.splice(index, 1);
+
+      const currentFiles = this.formStorage.getImageFiles();
+      const updatedFiles = [...currentFiles];
+      updatedFiles.splice(index, 1);
+      this.formStorage.setImageFiles(updatedFiles);
+
+      this.saveFormData();
+    }
   }
 
   onDragStart(index: number): void {
@@ -81,7 +106,14 @@ export class Step233PhotosTaDa implements OnInit, OnDestroy {
 
   onDrop(index: number): void {
     if (this.dragStartIndex !== null && this.dragStartIndex !== index) {
-      this.photosService.reorderPhotos(this.dragStartIndex, index);
+      const movedPhoto = this.photos.splice(this.dragStartIndex, 1)[0];
+      this.photos.splice(index, 0, movedPhoto);
+
+      const imageFiles = this.formStorage.getImageFiles();
+      const movedFile = imageFiles.splice(this.dragStartIndex, 1)[0];
+      imageFiles.splice(index, 0, movedFile);
+      this.formStorage.setImageFiles(imageFiles);
+
       this.saveFormData();
     }
     this.dragStartIndex = null;

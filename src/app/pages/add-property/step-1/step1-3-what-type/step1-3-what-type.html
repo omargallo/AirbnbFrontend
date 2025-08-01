@@ -6,7 +6,7 @@
         <button
           type="button"
           role="radio"
-          [attr.aria-checked]="selectedPlace === option.key ? 'true' : 'false'"
+          [attr.aria-checked]="selectedPlace === option.key"
           class="selection-button"
           (click)="selectPlace(option.key)"
         >

@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { PaymentDTO, PaymentService, PendingPaymentsResponse } from '../../core/services/payment/payment';
+import {
+  PaymentDTO,
+  PaymentService,
+  PendingPaymentsResponse,
+} from '../../core/services/payment/payment';
 import { AuthService } from '../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 
@@ -10,21 +14,21 @@ enum PaymentStatus {
   Failed = 4,
   Canceled = 5,
   Refunded = 6,
-  RequiresAction = 7
+  RequiresAction = 7,
 }
 
 enum TransferStatus {
   NotTransferred = 1,
   PendingTransfer = 2,
   Transferred = 3,
-  TransferFailed = 4
+  TransferFailed = 4,
 }
 
 @Component({
   selector: 'app-host-wallet',
   templateUrl: './host-wallet.html',
   styleUrls: ['./host-wallet.css'],
-  imports: [CommonModule]
+  imports: [CommonModule],
 })
 export class HostWalletComponent implements OnInit {
   pendingPayments: PaymentDTO[] = [];
@@ -43,15 +47,28 @@ export class HostWalletComponent implements OnInit {
   constructor(
     private paymentService: PaymentService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.currentUserId = this.authService.userId;
     this.userEmail = localStorage.getItem('email') || '';
     if (this.currentUserId) {
+      this.checkStripeAccountStatus(this.currentUserId);
       this.loadPayments();
     }
   }
+  checkStripeAccountStatus(userId: string) {
+    this.paymentService.checkStripeAccountStatus(userId).subscribe({
+      next: (response) => {
+        this.needsToCreateStripeAccount = !response.accountCompleted;
+      },
+      error: (err) => {
+        console.error('Error checking Stripe account status:', err);
+        this.error = 'Unable to verify Stripe account status.';
+      },
+    });
+  }
+
 
   loadPayments() {
     if (!this.currentUserId) return;
@@ -62,28 +79,33 @@ export class HostWalletComponent implements OnInit {
     this.paymentService.getHostPayments(this.currentUserId).subscribe({
       next: (response: PendingPaymentsResponse) => {
         if (response.success) {
-          console.log("PendingPaymentsResponse", response);
+          console.log('PendingPaymentsResponse', response);
 
-          this.pendingPayments = response.payments.filter(p =>
-            (p.status === PaymentStatus.Succeeded || p.status === PaymentStatus.Pending) &&
-            p.transferStatus === TransferStatus.PendingTransfer
+          this.pendingPayments = response.payments.filter(
+            (p) =>
+              (p.status === PaymentStatus.Succeeded ||
+                p.status === PaymentStatus.Pending) &&
+              p.transferStatus === TransferStatus.PendingTransfer
           );
 
-          this.transferredPayments = response.payments.filter(p =>
-            p.transferStatus === TransferStatus.Transferred
+          this.transferredPayments = response.payments.filter(
+            (p) => p.transferStatus === TransferStatus.Transferred
           );
 
           const pendingTransferPayments = this.pendingPayments.filter(
-            p => p.transferStatus === TransferStatus.PendingTransfer
+            (p) => p.transferStatus === TransferStatus.PendingTransfer
           );
 
-          this.shouldShowPendingSection = (this.transferredPayments.length === 0 || pendingTransferPayments.length === 0);
-          this.needsToCreateStripeAccount = this.shouldShowPendingSection &&this.transferredPayments.length == 0 ;
+          this.shouldShowPendingSection = this.pendingPayments.length > 0;
 
-          this.totalBalance = this.transferredPayments.reduce((sum, payment) => {
-            const amountToAdd = payment.hostAmount ?? 0;
-            return sum + amountToAdd;
-          }, 0);
+
+          this.totalBalance = this.transferredPayments.reduce(
+            (sum, payment) => {
+              const amountToAdd = payment.hostAmount ?? 0;
+              return sum + amountToAdd;
+            },
+            0
+          );
         } else {
           this.error = response.message || 'Failed to load payments';
         }
@@ -93,7 +115,7 @@ export class HostWalletComponent implements OnInit {
         console.error('Error loading payments:', err);
         this.error = 'Failed to load payments. Please try again.';
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -113,22 +135,26 @@ export class HostWalletComponent implements OnInit {
     this.isCreatingAccount = true;
     this.error = null;
 
-    this.paymentService.createStripeAccount(this.userEmail, this.currentUserId).subscribe({
-      next: (response) => {
-        if (response.success && response.url) {
-          console.log("Redirect", response);
-          window.location.href = response.url;
-        } else {
-          this.error = response.message || 'Failed to create Stripe account';
-        }
-        this.isCreatingAccount = false;
-      },
-      error: (err) => {
-        console.error('Error creating Stripe account:', err);
-        this.error = err.error?.message || 'Failed to create Stripe account. Please try again.';
-        this.isCreatingAccount = false;
-      }
-    });
+    this.paymentService
+      .createStripeAccount(this.userEmail, this.currentUserId)
+      .subscribe({
+        next: (response) => {
+          if (response.success && response.url) {
+            console.log('Redirect', response);
+            window.location.href = response.url;
+          } else {
+            this.error = response.message || 'Failed to create Stripe account';
+          }
+          this.isCreatingAccount = false;
+        },
+        error: (err) => {
+          console.error('Error creating Stripe account:', err);
+          this.error =
+            err.error?.message ||
+            'Failed to create Stripe account. Please try again.';
+          this.isCreatingAccount = false;
+        },
+      });
   }
 
   toggleShowAllPending() {
@@ -140,11 +166,15 @@ export class HostWalletComponent implements OnInit {
   }
 
   getDisplayedPendingPayments(): PaymentDTO[] {
-    return this.showAllPending ? this.pendingPayments : this.pendingPayments.slice(0, 5);
+    return this.showAllPending
+      ? this.pendingPayments
+      : this.pendingPayments.slice(0, 5);
   }
 
   getDisplayedTransferredPayments(): PaymentDTO[] {
-    return this.showAllTransferred ? this.transferredPayments : this.transferredPayments.slice(0, 5);
+    return this.showAllTransferred
+      ? this.transferredPayments
+      : this.transferredPayments.slice(0, 5);
   }
 
   formatDate(date: Date | string): string {
@@ -153,13 +183,13 @@ export class HostWalletComponent implements OnInit {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   }
 
   formatAmount(amount?: number): string {
     if (typeof amount !== 'number') return '$0.00 USD';
-    const dollars = amount / 100;
+    const dollars = amount / 10;
     return `$${dollars.toFixed(2)} USD`;
   }
 
@@ -211,7 +241,7 @@ export class HostWalletComponent implements OnInit {
       error: (err) => {
         console.error('Transfer error:', err);
         this.error = 'Transfer failed. Please try again.';
-      }
+      },
     });
   }
 }
