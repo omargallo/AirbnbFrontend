@@ -2,13 +2,13 @@ export interface UserProfileDto {
   userId: string;
   userName: string;
   email: string;
-  roles: string[];
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
   bio?: string;
   birthDate?: string;
   country?: string;
+  profilePictureURL?: string;
 }
 
 export interface Ireview {
@@ -25,5 +25,4 @@ export interface Ireview {
   value?: number; // lowercase alias
   createdAt?: string; // lowercase alias
   user?: UserProfileDto; // lowercase alias
-
 }

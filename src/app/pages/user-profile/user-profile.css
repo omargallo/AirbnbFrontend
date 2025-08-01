@@ -1,0 +1,169 @@
+.profile-avatar-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.heart-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  background: #dc3545;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 2px solid white;
+}
+
+.visited-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.star-rating {
+  color: #ffc107;
+}
+
+.star-rating .far {
+  color: #dee2e6;
+}
+
+.property-img {
+  height: 200px;
+  object-fit: cover;
+}
+
+.avatar-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.section-divider {
+  height: 1px;
+  background-color: #e9ecef;
+  margin: 3rem 0 2rem 0;
+  opacity: 0.8;
+}
+
+.text-darker {
+  color: #343a40 !important;
+}
+
+
+.review-card {
+  min-width: 300px;
+  max-width: 300px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #e9ecef !important;
+}
+
+.review-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12) !important;
+}
+
+.listing-card {
+  min-width: 250px;
+  max-width: 250px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #e9ecef !important;
+}
+
+.listing-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12) !important;
+}
+
+.reviews-scroll-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 8px;
+}
+
+.reviews-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.btn-link.fw-semibold {
+  text-decoration: none !important;
+  color: #343a40 !important;
+  font-weight: 600 !important;
+}
+
+.btn-link.fw-semibold:hover {
+  color: #000 !important;
+}
+
+.listing-card .property-img {
+  height: 180px;
+  object-fit: cover;
+  border-radius: 0.375rem 0.375rem 0 0;
+}
+
+@media (max-width: 768px) {
+
+  .review-card,
+  .listing-card {
+    min-width: 280px;
+    max-width: 280px;
+  }
+
+  .section-divider {
+    margin: 2rem 0 1.5rem 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .profile-avatar-img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .heart-badge {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .visited-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+  }
+
+  .avatar-img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .review-card,
+  .listing-card {
+    min-width: 260px;
+    max-width: 260px;
+  }
+
+  .fs-3 {
+    font-size: 1.5rem !important;
+  }
+}

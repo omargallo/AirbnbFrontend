@@ -44,6 +44,7 @@ import { ReviewForm } from './components/review-form/review-form';
 import { UsersComponent } from './pages/admin/pages/users/users';
 import { AdminDashboard } from './pages/admin/Dashboard/AdminDashboard';
 import { HostWalletComponent } from './components/host-wallet/host-wallet';
+import { UserProfile } from './pages/user-profile/user-profile';
 
 export const routes: Routes = [
   {
@@ -66,6 +67,7 @@ export const routes: Routes = [
       { path: 'update-profile/:id', component: UpdateProfile },
       { path: 'your-reviews', component: YourReviews },
       { path: 'notifications', component: Notifications },
+      { path: 'user/:id', component: UserProfile },
     ],
   },
   {

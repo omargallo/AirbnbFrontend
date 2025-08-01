@@ -25,7 +25,6 @@ import { ConfirmService } from '../../core/services/confirm.service';
 import { Modal } from '../../shared/components/modal/modal';
 import { ReviewsModalComponent } from './guest-review-modal/guest-review-modal';
 
-
 @Component({
   selector: 'app-guest-reviews',
   standalone: true,
@@ -33,10 +32,9 @@ import { ReviewsModalComponent } from './guest-review-modal/guest-review-modal';
     CommonModule,
     StarComponent,
     //ReviewsModalComponent ,
-    Confirm,
-    Modal,
+    // Confirm,
+    //  Modal,
     ReviewsModalComponent,
-
   ],
   templateUrl: './guest-reviews.html',
   styleUrl: './guest-reviews.css',
@@ -170,7 +168,6 @@ export class GuestReviews implements OnInit {
 
     const hasExistingReview = this.reviews.some(
       (review) => review.user.userId === this.currentUser
-
     );
 
     // console.log('Has existing review from user:', hasExistingReview);
@@ -186,7 +183,6 @@ export class GuestReviews implements OnInit {
   //   return this.reviews.some((review) => review.userId === this.currentUser);
   // }
 
-
   hasExistingReview(): boolean {
     console.log('Current User:', this.currentUser, typeof this.currentUser);
     console.log(
@@ -195,7 +191,6 @@ export class GuestReviews implements OnInit {
         id: r.id,
         userId: r.user.userId,
         userIdType: typeof r.user.userId,
-
       }))
     );
 
@@ -203,7 +198,6 @@ export class GuestReviews implements OnInit {
       const match = String(review.user.userId) === String(this.currentUser);
       console.log(
         `Comparing: "${review.user.userId}" === "${this.currentUser}" = ${match}`
-
       );
       return match;
     });
@@ -278,7 +272,6 @@ export class GuestReviews implements OnInit {
         // console.log('First review object:', response[0]);
         // console.log('Keys in first review:', Object.keys(response[0] || {}));
 
-
         this.reviews = response;
         // this.checkUserExistingReview();
         this.cdr.detectChanges();
@@ -336,7 +329,6 @@ export class GuestReviews implements OnInit {
         console.error('Delete failed:', error);
         // Revert the UI change on error
         this.loadReviewsByPropertyId();
-
       },
     });
   }
@@ -352,7 +344,6 @@ export class GuestReviews implements OnInit {
       }
     );
   }
-
 
   //   isCurrentUserReview(review: IGuestReviewDto): boolean {
   //   return this.currentUser === review.UserId;
@@ -427,7 +418,6 @@ export class GuestReviews implements OnInit {
         this.reviews.length > 0
           ? Number((sum / this.reviews.length).toFixed(1))
           : 0;
-
     });
 
     return averages;
@@ -442,7 +432,6 @@ export class GuestReviews implements OnInit {
       value: 'bi-tag',
     };
     return icons[category.toLowerCase()] || 'bi-star';
-
   }
   getCleanlinessRatings(): number[] {
     return this.reviews
