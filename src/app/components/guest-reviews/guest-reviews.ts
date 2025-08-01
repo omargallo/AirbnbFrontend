@@ -32,6 +32,10 @@ import { ReviewsModalComponent } from './guest-review-modal/guest-review-modal';
     CommonModule,
     StarComponent,
     //ReviewsModalComponent ,
+
+    // Confirm,
+    //  Modal,
+
     ReviewsModalComponent,
   ],
   templateUrl: './guest-reviews.html',

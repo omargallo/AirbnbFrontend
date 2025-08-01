@@ -24,6 +24,7 @@ export interface UserProfileDto {
   bio?: string;
   birthDate?: string;
   country?: string;
+  profilePictureURL?: string;
 }
 
 export interface IGuestReviewDto {
@@ -43,11 +44,11 @@ export interface IGuestReviewDto {
   value: number;
   user: UserProfileDto;
   createdAt: string;
-  // updatedAt?: string;
-  // user?: {
-  //   id: string;
-  //   firstName: string;
-  //   lastName: string;
-  //   profilePicture?: string;
-  // };
 }
+// updatedAt?: string;
+// user?: {
+//   id: string;
+//   firstName: string;
+//   lastName: string;
+//   profilePicture?: string;
+// };

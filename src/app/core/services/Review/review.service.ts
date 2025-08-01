@@ -10,6 +10,9 @@ import {
 } from '../../models/ReviewInterfaces/guest-review-dto';
 import { environment } from '../../../../environments/environment.development';
 import { BookingDetailsDTO } from '../Booking/user-booking-service';
+import { UserProfileDto } from '../Admin/user-service';
+import { HostReviewDTO } from '../../models/ReviewInterfaces/host-review-dto';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -43,8 +46,36 @@ export class ReviewService {
     );
   }
 
+
+  //replaced thiis
   getReviewsByUserId(userId: string): Observable<IGuestReviewDto[]> {
     return this.http.get<any>(`${this.baseUrl}/user/${userId}`).pipe(
+      map((response) => {
+        if (!response.isSuccess || !response.data) {
+          return [];
+        }
+        return response.data;
+      })
+    );
+  }
+
+
+// Private method - gets current user's reviews (requires authentication)
+getMyReviews(): Observable<IGuestReviewDto[]> {
+  return this.http.get<any>(`${this.baseUrl}/user`).pipe(
+    map((response) => {
+      if (!response.isSuccess || !response.data) {
+        return [];
+      }
+      return response.data;
+    })
+  );
+}
+
+// ( no authentication required)
+
+  getPublicReviewsByUserId(userId: string): Observable<IGuestReviewDto[]> {
+    return this.http.get<any>(`${this.baseUrl}/user/show/${userId}`).pipe(
       map((response) => {
         if (!response.isSuccess || !response.data) {
           return [];
@@ -124,6 +155,43 @@ export class ReviewService {
             (booking: BookingDetailsDTO) =>
               booking.bookingStatus === 'Completed'
           );
+        })
+      );
+  }
+
+  isUserHost(userId: string): Observable<boolean> {
+    return this.http.get<any>(`${this.baseUrl}/is-host/${userId}`).pipe(
+      map((response) => {
+        if (!response.isSuccess) {
+          return false;
+        }
+        return response.data;
+      })
+    );
+  }
+  //private one
+  getMyHostReviewsWithProperties(): Observable<HostReviewDTO[]> {
+    return this.http
+      .get<any>(`${this.baseUrl}/host/reviews-with-properties`)
+      .pipe(
+        map((response) => {
+          if (!response.isSuccess || !response.data) {
+            return [];
+          }
+          return response.data;
+        })
+      );
+  }
+  //public one
+  getHostReviewsWithProperties(hostId: string): Observable<HostReviewDTO[]> {
+    return this.http
+      .get<any>(`${this.baseUrl}/host/${hostId}/reviews-with-properties/public`)
+      .pipe(
+        map((response) => {
+          if (!response.isSuccess || !response.data) {
+            return [];
+          }
+          return response.data;
         })
       );
   }

@@ -44,9 +44,11 @@ import { ReviewForm } from './components/review-form/review-form';
 import { UsersComponent } from './pages/admin/pages/users/users';
 import { AdminDashboard } from './pages/admin/Dashboard/AdminDashboard';
 import { HostWalletComponent } from './components/host-wallet/host-wallet';
+
+import { UserProfile } from './pages/user-profile/user-profile';
+
 import { authGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
-
 export const routes: Routes = [
   {
     path: '',
@@ -65,6 +67,9 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       { path: 'Messages', component: Messages },
+
+      { path: 'user/:id', component: UserProfile },
+
       { path: 'profile/:id', component: Profile, canActivate: [authGuard] },
       {
         path: 'update-profile/:id',
@@ -81,6 +86,7 @@ export const routes: Routes = [
         component: Notifications,
         canActivate: [authGuard],
       },
+
     ],
   },
   {
