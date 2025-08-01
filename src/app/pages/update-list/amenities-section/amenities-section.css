@@ -73,3 +73,253 @@
 .remove-amenity-btn:hover {
   color: #d32f2f;
 }
+/* amenities-section.css */
+
+.section-content {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.section-header p {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Loading state */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #ff5a5f;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Amenities grid */
+.amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.amenity-item {
+  width: 100%;
+}
+
+.amenity-btn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 120px;
+}
+
+.amenity-btn:hover {
+  border-color: #1e1d1d;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.amenity-btn.selected {
+  border-color: #0e0e0e;
+  background-color: #f7f4f6;
+  color: #0b0b0b;
+}
+
+/* Amenity icon */
+.amenity-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.amenity-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.amenity-icon-fallback {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.amenity-btn.selected .amenity-icon-fallback {
+  color: #ff5a5f;
+}
+
+/* Amenity name */
+.amenity-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* Checkmark icon */
+.checkmark-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: #ff5a5f;
+}
+
+/* Selected amenities summary */
+.selected-amenities-summary {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.selected-amenities-summary h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.selected-amenities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.selected-amenity-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.amenity-tag-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.remove-amenity-btn {
+  background: none;
+  border: none;
+  color: #ff5a5f;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 0.25rem;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.remove-amenity-btn:hover {
+  background-color: rgba(255, 90, 95, 0.1);
+}
+
+.clear-all-btn {
+  background: #ff5a5f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clear-all-btn:hover {
+  background-color: #e04449;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .section-content {
+    padding: 1rem;
+  }
+  
+  .amenities-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+  }
+  
+  .amenity-btn {
+    padding: 1rem 0.75rem;
+    min-height: 100px;
+  }
+  
+  .section-header h2 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .amenities-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .selected-amenities-summary {
+    padding: 1rem;
+  }
+}

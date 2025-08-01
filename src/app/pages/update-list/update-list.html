@@ -1,182 +1,194 @@
 <app-hostheader></app-hostheader>
 <div class="airbnb-listing-editor">
-      <!-- Loading Overlay -->
-      <div *ngIf="isLoading" class="loading-overlay">
-        <div class="loading-content">
-          <div class="loading-spinner"></div>
-          <p>Loading your listing...</p>
-        </div>
-      </div>
+  <!-- Initial Loading Overlay (shows on first load) -->
+  <div *ngIf="isInitialLoading" class="initial-loading-overlay">
+    <div class="initial-loading-content">
+      <div class="initial-loading-spinner"></div>
+      <p>Setting up your listing editor...</p>
+    </div>
+  </div>
 
-      <!-- Header -->
-      <div class="editor-header">
-        <div class="container-fluid">
-          <!-- Empty header for spacing/consistency -->
-        </div>
-      </div>
+  <!-- Regular Loading Overlay (shows during saves/updates) -->
+  <div *ngIf="isLoading && !isInitialLoading" class="loading-overlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p>Loading your listing...</p>
+    </div>
+  </div>
 
-      <!-- Main Content -->
-      <div class="editor-content">
-        <div class="container-fluid">
-          <div class="row">
-            <!-- Sidebar Navigation -->
-            <div class="col-12 col-lg-4 col-xl-3">
-              <div class="sidebar">
-                <!-- Menu Title in Sidebar with Back Button -->
-                <div class="sidebar-header">
-                  <div class="sidebar-title-container">
-                    <button class="back-btn" type="button" routerLink="/host">
-                      <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8.354 1.646a.5.5 0 0 1 0 .708L3.207 7.5H14.5a.5.5 0 0 1 0 1H3.207l5.147 5.146a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
-                      </svg>
-                    </button>
-                    <h1 class="editor-title">Listing editor</h1>
-                  </div>
+  <!-- Main Content - Only show when initial loading is complete -->
+  <div *ngIf="showContent">
+    <!-- Header -->
+    <div class="editor-header">
+      <div class="container-fluid">
+        <!-- Empty header for spacing/consistency -->
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="editor-content">
+      <div class="container-fluid">
+        <div class="row">
+          <!-- Sidebar Navigation -->
+          <div class="col-12 col-lg-4 col-xl-3">
+            <div class="sidebar">
+              <!-- Menu Title in Sidebar with Back Button -->
+              <div class="sidebar-header">
+                <div class="sidebar-title-container">
+                  <button class="back-btn" type="button" routerLink="/host">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M8.354 1.646a.5.5 0 0 1 0 .708L3.207 7.5H14.5a.5.5 0 0 1 0 1H3.207l5.147 5.146a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                    </svg>
+                  </button>
+                  <h1 class="editor-title">Listing editor</h1>
                 </div>
-                
-                <!-- Scrollable Menu -->
-                <div class="menu-container">
-                  <div class="menu-list">
-                    <div *ngFor="let section of menuSections; trackBy: trackBySection" class="menu-item-wrapper">
-                      <button
-                        class="menu-item"
-                        [class.active]="section.isActive"
-                        (click)="onMenuSectionClick(section)"
-                        type="button">
-                        
-                        <div class="menu-item-content">
-                          <div class="menu-item-icon">{{ section.icon }}</div>
-                          <div class="menu-item-text">
-                            <span class="menu-item-label">{{ section.label }}</span>
-                            <div class="menu-item-status" *ngIf="section.lastSaved">
-                              <span class="saved-indicator">Saved {{ section.lastSaved | date:'short' }}</span>
-                            </div>
+              </div>
+              
+              <!-- Scrollable Menu -->
+              <div class="menu-container">
+                <div class="menu-list">
+                  <div *ngFor="let section of menuSections; trackBy: trackBySection" class="menu-item-wrapper">
+                    <button
+                      class="menu-item"
+                      [class.active]="section.isActive"
+                      (click)="onMenuSectionClick(section)"
+                      type="button">
+                      
+                      <div class="menu-item-content">
+                        <div class="menu-item-icon">{{ section.icon }}</div>
+                        <div class="menu-item-text">
+                          <span class="menu-item-label">{{ section.label }}</span>
+                          <div class="menu-item-status" *ngIf="section.lastSaved">
+                            <span class="saved-indicator">Saved {{ section.lastSaved | date:'short' }}</span>
                           </div>
                         </div>
+                      </div>
 
-                        <div class="menu-item-actions">
-                          <!-- Loading indicator -->
-                          <span *ngIf="section.isSaving" class="saving-indicator">💾</span>
-                          <!-- Changes indicator -->
-                          <span *ngIf="section.hasChanges && !section.isSaving" class="changes-dot">●</span>
-                        </div>
-                      </button>
-                    </div>
+                      <div class="menu-item-actions">
+                        <!-- Loading indicator -->
+                        <span *ngIf="section.isSaving" class="saving-indicator">💾</span>
+                        <!-- Changes indicator -->
+                        <span *ngIf="section.hasChanges && !section.isSaving" class="changes-dot">●</span>
+                      </div>
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Main Content Area -->
-            <div class="col-12 col-lg-8 col-xl-9">
-              <div class="content-area">
-                <div class="content-wrapper" *ngIf="property">
-                  
-                  <!-- Photos Section with Template Reference -->
-                  <app-photos-section
-                    #photosSection
-                    *ngIf="activeSection === 'photos'"
-                    [data]="photosData"
-                    (dataChange)="onPhotosDataChange($event)"
-                    (hasChanges)="onSectionHasChanges('photos', $event)"
-                    (validationChange)="onSectionValidationChange('photos', $event)"
-                    (saveComplete)="onSectionSaveComplete('photos')">
-                  </app-photos-section>
-
-                  <!-- Title Section -->
-                  <app-title-section
-                    *ngIf="activeSection === 'title'"
-                    [data]="titleData"
-                    (dataChange)="onTitleDataChange($event)"
-                    (hasChanges)="onSectionHasChanges('title', $event)"
-                    (validationChange)="onSectionValidationChange('title', $event)">
-                  </app-title-section>
-
-                  <!-- Property Type Section -->
-                  <app-property-type-section
-                    *ngIf="activeSection === 'propertyId'"
-                    [data]="propertyTypeData"
-                    (dataChange)="onPropertyTypeDataChange($event)"
-                    (hasChanges)="onSectionHasChanges('propertyId', $event)"
-                    (validationChange)="onSectionValidationChange('propertyId', $event)">
-                  </app-property-type-section>
-
-                  <!-- Price Section -->
-                  <app-price-section
-                    *ngIf="activeSection === 'price'"
-                    [data]="priceData"
-                    (dataChange)="onPriceDataChange($event)"
-                    (hasChanges)="onSectionHasChanges('price', $event)"
-                    (validationChange)="onSectionValidationChange('price', $event)">
-                  </app-price-section>
-
-                  <!-- Guests Section -->
-                  <app-guests-section
-                    *ngIf="activeSection === 'maxGuests'"
-                    [data]="guestsData"
-                    (dataChange)="onGuestsDataChange($event)"
-                    (hasChanges)="onSectionHasChanges('maxGuests', $event)"
-                    (validationChange)="onSectionValidationChange('maxGuests', $event)">
-                  </app-guests-section>
-
-                  <!-- Description Section -->
-                  <app-description-section
-                    *ngIf="activeSection === 'description'"
-                    [data]="descriptionData"
-                    (dataChange)="onDescriptionDataChange($event)"
-                    (hasChanges)="onSectionHasChanges('description', $event)"
-                    (validationChange)="onSectionValidationChange('description', $event)">
-                  </app-description-section>
-
-                  <!-- Rooms Section -->
-                    <app-rooms-section
-                        *ngIf="activeSection === 'rooms'"
-                        [data]="roomsData"
-                        (dataChange)="onRoomsDataChange($event)"
-                        (hasChanges)="onSectionHasChanges('rooms', $event)"
-                        (validationChange)="onSectionValidationChange('rooms', $event)">
-                      </app-rooms-section>
-
-                  <!-- Amenities Section -->
-                  <app-amenities-section
-                    *ngIf="activeSection === 'amenities'"
-                    [data]="amenitiesData"
-                    (dataChange)="onAmenitiesDataChange($event)"
-                    (hasChanges)="onSectionHasChanges('amenities', $event)"
-                    (validationChange)="onSectionValidationChange('amenities', $event)">
-                  </app-amenities-section>
-
-                  <!-- Location Section -->
-                  <app-location-section
-                    *ngIf="activeSection === 'location'"
-                    [data]="locationData"
-                    (dataChange)="onLocationDataChange($event)"
-                    (hasChanges)="onSectionHasChanges('location', $event)"
-                    (validationChange)="onSectionValidationChange('location', $event)">
-                  </app-location-section>
-
-                  <!-- Save Section -->
-                  <div class="content-save-section">
-                    <button
-                      type="button"
-                      class="save-btn-content"
-                      [class]="getSaveButtonClass()"
-                      [disabled]="!hasChangesInActiveSection() || isSavingActiveSection() || !isActiveSectionValid()"
-                      (click)="onSaveCurrentSection()">
-                      <span *ngIf="isSavingActiveSection()" class="spinner">⏳</span>
-                      <span *ngIf="!isSavingActiveSection()">{{ getSaveButtonText() }}</span>
-                    </button>
-                  </div>
-
-                </div>
+          <!-- Main Content Area -->
+          <div class="col-12 col-lg-8 col-xl-9">
+            <div class="content-area">
+              <div class="content-wrapper" *ngIf="property">
                 
-                <!-- Loading state when property is not loaded -->
-                <div *ngIf="!property && !isLoading" class="empty-state">
-                  <p>No property data available</p>
+                <!-- Photos Section with Template Reference -->
+                <app-photos-section
+                  #photosSection
+                  *ngIf="activeSection === 'photos'"
+                  [data]="photosData"
+                  (dataChange)="onPhotosDataChange($event)"
+                  (hasChanges)="onSectionHasChanges('photos', $event)"
+                  (validationChange)="onSectionValidationChange('photos', $event)"
+                  (saveComplete)="onSectionSaveComplete('photos')">
+                </app-photos-section>
+
+                <!-- Title Section -->
+                <app-title-section
+                  *ngIf="activeSection === 'title'"
+                  [data]="titleData"
+                  (dataChange)="onTitleDataChange($event)"
+                  (hasChanges)="onSectionHasChanges('title', $event)"
+                  (validationChange)="onSectionValidationChange('title', $event)">
+                </app-title-section>
+
+                <!-- Property Type Section -->
+                <app-property-type-section
+                  *ngIf="activeSection === 'propertyId'"
+                  [data]="propertyTypeData"
+                  (dataChange)="onPropertyTypeDataChange($event)"
+                  (hasChanges)="onSectionHasChanges('propertyId', $event)"
+                  (validationChange)="onSectionValidationChange('propertyId', $event)">
+                </app-property-type-section>
+
+                <!-- Price Section -->
+                <app-price-section
+                  *ngIf="activeSection === 'price'"
+                  [data]="priceData"
+                  (dataChange)="onPriceDataChange($event)"
+                  (hasChanges)="onSectionHasChanges('price', $event)"
+                  (validationChange)="onSectionValidationChange('price', $event)">
+                </app-price-section>
+
+                <!-- Guests Section -->
+                <app-guests-section
+                  *ngIf="activeSection === 'maxGuests'"
+                  [data]="guestsData"
+                  (dataChange)="onGuestsDataChange($event)"
+                  (hasChanges)="onSectionHasChanges('maxGuests', $event)"
+                  (validationChange)="onSectionValidationChange('maxGuests', $event)">
+                </app-guests-section>
+
+                <!-- Description Section -->
+                <app-description-section
+                  *ngIf="activeSection === 'description'"
+                  [data]="descriptionData"
+                  (dataChange)="onDescriptionDataChange($event)"
+                  (hasChanges)="onSectionHasChanges('description', $event)"
+                  (validationChange)="onSectionValidationChange('description', $event)">
+                </app-description-section>
+
+                <!-- Rooms Section -->
+                <app-rooms-section
+                  *ngIf="activeSection === 'rooms'"
+                  [data]="roomsData"
+                  (dataChange)="onRoomsDataChange($event)"
+                  (hasChanges)="onSectionHasChanges('rooms', $event)"
+                  (validationChange)="onSectionValidationChange('rooms', $event)">
+                </app-rooms-section>
+
+                <!-- Amenities Section -->
+                <app-amenities-section
+                  *ngIf="activeSection === 'amenities'"
+                  [propertyId]="propertyId"
+                  [data]="amenitiesData"
+                  (dataChange)="onAmenitiesDataChange($event)"
+                  (hasChanges)="onSectionHasChanges('amenities', $event)"
+                  (validationChange)="onSectionValidationChange('amenities', $event)">
+                </app-amenities-section>
+
+                <!-- Location Section -->
+                <app-location-section
+                  *ngIf="activeSection === 'location'"
+                  [data]="locationData"
+                  (dataChange)="onLocationDataChange($event)"
+                  (hasChanges)="onSectionHasChanges('location', $event)"
+                  (validationChange)="onSectionValidationChange('location', $event)">
+                </app-location-section>
+
+                <!-- Save Section -->
+                <div class="content-save-section">
+                  <button
+                    type="button"
+                    class="save-btn-content"
+                    [class]="getSaveButtonClass()"
+                    [disabled]="!hasChangesInActiveSection() || isSavingActiveSection() || !isActiveSectionValid()"
+                    (click)="onSaveCurrentSection()">
+                    <span *ngIf="isSavingActiveSection()" class="spinner">⏳</span>
+                    <span *ngIf="!isSavingActiveSection()">{{ getSaveButtonText() }}</span>
+                  </button>
                 </div>
+
+              </div>
+              
+              <!-- Loading state when property is not loaded -->
+              <div *ngIf="!property && !isLoading" class="empty-state">
+                <p>No property data available</p>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
