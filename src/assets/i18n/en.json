@@ -284,6 +284,8 @@
   },
   "PROPERTY": {
     "ADD_TO_WISHLIST": "Add to Wishlist",
-    "REMOVE_FROM_WISHLIST": "Remove from Wishlist"
+    "REMOVE_FROM_WISHLIST": "Remove from Wishlist",
+    "LINK_COPIED": "Link copied successfully",
+    "COPY_FAILED": "Failed to copy link"
   }
 }
