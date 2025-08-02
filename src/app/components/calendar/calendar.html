@@ -1,7 +1,33 @@
 <div class="calendar-container">
   <!-- Calendar Header -->
   <div class="calendar-header">
-    <div class="year-display">{{ currentYear }}</div>
+    <!-- <div class="year-display">{{ currentYear }}</div> -->
+    <!-- <div class="year-display"></div> -->
+    <!-- Selection Mode Tabs -->
+    <div class="mode-tabs">
+      <button
+        class="mode-tab"
+        [class.active]="selectionMode === 'single'"
+        (click)="setSelectionMode('single')"
+      >
+        Single Day
+      </button>
+      <button
+        class="mode-tab"
+        [class.active]="selectionMode === 'range'"
+        (click)="setSelectionMode('range')"
+      >
+        Date Range
+      </button>
+      <button
+        class="mode-tab"
+        [class.active]="selectionMode === 'multiple'"
+        (click)="setSelectionMode('multiple')"
+      >
+        Multiple Days
+      </button>
+    </div>
+
     <div class="d-flex items-center gap-2">
       <!-- Property Selector Dropdown -->
       <div class="view-selector-2">

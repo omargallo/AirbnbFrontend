@@ -66,9 +66,9 @@ export const routes: Routes = [
         component: WishListProperties,
         canActivate: [authGuard],
       },
-      { path: 'Messages', component: Messages },
+      { path: 'Messages', component: Messages, canActivate: [authGuard] },
 
-      { path: 'user/:id', component: UserProfile },
+      { path: 'user/:id', component: UserProfile, canActivate: [authGuard] },
 
       { path: 'profile/:id', component: Profile, canActivate: [authGuard] },
       {
@@ -86,7 +86,6 @@ export const routes: Routes = [
         component: Notifications,
         canActivate: [authGuard],
       },
-
     ],
   },
   {
@@ -132,20 +131,20 @@ export const routes: Routes = [
   {
     path: 'AdminDashboard',
     component: AdminDashboard,
-    //canActivate: [authGuard, RoleGuard],
+    canActivate: [authGuard, RoleGuard],
     data: {
-     // roles: ['Admin'],
+      roles: ['Admin'],
     },
   },
 
-  // {
-  //   path: 'AdminDashboard',
-  //   component: AdminDashboard,
-  //   canActivate: [authGuard, RoleGuard],
-  //   data: {
-  //     roles: ['Admin'],
-  //   },
-  // },
+  {
+    path: 'AdminDashboard',
+    component: AdminDashboard,
+    canActivate: [authGuard, RoleGuard],
+    data: {
+      roles: ['Admin'],
+    },
+  },
   {
     path: 'dashboard',
     redirectTo: 'AdminDashboard',

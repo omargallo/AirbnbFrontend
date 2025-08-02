@@ -135,7 +135,8 @@ export class FilteredProperties implements OnInit {
     private router: Router,
     public authService: AuthService,
     private dialogService: DialogService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    
   ) {
     // Setup debounced map change handler
     this.mapChangeSubject.pipe(

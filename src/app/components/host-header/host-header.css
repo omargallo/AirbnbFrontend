@@ -1,5 +1,5 @@
 .airbnb-header {
-  background: #fff;
+  background: var(--bg-color);
   border-bottom: 1px solid #ddd;
   /* box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); */
   /* position: fixed;
@@ -32,7 +32,7 @@
 
 .nav-middle {
   display: flex;
-  gap: 1rem;
+  /* gap: 1rem; */
   align-items: center;
   /* font-weight: 500; */
   font-size: 16px;
@@ -50,17 +50,17 @@
   cursor: pointer;
   /*color: #222;
   */
-  padding: 0.5rem;
+  padding: 0.3rem 1rem;
   border-radius: 20px;
   transition: all 0.5s ease;
 }
 
 .nav-middle li a:hover {
-  background-color: #f7f7f7;
+  background-color: var(--border-color);
 }
 
 .nav-middle li a.active {
-  background-color: #f7f7f7;
+  background-color: var(--border-color);
 }
 
 /* .user-menu {

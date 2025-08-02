@@ -16,13 +16,13 @@
     </div>
 
     <ng-container *ngIf="hasChatSelected">
-      <div [ngClass]="{'col-md-9': false, 'col-md-6': !isHost || isHost}" class="p-0">
+      <div  [ngClass]="isHost ? 'col-md-9' : 'col-md-6'" class="p-0">
         <app-chat-box
           [selectedChatSession]="selectedChatSession"
           [initialMessages]="initialMessages"
         ></app-chat-box>
       </div>
-      <div class="col-md-3 p-0" >
+      <div class="col-md-3 p-0" *ngIf="!isHost">
         <app-reservation-box
           [selectedChatSession]="selectedChatSession"
           [ReservationWithProperty]="ReservationWithProperty"

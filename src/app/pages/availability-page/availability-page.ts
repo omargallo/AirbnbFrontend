@@ -290,12 +290,62 @@ export class Availability implements OnInit {
     });
   }
 
+  // private updateLocalAvailability() {
+  //   const selectedDates = this.calendarSettings.selectedDates;
+
+  //   selectedDates.forEach(selectedDate => {
+  //     const existingIndex = this.calendarSettings.availability.findIndex((a) =>
+  //       isSameDay(a.date, selectedDate)
+  //     );
+
+  //     if (existingIndex >= 0) {
+  //       this.calendarSettings.availability[existingIndex].available =
+  //         this.availabilityMode === 'open';
+
+  //       this.calendarSettings.availability[existingIndex].price =
+  //         this.availabilityMode === 'open'
+  //           ? this.selectedDatePrice
+  //           : this.calendarSettings.availability[existingIndex].price;
+  //     }
+  //   });
+
+  //   this.calendarSettings = {
+  //     ...this.calendarSettings,
+  //     availability: [...this.calendarSettings.availability]
+  //   };
+
+  //   this.clearSelection();
+  //   this.cd.detectChanges();
+  // }
+
   private updateLocalAvailability() {
     const selectedDates = this.calendarSettings.selectedDates;
 
-    selectedDates.forEach(selectedDate => {
+    if (selectedDates.length === 0) return;
+
+    let datesToUpdate: Date[] = [];
+
+    if (selectedDates.length === 1) {
+      // Single date selection
+      datesToUpdate = [selectedDates[0]];
+    } else if (selectedDates.length === 2) {
+      // Range selection - generate all dates between start and end
+      const [startDate, endDate] = selectedDates.sort((a, b) => a.getTime() - b.getTime());
+      let currentDate = new Date(startDate);
+
+      while (currentDate <= endDate) {
+        datesToUpdate.push(new Date(currentDate));
+        currentDate = addDays(currentDate, 1);
+      }
+    } else {
+      // Multiple selection
+      datesToUpdate = [...selectedDates];
+    }
+
+    // Update availability for all dates
+    datesToUpdate.forEach(dateToUpdate => {
       const existingIndex = this.calendarSettings.availability.findIndex((a) =>
-        isSameDay(a.date, selectedDate)
+        isSameDay(a.date, dateToUpdate)
       );
 
       if (existingIndex >= 0) {
@@ -309,6 +359,7 @@ export class Availability implements OnInit {
       }
     });
 
+    // Update the calendar settings
     this.calendarSettings = {
       ...this.calendarSettings,
       availability: [...this.calendarSettings.availability]
@@ -317,6 +368,5 @@ export class Availability implements OnInit {
     this.clearSelection();
     this.cd.detectChanges();
   }
-
 
 }
