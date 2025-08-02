@@ -1,0 +1,91 @@
+
+<div 
+class="modal-overlay"  
+(click)="closeModal()">
+    <div 
+        class="modal-container" 
+        (click)="$event.stopPropagation()">
+        
+        <!-- Modal Header -->
+        <div class="modal-header">
+        <h4 class="modal-title">
+            Confirm Reservation
+        </h4>
+        <button 
+            class="modal-close" 
+            (click)="closeModal()"
+            aria-label="Close modal">
+            <i class="fas fa-times"></i>
+        </button>
+        </div>
+        
+        <!-- Edit Form -->
+        <div class="modal-content">
+            <div class="card booking-card">
+                <div class="card-body">
+                    <!-- Price Section -->
+                    <div class="price-section mb-4">
+                        <span class="price-amount">Total Price </span>
+                        <span class="currency me-2 fw-bolder">${{totalPrice}}</span>
+                        <span>for </span>
+                        <span class="duration fw-bolder">{{nightsCount}}</span>
+                        <span> nights</span>
+                    </div>
+
+                    <!-- Booking Details -->
+                    <div class="booking-details">
+                        <!-- Check-in and Check-out Row -->
+                        <div class="row g-0 border-bottom-custom">
+                            <div class="col-6 border-end-custom">
+                                <div class="detail-section">
+                                    <div class="detail-label">CHECK-IN</div>
+                                    <div class="detail-value">{{checkIn?.format('MMM D-YY')}}</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="detail-section">
+                                    <div class="detail-label">CHECKOUT</div>
+                                    <div class="detail-value">{{checkOut?.format('MMM D-YY')}}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Guests Section -->
+                        <div class="detail-section">
+                            <div class="detail-label">GUESTS</div>
+                            <div class="detail-value">{{guestsCount}}</div>
+                        </div>
+                    </div>
+
+                    <!-- Accent Line -->
+                    <!-- <div class="accent-line mt-3"></div> -->
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+        <button 
+            class="btn btn-primary" 
+            (click)="onConfirm()"
+            [disabled]="">
+            Confirm
+        </button>
+        <!-- <button 
+            class="btn btn-secondary" 
+            (click)="closeModal()">
+            <i class="fas fa-times"></i>
+            Cancel
+        </button> -->
+        </div>
+    </div>
+</div>
+
+<!-- Main Loading Overlay
+<div class="loading-overlay" *ngIf="isLoading && canSubmit == undefined && show">
+<div class="loading-spinner">
+    <i class="fas fa-spinner fa-spin"></i>
+    <p>Loading violations...</p>
+</div>
+</div> -->

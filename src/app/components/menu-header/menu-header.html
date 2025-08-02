@@ -1,10 +1,7 @@
 <div class="d-flex align-items-center position-relative">
   <a class="switch-to-hosting-btn d-none d-lg-block" (click)="switchMode()">
-    {{
-      currentRoute.includes("/host")
-        ? ("HEADER.SWITCH_TO_TRAVELLER" | translate)
-        : ("HEADER.SWITCH_TO_HOSTING" | translate)
-    }}
+    {{ currentRoute.includes("/host") ? ("HEADER.SWITCH_TO_TRAVELLER" |
+    translate) : ("HEADER.SWITCH_TO_HOSTING" | translate) }}
   </a>
 
   <div class="dropdown" [ngClass]="{ show: dropdownOpen }">
@@ -24,9 +21,9 @@
         (click)="$event.stopPropagation()"
       >
         <a href="#" routerLink="/profile/{{ userId }}"
-          ><span *ngIf="ifImg === ''" [ngStyle]="{ padding: '4px' }">{{
-            user?.charAt(0)?.toUpperCase() || "."
-          }}</span>
+          ><span *ngIf="ifImg === ''" [ngStyle]="{ padding: '4px' }"
+            >{{ user?.charAt(0)?.toUpperCase() || "." }}</span
+          >
           <img
             *ngIf="ifImg"
             [src]="img"
@@ -46,9 +43,10 @@
         animate__fadeOut: dropdownClosing,
         show: dropdownOpen || dropdownClosing
       }"
+      [style.right]="lang.currentLang === 'en' ? '0' : 'auto'"
+      [style.left]="lang.currentLang === 'ar' ? '0' : 'auto'"
       (animationend)="onAnimationEnd()"
     >
-      <!-- يظهر فقط على الشاشات الصغيرة وفي وضع /host -->
       <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
         <a
           class="dropdown-item d-flex align-items-center gap-2"
@@ -185,20 +183,17 @@
 
       <li
         class="dropdown-item d-flex align-items-center gap-2"
-        style="cursor: pointer"
+        style="cursor: pointer;"
         (click)="toggleTheme()"
       >
         <i class="bi" [ngClass]="isDarkMode ? 'bi-sun' : 'bi-moon'"></i>
-        {{
-          isDarkMode
-            ? ("HEADER.DARK_MODE" | translate)
-            : ("HEADER.LIGHT_MODE" | translate)
-        }}
+        {{ isDarkMode ? ("HEADER.DARK_MODE" | translate) : ("HEADER.LIGHT_MODE"
+        | translate) }}
       </li>
 
       <li
         class="dropdown-item d-flex align-items-center gap-2 dropdown-center"
-        style="padding: 0px !important"
+        style="padding: 0px !important;"
       >
         <!-- Dropstart Language Switcher -->
         <div
@@ -212,27 +207,25 @@
         </div>
         <ul
           class="dropdown-menu"
-          style="left: 10px; background-color: var(--active)"
+          style="left: 10px; background-color: var(--active);"
         >
           <li>
-            <a
+            <button
               class="dropdown-item"
-              href="#"
               [class.active]="lang.currentLang === 'en'"
               (click)="lang.switchLang('en')"
             >
               {{ "HEADER.ENGLISH" | translate }}
-            </a>
+            </button>
           </li>
           <li>
-            <a
+            <button
               class="dropdown-item"
-              href="#"
               [class.active]="lang.currentLang === 'ar'"
               (click)="lang.switchLang('ar')"
             >
               {{ "HEADER.ARABIC" | translate }}
-            </a>
+            </button>
           </li>
         </ul>
       </li>
@@ -241,8 +234,8 @@
           class="dropdown-item d-flex align-items-center gap-2"
           routerLink="/host"
         >
-          <i class="bi bi-house-door-fill"></i
-          >{{ "HEADER.AIRBNB_YOUR_HOME" | translate }}
+          <i class="bi bi-house-door-fill"></i>{{ "HEADER.AIRBNB_YOUR_HOME" |
+          translate }}
         </a>
       </li>
 

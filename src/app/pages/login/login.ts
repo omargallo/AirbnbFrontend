@@ -8,6 +8,7 @@ import { HandleImgService } from '../../core/services/handleImg.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/Notification/notification.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -59,22 +60,41 @@ export class Login {
     private userService: UserService,
     private notificationService: NotificationService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private snackBar: MatSnackBar
   ) {}
+
+  private showToast(
+    message: string,
+    vertical: 'top' | 'bottom',
+    horizontal: 'left' | 'right'
+  ) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: horizontal,
+      verticalPosition: vertical,
+      panelClass: ['custom-snackbar'],
+    });
+  }
 
   onLogin() {
     this.userService
       .login({ email: this.email, password: this.password })
       .subscribe({
         next: (res) => {
-          alert('Logged in successfully');
+          this.showToast('Logged in successfully', 'bottom', 'left');
           this.close();
           const userId = res.userId;
+          const roles = res.roles.toString();
           this.userService.getProfile(userId).subscribe({
             next: (res) => {
               console.log(res);
               localStorage.setItem('email', res.email);
               localStorage.setItem('user', JSON.stringify(res));
+              if (roles.includes('Admin')) {
+                this.router.navigate(['/AdminDashboard']);
+                return;
+              }
               let message = '';
               if (res.firstName === null) {
                 message = `Welcome to Airbnb`;
@@ -91,6 +111,7 @@ export class Login {
                     console.log('Notification created successfully');
                   },
                   error: (err) => {
+                    this.showToast('Notification creation failed', 'bottom', 'left');
                     console.error('Notification creation failed:', err);
                   },
                 });
@@ -103,12 +124,13 @@ export class Login {
               }
             },
             error: (err) => {
+              this.showToast('Login failed', 'bottom', 'left');
               console.error(err);
             },
           });
         },
         error: (err) => {
-          alert('Login failed');
+          this.showToast('Login failed', 'bottom', 'left');
           console.error(err);
         },
       });
@@ -132,18 +154,18 @@ export class Login {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!email || !emailRegex.test(email)) {
-      alert('Please enter a valid email address');
+      this.showToast('Please enter a valid email address', 'bottom', 'left');
       return;
     }
 
     this.userService.resendOtp({ email: email as string }).subscribe({
       next: () => {
-        alert('OTP sent successfully');
+        this.showToast('OTP sent successfully', 'bottom', 'left');
         this.dialogService.openDialog('resetPassword');
         (window as any).startOtpTimer?.();
       },
       error: (err) => {
-        alert('OTP sending failed');
+        this.showToast('OTP sending failed', 'bottom', 'left');
         console.error(err);
       },
     });
