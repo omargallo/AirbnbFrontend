@@ -37,12 +37,19 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* Updated star rating to be black */
 .star-rating {
-  color: #ffc107;
+  color: #000000;
 }
 
 .star-rating .far {
   color: #dee2e6;
+}
+
+/* Make all stars black */
+.text-warning .fa-star,
+.stars .fa-star {
+  color: #000000 !important;
 }
 
 .property-img {
@@ -64,23 +71,21 @@
   opacity: 0.8;
 }
 
-.text-darker {
-  color: #343a40 !important;
+.star-rating .fas.fa-star,
+.star-rating .far.fa-star {
+  font-size: 0.875rem;
 }
 
+.text-darker {
+  color: #222222 !important;
+}
 
 .review-card {
-  min-width: 300px;
-  max-width: 300px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border: 1px solid #e9ecef !important;
+  padding: 0;
+  background: transparent;
 }
 
-.review-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12) !important;
-}
-
+/* Increased size for review cards */
 .listing-card {
   min-width: 250px;
   max-width: 250px;
@@ -125,8 +130,9 @@
 
   .review-card,
   .listing-card {
-    min-width: 280px;
-    max-width: 280px;
+    min-width: 320px;
+    /* Increased from 280px */
+    max-width: 320px;
   }
 
   .section-divider {
@@ -159,11 +165,133 @@
 
   .review-card,
   .listing-card {
-    min-width: 260px;
-    max-width: 260px;
+    min-width: 300px;
+    /* Increased from 260px */
+    max-width: 300px;
   }
 
   .fs-3 {
     font-size: 1.5rem !important;
   }
+}
+
+.airbnb-modal .modal-content {
+  border-radius: 12px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12) !important;
+}
+
+.btn-close-custom:hover {
+  background-color: #f7f7f7 !important;
+}
+
+.tab-btn.active {
+  border-bottom: 2px solid #222 !important;
+}
+
+/* Updated stars to be black */
+.stars {
+  color: #000000 !important;
+}
+
+.avatar-fallback {
+  background: #e91e63 !important;
+}
+
+.property-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.review-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.property-card,
+.review-card {
+  transition: all 0.3s ease;
+}
+
+/* Modal centering and animations - FIXED VERSION */
+.airbnb-modal .modal-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 1rem);
+  margin: 0.5rem auto;
+}
+
+.airbnb-modal .modal-content {
+  border-radius: 12px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12) !important;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+.airbnb-modal.show .modal-content {
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+.airbnb-modal:not(.show) .modal-content {
+  animation: modalSlideOut 0.2s ease-in;
+}
+
+@keyframes modalSlideIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes modalSlideOut {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+}
+
+.airbnb-modal .modal-content {
+  transition: all 0.3s ease;
+  transform-origin: center center;
+}
+
+.show-more-reviews-btn {
+  background-color: #ebebeb !important;
+  border-color: #d6d6d6 !important;
+  color: #495057 !important;
+  transition: all 0.2s ease;
+}
+
+.show-more-reviews-btn:hover {
+  background-color: #dcdcdc !important;
+  border-color: #c8c8c8 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.show-more-reviews-btn:focus {
+  background-color: #dcdcdc !important;
+  border-color: #c8c8c8 !important;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25) !important;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.transition-transform {
+  transition: transform 0.3s ease;
+}
+
+.overflow-auto {
+  scroll-behavior: smooth;
 }

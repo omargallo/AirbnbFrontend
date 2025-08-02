@@ -24,6 +24,7 @@ import { Button } from '../../shared/components/button/button';
 import { ConfirmService } from '../../core/services/confirm.service';
 import { Modal } from '../../shared/components/modal/modal';
 import { ReviewsModalComponent } from './guest-review-modal/guest-review-modal';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-guest-reviews',
@@ -75,6 +76,7 @@ export class GuestReviews implements OnInit {
   ) {}
 
   ngOnInit(): void {
+ 
     this.currentUser = this.authService.userId;
 
     // this.loadUserCompletedBookings();
@@ -91,6 +93,18 @@ export class GuestReviews implements OnInit {
     // else {
     //   this.loadAllReviews();
     // }
+  }
+
+  private imageBaseUrl = environment.baseUrl.replace('/api', '');
+
+  getImageUrl(profilePictureURL: string): string {
+    return this.imageBaseUrl + profilePictureURL;
+  }
+
+  imageErrors: Set<number> = new Set();
+
+  onImageError(event: any, review: IGuestReviewDto): void {
+    this.imageErrors.add(review.id);
   }
 
   getOverallRating(): number {
@@ -270,9 +284,9 @@ export class GuestReviews implements OnInit {
 
     this.ReviewService.getReviewsByPropertyId(this.propertyId!).subscribe({
       next: (response) => {
-        // console.log('Raw API Response:', response);
-        // console.log('First review object:', response[0]);
-        // console.log('Keys in first review:', Object.keys(response[0] || {}));
+        console.log('Raw API Response:', response);
+        console.log('First review object:', response[0]);
+        console.log('Keys in first review:', Object.keys(response[0] || {}));
 
         this.reviews = response;
         // this.checkUserExistingReview();

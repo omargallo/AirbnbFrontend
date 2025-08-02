@@ -5,6 +5,8 @@ import {
   OnInit,
   OnDestroy,
   CUSTOM_ELEMENTS_SCHEMA,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -23,6 +25,7 @@ import { PropertImageGalaryComponent } from '../PropertyDetails/propertImage-gal
 import { register } from 'swiper/element/bundle';
 import { PropertySwiperComponent } from '../../components/mainswiper/mainswiper';
 import { UserProfileDto } from './../../core/models/ReviewInterfaces/guest-review-dto';
+import { environment } from '../../../environments/environment.development';
 register();
 
 @Component({
@@ -86,6 +89,84 @@ export class UserProfile implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  private imageBaseUrl = environment.baseUrl.replace('/api', '');
+  imageErrors: Set<string | undefined> = new Set();
+
+  // Add these methods at the end of your class (before the closing brace)
+  getImageUrl(profilePictureURL: string | undefined): string {
+    if (!profilePictureURL) {
+      return ''; // Return empty string for undefined/null values
+    }
+    return this.imageBaseUrl + profilePictureURL;
+  }
+
+  onImageError(event: any, item: any): void {
+    if (item && item.id) {
+      this.imageErrors.add(item.id);
+    }
+  }
+  shouldShowImage(
+    imageUrl: string | undefined,
+    itemId: string | undefined
+  ): boolean {
+    return !!(
+      imageUrl &&
+      imageUrl.trim() !== '' &&
+      !this.imageErrors.has(itemId)
+    );
+  }
+
+  shouldShowFallback(
+    imageUrl: string | undefined,
+    itemId: string | undefined
+  ): boolean {
+    return !imageUrl || imageUrl.trim() === '' || this.imageErrors.has(itemId);
+  }
+  //the idea of it to show the initials of the user if the image is not available :)
+  getInitials(firstName: string, lastName: string): string {
+    const first = firstName ? firstName.charAt(0).toUpperCase() : '';
+    const last = lastName ? lastName.charAt(0).toUpperCase() : '';
+    return first + last;
+  }
+  getTimeAgo(dateString: string): string {
+    if (!dateString) return '';
+
+    try {
+      const now = new Date();
+      const date = new Date(dateString);
+      const diffInMs = now.getTime() - date.getTime();
+      const diffInSeconds = Math.floor(diffInMs / 1000);
+      const diffInMinutes = Math.floor(diffInSeconds / 60);
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      const diffInDays = Math.floor(diffInHours / 24);
+      const diffInWeeks = Math.floor(diffInDays / 7);
+      const diffInMonths = Math.floor(diffInDays / 30);
+      const diffInYears = Math.floor(diffInDays / 365);
+
+      if (diffInYears > 0) {
+        return diffInYears === 1 ? '1 year ago' : `${diffInYears} years ago`;
+      } else if (diffInMonths > 0) {
+        return diffInMonths === 1
+          ? '1 month ago'
+          : `${diffInMonths} months ago`;
+      } else if (diffInWeeks > 0) {
+        return diffInWeeks === 1 ? '1 week ago' : `${diffInWeeks} weeks ago`;
+      } else if (diffInDays > 0) {
+        return diffInDays === 1 ? '1 day ago' : `${diffInDays} days ago`;
+      } else if (diffInHours > 0) {
+        return diffInHours === 1 ? '1 hour ago' : `${diffInHours} hours ago`;
+      } else if (diffInMinutes > 0) {
+        return diffInMinutes === 1
+          ? '1 minute ago'
+          : `${diffInMinutes} minutes ago`;
+      } else {
+        return 'Just now';
+      }
+    } catch (error) {
+      console.warn('Invalid date string:', dateString);
+      return '';
+    }
+  }
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -107,6 +188,83 @@ export class UserProfile implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+  @ViewChild('reviewsContainer', { static: false })
+  reviewsContainer!: ElementRef;
+  @ViewChild('listingsContainer', { static: false })
+  listingsContainer!: ElementRef;
+
+  // listingsContainer!: ElementRef;
+
+  private currentScrollPosition = 0;
+  private reviewCardWidth = 280; // Card width from template
+  private reviewGap = 12; // Gap between cards (from gap-3 = 12px)
+  private scrollStep = this.reviewCardWidth + this.reviewGap; // 292px total
+
+  // For Listings Carousel
+  private listingsScrollPosition = 0;
+  private listingsCardWidth = 240; // Card width from template
+  private listingsGap = 12; // Gap between cards
+  private listingsScrollStep = this.listingsCardWidth + this.listingsGap; // 252px total
+
+  // Alternative: You can also calculate scroll step dynamically
+  // This is useful if you want to scroll multiple cards at once
+  private getReviewScrollStep(): number {
+    return this.reviewCardWidth + this.reviewGap; // Scroll one card
+    // OR: return (this.reviewCardWidth + this.reviewGap) * 2; // Scroll two cards
+  }
+
+  private getListingsScrollStep(): number {
+    return this.listingsCardWidth + this.listingsGap; // Scroll one card
+    // OR: return (this.listingsCardWidth + this.listingsGap) * 3; // Scroll three cards
+  }
+
+  scrollReviews(direction: 'left' | 'right'): void {
+    if (!this.reviewsContainer) return;
+
+    const container = this.reviewsContainer.nativeElement;
+    const containerWidth = container.parentElement.clientWidth;
+    const totalWidth = container.scrollWidth;
+    const maxScroll = totalWidth - containerWidth;
+
+    if (direction === 'right') {
+      this.currentScrollPosition = Math.min(
+        this.currentScrollPosition + this.scrollStep, // or this.getReviewScrollStep()
+        maxScroll
+      );
+    } else {
+      this.currentScrollPosition = Math.max(
+        this.currentScrollPosition - this.scrollStep, // or this.getReviewScrollStep()
+        0
+      );
+    }
+
+    container.style.transform = `translateX(-${this.currentScrollPosition}px)`;
+    container.style.transition = 'transform 0.3s ease';
+  }
+
+  scrollListings(direction: 'left' | 'right'): void {
+    if (!this.listingsContainer) return;
+
+    const container = this.listingsContainer.nativeElement;
+    const containerWidth = container.parentElement.clientWidth;
+    const totalWidth = container.scrollWidth;
+    const maxScroll = totalWidth - containerWidth;
+
+    if (direction === 'right') {
+      this.listingsScrollPosition = Math.min(
+        this.listingsScrollPosition + this.listingsScrollStep,
+        maxScroll
+      );
+    } else {
+      this.listingsScrollPosition = Math.max(
+        this.listingsScrollPosition - this.listingsScrollStep,
+        0
+      );
+    }
+
+    container.style.transform = `translateX(-${this.listingsScrollPosition}px)`;
+    container.style.transition = 'transform 0.3s ease';
   }
 
   private loadAllDataParallel(): void {
@@ -236,16 +394,44 @@ export class UserProfile implements OnInit, OnDestroy {
 
   private _uniqueHostProperties: any[] | null = null;
   get uniqueHostProperties() {
-    if (this._uniqueHostProperties === null) {
-      const propertyMap = new Map();
-      this.hostReviews.forEach((review) => {
-        if (review.property && !propertyMap.has(review.property.id)) {
-          propertyMap.set(review.property.id, review.property);
-        }
-      });
-      this._uniqueHostProperties = Array.from(propertyMap.values());
+    if (!this.hostReviews || this.hostReviews.length === 0) {
+      return [];
     }
-    return this._uniqueHostProperties;
+
+    const propertyMap = new Map();
+    this.hostReviews.forEach((review) => {
+      if (
+        review.property &&
+        review.property.id &&
+        !propertyMap.has(review.property.id)
+      ) {
+        propertyMap.set(review.property.id, review.property);
+      }
+    });
+
+    return Array.from(propertyMap.values());
+  }
+
+  debugApiResponse(): void {
+    console.log('=== API RESPONSE DEBUG ===');
+
+    // Call the API directly to see raw response
+    this.reviewService.getHostReviewsWithProperties(this.userId).subscribe({
+      next: (response) => {
+        console.log('Raw API Response:', response);
+        console.log('Response type:', typeof response);
+        console.log('Is Array:', Array.isArray(response));
+        if (Array.isArray(response) && response.length > 0) {
+          console.log('First item structure:', response[0]);
+          console.log('First item keys:', Object.keys(response[0]));
+        }
+      },
+      error: (error) => {
+        console.error('API Error:', error);
+      },
+    });
+
+    console.log('=== END API DEBUG ===');
   }
 
   private _uniqueVisitedProperties: any[] | null = null;
@@ -279,7 +465,14 @@ export class UserProfile implements OnInit, OnDestroy {
   onWishlistClick(propertyId: number): void {
     console.log('Wishlist clicked for property:', propertyId);
   }
+  activeTab: 'guests' | 'hosts' = 'guests';
+  switchTab(tab: 'guests' | 'hosts'): void {
+    this.activeTab = tab;
+  }
 
+  get filteredReviews() {
+    return this.activeTab === 'guests' ? this.hostReviews : [];
+  }
   openHostReviewsModal(): void {
     this.showHostReviewsModal = true;
   }

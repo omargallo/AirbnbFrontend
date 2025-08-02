@@ -1,0 +1,56 @@
+<div
+  class="bg-white rounded-4 p-4 shadow-sm border flex-shrink-0"
+  style="min-width: 380px"
+>
+  <div class="d-flex flex-column flex-md-row align-items-center gap-4">
+    <div class="flex-shrink-0 text-center">
+      <div class="position-relative d-inline-block mb-3">
+        <img
+          *ngIf="shouldShowImage(profileImageUrl, userId)"
+          [src]="getImageUrl(profileImageUrl)"
+          [alt]="firstName + ' ' + lastName"
+          class="rounded-circle"
+          style="width: 80px; height: 80px; object-fit: cover"
+          (error)="onImageError($event)"
+        />
+        <div
+          *ngIf="shouldShowFallback(profileImageUrl, userId)"
+          class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+          style="width: 80px; height: 80px"
+        >
+          {{ getInitials(firstName || "", lastName || "") }}
+        </div>
+        <div
+          class="position-absolute top-0 start-100 translate-middle bg-danger rounded-circle d-flex align-items-center justify-content-center text-white"
+          style="width: 20px; height: 20px; font-size: 0.7rem"
+          *ngIf="showHeartBadge"
+        >
+          <i class="fas fa-heart"></i>
+        </div>
+      </div>
+      <h2 class="fs-1 fw-semibold mb-1 text-dark">
+        {{ firstName || userType }}
+      </h2>
+      <p class="text-muted fs-5 fw-medium mb-0">
+        {{ country || "Location not specified" }}
+      </p>
+    </div>
+
+    <div class="flex-fill border-start ps-4" *ngIf="stats">
+      <div class="d-flex flex-column gap-3">
+        <div
+          class="d-flex justify-content-between align-items-center py-2"
+          *ngFor="let stat of statsArray"
+        >
+          <span class="fs-5 text-dark fw-medium">{{ stat.label }}</span>
+          <span
+            class="fs-5 fw-semibold text-dark d-flex align-items-center gap-1"
+          >
+            {{ stat.value }}
+            <i *ngIf="stat.icon" [class]="stat.icon"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -123,7 +123,24 @@
       <div class="review-header">
         <div class="profile-section">
           <div class="profile-avatar">
-            {{ getInitials(review.user.firstName, review.user.lastName) }}
+            @if(review.user.profilePictureURL && !imageErrors.has(review.id)){
+            <img
+              [src]="getImageUrl(review.user.profilePictureURL)"
+              class="rounded-circle"
+              width="48"
+              height="48"
+              (error)="onImageError($event, review)"
+            />
+            }
+            <div
+              *ngIf="
+                !review.user.profilePictureURL || imageErrors.has(review.id)
+              "
+              class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+              style="width: 48px; height: 48px"
+            >
+              {{ getInitials(review.user.firstName, review.user.lastName) }}
+            </div>
           </div>
           <div class="profile-info">
             <h6 class="reviewer-name">
