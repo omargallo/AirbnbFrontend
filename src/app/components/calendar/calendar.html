@@ -10,21 +10,21 @@
         [class.active]="selectionMode === 'single'"
         (click)="setSelectionMode('single')"
       >
-        Single Day
+        {{ 'CALENDAR.MODE.SINGLE' | translate }}
       </button>
       <button
         class="mode-tab"
         [class.active]="selectionMode === 'range'"
         (click)="setSelectionMode('range')"
       >
-        Date Range
+        {{ 'CALENDAR.MODE.RANGE' | translate }}
       </button>
       <button
         class="mode-tab"
         [class.active]="selectionMode === 'multiple'"
         (click)="setSelectionMode('multiple')"
       >
-        Multiple Days
+        {{ 'CALENDAR.MODE.MULTIPLE' | translate }}
       </button>
     </div>
 
@@ -63,7 +63,9 @@
             </label>
 
             <div class="dropdown-actions">
-              <button class="close-btn" (click)="closeProperty()">Close</button>
+              <button class="close-btn" (click)="closeProperty()">
+                {{ 'CALENDAR.ACTIONS.CLOSE' | translate }}
+              </button>
             </div>
           </div>
         </div>
@@ -75,7 +77,8 @@
           [class.active]="settings.viewType === 'month'"
           (click)="toggleViewType()"
         >
-          View
+          {{ 'CALENDAR.ACTIONS.VIEW' | translate }}
+
           <svg
             class="dropdown-icon"
             viewBox="0 0 24 24"
@@ -98,7 +101,7 @@
                 (change)="setViewType('month')"
               />
               <span class="radio-custom"></span>
-              Month
+              {{ 'CALENDAR.VIEW.MONTH' | translate }}
             </label>
             <label class="radio-option">
               <input
@@ -109,13 +112,15 @@
                 (change)="setViewType('year')"
               />
               <span class="radio-custom"></span>
-              Year
+              {{ 'CALENDAR.VIEW.YEAR' | translate }}
             </label>
             <div class="dropdown-actions">
               <button class="close-btn" (click)="closeViewDropdown()">
-                Close
+                {{ 'CALENDAR.ACTIONS.CLOSE' | translate }}
               </button>
-              <button class="apply-btn" (click)="applyViewType()">Apply</button>
+              <button class="apply-btn" (click)="applyViewType()">
+                {{ 'CALENDAR.ACTIONS.APPLY' | translate }}
+              </button>
             </div>
           </div>
         </div>

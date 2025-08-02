@@ -29,6 +29,7 @@ import { Router } from '@angular/router';
 import { HostPropertiesService } from '../../core/services/Property/HostPropertiesService';
 import { PropertyDisplayDTO } from '../../core/models/PropertyDisplayDTO';
 import { environment } from '../../../environments/environment.development';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 export interface DayAvailability {
   date: Date;
@@ -69,7 +70,7 @@ export type SelectionMode = 'single' | 'range' | 'multiple';
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './calendar.html',
   styleUrls: ['./calendar.css'],
   changeDetection: ChangeDetectionStrategy.OnPush, // very important for performance optimization
@@ -568,13 +569,15 @@ export class CalendarComponent implements OnInit, OnChanges {
   constructor(
     private hostPropertiesService: HostPropertiesService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private translate: TranslateService
   ) { }
 
   loadHostProperties(): void {
     // Check if hostId is available
     if (!this.hostId) {
-      this.error = 'User not authenticated';
+      // this.error = 'User not authenticated';
+      this.error = this.translate.instant('CALENDAR.ERRORS.USER_NOT_AUTHENTICATED');
       this.isLoading = false;
       return;
     }
@@ -593,7 +596,9 @@ export class CalendarComponent implements OnInit, OnChanges {
         this.isLoading = false;
       },
       error: (err) => {
-        this.error = 'Failed to load properties. Please try again later.';
+        // this.error = 'Failed to load properties. Please try again later.';
+        this.error = this.translate.instant('CALENDAR.ERRORS.FAILED_TO_LOAD_PROPERTIES');
+
         this.isLoading = false;
         console.error('Error loading properties:', err);
       },
@@ -603,7 +608,9 @@ export class CalendarComponent implements OnInit, OnChanges {
     const property = this.properties.find(
       (p) => p.id.toString() === this.selectedPropertyId
     );
-    return property?.title || 'Select Property';
+    // return property?.title || 'Select Property';
+    return property?.title || this.translate.instant('CALENDAR.SELECT_PROPERTY');
+
   }
   getPropertyImage(property: PropertyDisplayDTO): string {
     const cover = property.images?.find((img) => img.isCover && !img.isDeleted);

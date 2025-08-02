@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-chat-placeholder',
+  imports: [TranslateModule],
   template: `
     <div class="chat-placeholder-container">
       <div class="placeholder-content">
@@ -29,8 +31,8 @@ import { Component } from '@angular/core';
             </svg>
           </div>
         </div>
-        <h3 class="placeholder-title">Welcome to Messages</h3>
-        <p class="placeholder-subtitle">Your conversations will appear here</p>
+        <h3 class="placeholder-title">  {{ 'CHAT.PLACEHOLDER.TITLE' | translate }}</h3>
+        <p class="placeholder-subtitle">{{ 'CHAT.PLACEHOLDER.SUBTITLE' | translate }}</p>
       </div>
     </div>
   `,

@@ -19,6 +19,7 @@ import {
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { SignalRService } from '../../core/services/SignalRService/signal-rservice';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface Language {
   code: string;
@@ -43,7 +44,7 @@ interface MessageThread {
   selector: 'app-messages-box',
   templateUrl: './messages-box.html',
   styleUrls: ['./messages-box.css'],
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,TranslateModule],
   standalone: true
 })
 export class MessagesBoxComponent implements OnInit, OnDestroy {
@@ -64,12 +65,12 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
     name,
     code: name // We use the full name as the code since our service handles the mapping
   }));
-  
+
   // Filtered languages based on search
   get filteredLanguages(): Language[] {
     if (!this.searchQuery) return this.languages;
     const query = this.searchQuery.toLowerCase();
-    return this.languages.filter(lang => 
+    return this.languages.filter(lang =>
       lang.name.toLowerCase().includes(query)
     );
   }
@@ -119,11 +120,12 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   constructor(
     private chatService: ChatService,
     private signalRService: SignalRService,
+
     private authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
+ngOnInit(): void {
     this.loadChatSessions();
     this.setupSignalRHandlers();
   }
@@ -140,7 +142,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   onLanguageChange(): void {
     // Update the language in the service and reload messages
     if (this.selectedLanguage || this.selectedLanguage == "" || this.selectedLanguage == null) {
-      console.log("selected language",this.selectedLanguage)
+      console.log("selected language", this.selectedLanguage)
       this.chatService.updateTargetLanguage(this.selectedLanguage);
       this.resetAndLoadChatSessions();
       this.langChange.emit()
@@ -148,7 +150,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   }
 
   // Your existing methods...
-  
+
   setActiveFilter(filter: 'all' | 'unread'): void {
     this.activeFilter = filter;
     this.resetAndLoadChatSessions();
@@ -206,6 +208,10 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
         next: (sessions) => {
           const newThreads = this.mapSessionsToThreads(sessions);
           this.messageThreads = [...this.messageThreads, ...newThreads];
+
+          const unreadCount = this.messageThreads.filter(t => t.isUnread).length;
+          this.chatService.updateUnreadCount(unreadCount);
+
           this.hasMoreData = sessions.length === this.pageSize;
           this.currentPage++;
           this.isLoading = false;
@@ -235,10 +241,10 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   private mapSessionsToThreads(sessions: ChatSessionDto[]): MessageThread[] {
     return sessions.map((session) => ({
       id: session.id,
-      profileImage: session.hostId === this.authService.userId ? 
-                   session.userAvatarUrl : session.hostAvatarUrl,
-      name: session.hostId === this.authService.userId ? 
-            session.userName : session.hostName,
+      profileImage: session.hostId === this.authService.userId ?
+        session.userAvatarUrl : session.hostAvatarUrl,
+      name: session.hostId === this.authService.userId ?
+        session.userName : session.hostName,
       preview: session.lastMessageText,
       time: this.formatTime(session.lastActivityAt),
       isUnread: session.unreadCount > 0,
