@@ -16,15 +16,15 @@
   text-align: left;
 }
 
-h1 {
+ h1 {
   letter-spacing: -0.64px;
   line-height: 36px;
   font-size: 32px;
   font-weight: 600;
-  color: #222222;
+  color: var(--primary-text-color);
   margin: 0;
   overflow-wrap: break-word;
-}
+} 
 
 /* --- Loading and Error States --- */
 .loading-state,
@@ -50,7 +50,7 @@ h1 {
   padding: 8px 16px;
   border: none;
   border-radius: 8px;
-  background-color: #ff385c;
+  background-color: var(--airbnb-red);
   color: white;
   font-weight: 500;
   cursor: pointer;
@@ -58,7 +58,7 @@ h1 {
 }
 
 .retry-btn:hover {
-  background-color: #e31c5f;
+  background-color: var(--airbnb-dark-red);
 }
 
 /* --- Property Selection Grid --- */
@@ -94,12 +94,12 @@ h1 {
 }
 
 .property-button:hover {
-  border-color: #222222;
+  border-color: var(--primary-text-color);
 }
 
 .property-button[aria-checked="true"] {
-  border: 2px solid #222222;
-  background-color: #f7f7f7;
+  border: 2px solid rgb(221, 211, 193);
+  background-color: rgb(221, 211, 193);
 }
 
 .icon-wrapper {

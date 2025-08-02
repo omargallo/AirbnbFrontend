@@ -288,4 +288,4 @@ export class PaymentsComponent implements OnInit, OnDestroy {
          payment.hostAccountCompleted;
 }
 
-}
+} 
