@@ -159,15 +159,15 @@ export class MenuHeader implements AfterViewInit, OnInit {
     };
   }
 
-  changeLanguage(lang: string) {
-    this.lang.switchLang(lang);
-    if (lang == 'ar') {
-      document.body.classList.contains('dRTL');
-      console.log(true);
-    } else {
-      document.body.classList.contains('dLTR');
-    }
-  }
+  // changeLanguage(lang: string) {
+  //   this.lang.switchLang(lang);
+  //   if (lang == 'ar') {
+  //     document.body.classList.contains('dRTL');
+  //     console.log(true);
+  //   } else {
+  //     document.body.classList.contains('dLTR');
+  //   }
+  // }
 
   toggleTheme() {
     this.isDarkMode = !this.isDarkMode;

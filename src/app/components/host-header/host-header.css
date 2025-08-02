@@ -56,11 +56,11 @@
 }
 
 .nav-middle li a:hover {
-  background-color: var(--active);
+  background-color: var(--border-color);
 }
 
 .nav-middle li a.active {
-  background-color: var(--active);
+  background-color: var(--border-color);
 }
 
 /* .user-menu {
