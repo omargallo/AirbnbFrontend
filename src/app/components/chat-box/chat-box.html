@@ -8,7 +8,7 @@
   </div>
 
   <!-- Messages -->
-  <div #chatContainer class="chat-messages" (scroll)="onScroll($event)">
+  <cdk-virtual-scroll-viewport #chatContainer itemSize="50" class="chat-messages">
     <!-- Loading indicator for older messages -->
     <div *ngIf="isLoadingOlderMessages" class="loading-older-messages">
       <div class="loading-dots">
@@ -28,9 +28,7 @@
       <span class="loading-text">Loading messages...</span>
     </div>
 
-    <ng-container
-      *ngFor="let item of chatItems; let i = index; trackBy: trackById"
-    >
+    <ng-container *cdkVirtualFor="let item of chatItems; let i = index; trackBy: trackById">
       <!-- Date separator -->
       <div *ngIf="item.type === 'date'" class="date-separator">
         <span class="date-label">{{ item.label }} </span>
@@ -135,7 +133,7 @@
         </div>
       </div>
     </ng-container>
-  </div>
+  </cdk-virtual-scroll-viewport>
 
   <!-- Input area -->
   <div class="chat-input-area">
