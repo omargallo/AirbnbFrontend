@@ -5,13 +5,14 @@ import { CalendarComponent, CalendarSettings, DayAvailability } from "../../comp
 import { CalendarDateDTO, CalendarService } from '../../core/services/Calendar/calendar.service';
 import { finalize } from 'rxjs';
 import { CalendarFullSettings, CalendarSettingsComponent } from "../../components/calendar-settings/calendar-settings";
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 // import { parseISO } from 'date-fns';
 
 
 @Component({
   selector: 'app-availability',
   standalone: true,
-  imports: [CommonModule, CalendarComponent, CalendarSettingsComponent],
+  imports: [CommonModule, CalendarComponent, CalendarSettingsComponent,TranslateModule],
   templateUrl: './availability-page.html',
   styleUrls: ['./availability-page.css'],
 })
@@ -21,7 +22,7 @@ export class Availability implements OnInit {
   selectedPropertyId: string | null = null;
 
   showBlockOptions = false;
-  constructor(private cd: ChangeDetectorRef, private calendarService: CalendarService) { }
+  constructor(private cd: ChangeDetectorRef, private calendarService: CalendarService,  private translate: TranslateService) { }
 
 
   onPropertySelected(propertyId: string) {
@@ -52,7 +53,7 @@ export class Availability implements OnInit {
         console.log("calendarData", calendarData)
       },
       error: (error) => {
-        console.error('Error loading calendar data:', error);
+          this.translate.instant('AVAILABILITY.ERRORS.LOAD_FAILED')
       }
     });
   }
@@ -277,7 +278,7 @@ export class Availability implements OnInit {
         if (success) {
           console.log(datesToUpdate)
 
-          console.log('Calendar updated successfully', success);
+         console.log(this.translate.instant('AVAILABILITY.SUCCESS.UPDATE'));
           this.updateLocalAvailability();
           this.clearSelection();
         } else {

@@ -142,7 +142,21 @@
           class="dropdown-item d-flex align-items-center gap-2"
           href="Messages"
         >
-          <i class="bi bi-chat"></i>
+          <div class="position-relative">
+            <i class="bi bi-chat"></i>
+            <span
+              *ngIf="unreadCount > 0"
+              class="position-absolute badge rounded-pill bg-danger"
+              [ngStyle]="{
+                top: '-12px',
+                left: lang.currentLang === 'en' ? '-12px' : null,
+                right: lang.currentLang === 'ar' ? '-12px' : null
+              }"
+            >
+              {{ unreadCount }}
+              <span class="visually-hidden">unread messages</span>
+            </span>
+          </div>
           Messages
         </a>
       </li>
