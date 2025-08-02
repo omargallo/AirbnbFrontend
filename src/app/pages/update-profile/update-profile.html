@@ -82,7 +82,7 @@
     <div class="user-img">
       <img *ngIf="ifImg" [src]="img" alt="user-img" />
       <span class="initial-letter" *ngIf="!ifImg">
-        {{ user?.charAt(0)?.toUpperCase() || "." }}
+        {{ user?.charAt(0)?.toUpperCase() || "K" }}
       </span>
 
       <div class="upload-btn-container">
@@ -107,7 +107,6 @@
           type="text"
           id="firstName"
           name="firstName"
-          required
           placeholder="{{ 'profile.firstName' | translate }}"
           [(ngModel)]="firstName"
         />
@@ -117,7 +116,6 @@
           type="text"
           id="lastName"
           name="lastName"
-          required
           placeholder="{{ 'profile.lastName' | translate }}"
           [(ngModel)]="lastName"
         />
@@ -127,7 +125,6 @@
           type="text"
           id="phoneNumber"
           name="phoneNumber"
-          required
           placeholder="{{ 'profile.phoneNumber' | translate }}"
           [(ngModel)]="phoneNumber"
         />
@@ -137,7 +134,6 @@
           type="text"
           id="country"
           name="country"
-          required
           placeholder="{{ 'profile.country' | translate }}"
           [(ngModel)]="country"
         />
@@ -147,7 +143,6 @@
           type="date"
           id="birthDate"
           name="birthDate"
-          required
           placeholder="{{ 'profile.birthDate' | translate }}"
           [(ngModel)]="birthDate"
         />
@@ -156,7 +151,6 @@
         <textarea
           name="bio"
           id="bio"
-          required
           placeholder="{{ 'profile.bio' | translate }}"
           [(ngModel)]="bio"
         ></textarea>

@@ -124,13 +124,13 @@ export class Login {
               }
             },
             error: (err) => {
-              this.showToast('Login failed', 'bottom', 'left');
+              this.showToast('Profile not found', 'bottom', 'left');
               console.error(err);
             },
           });
         },
         error: (err) => {
-          this.showToast('Login failed', 'bottom', 'left');
+          this.showToast(`Login failed: ${err.error.error}`, 'bottom', 'left');
           console.error(err);
         },
       });
