@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { ChatContextService } from '../../core/chatbot/chat-context.service';
 import { marked } from 'marked';
+import { LangService } from '../../core/services/lang.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -15,7 +17,7 @@ interface ChatMessage {
 @Component({
   selector: 'app-chat-bot',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './chat-bot.html',
   styleUrls: ['./chat-bot.css']
 })
@@ -30,6 +32,8 @@ export class ChatBot implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly contextService = inject(ChatContextService);
 
+  constructor(public lang: LangService, private translate: TranslateService) {
+  }
   quickActions = [
     { text: '🏠 Find a place', action: 'I want to find a place to stay' },
     { text: '📅 Check availability', action: 'Is this property available on certain dates?' },
@@ -37,12 +41,25 @@ export class ChatBot implements OnInit {
     // { text: '📞 Contact host', action: 'How can I contact the host?' }
   ];
 
+
+
   ngOnInit() {
-    this.addMessage(
-      'assistant',
-      'Hi there! 👋 I\'m your travel assistant. Ask me about bookings, prices, availability, or anything else you need help with.'
-    );
+    this.translate.get([
+      'CHAT.welcome',
+      'CHAT.quick.find_place',
+      'CHAT.quick.check_availability',
+      'CHAT.quick.pricing'
+    ]).subscribe(translations => {
+      this.addMessage('assistant', translations['CHAT.welcome']);
+      this.quickActions = [
+        { text: translations['CHAT.quick.find_place'], action: 'I want to find a place to stay' },
+        { text: translations['CHAT.quick.check_availability'], action: 'Is this property available on certain dates?' },
+        { text: translations['CHAT.quick.pricing'], action: 'What’s the price for 3 nights?' }
+      ];
+    });
   }
+
+
 
   toggleChat() {
     this.isOpen = !this.isOpen;
@@ -55,9 +72,12 @@ export class ChatBot implements OnInit {
 
   clearChat() {
     this.messages = [];
-    this.addMessage('assistant', 'Chat cleared! How can I help you with your travel plans today? 🏠✈️');
+    this.translate.get('CHAT.cleared').subscribe((res) => {
+      this.addMessage('assistant', res);
+    });
     this.showQuickActions = true;
   }
+
 
   async sendMessage() {
     if (!this.userInput.trim() || this.isLoading) return;
@@ -104,7 +124,10 @@ export class ChatBot implements OnInit {
       }
     } catch (error) {
       console.error('❌ API Error:', error);
-      this.addMessage('assistant', 'Sorry, something went wrong. Please try again later.');
+      // this.addMessage('assistant', 'Sorry, something went wrong. Please try again later.');
+      this.translate.get('CHAT.error').subscribe((res) => {
+        this.addMessage('assistant', res);
+      });
     } finally {
       this.isLoading = false;
     }
@@ -137,7 +160,7 @@ export class ChatBot implements OnInit {
   }
 
   private scrollToBottom() {
-    const container = document.querySelector('.chat-messages');
+    const container = document.querySelector('.CHAT-messages');
     if (container) {
       container.scrollTop = container.scrollHeight;
     }

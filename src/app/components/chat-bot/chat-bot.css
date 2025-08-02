@@ -2,7 +2,7 @@
 .chat-bot-toggle {
   position: fixed;
   bottom: 24px;
-  right: 20px;
+  /* right: 20px; */
   width: 60px;
   height: 60px;
   background: linear-gradient(135deg, var(--airbnb-red) 0%, var(--airbnb-dark-red) 100%);
@@ -35,7 +35,7 @@
 .chat-bot-window {
   position: fixed;
   bottom: 90px;
-  right: 20px;
+  /* right: 20px; */
   width: 380px;
   height: 500px;
   background: var(--bg-color);

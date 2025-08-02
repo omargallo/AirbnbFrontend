@@ -52,7 +52,7 @@
           class="dropdown-item d-flex align-items-center gap-2"
           routerLink="/today"
         >
-          <i class="bi bi-calendar-day"></i> Today
+          <i class="bi bi-calendar-day"></i> {{ "HEADER.NAV.TODAY" | translate }}
         </a>
       </li>
       <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
@@ -60,7 +60,7 @@
           class="dropdown-item d-flex align-items-center gap-2"
           routerLink="/hostsettings/availability"
         >
-          <i class="bi bi-calendar3"></i> Calendar
+          <i class="bi bi-calendar3"></i> {{ "HEADER.NAV.CALENDAR" | translate }}
         </a>
       </li>
       <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
@@ -68,7 +68,7 @@
           class="dropdown-item d-flex align-items-center gap-2"
           routerLink="/host"
         >
-          <i class="bi bi-house-door"></i> Listings
+          <i class="bi bi-house-door"></i> {{ "HEADER.NAV.LISTINGS" | translate }}
         </a>
       </li>
       <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
@@ -76,7 +76,7 @@
           class="dropdown-item d-flex align-items-center gap-2"
           routerLink="/hostsettings/Messages"
         >
-          <i class="bi bi-chat-dots"></i> Messages
+          <i class="bi bi-chat-dots"></i> {{ "HEADER.NAV.MESSAGES" | translate }}
         </a>
       </li>
       <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
@@ -84,7 +84,8 @@
           class="dropdown-item d-flex align-items-center gap-2"
           routerLink="/hostsettings/Wallet"
         >
-          <i class="bi bi-wallet2"></i> Wallet
+          <i class="bi bi-wallet2"></i>
+          {{ "HEADER.NAV.WALLET" | translate }}
         </a>
       </li>
 
@@ -96,6 +97,16 @@
         >
           <i class="bi bi-bell"></i>
           {{ "HEADER.notifications" | translate }}
+        </a>
+      </li>
+      <li *ngIf="isLoggedIn">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          href="#"
+          routerLink="/profile/{{ userId }}"
+        >
+          <i class="bi bi-person-fill"></i>
+          {{ "HEADER.PROFILE" | translate }}
         </a>
       </li>
       <!-- <li>
@@ -134,7 +145,7 @@
               ></path>
             </svg>
           </div>
-          WishLists
+          {{ "HEADER.WISHLISTS" | translate }}
         </a>
       </li>
       <li>
@@ -157,43 +168,13 @@
               <span class="visually-hidden">unread messages</span>
             </span>
           </div>
-          Messages
-        </a>
-      </li>
-      <li *ngIf="isLoggedIn">
-        <a
-          class="dropdown-item d-flex align-items-center gap-2"
-          href="#"
-          (click)="logout()"
-        >
-          <i class="bi bi-box-arrow-right"></i>
-          {{ "HEADER.LOGOUT" | translate }}
+          {{ "HEADER.NAV.MESSAGES" | translate }}
         </a>
       </li>
 
-      <li *ngIf="!isLoggedIn">
-        <a
-          class="dropdown-item d-flex align-items-center gap-2"
-          href="#"
-          (click)="openRegisterDialog()"
-        >
-          <i class="bi bi-person-plus"></i>
-          {{ "HEADER.SIGN_UP" | translate }}
-        </a>
+      <li [ngStyle]="!isLoggedIn ? { 'margin': '1.5rem 0rem' } : {}">
+        <hr class="dropdown-divider" />
       </li>
-
-      <li *ngIf="!isLoggedIn">
-        <a
-          class="dropdown-item d-flex align-items-center gap-2"
-          href="#"
-          (click)="openLoginDialog()"
-        >
-          <i class="bi bi-box-arrow-in-right"></i>
-          {{ "HEADER.LOGIN" | translate }}
-        </a>
-      </li>
-
-      <li><hr class="dropdown-divider" /></li>
 
       <li
         class="dropdown-item d-flex align-items-center gap-2"
@@ -243,7 +224,7 @@
           </li>
         </ul>
       </li>
-      <li>
+      <!-- <li>
         <a
           class="dropdown-item d-flex align-items-center gap-2"
           routerLink="/host"
@@ -251,8 +232,8 @@
           <i class="bi bi-house-door-fill"></i>{{ "HEADER.AIRBNB_YOUR_HOME" |
           translate }}
         </a>
-      </li>
-
+      </li> -->
+      <!--
       <li>
         <a
           class="dropdown-item d-flex align-items-center gap-2"
@@ -260,6 +241,38 @@
         >
           <i class="bi bi-question-circle"></i>
           {{ "HEADER.HELP" | translate }}
+        </a>
+      </li> -->
+
+      <li *ngIf="!isLoggedIn">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          href="#"
+          (click)="openRegisterDialog()"
+        >
+          <i class="bi bi-person-plus"></i>
+          {{ "HEADER.SIGN_UP" | translate }}
+        </a>
+      </li>
+
+      <li *ngIf="!isLoggedIn">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          href="#"
+          (click)="openLoginDialog()"
+        >
+          <i class="bi bi-box-arrow-in-right"></i>
+          {{ "HEADER.LOGIN" | translate }}
+        </a>
+      </li>
+      <li *ngIf="isLoggedIn">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          href="#"
+          (click)="logout()"
+        >
+          <i class="bi bi-box-arrow-right"></i>
+          {{ "HEADER.LOGOUT" | translate }}
         </a>
       </li>
     </ul>

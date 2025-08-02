@@ -5,12 +5,13 @@ import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment.development';
 import { Modal } from "../../shared/components/modal/modal";
 import { Router, RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-wishlists',
   templateUrl: './wishlist.html',
   styleUrls: ['./wishlist.css'],
-  imports: [CommonModule, Modal, RouterModule]
+  imports: [CommonModule, Modal, RouterModule,TranslateModule]
 })
 export class Wishlists implements OnInit {
   wishlists: Wishlist[] = [];
