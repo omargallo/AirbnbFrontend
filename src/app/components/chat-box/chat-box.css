@@ -8,6 +8,24 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+.chat-messages {
+  flex: 1;
+  height: calc(100vh - 180px);
+  background-color: #f8f9fa;
+}
+
+cdk-virtual-scroll-viewport {
+  height: 100%;
+  width: 100%;
+}
+
+.cdk-virtual-scroll-content-wrapper {
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
 /* Header */
 .chat-header {
   padding: 16px 20px;

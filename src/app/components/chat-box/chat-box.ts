@@ -8,8 +8,11 @@ import {
   OnDestroy,
   SimpleChanges,
   ChangeDetectorRef,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ScrollingModule, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { debounceTime, distinctUntilChanged, filter, fromEvent } from 'rxjs';
 import {
   ChatService,
   MessageDto,
@@ -40,7 +43,8 @@ interface ChatItem {
   selector: 'app-chat-box',
   templateUrl: './chat-box.html',
   styleUrls: ['./chat-box.css'],
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ScrollingModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChatBoxComponent implements OnInit, OnDestroy {
   @Input() selectedChatSession: ChatSessionDto | null = null;
@@ -62,9 +66,10 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
   // Pagination properties
   isLoadingOlderMessages = false;
   currentPage = 1;
-  pageSize = 50;
+  pageSize = 20;
   hasMoreMessages = true;
   isInitialLoad = true;
+  itemSize = 50; // height of each message item for virtual scrolling
 
   emojiOptions = ['😀', '❤️', '👍', '👏', '🔥'];
 
@@ -72,7 +77,7 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
   messages: MessageDto[] = [];
   isHost: boolean = false;
 
-  @ViewChild('chatContainer') chatContainer!: ElementRef;
+  @ViewChild('chatContainer') chatContainer!: CdkVirtualScrollViewport;
 
   constructor(
     private chatService: ChatService,
@@ -83,6 +88,22 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.currentUserId = this.authService.userId;
+
+    // Initialize scroll event handling with optimization
+    if (this.chatContainer) {
+      this.chatContainer.elementScrolled()
+        .pipe(
+          takeUntil(this.destroy$),
+          debounceTime(200),
+          distinctUntilChanged(),
+          filter(() => !this.isLoadingOlderMessages && this.hasMoreMessages)
+        )
+        .subscribe(() => {
+          if (this.chatContainer && this.chatContainer.measureScrollOffset('top') <= 100) {
+            this.loadMessages();
+          }
+        });
+    }
 
     // Initialize with default values or wait for selectedChatSession input
     if (this.selectedChatSession) {
@@ -174,10 +195,13 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
     this.isLoadingOlderMessages = true;
     this.error = null;
 
-    // Store current scroll position and height for maintaining position
-    let previousScrollHeight = 0;
+    // Implement progressive loading with smaller batch size
+    const smallerPageSize = 20;
+    
+    // Store current scroll position for maintaining position
+    let previousScrollOffset = 0;
     if (this.chatContainer) {
-      previousScrollHeight = this.chatContainer.nativeElement.scrollHeight;
+      previousScrollOffset = this.chatContainer.measureScrollOffset('bottom');
     }
 
     this.chatService
@@ -202,10 +226,10 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
             // Maintain scroll position after loading older messages
             setTimeout(() => {
               if (this.chatContainer) {
-                const newScrollHeight =
-                  this.chatContainer.nativeElement.scrollHeight;
-                const scrollDifference = newScrollHeight - previousScrollHeight;
-                this.chatContainer.nativeElement.scrollTop = scrollDifference;
+                this.chatContainer.scrollTo({
+                  bottom: previousScrollOffset,
+                  behavior: 'auto'
+                });
               }
             }, 0);
 
@@ -376,8 +400,10 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
   scrollToBottom(): void {
     setTimeout(() => {
       if (this.chatContainer) {
-        this.chatContainer.nativeElement.scrollTop =
-          this.chatContainer.nativeElement.scrollHeight;
+        this.chatContainer.scrollTo({
+          bottom: 0,
+          behavior: 'smooth'
+        });
       }
     }, 100);
   }

@@ -63,10 +63,8 @@ export class Messages implements OnInit, OnDestroy {
     }
     console.log("isHost", this.isHost)
 
-    this.selectedChatSession = session;
     this.isLoadingChat = true;
     // Reset previous data
-    this.selectedChatSession = null;
     this.initialMessages = [];
     this.ReservationWithProperty = null;
 
@@ -86,59 +84,63 @@ export class Messages implements OnInit, OnDestroy {
           console.log("reserveRequest", reserveRequest)
           console.log("res", res.data)
           // Add slight delay for better UX
-          const end = performance.now();
-          console.log(`Execution time: ${end - start} ms`);
-          
-          setTimeout(() => {
-            this.selectedChatSession = res?.data?.chatSession;
-            this.initialMessages = res?.data?.messages;
-            this.ReservationWithProperty = res?.data;
+         
+          if (res.data) {
+            // Update the session immediately to show loading state
+            const end = performance.now();
+      
+            this.selectedChatSession = res.data.chatSession;
+            
+            // Load messages and other data
+            this.initialMessages = res.data.messages || [];
+            this.ReservationWithProperty = res.data;
+                  
+            // Hide loading state after a small delay for smooth transition
+            setTimeout(() => {
+              this.isLoadingChat = false;
+              this.cdr.detectChanges()
+            }, 200);
+          } else {
             this.isLoadingChat = false;
-            this.cdr.detectChanges()
-          }, 0);
-          console.log("from next !ishost",this.authService.userId)
-          
+            console.error('No data received from server');
+          }
+
         },
         error: (err) => {
-          console.log("from error !ishost",this.authService.userId)
-          console.error('Error reserving property:', err);
+          console.error('Error loading conversation:', err);
           this.isLoadingChat = false;
+          this.selectedChatSession = null;
         }
       });
     } else {
-      this.selectedChatSession = session;
-      // this.messageService.getChatMessages(session.id, 1, 50).subscribe({
-        //   next: (messages: MessageDto[]) => {
-          //     this.initialMessages = messages || [];
-          //     this.isLoadingChat = false;
-          //   },
-          //   error: (err) => {
-            //     console.error('Error loading host messages:', err);
-            //     this.isLoadingChat = false;
-            //     this.initialMessages = [];
-            //   }
-            // });
+      // For host view, use the same endpoint
+      this.messageService.getSessionForHost(session.id).subscribe({
+        next: (res) => {
+          if (res.data) {
+            // Update the session immediately to show loading state
+            this.selectedChatSession = res.data.chatSession;
             
-            this.messageService
-            .getSessionForHost(session.id)
-            .subscribe({
-              next:(res)=>{
-                console.log("chat for host ",res.data)
-                const end = performance.now();
-                console.log(`Execution time: ${end - start} ms`);
-                setTimeout(() => {
-                  this.selectedChatSession = res?.data?.chatSession;
-                  this.initialMessages = res?.data?.messages;
-                  this.ReservationWithProperty = res?.data;
-                  this.isLoadingChat = false;
-                  this.cdr.detectChanges()
-
-                }, 0);
-              },
-              error:(res)=>{
-                  console.log(res)
-              }
-            })
+            // Load messages and other data
+            this.initialMessages = res.data.messages || [];
+            this.ReservationWithProperty = res.data;
+                        
+            // Hide loading state after a small delay for smooth transition
+            setTimeout(() => {
+              this.isLoadingChat = false;
+              this.cdr.detectChanges()
+              
+            }, 200);
+          } else {
+            this.isLoadingChat = false;
+            console.error('No data received from server');
+          }
+        },
+        error: (err) => {
+          console.error('Error loading host conversation:', err);
+          this.isLoadingChat = false;
+          this.selectedChatSession = null;
+        }
+      });
     }
 
   }
