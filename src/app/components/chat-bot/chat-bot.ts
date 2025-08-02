@@ -1,7 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ChatContextService } from '../../core/chatbot/chat-context.service';
 import { marked } from 'marked';
@@ -21,45 +22,78 @@ interface ChatMessage {
   templateUrl: './chat-bot.html',
   styleUrls: ['./chat-bot.css']
 })
-export class ChatBot implements OnInit {
+export class ChatBot implements OnInit, OnDestroy {
   isOpen = false;
   messages: ChatMessage[] = [];
   userInput = '';
   isLoading = false;
   showQuickActions = true;
+  private langChangeSubscription?: Subscription;
 
   private readonly API_URL = environment.baseUrl + '/chatbot/chat';
   private readonly http = inject(HttpClient);
   private readonly contextService = inject(ChatContextService);
 
-  constructor(public lang: LangService, private translate: TranslateService) {
-  }
   quickActions = [
     { text: '🏠 Find a place', action: 'I want to find a place to stay' },
     { text: '📅 Check availability', action: 'Is this property available on certain dates?' },
-    { text: '💰 Pricing info', action: 'What’s the price for 3 nights?' },
-    // { text: '📞 Contact host', action: 'How can I contact the host?' }
+    { text: '💰 Pricing info', action: 'What is the price for 3 nights?' },
   ];
 
-
+  constructor(public lang: LangService, private translate: TranslateService) {
+  }
 
   ngOnInit() {
+    this.langChangeSubscription = this.translate.onLangChange.subscribe(() => {
+      this.reinitializeChat();
+    });
+
+    this.initializeChat();
+  }
+
+  ngOnDestroy() {
+    if (this.langChangeSubscription) {
+      this.langChangeSubscription.unsubscribe();
+    }
+  }
+
+  private initializeChat() {
     this.translate.get([
       'CHAT.welcome',
       'CHAT.quick.find_place',
       'CHAT.quick.check_availability',
       'CHAT.quick.pricing'
     ]).subscribe(translations => {
-      this.addMessage('assistant', translations['CHAT.welcome']);
+      if (this.messages.length === 0) {
+        this.addMessage('assistant', translations['CHAT.welcome']);
+      }
+
       this.quickActions = [
         { text: translations['CHAT.quick.find_place'], action: 'I want to find a place to stay' },
         { text: translations['CHAT.quick.check_availability'], action: 'Is this property available on certain dates?' },
-        { text: translations['CHAT.quick.pricing'], action: 'What’s the price for 3 nights?' }
+        { text: translations['CHAT.quick.pricing'], action: 'What is the price for 3 nights?' }
       ];
     });
   }
 
+  private reinitializeChat() {
+    this.translate.get([
+      'CHAT.welcome',
+      'CHAT.quick.find_place',
+      'CHAT.quick.check_availability',
+      'CHAT.quick.pricing'
+    ]).subscribe(translations => {
+      if (this.messages.length > 0 && this.messages[0].role === 'assistant') {
+        this.messages[0].content = translations['CHAT.welcome'];
+      }
 
+      this.quickActions = [
+        { text: translations['CHAT.quick.find_place'], action: 'I want to find a place to stay' },
+        { text: translations['CHAT.quick.check_availability'], action: 'Is this property available on certain dates?' },
+        { text: translations['CHAT.quick.pricing'], action: 'What is the price for 3 nights?' }
+      ];
+    });
+  }
 
   toggleChat() {
     this.isOpen = !this.isOpen;
@@ -77,7 +111,6 @@ export class ChatBot implements OnInit {
     });
     this.showQuickActions = true;
   }
-
 
   async sendMessage() {
     if (!this.userInput.trim() || this.isLoading) return;
@@ -109,22 +142,17 @@ export class ChatBot implements OnInit {
         temperature: 0.9
       };
 
-
       const response = await this.http.post<any>(this.API_URL, body).toPromise();
 
       const reply = response?.choices?.[0]?.message?.content;
       if (reply) {
-        // this.addMessage('assistant', reply);
         const htmlReply = await marked(reply);
         this.addMessage('assistant', htmlReply);
-
-
       } else {
         throw new Error('No valid reply from assistant');
       }
     } catch (error) {
       console.error('❌ API Error:', error);
-      // this.addMessage('assistant', 'Sorry, something went wrong. Please try again later.');
       this.translate.get('CHAT.error').subscribe((res) => {
         this.addMessage('assistant', res);
       });
