@@ -8,6 +8,7 @@ import {
   OnDestroy,
   ElementRef,
   ViewChild,
+  ChangeDetectorRef,
 } from '@angular/core';
 import {
   ChatService,
@@ -119,10 +120,12 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   constructor(
     private chatService: ChatService,
     private signalRService: SignalRService,
-    private authService: AuthService
-  ) { }
 
-  ngOnInit(): void {
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+ngOnInit(): void {
     this.loadChatSessions();
     this.setupSignalRHandlers();
   }
@@ -186,7 +189,8 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   private setupSignalRHandlers(): void {
     this.signalRService.messageReceived$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
+      .subscribe((response) => {
+        console.log("messageRecived",response)
         this.refreshChatSessions();
       });
   }
@@ -212,12 +216,16 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
           this.currentPage++;
           this.isLoading = false;
           this.isLoadingMore = false;
+          this.cdr.detectChanges();
+
         },
         error: (error) => {
           console.error('Error loading chat sessions:', error);
           this.error = 'Failed to load messages. Please try again.';
           this.isLoading = false;
           this.isLoadingMore = false;
+          this.cdr.detectChanges();
+
         },
       });
   }
@@ -227,6 +235,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
     this.currentPage = 1;
     this.hasMoreData = true;
     this.loadChatSessions();
+
   }
 
   private mapSessionsToThreads(sessions: ChatSessionDto[]): MessageThread[] {

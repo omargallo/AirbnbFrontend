@@ -306,6 +306,9 @@ export class ChatService {
   private messageCache = new Map<string, MessageDto[]>();
   private readonly CACHE_EXPIRY = 10 * 60 * 1000; // 5 minutes
 
+  public _targetLang$  = new BehaviorSubject<string>("")
+  public targetLang$  = this._targetLang$.asObservable()
+  
   constructor(private http: HttpClient) { }
 
   private unreadCountSubject = new BehaviorSubject<number>(0);
@@ -409,15 +412,25 @@ export class ChatService {
     if (languageName == "null" || languageName == null || languageName == undefined || lang == null || lang == "") {
       targetLang = "";
       localStorage.setItem('chatLanguage', "");
-      console.log("languageName", targetLang)
-
+      console.log("languageName",targetLang)
+      this._targetLang$.next("")
     }
-    else if (nllb_languages[languageName]) {
+    else if (nllb_languages[languageName] ) {
       targetLang = languageName;
+      this._targetLang$.next(languageName)
       localStorage.setItem('chatLanguage', languageName);
       // Clear cache when language changes
       this.messageCache.clear();
     }
   }
 
+  translateMessage(text:string, targetLang:string){
+    targetLang = nllb_languages[targetLang]
+    console.log("translating to ",targetLang)
+    return this.http
+                .post<{translated_texts:string[]}>(
+                                                  "https://ahmedaladl-transliation.hf.space/translate",
+                                                  {texts:[text], tgt_lang:targetLang}
+                                                )
+  }
 }
