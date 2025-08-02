@@ -103,6 +103,35 @@ export class UpdateProfile {
       bio: this.bio,
     };
 
+    if (!this.firstName) {
+      this.showToast('Please enter your first name', 'bottom', 'left');
+      return;
+    }
+
+    if (!this.lastName) {
+      this.showToast('Please enter your last name', 'bottom', 'left');
+      return;
+    }
+
+    if (!this.phoneNumber) {
+      this.showToast('Please enter your phone number', 'bottom', 'left');
+      return;
+    }
+
+    if (!this.country) {
+      this.showToast('Please enter your country', 'bottom', 'left');
+      return;
+    }
+
+    if (!this.birthDate) {
+      this.showToast('Please enter your birth date', 'bottom', 'left');
+      return;
+    }
+    if (!this.bio) {
+      this.showToast('Please enter your bio', 'bottom', 'left');
+      return;
+    }
+
     this.userService.updateProfile(this.userId, updatedUser).subscribe({
       next: (res) => {
         this.showToast('Profile updated successfully', 'bottom', 'left');

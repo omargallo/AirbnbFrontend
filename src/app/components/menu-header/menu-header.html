@@ -22,7 +22,7 @@
       >
         <a href="#" routerLink="/profile/{{ userId }}"
           ><span *ngIf="ifImg === ''" [ngStyle]="{ padding: '4px' }"
-            >{{ user?.charAt(0)?.toUpperCase() || "." }}</span
+            >{{ user?.charAt(0)?.toUpperCase() || "K" }}</span
           >
           <img
             *ngIf="ifImg"
