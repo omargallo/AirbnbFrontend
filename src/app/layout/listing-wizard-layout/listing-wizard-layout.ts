@@ -25,10 +25,17 @@ export class ListingWizardLayoutComponent {
   @Input() progressPercentage = 0;
   @Input() showBackButton = true;
 
-  @Output() onSaveExit = new EventEmitter<void>();
+
   @Output() onPrevStep = new EventEmitter<void>();
   @Output() onNextStep = new EventEmitter<void>();
   @Output() onSubmit = new EventEmitter<void>();
+
+  
+  saveAndExit() {
+    // The form data is already being saved by the PropertyFormStorageService
+    // Just need to navigate to the host page
+    this.router.navigate(['/host']);
+  }
 
   private readonly stepRoutes: string[] = [
     '', // Corresponds to StepsPage
