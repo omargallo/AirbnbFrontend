@@ -21,6 +21,7 @@ import {
 import { Subject, takeUntil } from 'rxjs';
 import { SignalRService } from '../../core/services/SignalRService/signal-rservice';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface ChatItem {
   type: 'date' | 'message' | 'status';
@@ -43,7 +44,7 @@ interface ChatItem {
   selector: 'app-chat-box',
   templateUrl: './chat-box.html',
   styleUrls: ['./chat-box.css'],
-  imports: [CommonModule, FormsModule, ScrollingModule],
+  imports: [CommonModule, FormsModule, ScrollingModule,TranslateModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChatBoxComponent implements OnInit, OnDestroy {
@@ -197,7 +198,7 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
 
     // Implement progressive loading with smaller batch size
     const smallerPageSize = 20;
-    
+
     // Store current scroll position for maintaining position
     let previousScrollOffset = 0;
     if (this.chatContainer) {

@@ -2,12 +2,12 @@
   <!-- Main Calendar Area -->
   <div class="loading-indicator" *ngIf="isLoading">
     <div class="spinner"></div>
-    <p>Loading calendar data...</p>
+    <p>{{ 'AVAILABILITY.LOADING' | translate }}</p>
   </div>
 
   <div class="calendar-area" [class.loading]="isLoading">
     <app-calendar
-    
+
       [settings]="calendarSettings"
       (dateSelected)="onDateSelected($event)"
       (settingsChanged)="onCalendarSettingsChanged($event)"

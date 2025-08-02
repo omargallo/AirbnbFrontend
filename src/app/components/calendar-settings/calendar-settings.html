@@ -1,8 +1,8 @@
 <div class="settings-panel">
   <div class="settings-header">
-    <h2>Settings</h2>
+    <h2>{{ 'SETTINGS.TITLE' | translate }}</h2>
     <p class="settings-description">
-      These apply to all nights, unless you customize them by date.
+      {{ 'SETTINGS.DESCRIPTION' | translate }}
     </p>
   </div>
 
@@ -13,7 +13,7 @@
       [class.active]="activeTab === 'pricing'"
       (click)="setActiveTab('pricing')"
     >
-      Pricing
+      {{ 'SETTINGS.TABS.PRICING' | translate }}
     </button>
     <!-- <button
       class="tab-btn"
@@ -83,10 +83,10 @@
     <!-- Block -->
     <div
       *ngIf="showBlockOptions"
-      style="border-top: 1px solid #f0f0f0; padding-top: 20px"
+      style="border-top: 1px solid #f0f0f0; padding-top: 20px;"
     >
       <div class="selected-dates-info mb-3">
-        <h4>Selected Dates Options</h4>
+        <h4>{{ 'SETTINGS.BLOCK.HEADER' | translate }}</h4>
       </div>
       <div class="block-options mb-3">
         <button
@@ -94,14 +94,14 @@
           [class.active]="selectedBlockOption === 'open'"
           (click)="setBlockOption('open')"
         >
-          Open night
+          {{ 'SETTINGS.BLOCK.OPEN' | translate }}
         </button>
         <button
           class="block-toggle"
           [class.active]="selectedBlockOption === 'blocked'"
           (click)="setBlockOption('blocked')"
         >
-          Blocked
+          {{ 'SETTINGS.BLOCK.BLOCKED' | translate }}
         </button>
       </div>
       <div class="price-section" *ngIf="selectedBlockOption === 'open'">
@@ -118,32 +118,37 @@
           />
           <!-- <span class="price-label">Per night</span> -->
         </div>
-        <p class="price-note">Set the price for selected dates</p>
+        <p class="price-note">{{ 'SETTINGS.BLOCK.PRICE_NOTE' | translate }}</p>
       </div>
 
       <!-- Action Buttons -->
       <div class="d-flex justify-content-between align-items-center mt-3">
-        <button class="btn btn-outline-dark" style="color: var(--primary-text-color);" (click)="onClearSelection()">
-          Clear Selection
+        <button
+          class="btn btn-outline-dark"
+          style="color: var(--primary-text-color);"
+          (click)="onClearSelection()"
+        >
+          {{ 'SETTINGS.BLOCK.CLEAR_SELECTION' | translate }}
         </button>
         <button class="btn btn-dark" (click)="onSaveChanges()">
-          Save Changes
+          {{ 'SETTINGS.BLOCK.SAVE_CHANGES' | translate }}
         </button>
       </div>
     </div>
     <div class="help-section">
       <div class="help-card">
-        <h6>💡 Tips:</h6>
+        <h6>💡 {{ 'SETTINGS.HELP.TITLE' | translate }}</h6>
         <ul class="help-list">
           <li>
-            <strong>Open night:</strong> Guests can book these dates at the
-            specified price
+            <strong>{{ 'SETTINGS.HELP.OPEN' | translate }}</strong>
+            {{ 'SETTINGS.HELP.OPEN_DESC' | translate }}
           </li>
           <li>
-            <strong>Blocked:</strong> Dates become unavailable for booking
+            <strong>{{ 'SETTINGS.HELP.BLOCKED' | translate }}</strong>
+            {{ 'SETTINGS.HELP.BLOCKED_DESC' | translate }}
           </li>
-          <li>You can select single dates or date ranges</li>
-          <li>Price changes only apply to the selected dates</li>
+          <li>{{ 'SETTINGS.HELP.SINGLE_OR_RANGE' | translate }}</li>
+          <li>{{ 'SETTINGS.HELP.AFFECTS_SELECTED' | translate }}</li>
         </ul>
       </div>
     </div>

@@ -58,7 +58,7 @@
     "confirm": "تأكيد",
     "resendOtp": "إعادة إرسال رمز التعريف الفريد"
   },
-  "resetPassword":{
+  "resetPassword": {
     "welcome": "لقد تم ارسال رمز إعادة تعيين كلمة المرور إلى بريدك الإلكتروني مدة صلاحية الرمز دقيقة واحدة",
     "resetYourPassword": "إعادة تعيين كلمة المرور",
     "email": "البريد الإلكتروني",
@@ -93,5 +93,136 @@
     "noNotifications": "لا توجد إشعارات",
     "markAsRead": "تحديد كمقروء",
     "delete": "حذف"
+  },
+  "WALLET": {
+    "LOADING": "جارٍ تحميل مدفوعاتك...",
+    "RETRY": "إعادة المحاولة",
+    "PENDING_TRANSACTIONS": {
+      "TITLE": "المعاملات المعلقة",
+      "TAB": "المدفوعات المعلقة",
+      "NO_TRANSACTIONS": "لا توجد معاملات معلقة.",
+      "TABLE": {
+        "BOOKING_ID": "رقم الحجز",
+        "MILESTONE": "المرحلة",
+        "AMOUNT": "المبلغ",
+        "STATUS": "الحالة",
+        "CREATED_AT": "تاريخ الإنشاء"
+      },
+      "PAYMENT_RECEIVED": "تم استلام الدفعة",
+      "STATUS_PENDING": "في انتظار التحويل",
+      "BOOKING_PREFIX": "حجز رقم"
+    },
+    "BALANCE": {
+      "TITLE": "الرصيد الإجمالي",
+      "TRANSACTIONS_TITLE": "معاملات الرصيد",
+      "NO_TRANSACTIONS": "لا توجد معاملات رصيد حتى الآن.",
+      "TABLE": {
+        "BOOKING_ID": "رقم الحجز",
+        "AMOUNT": "المبلغ",
+        "TRANSFERRED_AT": "تاريخ التحويل"
+      },
+      "WITHDRAWAL_INFO": "لإتمام عملية السحب، يرجى رفع بطاقة الهوية الوطنية وإدخال المعلومات القانونية المطلوبة.",
+      "WITHDRAW_BUTTON": "سحب"
+    },
+    "STRIPE_ACCOUNT": {
+      "SETUP_TITLE": "إعداد حساب الدفع",
+      "SETUP_DESCRIPTION": "يرجى إكمال إعداد حساب Stripe الخاص بك لاستلام أرباحك.",
+      "COMPLETE_SETUP": "إكمال إعداد حساب Stripe",
+      "REDIRECTING": "جاري التحويل..."
+    },
+    "ACTIONS": {
+      "SHOW_MORE": "عرض المزيد",
+      "SHOW_LESS": "عرض أقل"
+    },
+    "ERROR": {
+      "GENERAL": "فشل في تحميل المدفوعات. يرجى المحاولة مرة أخرى.",
+      "STRIPE_STATUS": "تعذر التحقق من حالة حساب Stripe.",
+      "USER_NOT_AUTHENTICATED": "المستخدم غير مسجل الدخول",
+      "TRANSFER_FAILED": "فشل التحويل. يرجى المحاولة مرة أخرى.",
+      "CREATE_STRIPE": "فشل في إنشاء حساب Stripe. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "MESSAGES": {
+    "TITLE": "الرسائل",
+    "LOADING_INITIAL": "جاري تحميل الرسائل...",
+    "LOADING_MORE": "جاري تحميل المزيد من الرسائل...",
+    "ALL_LOADED": "تم تحميل كل الرسائل ({{count}} إجماليًا)",
+    "LOAD_MORE_BTN": "تحميل المزيد من الرسائل",
+    "TRY_AGAIN": "أعد المحاولة",
+    "FILTER": {
+      "ALL": "الكل",
+      "UNREAD": "غير المقروءة ({{count}})"
+    },
+    "EMPTY_STATE": {
+      "UNREAD_TITLE": "لا توجد رسائل غير مقروءة",
+      "UNREAD_SUB": "تمت قراءة كل رسائلك.",
+      "DEFAULT_TITLE": "ليس لديك أي رسائل",
+      "DEFAULT_SUB": "عندما تستقبل رسالة جديدة، ستظهر هنا."
+    },
+    "LANGUAGE": {
+      "LABEL": "ترجمة الرسائل إلى:",
+      "PLACEHOLDER": "ابحث عن لغة...",
+      "ORIGINAL": "اللغة الأصلية"
+    }
+  },
+  "CHAT": {
+    "LOADING_MESSAGES": "جاري تحميل الرسائل...",
+    "WRITE_MESSAGE": "اكتب رسالة...",
+    "RESPONSE_TIME": "متوسط وقت الاستجابة: {{time}}",
+    "READ_BY": "تمت القراءة بواسطة {{name}}",
+    "ALL_LOADED": "تم تحميل جميع الرسائل",
+    "NO_MESSAGES": "لا توجد رسائل بعد",
+    "PLACEHOLDER": {
+      "TITLE": "مرحبًا بك في الرسائل",
+      "SUBTITLE": "ستظهر محادثاتك هنا"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "الإعدادات",
+    "DESCRIPTION": "تُطبق هذه الإعدادات على جميع الليالي ما لم تقم بتخصيصها حسب التاريخ.",
+    "TABS": {
+      "PRICING": "الأسعار"
+    },
+    "BLOCK": {
+      "HEADER": "خيارات التواريخ المحددة",
+      "OPEN": "ليلة متاحة",
+      "BLOCKED": "محجوزة",
+      "PRICE_NOTE": "حدد السعر للتواريخ المحددة",
+      "CLEAR_SELECTION": "مسح التحديد",
+      "SAVE_CHANGES": "حفظ التغييرات"
+    },
+    "HELP": {
+      "TITLE": "نصائح:",
+      "OPEN": "ليلة متاحة:",
+      "OPEN_DESC": "يمكن للضيوف حجز هذه التواريخ بالسعر المحدد",
+      "BLOCKED": "محجوزة:",
+      "BLOCKED_DESC": "ستصبح التواريخ غير متاحة للحجز",
+      "SINGLE_OR_RANGE": "يمكنك تحديد تواريخ مفردة أو نطاقات تواريخ",
+      "AFFECTS_SELECTED": "يتم تطبيق التغييرات فقط على التواريخ المحددة"
+    }
+  },
+  "CALENDAR": {
+    "MODE": {
+      "SINGLE": "يوم واحد",
+      "RANGE": "نطاق تواريخ",
+      "MULTIPLE": "عدة أيام"
+    },
+    "VIEW": {
+      "MONTH": "شهر",
+      "YEAR": "سنة"
+    },
+    "ACTIONS": {
+      "CLOSE": "إغلاق",
+      "APPLY": "تطبيق",
+      "VIEW": "عرض"
+    },
+    "ERRORS": {
+      "USER_NOT_AUTHENTICATED": "المستخدم غير مصرح له.",
+      "FAILED_TO_LOAD_PROPERTIES": "فشل في تحميل العقارات. يرجى المحاولة لاحقًا."
+    },
+    "SELECT_PROPERTY": "اختر عقارًا"
+  },
+  "AVAILABILITY": {
+    "LOADING": "جاري تحميل بيانات التقويم..."
   }
 }
