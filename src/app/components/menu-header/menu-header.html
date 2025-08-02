@@ -47,14 +47,14 @@
       [style.left]="lang.currentLang === 'ar' ? '0' : 'auto'"
       (animationend)="onAnimationEnd()"
     >
-      <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
+      <!-- <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
         <a
           class="dropdown-item d-flex align-items-center gap-2"
           routerLink="/today"
         >
           <i class="bi bi-calendar-day"></i> {{ "HEADER.NAV.TODAY" | translate }}
         </a>
-      </li>
+      </li> -->
       <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
         <a
           class="dropdown-item d-flex align-items-center gap-2"
