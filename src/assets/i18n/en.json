@@ -281,5 +281,9 @@
       "NEED_TO_CREATE_LISTING": "Please create a listing first to access the calendar",
       "OK": "OK"
     }
+  },
+  "PROPERTY": {
+    "ADD_TO_WISHLIST": "Add to Wishlist",
+    "REMOVE_FROM_WISHLIST": "Remove from Wishlist"
   }
 }

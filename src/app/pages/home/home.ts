@@ -56,12 +56,10 @@ export class Home implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // الاشتراك في تغيير اللغة
     this.langChangeSubscription = this.translate.onLangChange.subscribe(() => {
       this.reinitializeSections();
     });
 
-    // انتظار تحميل الترجمات قبل تهيئة الأقسام
     this.translate.get('HOME.SECTIONS.POPULAR_CAIRO').subscribe(() => {
       this.initializeSections();
       this.loadAllSections();
@@ -69,17 +67,14 @@ export class Home implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // إلغاء الاشتراك لتجنب memory leaks
     if (this.langChangeSubscription) {
       this.langChangeSubscription.unsubscribe();
     }
   }
 
   private reinitializeSections() {
-    // إعادة تهيئة الأقسام مع الترجمات الجديدة
     this.initializeSections();
 
-    // تحديث العناوين في sectionProperties
     this.sectionProperties.forEach((sectionProp, index) => {
       if (this.sections[index]) {
         sectionProp.title = this.sections[index].title;

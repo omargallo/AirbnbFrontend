@@ -281,5 +281,9 @@
       "NEED_TO_CREATE_LISTING": "قم بإنشاء عقار أولاً لفتح الكالندر",
       "OK": "حسناً"
     }
+  },
+  "PROPERTY": {
+    "ADD_TO_WISHLIST": "أضف إلى المفضلة",
+    "REMOVE_FROM_WISHLIST": "إزالة من المفضلة"
   }
 }
