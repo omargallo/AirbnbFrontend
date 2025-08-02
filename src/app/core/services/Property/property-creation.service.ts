@@ -9,6 +9,7 @@ import { AuthService } from '../auth.service';
 import { UserService } from '../User/user.service';
 import { PropertyFormStorageService } from '../../../pages/add-property/services/property-form-storage.service';
 import { AmenityService } from '../Amenity/amenity.service';
+import { Router } from '@angular/router';
 
 interface ApiResponse<T> {
   isSuccess: boolean;
@@ -34,7 +35,8 @@ export class PropertyCreationService {
     private formStorage: PropertyFormStorageService,
     private authService: AuthService,
     private userService: UserService,
-    private amenityService: AmenityService
+    private amenityService: AmenityService,
+    private router: Router
   ) { }
 
   createProperty(property: Omit<Property, 'id' | 'isFavourite'>): Observable<PropertyDisplayDTO> {
@@ -99,25 +101,35 @@ export class PropertyCreationService {
                 
                 // Get selected amenities from step2-2
                 const step2_2Data = allFormData['step2-2'];
+                console.log("Step2-2Data",step2_2Data)
                 const selectedAmenityIds = step2_2Data?.selectedAmenityIds || [];
                 
                 if (selectedAmenityIds.length > 0) {
-                  return this.amenityService.assignAmenitiesToProperty(createdProperty.id, selectedAmenityIds).pipe(
-                    map(() => {
-                      console.log('Amenities assigned successfully!');
-                      this.formStorage.clearFormData();
-                      return createdProperty;
-                    }),
-                    catchError(amenityError => {
-                      console.error('Failed to assign amenities:', amenityError);
-                      // Still return the created property even if amenity assignment fails
-                      this.formStorage.clearFormData();
-                      return of(createdProperty);
-                    })
-                  );
+                  console.log("Uploading Selected Amenities ",selectedAmenityIds.length)
+                   this.amenityService.assignAmenitiesToProperty(createdProperty.id, selectedAmenityIds).pipe(
+                        map(() => {
+                          console.log('Amenities assigned successfully!');
+                          this.formStorage.clearFormData();
+                          this.router.navigateByUrl("/host")
+                          return createdProperty;
+                        }),
+                        catchError(amenityError => {
+                          console.error('Failed to assign amenities:', amenityError);
+                          // Still return the created property even if amenity assignment fails
+                          this.formStorage.clearFormData();
+                          this.router.navigateByUrl("/host")
+                          return of(createdProperty);
+                        })
+                      ).subscribe()
+                  return of(createdProperty)
+                      
+                }else{
+                  console.log("no selected Amenities")
+                  
                 }
-                
+                  
                 this.formStorage.clearFormData();
+                this.router.navigateByUrl("/host")
                 return of(createdProperty);
               }),
               catchError(uploadError => {
@@ -265,7 +277,7 @@ export class PropertyCreationService {
     }
 
     const currentRoles = this.authService.role;
-    if (currentRoles.includes('host')) {
+    if (currentRoles.includes('host') || currentRoles.includes("Host")) {
       return of(void 0);
     }
 
