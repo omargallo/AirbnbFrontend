@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MessagesBoxComponent } from "../../components/messages-box/messages-box";
 import { ChatBoxComponent } from "../../components/chat-box/chat-box";
 import { ReservationBoxComponent } from "../../components/reservation-box/reservation-box";
@@ -21,7 +21,7 @@ export class Messages implements OnInit, OnDestroy {
   initialMessages: MessageDto[] = [];
   ReservationWithProperty: any | null = null;
   isLoadingChat: boolean = false;
-
+  currentOpenChatId?:string
   isHost: boolean = false;
 
 
@@ -30,7 +30,9 @@ export class Messages implements OnInit, OnDestroy {
 
   constructor(
     private signalRService: SignalRService,
-    private messageService: ChatService, private authService: AuthService) { }
+    private messageService: ChatService, private authService: AuthService,
+    private cdr: ChangeDetectorRef
+) { }
 
   ngOnInit(): void {
     this.startSignalRConnection();
@@ -51,6 +53,9 @@ export class Messages implements OnInit, OnDestroy {
   }
 
   onChatSessionSelected(session: ChatSessionDto): void {
+    if(this.currentOpenChatId == session.id)
+      return
+    this.currentOpenChatId = session.id
     if (session.hostId === this.currentUserId) {
       this.isHost = true;
     } else {
@@ -72,25 +77,34 @@ export class Messages implements OnInit, OnDestroy {
     };
 
     console.log(reserveRequest)
+    const start = performance.now()
     if (!this.isHost) {
       this.messageService.getSessionForHost(session.id).subscribe({
         next: (res) => {
+          console.log("reserveRequest", reserveRequest)
+          console.log("res", res.data)
+          // Add slight delay for better UX
+         
           if (res.data) {
             // Update the session immediately to show loading state
+            const end = performance.now();
+      
             this.selectedChatSession = res.data.chatSession;
             
             // Load messages and other data
             this.initialMessages = res.data.messages || [];
             this.ReservationWithProperty = res.data;
-            
+                  
             // Hide loading state after a small delay for smooth transition
             setTimeout(() => {
               this.isLoadingChat = false;
+              this.cdr.detectChanges()
             }, 200);
           } else {
             this.isLoadingChat = false;
             console.error('No data received from server');
           }
+
         },
         error: (err) => {
           console.error('Error loading conversation:', err);
@@ -109,10 +123,12 @@ export class Messages implements OnInit, OnDestroy {
             // Load messages and other data
             this.initialMessages = res.data.messages || [];
             this.ReservationWithProperty = res.data;
-            
+                        
             // Hide loading state after a small delay for smooth transition
             setTimeout(() => {
               this.isLoadingChat = false;
+              this.cdr.detectChanges()
+              
             }, 200);
           } else {
             this.isLoadingChat = false;
