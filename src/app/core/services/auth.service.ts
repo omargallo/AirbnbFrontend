@@ -89,12 +89,13 @@ export class AuthService {
   get refreshToken$() {
     return this.refreshTokenSubject.asObservable();
   }
-  get refreshTokenBackend$() {
-    return this.http.post<RefreshTokenResponse>(
+  public refreshTokenBackend$() {
+    let observable = this.http.post<RefreshTokenResponse>(
       environment.baseUrl + '/user/refresh-token',
       {},
       { withCredentials: true }
     );
+    return observable
     // return this.refreshTokenSubject.asObservable()
   }
 
