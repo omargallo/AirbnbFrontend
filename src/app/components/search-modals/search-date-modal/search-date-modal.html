@@ -39,6 +39,8 @@
   <!-- Calendar -->
   <div class="flex-grow-1 airbnb-calendar">
     <ngx-daterangepicker-material
+      [minDate]="minDate"
+      [maxDate]="maxDate"
       [locale]="locale"
       [ranges]="{}"
       [linkedCalendars]="false"
