@@ -32,7 +32,14 @@
     "INFANT": "رضيع",
     "INFANTS": "رُضّع",
     "LOGOUT": "تسجيل الخروج",
-    "notifications": "الإشعارات"
+    "notifications": "الإشعارات",
+    "NAV": {
+      "TODAY": "اليوم",
+      "CALENDAR": "التقويم",
+      "LISTINGS": "المنشآت",
+      "MESSAGES": "الرسائل",
+      "WALLET": "المدفوعات"
+    }
   },
   "login": {
     "welcome": "مرحبًا بك مجددا",
