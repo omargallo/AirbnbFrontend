@@ -1,5 +1,10 @@
 <!-- Chat Bot Toggle Button -->
-<div class="chat-bot-toggle" [class.open]="isOpen" (click)="toggleChat()">
+<div
+  class="chat-bot-toggle"
+  [class.open]="isOpen"
+  (click)="toggleChat()"
+  [ngStyle]="lang.currentLang === 'ar' ? { left: '20px', right: 'auto' } : { right: '20px', left: 'auto' }"
+>
   <svg
     *ngIf="!isOpen"
     width="24"
@@ -28,18 +33,26 @@
 </div>
 
 <!-- Chat Bot Window -->
-<div class="chat-bot-window" [class.open]="isOpen">
+<div
+  class="chat-bot-window"
+  [ngStyle]="lang.currentLang === 'ar' ? { left: '20px', right: 'auto' } : { right: '20px', left: 'auto' }"
+  [class.open]="isOpen"
+>
   <!-- Chat Header -->
   <div class="chat-header">
     <div class="header-info">
       <div class="bot-avatar">🤖</div>
       <div class="bot-details">
-        <h3>Travel Assistant</h3>
-        <span class="status">Ready to help</span>
+        <h3>{{ 'CHAT.TITLE' | translate }}</h3>
+        <span class="status">{{ 'CHAT.STATUS' | translate }}</span>
       </div>
     </div>
     <div class="header-actions">
-      <button class="clear-btn" (click)="clearChat()" title="Clear Chat">
+      <button
+        class="clear-btn"
+        (click)="clearChat()"
+        [title]="'CHAT.CLEAR' | translate"
+      >
         <svg
           width="16"
           height="16"
@@ -54,7 +67,11 @@
           ></path>
         </svg>
       </button>
-      <button class="close-btn" (click)="closeChat()" title="Close Chat">
+      <button
+        class="close-btn"
+        (click)="closeChat()"
+        [title]="'CHAT.CLOSE' | translate"
+      >
         <svg
           width="16"
           height="16"
@@ -74,7 +91,7 @@
   <div class="chat-messages">
     <!-- Quick Action Buttons -->
     <div *ngIf="showQuickActions && messages.length <= 1" class="quick-actions">
-      <p class="quick-actions-title">Quick help with:</p>
+      <p class="quick-actions-title">{{ 'CHAT.QUICK_HELP' | translate }}</p>
       <div class="quick-actions-grid">
         <button
           *ngFor="let action of quickActions"
@@ -120,7 +137,7 @@
         type="text"
         [(ngModel)]="userInput"
         (keypress)="onKeyPress($event)"
-        placeholder="Ask about places to stay, or travel..."
+        [placeholder]="'CHAT.PLACEHOLDER_bot' | translate"
         class="chat-input"
         [disabled]="isLoading"
       />

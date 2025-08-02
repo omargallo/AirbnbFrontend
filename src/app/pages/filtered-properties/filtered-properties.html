@@ -1,10 +1,10 @@
 <div class="properties-container container-fluid">
   <div class="properties-panel">
     <div class="d-flex justify-content-between items-center mb-4">
-      <p class="font-semibold text-lg">Over {{properties.length}} homes</p>
+      <p class="font-semibold text-lg">  {{ 'PROPERTIES.OVER_HOMES' | translate:{ count: properties.length } }}</p>
       <div class="d-flex justify-content-between items-center gap-2 text-lg">
         <img alt="fees" src="assets/images/fees.svg" width="40" height="40" />
-        Prices include all fees
+       {{ 'PROPERTIES.PRICES_INCLUDE_FEES' | translate }}
       </div>
     </div>
     <div class="properties-grid" *ngIf="isLoading">

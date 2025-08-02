@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
+import { LangService } from '../../core/services/lang.service';
 
 @Component({
   selector: 'app-top-nav',
@@ -17,7 +18,7 @@ export class TopNavComponent implements OnInit {
 
   @ViewChildren('navVideo') videoElements!: QueryList<ElementRef<HTMLVideoElement>>;
 
-  constructor(private router: Router) {
+  constructor(private router: Router,    public lang: LangService,) {
     this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
       .subscribe(() => {

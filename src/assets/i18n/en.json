@@ -39,7 +39,9 @@
       "LISTINGS": "Listings",
       "MESSAGES": "Messages",
       "WALLET": "Payments"
-    }
+    },
+    "PROFILE": "Profile",
+    "WISHLISTS": "Wishlists"
   },
   "login": {
     "welcome": "Welcome back",
@@ -182,6 +184,20 @@
     "PLACEHOLDER": {
       "TITLE": "Welcome to Messages",
       "SUBTITLE": "Your conversations will appear here"
+    },
+    "TITLE": "Travel Assistant",
+    "STATUS": "Ready to help",
+    "PLACEHOLDER_bot": "Ask about places to stay, or travel...",
+    "CLEAR": "Clear chat",
+    "CLOSE": "Close chat",
+    "QUICK_HELP": "Quick help with:",
+    "welcome": "Hi there! 👋 I'm your travel assistant. Ask me about bookings, prices, availability, or anything else you need help with.",
+    "cleared": "Chat cleared! How can I help you with your travel plans today? 🏠✈️",
+    "error": "Sorry, something went wrong. Please try again later.",
+    "quick": {
+      "find_place": "🏠 Find a place",
+      "check_availability": "📅 Check availability",
+      "pricing": "💰 Pricing info"
     }
   },
   "SETTINGS": {
@@ -231,5 +247,37 @@
   },
   "AVAILABILITY": {
     "LOADING": "Loading calendar data..."
+  },
+  "COMMON": {
+    "COMING_SOON": "Coming Soon"
+  },
+  "PROPERTIES": {
+    "OVER_HOMES": "Over {{count}} homes",
+    "PRICES_INCLUDE_FEES": "Prices include all fees",
+    "PAGINATION": {
+      "PREV": "Previous",
+      "NEXT": "Next"
+    }
+  },
+  "HOME": {
+    "SECTIONS": {
+      "POPULAR_CAIRO": "Popular homes in Cairo",
+      "HURGHADA_NEXT_WEEKEND": "Available in Hurghada next weekend",
+      "STAY_NEW_CAIRO": "Stay in New Cairo",
+      "DUBAI_NEXT_MONTH": "Available next month in Dubai",
+      "AIN_SOKHNA": "Homes in Ain Sokhna",
+      "ALEX_NEXT_WEEKEND": "Available in Alexandria next weekend",
+      "PARIS": "Places to stay in Paris",
+      "MILAN": "Check out homes in Milan",
+      "SHEIKH_ZAYED": "Popular homes in Sheikh Zayed City",
+      "BARCELONA": "Stay in Barcelona"
+    },
+    "TOAST": {
+      "LOGIN_REQUIRED": "Please log in to add to wishlist.",
+      "REMOVED": "Property removed from wishlist",
+      "REMOVE_FAILED": "Couldn't remove the property",
+      "ADDED": "Property added to wishlist",
+      "ADD_FAILED": "Couldn't add the property"
+    }
   }
 }

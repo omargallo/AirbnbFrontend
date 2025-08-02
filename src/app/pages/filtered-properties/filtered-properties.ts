@@ -12,11 +12,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { WishListModal } from "../../components/wish-list-modal/wish-list-modal";
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-filtered-properties',
   standalone: true,
-  imports: [CommonModule, SliderCard, RouterModule, WishListModal],
+  imports: [CommonModule, SliderCard, RouterModule, WishListModal,TranslateModule],
   templateUrl: './filtered-properties.html',
   styleUrls: ['./filtered-properties.css']
 })
@@ -136,7 +137,7 @@ export class FilteredProperties implements OnInit {
     public authService: AuthService,
     private dialogService: DialogService,
     private snackBar: MatSnackBar,
-    
+
   ) {
     // Setup debounced map change handler
     this.mapChangeSubject.pipe(
