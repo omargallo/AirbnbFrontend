@@ -138,19 +138,26 @@ export class ListingWizardLayoutComponent {
       images: propertyData.images || []
     };
 
-    this.propertyCreationService.createProperty(finalPropertyData).subscribe({
+    let  observable = this.propertyCreationService.createProperty(finalPropertyData)
+    console.log("returned observable",observable)
+    observable.subscribe({
       next: (response) => {
         console.log('✅ Property created successfully:', response);
         this.formStorage.clearFormData();
         localStorage.removeItem('property_form_data');
         // alert('Property created successfully!');
         this.router.navigate(['/host']);
+        this.showToast('property created', 'top', 'right');
       },
       error: (error) => {
         console.error('❌ Error creating property:', error);
         this.showToast('Failed to create property: ' + error.message, 'bottom', 'left');
       }
     });
+    // setTimeout(
+    //   ()=> this.router.navigateByUrl("/host"),
+    //   500
+    // )
   }
   private getCurrentStepIndex(): number {
     const url = this.router.url;
