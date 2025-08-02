@@ -3,6 +3,7 @@ import { CommonPropInfoService } from './../../property-info/common-prop-info-se
 import { CommonModule } from '@angular/common';
 import { Property } from './../../../core/models/Property'; // Assuming this path is correct
 import { PropertyService } from './../../../core/services/Property/property.service';
+import { BookingDTO, BookingService } from '../../../core/services/Booking/booking.service';
 import {
   ChangeDetectorRef,
   Component,
@@ -18,7 +19,8 @@ import {
   input,
   AfterViewInit,
 } from '@angular/core';
-import { BookingService } from '../../../core/services/Booking/booking.service';
+
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   CalendarAvailabilityDto,
@@ -36,14 +38,23 @@ import {
 import dayjs, { Dayjs } from 'dayjs';
 import { ChatService } from '../../../core/services/Message/message.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PaymentService } from '../../../core/services/payment/payment';
+import { CreatePaymentDTO, PaymentService } from '../../../core/services/payment/payment';
 import { AuthService } from '../../../core/services/auth.service';
-import { ViolationModal } from '../violation-modal/violation-modal';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
+import { ViolationModal } from "../violation-modal/violation-modal";
+import { ReserveConfirmModal } from "../reserve-confirm-modal/reserve-confirm-modal";
+import { ConfirmService } from '../../../core/services/confirm.service';
+
+
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+// Enable UTC plugin
+dayjs.extend(utc);
+dayjs.extend(timezone);
 @Component({
   selector: 'app-reverse-section',
-  imports: [CommonModule, FormsModule, NgxDaterangepickerMd, ViolationModal],
+  imports: [CommonModule, FormsModule, NgxDaterangepickerMd, ViolationModal, ReserveConfirmModal], 
   templateUrl: './reverse-section.component.html',
   styleUrls: ['./reverse-section.component.css'],
 })
@@ -102,6 +113,69 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
 
   @ViewChild('element') elemnt!: any;
 
+
+export class ReverseSectionComponent implements OnInit ,OnChanges {
+  showViolationModal:boolean = false
+  showConfirmModal: boolean = false
+  nightsCount:number = 1
+constructor(
+  private propertyService: PropertyService,
+  private bookingService: BookingService ,
+  private calendarService: CalendarAvailabilityService,
+  private cdr: ChangeDetectorRef,
+  private commonService: CommonPropInfoService,
+  private chatService: ChatService  ,
+  private route: ActivatedRoute,  // used to read current route params
+  private router: Router ,    
+  private   paymentService :PaymentService,
+  private auth :AuthService,
+  private dialogService:DialogService,
+  private confirmService: ConfirmService
+) {}
+  
+    @Input() checkIn?: dayjs.Dayjs;
+    @Input() checkOut?: dayjs.Dayjs;
+    @Input() propertyId!: number;
+    @Input() isPreview: boolean = false
+    @Input() hostID!: string;
+    
+    @Output() guestChange = new EventEmitter<{
+        adults: number;
+        children: number;
+        // infants: number;
+    }>();
+
+    @Input() dateMap?: Map<string,CalendarAvailabilityDto>
+    @Output() dateChange = new EventEmitter<range>()
+
+    @Input() guests: {
+        adults: number;
+        children: number;
+        // infants: number;
+    } = { adults: 1, children: 0}; // Default values
+
+    @ViewChild('picker',{read:DaterangepickerDirective}) picker!: DaterangepickerDirective;
+
+    @ViewChild("element") elemnt!: any
+
+    clickedDate?:dayjs.Dayjs
+    firstUnavailableDate?:dayjs.Dayjs
+
+    public Message: string = '';
+
+    displayMonths = 2;
+
+    @Output() reserveClicked = new EventEmitter<any>();
+
+    showReservationMessage: boolean = false;
+    specialPriceFromAvailable !:any;
+
+ngOnInit() {
+  this.commonService.clear$.subscribe(()=>{this.clear()})
+    console.log("from ReserveOnInit",this.checkIn,this.checkOut)
+    console.log("property id ",this.propertyId)
+    console.log("host id ",this.hostID)
+
   clickedDate?: dayjs.Dayjs;
   firstUnavailableDate?: dayjs.Dayjs;
 
@@ -121,6 +195,7 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
     console.log('from ReserveOnInit', this.checkIn, this.checkOut);
     console.log('property id ', this.propertyId);
     console.log('host id ', this.hostID);
+
     this.selected = {
       startDate: undefined,
       endDate: undefined,
@@ -141,8 +216,11 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
       next: (property: Property) => {
         this.property = property;
         this.maxGuests = property.maxGuests;
-        this.pricePerNight = property.pricePerNight;
-        console.log('price per neight ', this.pricePerNight); // ✅ update maxGuests from backend
+
+        this.pricePerNight=property.pricePerNight
+        this.totalPrice = this.pricePerNight
+        console.log("price per neight " ,this.pricePerNight) // ✅ update maxGuests from backend
+
       },
       error: (err) => {
         console.error('Failed to load property data', err);
@@ -548,32 +626,33 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
   }
 
   calculateTotalPrice(): void {
-    if (!this.selected?.startDate || !this.selected?.endDate) return;
 
-    const start = dayjs(this.selected.startDate);
-    const end = dayjs(this.selected.endDate);
-    const numberOfNights = end.diff(start, 'day');
-    if (numberOfNights <= 0) {
-      this.totalPrice = 0;
-      return;
-    }
-    const guestCount =
-      (this.guests?.adults || 0) + (this.guests?.children || 0);
-    console.log(guestCount);
+        if (!this.selected?.startDate || !this.selected?.endDate) return;
 
-    let totalNightly = 0;
-    // for (let d = start; d.isBefore(end); d = d.add(1, 'day')) {
-    //   const dateStr = d.format('YYYY-MM-DD');
-    //   const matchedDay = this.availability?.find(day => day.date === dateStr);
-    //   const priceForDay = matchedDay?.price ?? this.property.pricePerNight;
-    //   totalNightly += priceForDay;
-    // }
-    const BasePrice = numberOfNights * this.pricePerNight;
-    console.log('number of neights  from total price ', numberOfNights);
-    this.totalPrice = BasePrice * guestCount;
+        const start = dayjs(this.selected.startDate);
+        const end = dayjs(this.selected.endDate);
+        const numberOfNights = end.diff(start, 'day');
+        this.nightsCount = numberOfNights
+        if (numberOfNights <= 0) {
+          this.totalPrice = 0;
+          return;
+        }
+        const guestCount = (this.guests?.adults || 0) + (this.guests?.children || 0);
+        console.log(guestCount);
 
-    console.log('💰 Total price recalculated   print :', this.totalPrice);
-  }
+        let totalNightly = 0;
+        // for (let d = start; d.isBefore(end); d = d.add(1, 'day')) {
+        //   const dateStr = d.format('YYYY-MM-DD');
+        //   const matchedDay = this.availability?.find(day => day.date === dateStr);
+        //   const priceForDay = matchedDay?.price ?? this.property.pricePerNight;
+        //   totalNightly += priceForDay;
+        // }
+            const BasePrice = numberOfNights *this.pricePerNight;
+      console.log("number of neights  from total price " ,numberOfNights)
+        this.totalPrice = BasePrice ;
+
+        console.log("💰 Total price recalculated   print :", this.totalPrice);
+}
 
   get totalGuests(): string {
     const total = this.guests.adults + this.guests.children;
@@ -583,6 +662,7 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
     // }
     return text;
   }
+
 
   checkAvailabilityForSelectedRange(): void {
     console.log('reserve button clicked ');
@@ -601,9 +681,72 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
     console.log(guestCount);
     const clicked = dayjs(this.clickedDate).format('YYYY-MM-DD');
 
+
+      this.guestCount = guestCount
     // this.calendarService.getAvailability(this.propertyId, formattedStart, formattedEnd).subscribe((availability: CalendarAvailabilityDto[]) => {
     // const allAvailable = availability.every(day => day.isAvailable);
     // this.isDateRangeAvailable = allAvailable;
+
+      // if(startDate ==undefined || endDate == undefined) return;
+      this.calculateTotalPrice(); // assumes this.totalPrice is calculated
+
+  }
+
+
+  onReserveConfirmClick(){
+    
+    let userId=this.auth.userId;
+
+      if ( !userId ) 
+        {
+          console.log("User not logged in. Opening login dialog..."); 
+          this.dialogService.openDialog('login');
+          return;
+        }
+    const startDate = dayjs(this.selected.startDate);
+    const endDate = dayjs(this.selected.endDate);
+    const guestCount = (this.guests?.adults || 0) + (this.guests?.children || 0);
+    this.guestCount = guestCount
+    
+    // const formattedStart = startDate.format('YYYY-MM-DD');
+    // const formattedEnd = endDate.format('YYYY-MM-DD');
+      
+
+        console.log("utc string",startDate.utc().format())
+      let bookingDTO: BookingDTO = {
+          propertyId: this.propertyId,
+          userId:userId,
+          checkInDate: startDate.utc().format(),
+          checkOutDate: endDate.utc().format(),
+          numberOfGuests: guestCount,
+        };
+        
+    this.bookingService.createBooking(bookingDTO).subscribe(bookingRes => {
+        console.log("booking result" ,bookingRes);
+      
+      const bookingId = bookingRes.data;
+      // const totalAmount = bookingRes.data.totalPrice;  
+      let createPaymentDto: CreatePaymentDTO = {
+        bookingId: bookingId,
+        amount: 0
+      }
+      this.paymentService.createCheckout(createPaymentDto).subscribe({
+        next: (res) => {
+          console.log("payment service ",res);  
+          this.confirmService.success("Reservation completed","",()=>{
+            window.location.href = res.url;
+            // this.router.navigateByUrl(res.url)
+          })
+          
+          
+          
+        },
+        error: (err) => {
+          this.confirmService.fail("Failed","")
+          console.error("Checkout session creation failed", err);
+        }
+      });
+
     // if(startDate ==undefined || endDate == undefined) return;
     this.calculateTotalPrice(); // assumes this.totalPrice is calculated
     let userId = this.auth.userId;
@@ -626,20 +769,42 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
     //   const bookingId = bookingRes.data.id;
     //   const totalAmount = bookingRes.data.totalPrice;
 
-    //   this.paymentService.createCheckoutSession(bookingId, totalAmount, 'usd').subscribe({
-    //     next: (res) => {
-    //       console.log("payment service ",res);
 
-    //       window.location.href = res.data.checkoutUrl;
-
-    //     },
-    //     error: (err) => {
-    //       console.error("Checkout session creation failed", err);
-    //     }
-    //   });
-
-    // });
+    });
   }
+
+  // reserveFunction() :void{
+  //       let userId=this.auth.userId;
+
+  //     if (!this.auth.accessToken || !userId ) 
+  //       {
+  //         console.log("User not logged in. Opening login dialog..."); 
+  //         // this.dialogService.openDialog('login');
+  //         return;
+  //       }
+
+  //     let bookingDTO: BookingDTO = {
+  //         propertyId: this.propertyId,
+  //         userId:userId,
+  //         checkInDate: startDate.toDate().toUTCString(),
+  //         checkOutDate: endDate.toDate().toUTCString(),
+  //         numberOfGuests: guestCount,
+  //       };
+        
+  //   this.bookingService.createBooking(bookingDTO).subscribe(bookingRes => {
+  //       console.log("booking result" ,bookingRes);
+      
+  //     const bookingId = bookingRes.data.id;
+  //     const totalAmount = bookingRes.data.totalPrice;
+
+  //     this.paymentService.createCheckout(bookingId).subscribe({
+  //       next: (res) => {
+  //         console.log("payment service ",res);
+
+  //         window.location.href = res.url;
+
+
+
 
   showViolationModalFn() {
     if (!this.auth.accessToken && !this.auth.refreshToken) {
@@ -653,4 +818,12 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
   closeViolationModal() {
     this.showViolationModal = false;
   }
+
+  onShowConfirmModal(){
+    this.showConfirmModal = true
+  }
+  onCloseConfirmModal(){
+    this.showConfirmModal = false
+  }
+
 }

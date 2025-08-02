@@ -102,13 +102,14 @@ export class PropertImageGalaryComponent implements OnInit {
     this.showToast('Share clicked!', 'bottom', 'left'); // replace with modal or copy link logic
   }
 
-  onSave() {
-    if (this.authService.accessToken !== null) {
-      // Proceed to save
-      console.log('Saved!');
-    } else {
-      // 🔓 Open login dialog instead of navigating
-      this.dialogService.openDialog('login');
-    }
+
+onSave() {
+  if (this.authService.accessToken !== null) {
+    // Proceed to save
+    console.log('Saved!');
+  } else {
+    
+    this.dialogService.openDialog('login');
   }
+  
 }
