@@ -69,7 +69,7 @@ export class AuthInterceptor implements HttpInterceptor {
           this.isRefreshing = false;
           this.firstTimeRefresh = false;
           this.authService.setAccessToken(token.accessToken);
-          this.refreshTokenSubject.next(token.refreshToken);
+          // this.refreshTokenSubject.next(token.refreshToken);
           this.authService.setUserId(token.userId);
           this.authService.setRole(token.roles);
           return next.handle(this.addToken(request, token.accessToken));
@@ -77,7 +77,7 @@ export class AuthInterceptor implements HttpInterceptor {
         catchError((err) => {
           this.isRefreshing = false;
           this.firstTimeRefresh = false;
-          this.authService.clear();
+          // this.authService.clear();
           return throwError(() => err);
         })
       );

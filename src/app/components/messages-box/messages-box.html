@@ -53,7 +53,7 @@
             class="form-select"
             size="10"
           >
-            <option value="">Original language</option>
+            <option [value]="null">Original language</option>
             <option *ngFor="let lang of filteredLanguages" [value]="lang.code">
               {{ lang.name }}
             </option>

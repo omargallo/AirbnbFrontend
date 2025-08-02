@@ -36,7 +36,6 @@ export interface CalendarAvailabilityDto {
   price: number;
 }
 
-@Injectable({    providedIn: 'root' })
 
 @Injectable({
   providedIn: 'root',
