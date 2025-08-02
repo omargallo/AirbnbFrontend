@@ -108,7 +108,7 @@ export class PropertImageGalaryComponent implements OnInit {
   }
 
   onShare() {
-    const link = `${environment.base}/property/${this.propertyId}`;
+    const link = `${environment.domainBaseUrl}/property/${this.propertyId}`;
     navigator.clipboard.writeText(link).then(() => {
       const msg = this.translate.instant('PROPERTY.LINK_COPIED');
       this.showToast(msg, 'bottom', 'left');
