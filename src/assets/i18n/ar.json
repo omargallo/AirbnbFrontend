@@ -284,6 +284,9 @@
   },
   "PROPERTY": {
     "ADD_TO_WISHLIST": "أضف إلى المفضلة",
-    "REMOVE_FROM_WISHLIST": "إزالة من المفضلة"
+    "REMOVE_FROM_WISHLIST": "إزالة من المفضلة",
+    "LINK_COPIED": "تم نسخ الرابط بنجاح",
+  "COPY_FAILED": "حدث خطأ أثناء نسخ الرابط"
   }
+
 }
