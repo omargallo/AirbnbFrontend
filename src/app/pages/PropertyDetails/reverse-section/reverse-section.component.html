@@ -7,10 +7,10 @@
       </div>
 
   <div class="reserve-box " >
-        <div class="price-info  " *ngIf="totalPrice">price:-
-          <span class="price" >{{ pricePerNight | currency }}</span> <span>/ night</span>
+        <div class="price-info" >price:-
+          <span class="price" >{{ pricePerNight | currency }}</span> <span> for {{nightsCount}} night</span>
       </div>
-          <div class="total-price" *ngIf="totalPrice"  class="mt-2 text-success fs-5 fw-medium d-flex m-auto">
+          <div class="total-price" *ngIf="totalPrice"  class="mt-2 text-success fs-5 fw-medium d-flex m-auto align-items-center">
             
               Total <img style="width: 20px; height: 25px;" src="assets/images/dollars.png" alt="dolar image"> 
               : {{ totalPrice |  currency }}
@@ -23,7 +23,7 @@
       <input  type="date" [(ngModel)]="checkInDate"  (ngModelChange)="isCheckIn($event)" />
     </label>
     <label> -->
-      <span class="font-black fw-medium fs-5 ">Price per Neight : <span style="color: cornflowerblue;"> {{pricePerNight}}</span> </span>
+      <!-- <span class="font-black fw-medium fs-5 ">Price per Neight : <span style="color: cornflowerblue;"> {{pricePerNight}}</span> </span> -->
 
     <div class="flex justify-content-end mb-2"(click)="onClear()"><button >clear</button></div>
     <input
@@ -108,7 +108,7 @@
 
     
     </div>
-         <button type="button" class="check-btn" (click)="checkAvailabilityForSelectedRange()">
+         <button type="button" class="check-btn" (click)="onShowConfirmModal()">
           Reserve
         </button>  
         <!-- If available -->
@@ -137,4 +137,17 @@
 ></app-violation-modal>
   
   
-  
+
+<app-reserve-confirm-modal
+        *ngIf="showConfirmModal"
+        (close)="onCloseConfirmModal()"
+        [checkIn]="selected.startDate"
+        [checkOut]="selected.endDate"
+        [guestsCount]="guestCount"
+        [pricePerNight]="property.pricePerNight"
+        [totalPrice]="totalPrice"
+        [nightsCount]="nightsCount"
+        (confirm)="onReserveConfirmClick()"
+        >
+
+</app-reserve-confirm-modal>

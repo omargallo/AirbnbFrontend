@@ -15,19 +15,29 @@ import { DaterangepickerComponent, DaterangepickerDirective, NgxDaterangepickerM
 import dayjs, { Dayjs } from 'dayjs';
 import { ChatService } from '../../../core/services/Message/message.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PaymentService } from '../../../core/services/payment/payment';
+import { CreatePaymentDTO, PaymentService } from '../../../core/services/payment/payment';
 import { AuthService } from '../../../core/services/auth.service';
 import { ViolationModal } from "../violation-modal/violation-modal";
+import { ReserveConfirmModal } from "../reserve-confirm-modal/reserve-confirm-modal";
+import { ConfirmService } from '../../../core/services/confirm.service';
 
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+// Enable UTC plugin
+dayjs.extend(utc);
+dayjs.extend(timezone);
 @Component({
   selector: 'app-reverse-section',
-  imports: [CommonModule, FormsModule, NgxDaterangepickerMd, ViolationModal], 
+  imports: [CommonModule, FormsModule, NgxDaterangepickerMd, ViolationModal, ReserveConfirmModal], 
   templateUrl: './reverse-section.component.html',
   styleUrls: ['./reverse-section.component.css']
 })
 
 export class ReverseSectionComponent implements OnInit ,OnChanges {
   showViolationModal:boolean = false
+  showConfirmModal: boolean = false
+  nightsCount:number = 1
 constructor(
   private propertyService: PropertyService,
   private bookingService: BookingService ,
@@ -39,7 +49,8 @@ constructor(
   private router: Router ,    
   private   paymentService :PaymentService,
   private auth :AuthService,
-  private dialogService:DialogService
+  private dialogService:DialogService,
+  private confirmService: ConfirmService
 ) {}
   
     @Input() checkIn?: dayjs.Dayjs;
@@ -100,6 +111,7 @@ ngOnInit() {
         this.property = property;
         this.maxGuests = property.maxGuests;
         this.pricePerNight=property.pricePerNight
+        this.totalPrice = this.pricePerNight
         console.log("price per neight " ,this.pricePerNight) // ✅ update maxGuests from backend
       },
       error: (err) => {
@@ -470,6 +482,7 @@ findClosestAvailableRange(start: Date, allDays: any[]): { start: Date, end: Date
         const start = dayjs(this.selected.startDate);
         const end = dayjs(this.selected.endDate);
         const numberOfNights = end.diff(start, 'day');
+        this.nightsCount = numberOfNights
         if (numberOfNights <= 0) {
           this.totalPrice = 0;
           return;
@@ -486,7 +499,7 @@ findClosestAvailableRange(start: Date, allDays: any[]): { start: Date, end: Date
         // }
             const BasePrice = numberOfNights *this.pricePerNight;
       console.log("number of neights  from total price " ,numberOfNights)
-        this.totalPrice = BasePrice * guestCount;
+        this.totalPrice = BasePrice ;
 
         console.log("💰 Total price recalculated   print :", this.totalPrice);
 }
@@ -517,50 +530,73 @@ findClosestAvailableRange(start: Date, allDays: any[]): { start: Date, end: Date
 
       const guestCount = (this.guests?.adults || 0) + (this.guests?.children || 0);
       console.log(guestCount);
-        const clicked =dayjs(this.clickedDate).format('YYYY-MM-DD');
+      const clicked =dayjs(this.clickedDate).format('YYYY-MM-DD');
 
+      this.guestCount = guestCount
     // this.calendarService.getAvailability(this.propertyId, formattedStart, formattedEnd).subscribe((availability: CalendarAvailabilityDto[]) => {
     // const allAvailable = availability.every(day => day.isAvailable);
     // this.isDateRangeAvailable = allAvailable;
       // if(startDate ==undefined || endDate == undefined) return;
       this.calculateTotalPrice(); // assumes this.totalPrice is calculated
-    //   let userId=this.auth.userId;
 
-    //   if (!this.auth.accessToken || !userId ) 
-    //     {
-    //       console.log("User not logged in. Opening login dialog..."); 
-    //       // this.dialogService.openDialog('login');
-    //       return;
-    //     }
+  }
 
-    //   let bookingDTO: BookingDTO = {
-    //       propertyId: this.propertyId,
-    //       userId:userId,
-    //       checkInDate: startDate.toDate().toUTCString(),
-    //       checkOutDate: endDate.toDate().toUTCString(),
-    //       numberOfGuests: guestCount,
-    //     };
-        
-    // this.bookingService.createBooking(bookingDTO).subscribe(bookingRes => {
-    //     console.log("booking result" ,bookingRes);
+
+  onReserveConfirmClick(){
+    
+    let userId=this.auth.userId;
+
+      if ( !userId ) 
+        {
+          console.log("User not logged in. Opening login dialog..."); 
+          this.dialogService.openDialog('login');
+          return;
+        }
+    const startDate = dayjs(this.selected.startDate);
+    const endDate = dayjs(this.selected.endDate);
+    const guestCount = (this.guests?.adults || 0) + (this.guests?.children || 0);
+    this.guestCount = guestCount
+    
+    // const formattedStart = startDate.format('YYYY-MM-DD');
+    // const formattedEnd = endDate.format('YYYY-MM-DD');
       
-    //   const bookingId = bookingRes.data.id;
-    //   const totalAmount = bookingRes.data.totalPrice;
 
-    //   this.paymentService.createCheckout(bookingId).subscribe({
-    //     next: (res) => {
-    //       console.log("payment service ",res);
+        console.log("utc string",startDate.utc().format())
+      let bookingDTO: BookingDTO = {
+          propertyId: this.propertyId,
+          userId:userId,
+          checkInDate: startDate.utc().format(),
+          checkOutDate: endDate.utc().format(),
+          numberOfGuests: guestCount,
+        };
+        
+    this.bookingService.createBooking(bookingDTO).subscribe(bookingRes => {
+        console.log("booking result" ,bookingRes);
+      
+      const bookingId = bookingRes.data;
+      // const totalAmount = bookingRes.data.totalPrice;  
+      let createPaymentDto: CreatePaymentDTO = {
+        bookingId: bookingId,
+        amount: 0
+      }
+      this.paymentService.createCheckout(createPaymentDto).subscribe({
+        next: (res) => {
+          console.log("payment service ",res);  
+          this.confirmService.success("Reservation completed","",()=>{
+            window.location.href = res.url;
+            // this.router.navigateByUrl(res.url)
+          })
+          
+          
+          
+        },
+        error: (err) => {
+          this.confirmService.fail("Failed","")
+          console.error("Checkout session creation failed", err);
+        }
+      });
 
-    //       window.location.href = res.url;
-
-    //     },
-    //     error: (err) => {
-    //       console.error("Checkout session creation failed", err);
-    //     }
-    //   });
-
-    // });
-
+    });
   }
 
   // reserveFunction() :void{
@@ -620,6 +656,13 @@ findClosestAvailableRange(start: Date, allDays: any[]): { start: Date, end: Date
 
   closeViolationModal(){
     this.showViolationModal= false
+  }
+
+  onShowConfirmModal(){
+    this.showConfirmModal = true
+  }
+  onCloseConfirmModal(){
+    this.showConfirmModal = false
   }
 
 }
