@@ -148,7 +148,7 @@ export const nllb_languages: { [key: string]: string } = {
     "Yoruba": "yor_Latn",
     "Zulu": "zul_Latn"
 };
-import { Observable, map, of } from 'rxjs';
+import { BehaviorSubject, Observable, map, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Property } from '../../models/Property';
 
@@ -305,7 +305,9 @@ export class ChatService {
   private readonly baseUrl = environment.baseUrl + '/chat';
   private messageCache = new Map<string, MessageDto[]>();
   private readonly CACHE_EXPIRY = 10 * 60 * 1000; // 5 minutes
-
+  public _targetLang$  = new BehaviorSubject<string>("")
+  public targetLang$  = this._targetLang$.asObservable()
+  
   constructor(private http: HttpClient) {}
 
   // Get user chat sessions with pagination
@@ -404,14 +406,24 @@ export class ChatService {
       targetLang = "";
       localStorage.setItem('chatLanguage', "");
       console.log("languageName",targetLang)
-      
+      this._targetLang$.next("")
     }
     else if (nllb_languages[languageName] ) {
-        targetLang = languageName;
-        localStorage.setItem('chatLanguage', languageName);
-        // Clear cache when language changes
-        this.messageCache.clear();
+      targetLang = languageName;
+      this._targetLang$.next(languageName)
+      localStorage.setItem('chatLanguage', languageName);
+      // Clear cache when language changes
+      this.messageCache.clear();
     }
   }
 
+  translateMessage(text:string, targetLang:string){
+    targetLang = nllb_languages[targetLang]
+    console.log("translating to ",targetLang)
+    return this.http
+                .post<{translated_texts:string[]}>(
+                                                  "https://ahmedaladl-transliation.hf.space/translate",
+                                                  {texts:[text], tgt_lang:targetLang}
+                                                )
+  }
 }
