@@ -20,6 +20,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap-reverse;
+  gap: 1rem;
   padding: 24px;
   background: var(--bg-color);
   position: sticky;
@@ -490,6 +492,7 @@
 /* Mode Tabs */
 .mode-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   /* margin-bottom: 10px; */
 }

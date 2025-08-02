@@ -4,7 +4,13 @@
     class="d-flex align-items-center gap-4 mb-4"
   >
     <button class="btn goBack rounded-circle p-2" (click)="goBack()">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        [style.transform]="lang.currentLang === 'ar' ? 'scaleX(-1)' : 'none'"
+      >
         <path
           d="M15 18L9 12L15 6"
           stroke="currentColor"

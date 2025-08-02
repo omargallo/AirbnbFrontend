@@ -46,6 +46,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+
 }
 
 .user-menu-button:hover {
@@ -75,8 +76,8 @@
 }
 
 .user-menu-dropdown {
-  right: 0 !important;
-  left: auto !important;
+  /* right: 0 !important; */
+  /* left: auto !important; */
   margin-top: 0.5rem;
   transform: translateX(0%) !important;
   min-width: 200px;
@@ -85,6 +86,8 @@
   background-color: var(--active);
   min-height: 240px !important;
 }
+
+
 .menu-dropdown{
  background-color: var(--active);
  width: 100%;
