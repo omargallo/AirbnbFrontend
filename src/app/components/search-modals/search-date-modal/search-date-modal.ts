@@ -8,11 +8,18 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-search-date-modal',
   templateUrl: './search-date-modal.html',
-  styleUrls: ['./search-date-modal.css', '../../search-filter-group/search-filter-group.css', '../../header/header.css'],
-  imports: [FormsModule, NgxDaterangepickerMd, TranslateModule, CommonModule]
+  styleUrls: [
+    './search-date-modal.css',
+    '../../search-filter-group/search-filter-group.css',
+    '../../header/header.css',
+  ],
+  imports: [FormsModule, NgxDaterangepickerMd, TranslateModule, CommonModule],
 })
 export class SearchDateModal {
   activeQuickOption: 'today' | 'tomorrow' | 'thisWeekend' | null = null;
+
+  minDate = moment().startOf('year').format('YYYY-MM-DD');
+  maxDate = moment().add(1, 'year').endOf('month').format('YYYY-MM-DD');
 
   ranges: any = {
     Today: [moment(), moment()],
@@ -29,10 +36,8 @@ export class SearchDateModal {
   };
   selectedDateRange = {
     startDate: null as moment.Moment | null,
-    endDate: null as moment.Moment | null
+    endDate: null as moment.Moment | null,
   };
-
-
 
   locale = {
     format: 'MMM DD, YYYY',
@@ -47,14 +52,15 @@ export class SearchDateModal {
     monthNames: moment.monthsShort(),
     firstDay: moment.localeData().firstDayOfWeek(),
   };
-  @Output() dateSelected = new EventEmitter<string | { start: string; end: string }>();
+  @Output() dateSelected = new EventEmitter<
+    string | { start: string; end: string }
+  >();
 
   datesUpdated(range: any) {
     this.activeQuickOption = null; // clear quick option
     this.selectedDateRange = range;
     this.emitDate();
   }
-
 
   selectQuickDate(type: 'today' | 'tomorrow' | 'thisWeekend') {
     if (this.activeQuickOption === type) {
@@ -111,9 +117,6 @@ export class SearchDateModal {
     }
   }
 
-
-
-
   getTodayFormatted(): string {
     return moment().format('MMM DD');
   }
@@ -129,6 +132,4 @@ export class SearchDateModal {
   getSaturdayDate(): string {
     return moment().isoWeekday(6).format('MMM DD');
   }
-
-
 }

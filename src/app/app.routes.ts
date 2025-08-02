@@ -49,6 +49,7 @@ import { UserProfile } from './pages/user-profile/user-profile';
 
 import { authGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
+import { HasListingGuard } from './core/guards/has-listing.guard';
 export const routes: Routes = [
   {
     path: '',
@@ -160,6 +161,7 @@ export const routes: Routes = [
       {
         path: 'availability',
         component: Availability,
+        canActivate: [HasListingGuard],
         data: {
           roles: ['Host'],
         },

@@ -277,7 +277,9 @@
       "REMOVED": "Property removed from wishlist",
       "REMOVE_FAILED": "Couldn't remove the property",
       "ADDED": "Property added to wishlist",
-      "ADD_FAILED": "Couldn't add the property"
+      "ADD_FAILED": "Couldn't add the property",
+      "NEED_TO_CREATE_LISTING": "Please create a listing first to access the calendar",
+      "OK": "OK"
     }
   }
 }
