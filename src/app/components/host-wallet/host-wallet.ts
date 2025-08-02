@@ -190,7 +190,7 @@ export class HostWalletComponent implements OnInit {
 
   formatAmount(amount?: number): string {
     if (typeof amount !== 'number') return '$0.00 USD';
-    const dollars = amount / 10;
+    const dollars = amount / 100;
     return `$${dollars.toFixed(2)} USD`;
   }
 
