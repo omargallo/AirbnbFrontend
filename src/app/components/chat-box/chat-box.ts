@@ -119,11 +119,33 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
           newMessage.chatSessionId === this.selectedChatSession.id
         ) {
           console.log('New message received via SignalR:', newMessage);
-          this.messages.push(newMessage);
+          // this.messages.push(newMessage);
+          let targetLang = this.chatService._targetLang$.getValue()
+          if(targetLang == "" || targetLang == null || targetLang == "null")
+          {
+            this.messages.push(newMessage)
+            this.processChatItems();
+            this.scrollToBottom();
+            this.cdr.detectChanges();
+            return
+          }
 
-          this.processChatItems();
-          this.scrollToBottom();
-          this.cdr.detectChanges();
+          this.chatService
+                .translateMessage(newMessage.messageText,targetLang)
+                .subscribe({
+                  next:(res)=>{
+                      console.log("Translated  message:",res)
+                      newMessage.messageText = res?.translated_texts.length>0? res.translated_texts[0] : ""
+                      this.messages.push(newMessage);
+                      this.processChatItems();
+                      this.scrollToBottom();
+                      this.cdr.detectChanges();
+                  },
+                  error:(err)=>{
+                      console.error("error translating the message",err)
+                  }
+                })
+
         }
       });
   }
@@ -441,11 +463,15 @@ export class ChatBoxComponent implements OnInit, OnDestroy {
           this.messageInput = '';
           this.scrollToBottom();
           this.isSending = false;
+        this.cdr.detectChanges();
+
         },
         error: (error) => {
           console.error('Error sending message:', error);
           this.error = 'Failed to send message. Please try again.';
           this.isSending = false;
+          this.cdr.detectChanges();
+
         },
       });
   }
