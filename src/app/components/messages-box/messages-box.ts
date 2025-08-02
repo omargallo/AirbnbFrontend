@@ -47,6 +47,8 @@ interface MessageThread {
 })
 export class MessagesBoxComponent implements OnInit, OnDestroy {
   @Output() chatSessionSelected = new EventEmitter<ChatSessionDto>();
+  @Output() langChange = new EventEmitter<void>();
+
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
   messageThreads: MessageThread[] = [];
@@ -135,9 +137,11 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
 
   onLanguageChange(): void {
     // Update the language in the service and reload messages
-    if (this.selectedLanguage) {
+    if (this.selectedLanguage || this.selectedLanguage == "" || this.selectedLanguage == null) {
+      console.log("selected language",this.selectedLanguage)
       this.chatService.updateTargetLanguage(this.selectedLanguage);
       this.resetAndLoadChatSessions();
+      this.langChange.emit()
     }
   }
 

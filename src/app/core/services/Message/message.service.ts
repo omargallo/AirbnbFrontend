@@ -276,6 +276,8 @@ export interface ReservePropertyResponse {
 
 function getLanguageParams(): HttpParams {
   // Convert language name to NLLB code, fallback to English if not found
+  if(targetLang == null || targetLang == "" ||targetLang == "null")
+    return new HttpParams()
   const apiLangCode = nllb_languages[targetLang] || nllb_languages['English'];
   return new HttpParams().set('targetLang', apiLangCode);
 }
@@ -302,7 +304,7 @@ let targetLang: string = localStorage.getItem('chatLanguage') || 'Arabic';
 export class ChatService {
   private readonly baseUrl = environment.baseUrl + '/chat';
   private messageCache = new Map<string, MessageDto[]>();
-  private readonly CACHE_EXPIRY = 5 * 60 * 1000; // 5 minutes
+  private readonly CACHE_EXPIRY = 10 * 60 * 1000; // 5 minutes
 
   constructor(private http: HttpClient) {}
 
@@ -392,14 +394,23 @@ export class ChatService {
 
   updateTargetLanguage(lang: string): void {
     // Convert from language code to full name if a mapping exists
-    const languageName = languageMapping[lang] || lang;
-    
+    console.log("lang",lang)
+    // const languageName:string|null = languageMapping[lang] || lang;
+    const languageName:string|null  = lang
+
     // Check if it's a valid NLLB language
-    if (nllb_languages[languageName]) {
-      targetLang = languageName;
-      localStorage.setItem('chatLanguage', languageName);
-      // Clear cache when language changes
-      this.messageCache.clear();
+    if( languageName == "null" || languageName == null || languageName == undefined || lang == null || lang=="")
+    {
+      targetLang = "";
+      localStorage.setItem('chatLanguage', "");
+      console.log("languageName",targetLang)
+      
+    }
+    else if (nllb_languages[languageName] ) {
+        targetLang = languageName;
+        localStorage.setItem('chatLanguage', languageName);
+        // Clear cache when language changes
+        this.messageCache.clear();
     }
   }
 

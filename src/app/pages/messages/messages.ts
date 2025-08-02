@@ -23,6 +23,7 @@ export class Messages implements OnInit, OnDestroy {
   isLoadingChat: boolean = false;
   currentOpenChatId?:string
   isHost: boolean = false;
+  hasLangChanged = false;
 
 
   private currentUserId: string | null = null;
@@ -53,7 +54,7 @@ export class Messages implements OnInit, OnDestroy {
   }
 
   onChatSessionSelected(session: ChatSessionDto): void {
-    if(this.currentOpenChatId == session.id)
+    if(this.currentOpenChatId == session.id && !this.hasLangChanged)
       return
     this.currentOpenChatId = session.id
     if (session.hostId === this.currentUserId) {
@@ -81,6 +82,7 @@ export class Messages implements OnInit, OnDestroy {
     if (!this.isHost) {
       this.messageService.getSessionForHost(session.id).subscribe({
         next: (res) => {
+          this.hasLangChanged = false
           console.log("reserveRequest", reserveRequest)
           console.log("res", res.data)
           // Add slight delay for better UX
@@ -116,6 +118,7 @@ export class Messages implements OnInit, OnDestroy {
       // For host view, use the same endpoint
       this.messageService.getSessionForHost(session.id).subscribe({
         next: (res) => {
+          this.hasLangChanged = false
           if (res.data) {
             // Update the session immediately to show loading state
             this.selectedChatSession = res.data.chatSession;
@@ -151,5 +154,10 @@ export class Messages implements OnInit, OnDestroy {
 
   get showPlaceholder(): boolean {
     return !this.isLoadingChat && !this.hasChatSelected;
+  }
+  onLangChange(){
+    this.hasLangChanged = true
+    if(this.selectedChatSession)
+      this.onChatSessionSelected(this.selectedChatSession)
   }
 }
