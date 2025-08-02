@@ -48,6 +48,7 @@ import { ConfirmService } from '../../../core/services/confirm.service';
 
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 // Enable UTC plugin
 dayjs.extend(utc);
@@ -58,60 +59,60 @@ dayjs.extend(timezone);
   templateUrl: './reverse-section.component.html',
   styleUrls: ['./reverse-section.component.css'],
 })
-export class ReverseSectionComponent implements OnInit, OnChanges {
-  showViolationModal: boolean = false;
-  constructor(
-    private propertyService: PropertyService,
-    private bookingService: BookingService,
-    private calendarService: CalendarAvailabilityService,
-    private cdr: ChangeDetectorRef,
-    private commonService: CommonPropInfoService,
-    private chatService: ChatService,
-    private route: ActivatedRoute, // used to read current route params
-    private router: Router,
-    private paymentService: PaymentService,
-    private auth: AuthService,
-    private dialogService: DialogService,
-    private snackBar: MatSnackBar
-  ) {}
+// export class ReverseSectionComponent implements OnInit, OnChanges {
+//   showViolationModal: boolean = false;
+//   constructor(
+//     private propertyService: PropertyService,
+//     private bookingService: BookingService,
+//     private calendarService: CalendarAvailabilityService,
+//     private cdr: ChangeDetectorRef,
+//     private commonService: CommonPropInfoService,
+//     private chatService: ChatService,
+//     private route: ActivatedRoute, // used to read current route params
+//     private router: Router,
+//     private paymentService: PaymentService,
+//     private auth: AuthService,
+//     private dialogService: DialogService,
+//     private snackBar: MatSnackBar
+//   ) {}
 
-  private showToast(
-    message: string,
-    vertical: 'top' | 'bottom',
-    horizontal: 'left' | 'right'
-  ) {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-      horizontalPosition: horizontal,
-      verticalPosition: vertical,
-      panelClass: ['custom-snackbar'],
-    });
-  }
-  @Input() checkIn?: dayjs.Dayjs;
-  @Input() checkOut?: dayjs.Dayjs;
-  @Input() propertyId!: number;
-  @Input() isPreview: boolean = false;
-  @Input() hostID!: string;
+//   private showToast(
+//     message: string,
+//     vertical: 'top' | 'bottom',
+//     horizontal: 'left' | 'right'
+//   ) {
+//     this.snackBar.open(message, 'Close', {
+//       duration: 3000,
+//       horizontalPosition: horizontal,
+//       verticalPosition: vertical,
+//       panelClass: ['custom-snackbar'],
+//     });
+//   }
+//   @Input() checkIn?: dayjs.Dayjs;
+//   @Input() checkOut?: dayjs.Dayjs;
+//   @Input() propertyId!: number;
+//   @Input() isPreview: boolean = false;
+//   @Input() hostID!: string;
 
-  @Output() guestChange = new EventEmitter<{
-    adults: number;
-    children: number;
-    // infants: number;
-  }>();
+//   @Output() guestChange = new EventEmitter<{
+//     adults: number;
+//     children: number;
+//     // infants: number;
+//   }>();
 
-  @Input() dateMap?: Map<string, CalendarAvailabilityDto>;
-  @Output() dateChange = new EventEmitter<range>();
+//   @Input() dateMap?: Map<string, CalendarAvailabilityDto>;
+//   @Output() dateChange = new EventEmitter<range>();
 
-  @Input() guests: {
-    adults: number;
-    children: number;
-    // infants: number;
-  } = { adults: 1, children: 0 }; // Default values
+//   @Input() guests: {
+//     adults: number;
+//     children: number;
+//     // infants: number;
+//   } = { adults: 1, children: 0 }; // Default values
 
-  @ViewChild('picker', { read: DaterangepickerDirective })
-  picker!: DaterangepickerDirective;
+//   @ViewChild('picker', { read: DaterangepickerDirective })
+//   picker!: DaterangepickerDirective;
 
-  @ViewChild('element') elemnt!: any;
+//   @ViewChild('element') elemnt!: any;
 
 
 export class ReverseSectionComponent implements OnInit ,OnChanges {
@@ -130,9 +131,23 @@ constructor(
   private   paymentService :PaymentService,
   private auth :AuthService,
   private dialogService:DialogService,
-  private confirmService: ConfirmService
+  private confirmService: ConfirmService,
+  private snackBar: MatSnackBar
+
 ) {}
   
+  private showToast(
+    message: string,
+    vertical: 'top' | 'bottom',
+    horizontal: 'left' | 'right'
+  ) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: horizontal,
+      verticalPosition: vertical,
+      panelClass: ['custom-snackbar'],
+    });
+  }
     @Input() checkIn?: dayjs.Dayjs;
     @Input() checkOut?: dayjs.Dayjs;
     @Input() propertyId!: number;
@@ -169,24 +184,7 @@ constructor(
 
     showReservationMessage: boolean = false;
     specialPriceFromAvailable !:any;
-
-ngOnInit() {
-  this.commonService.clear$.subscribe(()=>{this.clear()})
-    console.log("from ReserveOnInit",this.checkIn,this.checkOut)
-    console.log("property id ",this.propertyId)
-    console.log("host id ",this.hostID)
-
-  clickedDate?: dayjs.Dayjs;
-  firstUnavailableDate?: dayjs.Dayjs;
-
-  public Message: string = '';
-
-  displayMonths = 2;
-
-  @Output() reserveClicked = new EventEmitter<any>();
-
-  showReservationMessage: boolean = false;
-  specialPriceFromAvailable!: any;
+  
 
   ngOnInit() {
     this.commonService.clear$.subscribe(() => {
