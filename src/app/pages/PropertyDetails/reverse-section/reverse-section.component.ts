@@ -805,7 +805,7 @@ constructor(
 
 
   showViolationModalFn() {
-    if (!this.auth.accessToken && !this.auth.refreshToken) {
+    if (!this.auth.userId) {
       this.dialogService.openDialog('login');
       return;
     }

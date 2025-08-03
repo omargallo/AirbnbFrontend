@@ -22,7 +22,7 @@
                             <img 
                                 *ngIf="imageUrl"
                                 id="modalPropertyImage" 
-                                [src]="imageUrl" 
+                                [src]=" `${imageBaseUrl}${imageUrl}`" 
                                 class="property-image" 
                                 alt="Property">
                             <div>
@@ -62,7 +62,8 @@
                                 id="inactiveText"
                                 >Inactive</span>
                             <div 
-                                class="custom-toggle" 
+                                class="custom-toggle"
+                                [ngClass]="{'active':newStatus}" 
                                 id="statusToggle" 
                                 (click)="toggleStatus()"
                             >
@@ -123,7 +124,8 @@
                             type="button"
                             class="btn-confirm"
                             id="confirmBtn"
-                            onclick="confirmStatusChange()">
+                            (click)="onConfirm()"
+                            >
                             <i class="fas fa-check me-2"></i>Confirm Changes
                         </button>
                     </div>

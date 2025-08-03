@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChange
 import { PropertyDisplayDTO } from '../../../../../../core/models/PropertyDisplayDTO';
 import { PropertyDisplayWithHostDataDto } from '../../../../../add-property/models/property.model';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../../../../../../environments/environment.development';
 
 @Component({
   selector: 'app-property-activate-modal',
@@ -17,14 +18,14 @@ export class PropertyActivateModal implements OnInit{
 
   imageUrl:string =""
   newStatus = false;
-
+  imageBaseUrl = environment.base
 
 
   ngOnInit(){
     console.log("from ActivateModal OnInit")
     if(this.currentProperty)
     {
-      this.newStatus = this.currentProperty?.isActive 
+      this.newStatus = this.currentProperty?.isActive ?? false
       if(this.currentProperty.images && this.currentProperty.images.length > 0)
         this.imageUrl = this.currentProperty.images[0].imageUrl
     } 
@@ -39,7 +40,7 @@ export class PropertyActivateModal implements OnInit{
 
 
   onConfirm(){
-    this.confirm.emit()
+    this.confirm.emit(this.newStatus)
   }
   
   onClose(){

@@ -141,8 +141,9 @@ export class MenuHeader implements AfterViewInit, OnInit, OnDestroy {
   }
 
   logout() {
-    this.authService.clear();
-    this.userService.Logout();
+    // this.authService.clear();
+    console.log("logout called")
+    this.userService.Logout().subscribe();
     this.isLoggedIn = false;
     this.router.navigate(['/']);
   }

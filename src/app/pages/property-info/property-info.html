@@ -6,7 +6,7 @@
 
 <div class="container-lg d-flex flex-column">
   <div
-    class="property-details-box mt-2 d-flex justify-content-between flex-wrap"
+    class="property-details-box mt-2 d-flex justify-content-center justify-content-md-between flex-wrap"
   >
     <div class="d-flex flex-column align-items-center">
       <div class="col-md-12 d-flex justify-content-center">
@@ -31,7 +31,7 @@
       </div>
     </div>
     <div
-      class="bookinCalender position-relative"
+      class="bookinCalender position-relative d-flex d-md-block"
       style="position: relative !important;"
     >
       <!-- <div class="row"> -->
@@ -42,7 +42,7 @@
         </app-BookingCalendar>
 
       </div> -->
-      <div class="col-md-12 sticky-box" style="position: sticky; top: 90px;">
+      <div class="col-md-12 sticky-box mx-auto" style="position: sticky; top: 90px;">
         <app-reverse-section
           [dateMap]="dateMap"
           [propertyId]="propertyId"
