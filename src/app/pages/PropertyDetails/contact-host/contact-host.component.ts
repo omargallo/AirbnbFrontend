@@ -1,6 +1,6 @@
 import { Property } from './../../../core/models/Property';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import dayjs, { Dayjs } from 'dayjs';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -8,6 +8,11 @@ import { HostProfile, HostprofileService } from '../../../core/services/hostProf
 import { CalendarAvailabilityDto, CalendarAvailabilityService } from '../../../core/services/CalendarAvailability/calendar-availability.service';
 import { ReverseSectionComponent } from "../reverse-section/reverse-section.component";
 import { range } from '../BookingCalendar/BookingCalendar.component';
+import { ChatService, ReservePropertyRequest, ReserveRequestIntProeprtyId } from '../../../core/services/Message/message.service';
+
+import utc from 'dayjs/plugin/utc';
+import { ConfirmService } from '../../../core/services/confirm.service';
+
 
 @Component({
   selector: 'app-contact-host',
@@ -17,7 +22,8 @@ import { range } from '../BookingCalendar/BookingCalendar.component';
 })
 
 export class ContactHostComponent implements OnInit {
-
+  message:string = "";
+  isFirstTime=true;
   
   firstCalendarDate = dayjs().add(-5, 'months')
   lastCalendarDate = dayjs().add(1, 'year')
@@ -29,19 +35,23 @@ export class ContactHostComponent implements OnInit {
   checkOut!: string;
   startDate = dayjs()
   endDate = dayjs()
-  guests!: number;
+  guests: number = 1;
   adults!: number;
   children!: number;
   infants!: number;
- showReservationBox: boolean = true;
+  showReservationBox: boolean = true;
   propertyId!:number;
   hostProfile!: HostProfile;
+
 
   constructor(  
       private route: ActivatedRoute,
       private hostProfileService: HostprofileService,
       private calendarService: CalendarAvailabilityService,
-      private cdr: ChangeDetectorRef
+      private cdr: ChangeDetectorRef,
+      private messageService: ChatService,
+      private confirm: ConfirmService,
+      private router: Router
     ) {}
 
  ngOnInit(): void {
@@ -50,7 +60,7 @@ export class ContactHostComponent implements OnInit {
     this.hostId = params.get('hostId')!;
     this.checkIn = params.get('checkIn')!;
     this.checkOut = params.get('checkOut')!;
-    this.guests = +params.get('guests')!;
+    this.guests = +params.get('guests')! >0? +params.get("guests")! :1;
     this.children = +params.get('children')!;
 
     if(this.checkIn)
@@ -72,6 +82,8 @@ export class ContactHostComponent implements OnInit {
     this.hostProfile.firstName = this.getHostProfile.name;
     // this.hostProfile.lastName=
   });
+  
+    this.getCalendarAvailability()
   }
 
 getHostProfile(hostId: string) {
@@ -127,4 +139,42 @@ getHostProfile(hostId: string) {
 
   }
 
+  onSendMessage(){
+    if(this.message.length<1 || !this.endDate || !this.startDate )
+      return
+    let request: ReserveRequestIntProeprtyId ={
+      propertyId: this.propertyId,
+      checkInDate: this.startDate.startOf('day').utc().toISOString(),
+      checkOutDate: this.endDate.startOf('day').utc().toISOString(),
+      guestCount: this.guests,
+      message: this.message
+    } 
+    console.log(request)
+    
+
+    this.messageService
+        .reserveIntPropertyId(request)
+        .subscribe({
+          next:(res)=>{
+            if(res.isSuccess)
+            {
+              this.confirm.success(res.message,"Go to message to see your request",()=>{this.router.navigateByUrl("/Messages")})
+            }
+          },
+          error:(res)=>{
+            console.log(res)
+            this.confirm.fail(res.message,"")
+          }
+        })
+  }
+
+  isEmptyMessage(){
+    console.log("isemptyMessage")
+    let isEmpty = this.message.length < 1 && !this.isFirstTime
+    // this.isFirstTime = false
+    return isEmpty 
+  }
+  onModelChange(){
+    this.isFirstTime = false
+  }
 }
