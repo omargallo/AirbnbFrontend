@@ -12,6 +12,8 @@ import { environment } from '../../../../environments/environment.development';
 import { PropertyService } from '../../../core/services/Property/property.service';
 import { PropertyImage } from '../../../core/models/PropertyImage';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmService } from '../../../core/services/confirm.service';
+import { Confirm } from '../../../shared/components/confirm/confirm';
 
 export interface PhotosSectionData {
   photos: PropertyImage[];
@@ -22,7 +24,7 @@ export interface PhotosSectionData {
 @Component({
   selector: 'app-photos-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Confirm],
   styleUrls: ['../update-list.css', './photos-section.css'],
   templateUrl: './photos-section.html',
 })
@@ -47,7 +49,8 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
 
   constructor(
     private propertyService: PropertyService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private confirmService: ConfirmService
   ) {}
 
   private showToast(
@@ -205,11 +208,23 @@ export class PhotosSectionComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (
-      !confirm(`Are you sure you want to delete ${imageIds.length} image(s)?`)
-    ) {
-      return;
-    }
+    // Use custom confirm service instead of native confirm
+    this.confirmService.show(
+      'Delete Images',
+      `Are you sure you want to delete ${imageIds.length} image(s)?`,
+      () => {
+        this.performImageDeletion(imageIds);
+      },
+      {
+        okText: 'Delete',
+        isSuccess: false, // Red color for delete action
+        cancelText: 'Cancel'
+      }
+    );
+  }
+
+  private performImageDeletion(imageIds: number[]) {
+    if (!this.internalData) return;
 
     this.deleting = true;
 
