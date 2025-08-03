@@ -5,7 +5,10 @@
   <a
     *ngFor="let item of navItems; let i = index"
     class="top-nav-category"
-    [ngClass]="{ 'active': currentRoute === item.route, 'disabled-link': item.isNew }"
+    [ngClass]="{
+      active: currentRoute === item.route,
+      'disabled-link': item.isNew
+    }"
     (mouseenter)="playVideo($event)"
     (mouseleave)="pauseVideo($event)"
     [routerLink]="item.isNew ? null : item.route"
@@ -15,9 +18,14 @@
       *ngIf="item.isNew"
       class="coming-soon-badge position-absolute text-uppercase"
     >
-      {{ 'COMMON.COMING_SOON' | translate }}
+      {{ "COMMON.COMING_SOON" | translate }}
     </span>
-    <img [alt]="item.label + ' Icon'" [src]="item.imgSrc" width="100" />
+    <img
+      [alt]="item.label + ' Icon'"
+      [src]="item.imgSrc"
+      width="100"
+      loading="lazy"
+    />
     <video
       class="s1kxodx6 atm_jp_1f51e7f atm_jr_1h6ojuz atm_vy_1osqo2v atm_e2_1osqo2v atm_tr_18ws4an atm_mj_glywfm s1y8p483 atm_mk_stnw88 atm_tk_idpfg4 atm_fq_idpfg4 stz1the atm_k4_kb7nvz dir dir-ltr"
       playsinline
@@ -34,7 +42,7 @@
         [type]="source.type"
       />
     </video>
-    {{ item.label| translate }}
+    {{ item.label | translate }}
 
     <!-- <span *ngIf="item.isNew" class="new-badge">NEW</span> -->
   </a>

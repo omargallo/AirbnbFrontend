@@ -23,10 +23,11 @@
       [src]="imageUrl"
       alt="listing image"
       class="img-fluid rounded-4 ratio-1x1"
+      loading="lazy"
     />
     <div
       class="favorite badge position-absolute top-0 start-0 m-2"
-      *ngIf="rating > 4 && reviewCount>100"
+      *ngIf="rating > 4 && reviewCount > 100"
     >
       Guest favorite
     </div>

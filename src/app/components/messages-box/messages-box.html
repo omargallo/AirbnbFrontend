@@ -25,7 +25,7 @@
       (click)="setActiveFilter('unread')"
     >
       <!-- Unread ({{ getUnreadCount() }}) -->
-      {{ "MESSAGES.FILTER.UNREAD" | translate:{ count: getUnreadCount() } }}
+      {{ "MESSAGES.FILTER.UNREAD" | translate : { count: getUnreadCount() } }}
     </button>
     <!-- Language Settings -->
     <div class="language-settings">
@@ -47,9 +47,9 @@
       </button>
       <div class="language-dropdown" *ngIf="showLanguageSettings">
         <div class="language-dropdown-content">
-          <label for="languageSearch"
-            >{{ "MESSAGES.LANGUAGE.LABEL" | translate }}</label
-          >
+          <label for="languageSearch">{{
+            "MESSAGES.LANGUAGE.LABEL" | translate
+          }}</label>
           <div class="search-container">
             <input
               type="text"
@@ -66,9 +66,9 @@
             class="form-select"
             size="10"
           >
-            <option [value]="null"
-              >{{ "MESSAGES.LANGUAGE.ORIGINAL" | translate }}</option
-            >
+            <option [value]="null">
+              {{ "MESSAGES.LANGUAGE.ORIGINAL" | translate }}
+            </option>
             <option *ngFor="let lang of filteredLanguages" [value]="lang.code">
               {{ lang.name }}
             </option>
@@ -113,6 +113,7 @@
           [src]="thread.profileImage"
           class="profile-img me-3"
           [alt]="thread.name"
+          loading="lazy"
           onerror="this.src='https://pngpix.com/images/file/placeholder-profile-icon-20tehfawxt5eihco.jpg'"
         />
         <div class="flex-grow-1">
@@ -156,7 +157,9 @@
     >
       <small class="text-muted">
         <i class="bi bi-check-circle me-1"></i>
-        {{ "MESSAGES.ALL_LOADED" | translate:{ count: messageThreads.length } }}
+        {{
+          "MESSAGES.ALL_LOADED" | translate : { count: messageThreads.length }
+        }}
       </small>
     </div>
 
@@ -181,12 +184,18 @@
       <i class="bi bi-chat-dots"></i>
     </div>
     <div class="empty-title mb-2">
-      {{ activeFilter === 'unread' ? ('MESSAGES.EMPTY_STATE.UNREAD_TITLE' |
-      translate) : ('MESSAGES.EMPTY_STATE.DEFAULT_TITLE' | translate) }}
+      {{
+        activeFilter === "unread"
+          ? ("MESSAGES.EMPTY_STATE.UNREAD_TITLE" | translate)
+          : ("MESSAGES.EMPTY_STATE.DEFAULT_TITLE" | translate)
+      }}
     </div>
     <div class="empty-subtitle">
-      {{ activeFilter === 'unread' ? ('MESSAGES.EMPTY_STATE.UNREAD_SUB' |
-      translate) : ('MESSAGES.EMPTY_STATE.DEFAULT_SUB' | translate) }}
+      {{
+        activeFilter === "unread"
+          ? ("MESSAGES.EMPTY_STATE.UNREAD_SUB" | translate)
+          : ("MESSAGES.EMPTY_STATE.DEFAULT_SUB" | translate)
+      }}
     </div>
   </div>
 

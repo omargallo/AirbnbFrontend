@@ -46,7 +46,12 @@
     <!-- Large left image -->
     <div class="main-image">
       <!-- <img [src]="images[0]" alt="Main Image" /> -->
-      <img [src]="images[0]" alt="Main Image" *ngIf="images.length > 0" />
+      <img
+        [src]="images[0]"
+        alt="Main Image"
+        *ngIf="images.length > 0"
+        loading="lazy"
+      />
     </div>
 
     <!-- Right-side grid of 4 images -->
@@ -55,7 +60,7 @@
         class="grid-image"
         *ngFor="let img of images.slice(1, 5); let i = index"
       >
-        <img [src]="img" alt="Image {{ i + 2 }}" />
+        <img [src]="img" alt="Image {{ i + 2 }}" loading="lazy" />
         <!-- Show button on last image -->
         <!-- <button
         class="show-all-btn"
@@ -74,23 +79,27 @@
       <!-- Left: Title and specs -->
       <div class="col-md-12">
         <h2 class="property-type-location mb-2">
-          {{Property?.description}} {{ Property?.city }},{{ Property?.country }}
+          {{ Property?.description }} {{ Property?.city }},{{
+            Property?.country
+          }}
         </h2>
 
         <div class="property-specs">
-          <span>{{ Property?.maxGuests}} guests</span>
+          <span>{{ Property?.maxGuests }} guests</span>
           <span>·</span>
           <span
-            >{{ Property?.bedrooms}} bedroom{{ Property?.bedrooms !== 1 ? 's' :
-            '' }}</span
+            >{{ Property?.bedrooms }} bedroom{{
+              Property?.bedrooms !== 1 ? "s" : ""
+            }}</span
           >
           <span>·</span>
           <span
-            >{{ Property?.beds}} bed{{Property?.beds !== 1 ? 's' : '' }}</span
+            >{{ Property?.beds }} bed{{ Property?.beds !== 1 ? "s" : "" }}</span
           >
           <span>·</span>
           <span
-            >{{ Property?.bathrooms}} bath{{Property?.bathrooms !== 1 ? 's' : ''
+            >{{ Property?.bathrooms }} bath{{
+              Property?.bathrooms !== 1 ? "s" : ""
             }}</span
           >
         </div>

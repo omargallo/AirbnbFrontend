@@ -1,16 +1,27 @@
 <div class="properties-container container-fluid">
   <div class="properties-panel">
     <div class="d-flex justify-content-between items-center mb-4">
-      <p class="font-semibold text-lg">  {{ 'PROPERTIES.OVER_HOMES' | translate:{ count: properties.length } }}</p>
+      <p class="font-semibold text-lg">
+        {{ "PROPERTIES.OVER_HOMES" | translate : { count: properties.length } }}
+      </p>
       <div class="d-flex justify-content-between items-center gap-2 text-lg">
-        <img alt="fees" src="assets/images/fees.svg" width="40" height="40" />
-       {{ 'PROPERTIES.PRICES_INCLUDE_FEES' | translate }}
+        <img
+          alt="fees"
+          src="assets/images/fees.svg"
+          width="40"
+          height="40"
+          loading="lazy"
+        />
+        {{ "PROPERTIES.PRICES_INCLUDE_FEES" | translate }}
       </div>
     </div>
     <div class="properties-grid" *ngIf="isLoading">
-      <div class="mb-4" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]">
+      <div
+        class="mb-4"
+        *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
+      >
         <div class="p-2 rounded">
-          <div class="shimmer rounded mb-2" style="height: 180px;"></div>
+          <div class="shimmer rounded mb-2" style="height: 180px"></div>
           <div class="shimmer-line w-75 mb-2"></div>
           <div class="shimmer-line w-50 mb-1"></div>
           <div class="shimmer-line w-100"></div>
@@ -39,8 +50,8 @@
       <nav class="pagination">
         <button
           class="pagination-btn"
-          [disabled]="currentPage===1"
-          (click)="goToPage(currentPage-1)"
+          [disabled]="currentPage === 1"
+          (click)="goToPage(currentPage - 1)"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path
@@ -55,16 +66,16 @@
         <button
           *ngFor="let page of getVisiblePages()"
           class="pagination-btn"
-          [class.active]="page===currentPage"
-          [disabled]="page==='...'"
-          (click)="page!=='...' && goToPage(+page)"
+          [class.active]="page === currentPage"
+          [disabled]="page === '...'"
+          (click)="page !== '...' && goToPage(+page)"
         >
           {{ page }}
         </button>
         <button
           class="pagination-btn"
-          [disabled]="currentPage===totalPages"
-          (click)="goToPage(currentPage+1)"
+          [disabled]="currentPage === totalPages"
+          (click)="goToPage(currentPage + 1)"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path

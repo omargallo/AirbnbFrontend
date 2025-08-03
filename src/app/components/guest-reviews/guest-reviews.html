@@ -131,6 +131,7 @@
           <div class="profile-avatar">
             @if(review.user.profilePictureURL && !imageErrors.has(review.id)){
             <img
+              loading="lazy"
               [src]="getImageUrl(review.user.profilePictureURL)"
               class="rounded-circle"
               width="48"

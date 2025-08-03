@@ -9,10 +9,11 @@
       <p class="page-subtitle">Manage and monitor all registered users</p>
     </div>
     <div class="header-actions">
-      <button 
-        class="btn btn-primary" 
+      <button
+        class="btn btn-primary"
         (click)="refreshUsers()"
-        [disabled]="loading">
+        [disabled]="loading"
+      >
         <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
         Refresh
       </button>
@@ -29,7 +30,7 @@
         <i class="fas fa-users"></i>
       </div>
     </div>
-    
+
     <div class="stat-card">
       <div class="stat-content">
         <div class="stat-number">{{ activeUsersCount }}</div>
@@ -39,7 +40,7 @@
         <i class="fas fa-user-check"></i>
       </div>
     </div>
-    
+
     <div class="stat-card">
       <div class="stat-content">
         <div class="stat-number">{{ pendingUsersCount }}</div>
@@ -63,33 +64,33 @@
       caption="All Registered Users"
       (actionClick)="onActionClick($event)"
       (pageChange)="onPageChange($event)"
-      (sortChange)="onSortChange($event)">
+      (sortChange)="onSortChange($event)"
+    >
     </app-table>
   </div>
 
   <!-- User Details Modal -->
-  <div 
-    class="modal-overlay" 
-    *ngIf="showUserDetails" 
-    (click)="closeUserDetails()">
-    <div 
-      class="modal-container" 
-      (click)="$event.stopPropagation()">
-      
+  <div
+    class="modal-overlay"
+    *ngIf="showUserDetails"
+    (click)="closeUserDetails()"
+  >
+    <div class="modal-container" (click)="$event.stopPropagation()">
       <!-- Modal Header -->
       <div class="modal-header">
         <h3 class="modal-title">
           <i class="fas fa-user-circle"></i>
           User Details
         </h3>
-        <button 
-          class="modal-close" 
+        <button
+          class="modal-close"
           (click)="closeUserDetails()"
-          aria-label="Close modal">
+          aria-label="Close modal"
+        >
           <i class="fas fa-times"></i>
         </button>
       </div>
-      
+
       <!-- Modal Loading State -->
       <div class="modal-loading" *ngIf="loadingUserDetails">
         <div class="loading-spinner">
@@ -97,26 +98,30 @@
           <p>Loading user details...</p>
         </div>
       </div>
-      
+
       <!-- Modal Content -->
       <div class="modal-content" *ngIf="selectedUser && !loadingUserDetails">
         <!-- User Profile Section -->
         <div class="user-profile">
           <div class="profile-avatar">
-            <img 
+            <img
+              loading="lazy"
               *ngIf="hasProfilePicture(selectedUser); else defaultAvatar"
-              [src]="selectedUser.profilePictureURL" 
+              [src]="selectedUser.profilePictureURL"
               [alt]="selectedUser.firstName + ' ' + selectedUser.lastName"
               class="avatar-image"
-              (error)="onImageError($event)">
-            
+              (error)="onImageError($event)"
+            />
+
             <ng-template #defaultAvatar>
               <div class="default-avatar">
-                <span class="avatar-initials">{{ getUserInitials(selectedUser) }}</span>
+                <span class="avatar-initials">{{
+                  getUserInitials(selectedUser)
+                }}</span>
               </div>
             </ng-template>
           </div>
-          
+
           <div class="profile-info">
             <h4 class="profile-name">
               {{ selectedUser.firstName }} {{ selectedUser.lastName }}
@@ -124,48 +129,56 @@
             <p class="profile-email">{{ selectedUser.email }}</p>
           </div>
         </div>
-        
+
         <!-- Details Grid -->
         <div class="details-grid">
           <div class="detail-item">
             <label class="detail-label">User ID</label>
             <span class="detail-value">{{ selectedUser.userId }}</span>
           </div>
-          
+
           <div class="detail-item">
             <label class="detail-label">Username</label>
-            <span class="detail-value">{{ selectedUser.userName || 'Not provided' }}</span>
+            <span class="detail-value">{{
+              selectedUser.userName || "Not provided"
+            }}</span>
           </div>
-          
+
           <div class="detail-item">
             <label class="detail-label">Phone Number</label>
-            <span class="detail-value">{{ selectedUser.phoneNumber || 'Not provided' }}</span>
+            <span class="detail-value">{{
+              selectedUser.phoneNumber || "Not provided"
+            }}</span>
           </div>
-          
+
           <div class="detail-item">
             <label class="detail-label">Country</label>
-            <span class="detail-value">{{ selectedUser.country || 'Not specified' }}</span>
+            <span class="detail-value">{{
+              selectedUser.country || "Not specified"
+            }}</span>
           </div>
-          
+
           <div class="detail-item">
             <label class="detail-label">Birth Date</label>
             <span class="detail-value">
-              {{ selectedUser.birthDate ? (selectedUser.birthDate | date:'mediumDate') : 'Not provided' }}
+              {{
+                selectedUser.birthDate
+                  ? (selectedUser.birthDate | date : "mediumDate")
+                  : "Not provided"
+              }}
             </span>
           </div>
-          
+
           <div class="detail-item full-width" *ngIf="selectedUser.bio">
             <label class="detail-label">Bio</label>
             <span class="detail-value bio">{{ selectedUser.bio }}</span>
           </div>
         </div>
       </div>
-      
+
       <!-- Modal Footer -->
       <div class="modal-footer" *ngIf="!loadingUserDetails">
-        <button 
-          class="btn btn-secondary" 
-          (click)="closeUserDetails()">
+        <button class="btn btn-secondary" (click)="closeUserDetails()">
           <i class="fas fa-times"></i>
           Close
         </button>

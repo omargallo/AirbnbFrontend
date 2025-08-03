@@ -130,7 +130,6 @@
 
 @media (max-width: 991.98px) {
   .top-nav-categories,
-  .switch-to-hosting-btn,
   .search-bar-container {
     display: none !important;
   }

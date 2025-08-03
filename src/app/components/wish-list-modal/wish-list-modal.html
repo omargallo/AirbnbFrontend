@@ -5,7 +5,9 @@
   [isVisible]="show"
   [modalClass]="'col-12'"
   [modalDialogClass]="' mx-auto col-12  vh-min-100 p-0'"
-  [modalContentClass]="'mx-auto col-12  rounded-5 p-0 border-0 p-3 vh-max-85 vh-min-40 overflow-y-auto'"
+  [modalContentClass]="
+    'mx-auto col-12  rounded-5 p-0 border-0 p-3 vh-max-85 vh-min-40 overflow-y-auto'
+  "
 >
   <app-loader
     [containerClass]="'vh-min-40'"
@@ -16,14 +18,12 @@
 
   <div
     class="h-100 d-flex justify-content-center align-items-center"
-    *ngIf="!isLoading && lists.length==0"
+    *ngIf="!isLoading && lists.length == 0"
   >
     <div class="empty-content">
       <div class="empty-icon">💝</div>
       <h3>No wishlists yet</h3>
-      <p>
-        Create your first wishlist to start saving your favorite properties
-      </p>
+      <p>Create your first wishlist to start saving your favorite properties</p>
       <!-- <button class="create-btn">Create Wishlist</button> -->
     </div>
   </div>
@@ -38,10 +38,11 @@
             class="wishlist-image rounded-4"
             [src]="getPropertyImage(item.coverImageUrl)"
             alt=""
+            loading="lazy"
           />
-          <p class="my-0 ms-1 mt-1 fw-bold small">{{item.name}}</p>
+          <p class="my-0 ms-1 mt-1 fw-bold small">{{ item.name }}</p>
           <p class="secondary-text small ms-1 my-0">
-            {{item.propertyIds.length}} saved
+            {{ item.propertyIds.length }} saved
           </p>
         </button>
       </div>
@@ -80,7 +81,9 @@
         id="name"
         class="form-control"
         formControlName="name"
-        [ngClass]="{'is-invalid': form.get('name')?.touched && form.get('name')?.invalid}"
+        [ngClass]="{
+          'is-invalid': form.get('name')?.touched && form.get('name')?.invalid
+        }"
       />
       <div
         class="invalid-feedback"
@@ -99,11 +102,13 @@
           formControlName="note"
           maxlength="250"
           rows="3"
-          [ngClass]="{'is-invalid': form.get('note')?.touched && form.get('note')?.invalid}"
+          [ngClass]="{
+            'is-invalid': form.get('note')?.touched && form.get('note')?.invalid
+          }"
         >
         </textarea>
         <span class="ms-auto note-maxLength"
-          >{{form.get("note")?.value?.length ??0}}/250</span
+          >{{ form.get("note")?.value?.length ?? 0 }}/250</span
         >
       </div>
       <div
