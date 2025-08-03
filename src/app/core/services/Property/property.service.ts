@@ -8,6 +8,7 @@ import { PropertyImage } from '../../models/PropertyImage';
 import { HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs';
 import { PropertyDisplayWithHostDataDto ,PropertyDisplayDTO as PropertyDisplayDtoFromModels} from '../../../pages/add-property/models/property.model';
+import { PropertyDisplayDTO as PropDisplayFromModelsTrueOne } from '../../models/PropertyDisplayDTO';
 
 
 interface ApiResponse<T> {
@@ -120,8 +121,8 @@ export class PropertyService {
         return this.http.get<Result<PropertyDisplayWithHostDataDto[]>>(`${this.baseUrl}/dashboard`).pipe(map(res=>res.data));
     }
   
-  getByIdWithCover(propId:number):Observable<PropertyDisplayDtoFromModels>{
-    return this.http.get<Result<PropertyDisplayDtoFromModels>>(`${this.baseUrl}/cover/${propId}`)
+  getByIdWithCover(propId:number):Observable<PropDisplayFromModelsTrueOne>{
+    return this.http.get<Result<PropDisplayFromModelsTrueOne>>(`${this.baseUrl}/cover/${propId}`)
                         .pipe(map(res=> res.data))
   }
   getImagesByPropertyId(id: number): Observable<PropertyImage[]> {
