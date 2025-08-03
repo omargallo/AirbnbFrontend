@@ -1,27 +1,48 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { PropertyDisplayDTO } from '../../../../../../core/models/PropertyDisplayDTO';
+import { PropertyDisplayWithHostDataDto } from '../../../../../add-property/models/property.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-property-activate-modal',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './property-activate-modal.html',
   styleUrl: './property-activate-modal.css'
 })
 export class PropertyActivateModal implements OnInit{
 
-  @Input()  currentProperty!: PropertyDisplayDTO | null ;
+  @Input()  currentProperty!: PropertyDisplayWithHostDataDto| null ;
+  @Output() confirm= new EventEmitter<boolean>()
+  @Output() close= new EventEmitter<boolean>()
+
+  imageUrl:string =""
   newStatus = false;
 
 
 
   ngOnInit(){
-
+    console.log("from ActivateModal OnInit")
     if(this.currentProperty)
+    {
       this.newStatus = this.currentProperty?.isActive 
+      if(this.currentProperty.images && this.currentProperty.images.length > 0)
+        this.imageUrl = this.currentProperty.images[0].imageUrl
+    } 
   }
 
+  ngOnChanges(changes:SimpleChanges){
+    console.log("changes",changes)
+  }
   toggleStatus() {
       this.newStatus = !this.newStatus;
   }
 
+
+  onConfirm(){
+    this.confirm.emit()
+  }
+  
+  onClose(){
+    this.close.emit()
+  }
 }

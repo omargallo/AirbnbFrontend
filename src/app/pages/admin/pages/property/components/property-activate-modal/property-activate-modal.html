@@ -1,5 +1,11 @@
     <!-- Status Management Modal -->
-    <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div 
+        class="modal show"
+        style="display: block;" 
+        id="statusModal" 
+        
+        
+        >
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content property-modal">
                 <div class="modal-header">
@@ -7,55 +13,117 @@
                         <i class="fas fa-toggle-on me-2 icon-bounce"></i>
                         Property Status Management
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" ></button>
                 </div>
                 <div class="modal-body">
                     <!-- Property Info Card -->
                     <div class="property-card">
                         <div class="d-flex align-items-center mb-3">
-                            <img id="modalPropertyImage" src="" class="property-image" alt="Property">
+                            <img 
+                                *ngIf="imageUrl"
+                                id="modalPropertyImage" 
+                                [src]="imageUrl" 
+                                class="property-image" 
+                                alt="Property">
                             <div>
-                                <h6 class="mb-1" id="modalPropertyName"></h6>
-                                <p class="text-muted mb-1" id="modalPropertyId"></p>
-                                <p class="text-muted mb-0"><i class="fas fa-map-marker-alt me-1"></i><span id="modalPropertyLocation"></span></p>
+                                <h6 
+                                    class="mb-1" 
+                                    id="modalPropertyName">{{currentProperty?.title}}</h6>
+                                <p 
+                                    class="text-muted mb-1" 
+                                    id="modalPropertyId">{{currentProperty?.id}}
+                                </p>
+                                <p 
+                                    class="text-muted mb-0">
+                                    <i class="fas fa-map-marker-alt me-1">
+                                    </i>
+                                    <span id="modalPropertyLocation">
+                                    </span>
+                                </p>
+
                             </div>
                             <div class="ms-auto text-end">
-                                <h5 class="text-primary mb-0" id="modalPropertyPrice"></h5>
+                                <h5 
+                                    class="text-primary mb-0" 
+                                    id="modalPropertyPrice">{{currentProperty?.price}}
+                                </h5>
                                 <small class="text-muted">per night</small>
                             </div>
                         </div>
                     </div>
 
                     <!-- Current Status Display -->
-                    <div class="text-center">
+                    <div 
+                        class="text-center">
                         <h6 class="mb-3">Current Status</h6>
                         <div class="d-flex align-items-center justify-content-center mb-3">
-                            <span class="status-text text-inactive" id="inactiveText">Inactive</span>
-                            <div class="custom-toggle" id="statusToggle" onclick="toggleStatus()">
+                            <span 
+                                class="status-text text-inactive" 
+                                id="inactiveText"
+                                >Inactive</span>
+                            <div 
+                                class="custom-toggle" 
+                                id="statusToggle" 
+                                (click)="toggleStatus()"
+                            >
                                 <div class="toggle-slider"></div>
+                            
                             </div>
-                            <span class="status-text text-active" id="activeText">Active</span>
+                            <span 
+                                class="status-text text-active"
+                                id="activeText"
+                            >Active</span>
                         </div>
-                        <p class="text-muted" id="statusDescription"></p>
+                        <p 
+                            class="text-muted" 
+                            id="statusDescription"
+                        ></p>
                     </div>
 
                     <!-- Impact Warning -->
-                    <div class="impact-warning" id="impactWarning">
-                        <div class="d-flex align-items-center">
+                    <div 
+                        class="impact-warning" 
+                        id="impactWarning">
+                        <div 
+                            class="d-flex align-items-center"
+                            >
                             <i class="fas fa-exclamation-triangle text-warning me-2"></i>
                             <div>
                                 <strong>Status Change Impact</strong>
-                                <p class="mb-0 mt-1" id="impactText"></p>
+                                <p 
+                                    class="mb-0 mt-1" 
+                                    id="impactText"
+                                >
+                                    <span 
+                                        *ngIf="newStatus"
+                                    >
+                                        Property will be visible to guests and accepting new bookings.
+                                    </span>
+                                    <span 
+                                        *ngIf="!newStatus"
+                                    >
+                                        Property will be hidden from search results and stop accepting new bookings.
+                                    </span>
+                                </p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Action Buttons -->
                     <div class="action-buttons">
-                        <button type="button" class="btn-cancel" data-bs-dismiss="modal">
+                        <button 
+                                type="button" 
+                                class="btn-cancel"
+                                (click)="onClose()"
+                                >
                             <i class="fas fa-times me-2"></i>Cancel
                         </button>
-                        <button type="button" class="btn-confirm" id="confirmBtn" onclick="confirmStatusChange()">
+                        <button 
+                            *ngIf="newStatus != currentProperty?.isActive"
+                            type="button"
+                            class="btn-confirm"
+                            id="confirmBtn"
+                            onclick="confirmStatusChange()">
                             <i class="fas fa-check me-2"></i>Confirm Changes
                         </button>
                     </div>
@@ -78,4 +146,9 @@
                 Property status updated successfully!
             </div>
         </div>
+    </div>
+
+
+    <div class="bg-danger">
+        dsiaopfhdiousajfiodsa fdoishjaf
     </div>

@@ -173,4 +173,11 @@
 
 
 
-<app-property-activate-modal [currentProperty]="selectedProperty"></app-property-activate-modal>
+<app-property-activate-modal 
+    *ngIf="showActivationModal"
+    [currentProperty]="seletctedPropertyForActivateStatus"
+    (confirm)="onActivationSatusConfirm($event)"
+    (close)="onHideActivationStatusModal()"
+    >
+
+</app-property-activate-modal>

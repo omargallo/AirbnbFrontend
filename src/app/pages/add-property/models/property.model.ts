@@ -60,6 +60,7 @@ export interface PropertyDisplayDTO {
     country?:string
     city?:string
     averageRating:number
+    isActive:boolean
 
 }
 
