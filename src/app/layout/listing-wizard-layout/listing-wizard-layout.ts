@@ -56,9 +56,9 @@ export class ListingWizardLayoutComponent {
     'step3-2-pick-booking',
     'step3-3-choose-welcome',
     'step3-4-1-pricing',
-    'step3-4-2-pricing-tax',
-    'step3-5-add-discount',
-    'step3-6-safety'
+    // 'step3-4-2-pricing-tax',
+    // 'step3-5-add-discount',
+    // 'step3-6-safety'
   ];
 
   constructor(

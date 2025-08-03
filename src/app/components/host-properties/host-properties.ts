@@ -1,7 +1,7 @@
 import { AuthService } from './../../core/services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { HostPropertiesService } from '../../core/services/Property/HostPropertiesService';
+import { HostPropertiesService, PropertyAcceptStatus } from '../../core/services/Property/HostPropertiesService';
 import { PropertyDisplayDTO } from '../../core/services/Property/HostPropertiesService';
 import { environment } from '../../../environments/environment.development';
 import { CommonModule } from '@angular/common';
@@ -46,8 +46,6 @@ export class HostProperties implements OnInit {
 
     this.hostPropertiesService.getPropertiesByHostId(this.hostId).subscribe({
       next: (properties) => {
-
-        
         this.properties = properties;
         console.log(properties)
         this.isLoading = false;
@@ -81,17 +79,21 @@ export class HostProperties implements OnInit {
     this.router.navigate(['/propertybookings', propertyId.toString()]);
   }
 
-  getStatusLabel(status: string): string {
+  getStatusLabel(status: PropertyAcceptStatus): string {
     switch (status) {
-      case 'action_required':
-        return 'Action required';
-      case 'in_progress':
-        return 'In progress';
-      case 'active':
-        return 'Active';
+      case PropertyAcceptStatus.Pending:
+        return 'Pending';
+      case PropertyAcceptStatus.Accepted:
+        return 'Accepted';
+      case PropertyAcceptStatus.Rejected:
+        return 'Rejected';
       default:
         return 'Unknown';
     }
+  }
+
+  getActiveStatusLabel(isActive: boolean): string {
+    return isActive ? 'Active' : 'Inactive';
   }
 
   getCoverImageUrl(property: PropertyDisplayDTO): string {
