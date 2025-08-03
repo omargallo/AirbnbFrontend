@@ -463,18 +463,18 @@ export class PropertyService {
       .get<Result<PropertyDisplayWithHostDataDto>>(
         `${this.baseUrl}/cover/${propId}`
       )
-      .pipe(map((res) => res.data));
+      .pipe(map((res) => res.data));}
 /**
  * Toggle amenity for a property (add/remove)
  * Fixed the typo in the endpoint URL
  */
-togglePropertyAmenity(amenityId: number, propertyId: number): Observable<Result<boolean>> {
-  return this.http.post<Result<boolean>>(
-    `${environment.baseUrl}/Amenity/assign/${amenityId}/porperty/${propertyId}`, // FIXED: 'porperty' to match backend typo
-    {}, 
-    { withCredentials: true }
-  );
-}
+// togglePropertyAmenity(amenityId: number, propertyId: number): Observable<Result<boolean>> {
+//   return this.http.post<Result<boolean>>(
+//     `${environment.baseUrl}/Amenity/assign/${amenityId}/porperty/${propertyId}`, // FIXED: 'porperty' to match backend typo
+//     {},
+//     { withCredentials: true }
+//   );
+// }
 
 
   deactivate(propertyId:number):Observable<Result<string>>{
@@ -486,3 +486,4 @@ togglePropertyAmenity(amenityId: number, propertyId: number): Observable<Result<
           .put<Result<string>>(this.baseUrl+"/activate/"+propertyId,{})
   }
 }
+
