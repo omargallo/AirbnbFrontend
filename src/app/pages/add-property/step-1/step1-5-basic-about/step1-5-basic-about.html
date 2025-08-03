@@ -27,6 +27,7 @@
             class="control-button"
             aria-label="Increase guests"
             (click)="increaseCounter('guests')"
+            [disabled]="guests >= maxGuests"
           >
             <svg viewBox="0 0 12 12"><path d="m6.75.75v4.5h4.5v1.5h-4.5v4.5h-1.5v-4.5h-4.5v-1.5h4.5v-4.5z"></path></svg>
           </button>
@@ -52,6 +53,7 @@
             class="control-button"
             aria-label="Increase bedrooms"
             (click)="increaseCounter('bedrooms')"
+            [disabled]="bedrooms >= maxBedrooms"
           >
             <svg viewBox="0 0 12 12"><path d="m6.75.75v4.5h4.5v1.5h-4.5v4.5h-1.5v-4.5h-4.5v-1.5h4.5v-4.5z"></path></svg>
           </button>
@@ -77,6 +79,7 @@
             class="control-button"
             aria-label="Increase beds"
             (click)="increaseCounter('beds')"
+            [disabled]="beds >= maxBeds"
           >
             <svg viewBox="0 0 12 12"><path d="m6.75.75v4.5h4.5v1.5h-4.5v4.5h-1.5v-4.5h-4.5v-1.5h4.5v-4.5z"></path></svg>
           </button>
@@ -102,6 +105,7 @@
             class="control-button"
             aria-label="Increase bathrooms"
             (click)="increaseCounter('bathrooms')"
+            [disabled]="bathrooms >= maxBathrooms"
           >
             <svg viewBox="0 0 12 12"><path d="m6.75.75v4.5h4.5v1.5h-4.5v4.5h-1.5v-4.5h-4.5v-1.5h4.5v-4.5z"></path></svg>
           </button>
