@@ -32,7 +32,9 @@ export class AuthService {
 
     const rolesJson = this.cookieService.get(this.roleKey);
     if (rolesJson) {
-      const roles = JSON.parse(rolesJson);
+      const decodedRoles = decodeURIComponent(rolesJson)
+      const roles = JSON.parse(decodedRoles);
+      
       this.roleSubject.next(roles);
     }
   }
@@ -79,7 +81,8 @@ export class AuthService {
 
   get role(): string[] {
     const rolesJson = this.cookieService.get(this.roleKey);
-    return rolesJson ? JSON.parse(rolesJson) : [];
+    const decodedRoles = decodeURIComponent(rolesJson)
+    return rolesJson ? JSON.parse(decodedRoles) : [];
   }
 
   get accessToken$() {
