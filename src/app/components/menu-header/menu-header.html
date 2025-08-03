@@ -77,7 +77,7 @@
           {{ "HEADER.NAV.LISTINGS" | translate }}
         </a>
       </li>
-      <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
+      <!-- <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
         <a
           class="dropdown-item d-flex align-items-center gap-2"
           routerLink="/hostsettings/Messages"
@@ -85,7 +85,7 @@
           <i class="bi bi-chat-dots"></i>
           {{ "HEADER.NAV.MESSAGES" | translate }}
         </a>
-      </li>
+      </li> -->
       <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
         <a
           class="dropdown-item d-flex align-items-center gap-2"
@@ -103,20 +103,20 @@
           routerLink="/notifications"
         >
           <div class="position-relative">
+            <i class="bi bi-bell"></i>
             <span
               *ngIf="unreadCountNotifications > 0"
-              class="position-absolute badge rounded-pill bg-danger"
+              class="position-absolute badge rounded-pill span-bg-n"
               [ngStyle]="{
-                top: '-20px',
-                right: lang.currentLang === 'en' ? '-12px' : null,
-                left: lang.currentLang === 'ar' ? '-12px' : null
+                top: '-9px',
+                right: lang.currentLang === 'en' ? '5px' : null,
+                left: lang.currentLang === 'ar' ? '5px' : null
               }"
             >
               {{ unreadCountNotifications }}
               <span class="visually-hidden">unread notifications </span>
             </span>
           </div>
-          <i class="bi bi-bell"></i>
           {{ "HEADER.notifications" | translate }}
         </a>
       </li>
@@ -178,7 +178,7 @@
             <i class="bi bi-chat"></i>
             <span
               *ngIf="unreadCount > 0"
-              class="position-absolute badge rounded-pill bg-danger"
+              class="position-absolute badge rounded-pill span-bg-n"
               [ngStyle]="{
                 top: '-12px',
                 left: lang.currentLang === 'en' ? '-12px' : null,
@@ -205,8 +205,8 @@
         <i class="bi" [ngClass]="isDarkMode ? 'bi-sun' : 'bi-moon'"></i>
         {{
           isDarkMode
-            ? ("HEADER.DARK_MODE" | translate)
-            : ("HEADER.LIGHT_MODE" | translate)
+            ? ("HEADER.LIGHT_MODE" | translate)
+            : ("HEADER.DARK_MODE" | translate)
         }}
       </li>
 

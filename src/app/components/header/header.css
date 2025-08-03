@@ -126,7 +126,10 @@
   box-shadow: 0 2px 8px var(--shadow-color);
 } */
 
-
+.span-bg-n {
+  background-color: var(--airbnb-red);
+  color: white;
+}
 
 @media (max-width: 991.98px) {
   .top-nav-categories,

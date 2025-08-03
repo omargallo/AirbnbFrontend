@@ -11,7 +11,7 @@ export class NotificationService implements OnDestroy {
   private baseUrl = `${environment.baseUrl}/Notification`;
   private HubUrl = `${environment.base}/notificationHub`;
 
-  private notificationSubject = new Subject<Notification | string>();
+  private notificationSubject = new Subject<Notification>();
   public newNotification$ = this.notificationSubject.asObservable();
 
   constructor(private http: HttpClient) {}
@@ -29,12 +29,24 @@ export class NotificationService implements OnDestroy {
 
     this.hubConnection
       .start()
-      .then(() => console.log('✅ SignalR connected.'))
+      .then(() => console.log('SignalR connected.'))
       .catch((err) => console.error('Error:', err));
 
-    this.hubConnection.on('ReceiveNotification', (message: string) => {
-      console.log('Notification Received:', message);
-      this.notificationSubject.next(message);
+    this.hubConnection.on('ReceiveNotification', (notification: Notification) => {
+      console.log('Notification Received:', notification);
+      this.notificationSubject.next(notification);
+    });
+
+    this.hubConnection.onclose((error) => {
+      console.log('SignalR connection closed:', error);
+    });
+
+    this.hubConnection.onreconnecting((error) => {
+      console.log('SignalR reconnecting:', error);
+    });
+
+    this.hubConnection.onreconnected((connectionId) => {
+      console.log('SignalR reconnected:', connectionId);
     });
   }
 
@@ -53,7 +65,7 @@ export class NotificationService implements OnDestroy {
         if (!response.isSuccess || !response.data) {
           throw new Error(response.message || 'Failed to create notification');
         }
-        return response;
+        return response.data;
       })
     );
   }
