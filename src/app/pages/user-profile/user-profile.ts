@@ -37,7 +37,6 @@ register();
     PropertImageGalaryComponent,
     PropertySwiperComponent,
     ProfileCard,
-
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './user-profile.html',

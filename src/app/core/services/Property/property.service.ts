@@ -8,11 +8,10 @@ import { PropertyImage } from '../../models/PropertyImage';
 import { HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs';
 
-import {
-  PropertyDisplayWithHostDataDto,
-  PropertyDisplayDTO as PropertyDisplayDtoFromModels,
-} from '../../../pages/add-property/models/property.model';
+import { PropertyDisplayWithHostDataDto ,PropertyDisplayDTO as PropertyDisplayDtoFromModels} from '../../../pages/add-property/models/property.model';
 import { PropertyDisplayDTO as PropDisplayFromModelsTrueOne } from '../../models/PropertyDisplayDTO';
+
+
 
 interface ApiResponse<T> {
   data: T;
@@ -137,14 +136,9 @@ export class PropertyService {
       )
       .pipe(map((res) => res.data));
   }
-  getByIdWithCoverFor3ssam(
-    propId: number
-  ): Observable<PropDisplayFromModelsTrueOne> {
-    return this.http
-      .get<Result<PropDisplayFromModelsTrueOne>>(
-        `${this.baseUrl}/cover/${propId}`
-      )
-      .pipe(map((res) => res.data));
+  getByIdWithCoverFor3ssam(propId:number):Observable<PropDisplayFromModelsTrueOne>{
+    return this.http.get<Result<PropDisplayFromModelsTrueOne>>(`${this.baseUrl}/cover/${propId}`)
+                        .pipe(map(res=> res.data))
   }
   getImagesByPropertyId(id: number): Observable<PropertyImage[]> {
     return this.http
@@ -444,6 +438,11 @@ export class PropertyService {
       .pipe(map((response) => response.data));
   }
 
+
+  /**
+   * Toggle amenity for a property (add/remove)
+   * Fixed the typo in the endpoint URL
+   */
   togglePropertyAmenity(
     amenityId: number,
     propertyId: number
@@ -455,16 +454,35 @@ export class PropertyService {
     );
   }
 
-  deactivate(propertyId: number): Observable<Result<string>> {
-    return this.http.put<Result<string>>(
-      this.baseUrl + '/deactivate/' + propertyId,
-      {}
-    );
+  //for reviews
+
+  getPropertyWithHostData(
+    propId: number
+  ): Observable<PropertyDisplayWithHostDataDto> {
+    return this.http
+      .get<Result<PropertyDisplayWithHostDataDto>>(
+        `${this.baseUrl}/cover/${propId}`
+      )
+      .pipe(map((res) => res.data));
+/**
+ * Toggle amenity for a property (add/remove)
+ * Fixed the typo in the endpoint URL
+ */
+togglePropertyAmenity(amenityId: number, propertyId: number): Observable<Result<boolean>> {
+  return this.http.post<Result<boolean>>(
+    `${environment.baseUrl}/Amenity/assign/${amenityId}/porperty/${propertyId}`, // FIXED: 'porperty' to match backend typo
+    {}, 
+    { withCredentials: true }
+  );
+}
+
+
+  deactivate(propertyId:number):Observable<Result<string>>{
+    return this.http
+          .put<Result<string>>(this.baseUrl+"/deactivate/"+propertyId,{})
   }
-  activate(propertyId: number): Observable<Result<string>> {
-    return this.http.put<Result<string>>(
-      this.baseUrl + '/activate/' + propertyId,
-      {}
-    );
+  activate(propertyId:number):Observable<Result<string>>{
+    return this.http
+          .put<Result<string>>(this.baseUrl+"/activate/"+propertyId,{})
   }
 }
