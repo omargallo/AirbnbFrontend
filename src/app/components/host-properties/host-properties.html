@@ -74,6 +74,25 @@
           {{ property.country }}
         </p>
 
+        <!-- Status Information -->
+        <div class="property-status">
+          <span
+            class="status-badge"
+            [class.active]="property.isActive"
+            [class.inactive]="!property.isActive"
+          >
+            {{ getActiveStatusLabel(property.isActive) }}
+          </span>
+          <span
+            class="approval-status-badge"
+            [class.pending]="property.status === 1"
+            [class.accepted]="property.status === 2"
+            [class.rejected]="property.status === 3"
+          >
+            {{ getStatusLabel(property.status) }}
+          </span>
+        </div>
+
         <!-- Navigation Buttons -->
         <div class="property-actions">
           <button
@@ -108,7 +127,8 @@
         <th>Listing</th>
         <th>Type</th>
         <th>Location</th>
-        <th>Status</th>
+        <th>Active Status</th>
+        <th>Approval Status</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -145,7 +165,17 @@
             [class.active]="property.isActive"
             [class.inactive]="!property.isActive"
           >
-            {{ property.isActive ? "Active" : "Inactive" }}
+            {{ getActiveStatusLabel(property.isActive) }}
+          </span>
+        </td>
+        <td>
+          <span
+            class="approval-status-badge"
+            [class.pending]="property.status === 1"
+            [class.accepted]="property.status === 2"
+            [class.rejected]="property.status === 3"
+          >
+            {{ getStatusLabel(property.status) }}
           </span>
         </td>
         <td>
@@ -182,3 +212,4 @@
     </button>
   </div>
 </div>
+

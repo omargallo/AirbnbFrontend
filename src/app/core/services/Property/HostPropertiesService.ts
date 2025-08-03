@@ -13,6 +13,25 @@ export interface PropertyImageDisplayDTO {
   isDeleted: boolean;
 }
 
+export interface UserProfileDto {
+  userId: string | null;
+  userName: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  bio: string;
+  birthDate: string;
+  country: string;
+  profilePictureURL: string | null;
+}
+
+export enum PropertyAcceptStatus {
+  Pending = 1,
+  Accepted = 2,
+  Rejected = 3
+}
+
 export interface PropertyDisplayDTO {
   id: number;
   title: string;
@@ -23,17 +42,21 @@ export interface PropertyDisplayDTO {
   latitude: number;
   longitude: number;
   pricePerNight: number;
+  weekendPrice: number;
   maxGuests: number;
   bedrooms: number;
   beds: number;
   bathrooms: number;
   averageRating: number;
   reviewCount: number;
+  isFavourite: boolean;
   isActive: boolean;
   isDeleted: boolean;
+  status: PropertyAcceptStatus;
   propertyTypeId: number;
   hostId: string;
   images?: PropertyImageDisplayDTO[];
+  host: UserProfileDto;
 }
 
 interface ApiResponse<T> {
@@ -53,10 +76,7 @@ export class HostPropertiesService {
 
   getPropertiesByHostId(hostId: string): Observable<PropertyDisplayDTO[]> {
     return this.http
-      .get<ApiResponse<PropertyDisplayDTO[]>>(`${this.apiUrl}/host/cover/${hostId}`)
+      .get<ApiResponse<PropertyDisplayDTO[]>>(`${this.apiUrl}/host/listings/${hostId}`)
       .pipe(map(response => response.data));
   }
-
-
-
 }
