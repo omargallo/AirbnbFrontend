@@ -214,7 +214,7 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
       next: (property: Property) => {
         this.property = property;
         this.maxGuests = property.maxGuests;
-        console.log("fetched property",property)
+        console.log("fetched property", property)
         this.pricePerNight = property.pricePerNight
         this.totalPrice = this.pricePerNight
         console.log("price per neight ", this.pricePerNight) // ✅ update maxGuests from backend
@@ -679,8 +679,13 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
 
     const start = dayjs(this.selected.startDate);
     const end = dayjs(this.selected.endDate);
+
     const numberOfNights = end.diff(start, 'day');
     this.nightsCount = numberOfNights;
+
+    console.log(`📅 Check-in: ${start.format('YYYY-MM-DD')}`);
+    console.log(`📅 Check-out: ${end.format('YYYY-MM-DD')}`);
+    console.log(`🌙 Number of nights: ${numberOfNights}`);
 
     if (numberOfNights <= 0) {
       this.totalPrice = 0;
@@ -689,31 +694,21 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
 
     let totalNightly = 0;
 
-    for (let d = start; d.isBefore(end); d = d.add(1, 'day')) {
-      const key = d.toISOString().slice(0, 19);
-      const priceForDay = this.dateMap.get(key)?.price ?? this.pricePerNight;
-      totalNightly += priceForDay;
-
-      console.log(`Date: ${key}, Price: ${priceForDay}`);
-    }
-
-    for (let d = start; d.isBefore(end); d = d.add(1, 'day')) {
-      const key = d.format('YYYY-MM-DD');
+    let currentDate = start.clone();
+    for (let i = 0; i < numberOfNights; i++) {
+      const key = currentDate.format('YYYY-MM-DD');
       const availabilityItem = this.dateMap.get(key);
       const priceForDay = availabilityItem?.price ?? this.pricePerNight;
       totalNightly += priceForDay;
 
-      console.log(`Date: ${key}`);
-      console.log(`Found in dateMap: ${!!availabilityItem}`);
-      console.log(`Special price: ${availabilityItem?.price}`);
-      console.log(`Final price used: ${priceForDay}`);
-      console.log('---');
+      console.log(`🗓️ Adding price for day: ${key} = ${priceForDay} EGP`);
+
+      currentDate = currentDate.add(1, 'day');
     }
 
     this.totalPrice = totalNightly;
-    console.log(`💰 Total price calculated: ${this.totalPrice}`);
+    console.log(`💰 Total price: ${this.totalPrice} EGP for ${numberOfNights} day(s)`);
   }
-
 
   get totalGuests(): string {
     const total = this.guests.adults + this.guests.children;
@@ -785,7 +780,7 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
   //     console.log("booking result", bookingRes);
 
   //     const bookingId = bookingRes.data;
-  //     // const totalAmount = bookingRes.data.totalPrice;  
+  //     // const totalAmount = bookingRes.data.totalPrice;
   //     let createPaymentDto: CreatePaymentDTO = {
   //       bookingId: bookingId,
   //       amount: 0
@@ -889,9 +884,9 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
   // reserveFunction() :void{
   //       let userId=this.auth.userId;
 
-  //     if (!this.auth.accessToken || !userId ) 
+  //     if (!this.auth.accessToken || !userId )
   //       {
-  //         console.log("User not logged in. Opening login dialog..."); 
+  //         console.log("User not logged in. Opening login dialog...");
   //         // this.dialogService.openDialog('login');
   //         return;
   //       }
