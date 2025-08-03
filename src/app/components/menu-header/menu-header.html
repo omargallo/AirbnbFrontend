@@ -1,5 +1,5 @@
 <div class="d-flex align-items-center position-relative">
-  <a class="switch-to-hosting-btn" (click)="switchMode()">
+  <a *ngIf="isLoggedIn" class="switch-to-hosting-btn" (click)="switchMode()">
     {{
       currentRoute.includes("/host")
         ? ("HEADER.SWITCH_TO_TRAVELLER" | translate)
