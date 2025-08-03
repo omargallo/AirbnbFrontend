@@ -109,6 +109,7 @@ export class BookingCalendarComponent implements OnInit, AfterViewInit {
 
   totalPrice!: number;
   munavailableDates: string[] = [];
+  private calendarObserver?: MutationObserver;
 
   ngOnInit(): void {
     this.commonService.clear$.subscribe(() => this.clear());
@@ -118,6 +119,10 @@ export class BookingCalendarComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.addPricesToCalendar();
+      this.setupCalendarObserver();
+
+      // Debug information
+      this.debugCalendarData();
     }, 1000);
   }
 
@@ -143,53 +148,187 @@ export class BookingCalendarComponent implements OnInit, AfterViewInit {
     }
 
     if (changes['dateMap'] && this.dateMap) {
+      console.log('DateMap changed, updating prices');
       setTimeout(() => {
         this.addPricesToCalendar();
-      }, 500);
+      }, 200);
     }
   }
 
   addPricesToCalendar(): void {
     if (!this.dateMap) return;
 
+    setTimeout(() => {
+      const calendarElement = this.elementRef.nativeElement.querySelector('.md-drppicker');
+      if (!calendarElement) {
+        console.warn('Calendar element not found');
+        return;
+      }
+
+      const dateCells = calendarElement.querySelectorAll('td.available');
+      console.log(`Found ${dateCells.length} available date cells`);
+
+      dateCells.forEach((cell: HTMLElement) => {
+        try {
+          const existingPrice = cell.querySelector('.date-price');
+          if (existingPrice) {
+            existingPrice.remove();
+          }
+
+          const dayText = cell.textContent?.trim();
+          if (!dayText || isNaN(parseInt(dayText))) return;
+
+          const calendarTable = cell.closest('table.table-condensed');
+          if (!calendarTable) return;
+
+          const monthHeader = calendarTable.querySelector('th.month');
+          if (!monthHeader) return;
+
+          const monthText = monthHeader.textContent?.trim();
+          if (!monthText) return;
+
+          let monthDate;
+          try {
+            monthDate = moment(monthText, ['MMMM YYYY', 'MMM YYYY']);
+            if (!monthDate.isValid()) {
+              console.warn(`Invalid month format: ${monthText}`);
+              return;
+            }
+          } catch (error) {
+            console.error(`Error parsing month: ${monthText}`, error);
+            return;
+          }
+
+          const fullDate = monthDate.clone().date(parseInt(dayText));
+          const dateKey = fullDate.format('YYYY-MM-DD');
+
+          console.log(`Processing date: ${dateKey}`);
+
+          const availabilityData = this.dateMap!.get(dateKey);
+
+          let price: number;
+          let isSpecialPrice = false;
+
+          if (availabilityData?.price) {
+            price = availabilityData.price;
+            isSpecialPrice = availabilityData.price !== this.defaultPricePerNight;
+          } else {
+            price = this.defaultPricePerNight || 0;
+          }
+
+          if (price > 0) {
+            const priceElement = document.createElement('div');
+            priceElement.className = 'date-price';
+            priceElement.textContent = `$${price}`;
+
+            if (isSpecialPrice) {
+              priceElement.classList.add('special-price');
+            }
+
+            cell.appendChild(priceElement);
+
+            console.log(`Added price ${price} for date ${dateKey} (special: ${isSpecialPrice})`);
+          }
+
+        } catch (error) {
+          console.error('Error processing calendar cell:', error);
+        }
+      });
+    }, 100);
+  }
+
+  private reapplyPrices(): void {
+    setTimeout(() => {
+      this.addPricesToCalendar();
+    }, 50);
+  }
+
+  private debugCalendarData(): void {
+    console.log('=== Calendar Debug Info ===');
+    console.log('DateMap size:', this.dateMap?.size);
+    console.log('Default price per night:', this.defaultPricePerNight);
+
+    if (this.dateMap) {
+      let count = 0;
+      for (const [key, value] of this.dateMap.entries()) {
+        if (count < 10) {
+          console.log(`Date: ${key}, Price: ${value.price}, Available: ${value.isAvailable}`);
+          count++;
+        }
+      }
+    }
+
+    const calendarElement = this.elementRef.nativeElement.querySelector('.md-drppicker');
+    if (calendarElement) {
+      const dateCells = calendarElement.querySelectorAll('td.available');
+      console.log('Available date cells found:', dateCells.length);
+
+      const priceElements = calendarElement.querySelectorAll('.date-price');
+      console.log('Price elements found:', priceElements.length);
+    }
+  }
+
+  private clearAllPrices(): void {
+    const calendarElement = this.elementRef.nativeElement.querySelector('.md-drppicker');
+    if (calendarElement) {
+      const priceElements = calendarElement.querySelectorAll('.date-price');
+      // priceElements.forEach(el => el.remove());
+      priceElements.forEach((el: Element) => el.remove());
+    }
+  }
+
+  private setupCalendarObserver(): void {
     const calendarElement = this.elementRef.nativeElement.querySelector('.md-drppicker');
     if (!calendarElement) return;
 
-    const dateCells = calendarElement.querySelectorAll('td.available');
+    this.calendarObserver = new MutationObserver((mutations) => {
+      let shouldUpdatePrices = false;
 
-    dateCells.forEach((cell: HTMLElement) => {
-      const existingPrice = cell.querySelector('.date-price');
-      if (existingPrice) {
-        existingPrice.remove();
-      }
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+          const hasDateChanges = Array.from(mutation.addedNodes).some(node =>
+            node instanceof Element && node.classList.contains('calendar-table')
+          );
 
-      const dayText = cell.textContent?.trim();
-      if (!dayText || isNaN(parseInt(dayText))) return;
-
-      const monthHeader = cell.closest('.calendar-table')?.querySelector('.month');
-      const monthText = monthHeader?.textContent?.trim();
-
-      if (!monthText) return;
-
-      const monthDate = moment(monthText, 'MMMM YYYY');
-      const fullDate = monthDate.clone().date(parseInt(dayText));
-
-      const dateKey = fullDate.format('YYYY-MM-DD');
-      const availabilityData = this.dateMap!.get(dateKey);
-      const price = availabilityData?.price || this.defaultPricePerNight;
-
-      if (price) {
-        const priceElement = document.createElement('div');
-        priceElement.className = 'date-price';
-        priceElement.textContent = `$${price}`;
-
-        if (availabilityData?.price && availabilityData.price !== this.defaultPricePerNight) {
-          priceElement.classList.add('special-price');
+          if (hasDateChanges) {
+            shouldUpdatePrices = true;
+          }
         }
+      });
 
-        cell.appendChild(priceElement);
+      if (shouldUpdatePrices) {
+        setTimeout(() => {
+          this.addPricesToCalendar();
+        }, 100);
       }
     });
+
+    this.calendarObserver.observe(calendarElement, {
+      childList: true,
+      subtree: true
+    });
+
+    const prevButton = calendarElement.querySelector('.prev');
+    const nextButton = calendarElement.querySelector('.next');
+
+    if (prevButton) {
+      prevButton.addEventListener('click', () => {
+        this.reapplyPrices();
+      });
+    }
+
+    if (nextButton) {
+      nextButton.addEventListener('click', () => {
+        this.reapplyPrices();
+      });
+    }
+  }
+
+  public forceUpdatePrices(): void {
+    this.clearAllPrices();
+    setTimeout(() => {
+      this.addPricesToCalendar();
+    }, 100);
   }
 
   onClear() {
@@ -211,13 +350,28 @@ export class BookingCalendarComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // isInvalidDate = (date: dayjs.Dayjs): boolean => {
+  //   if (date.isBefore(dayjs())) return true;
+  //   if (this.dateMap) {
+  //     return !(
+  //       this.dateMap.get(date.toISOString().slice(0, 19))?.isAvailable ?? true
+  //     );
+  //   }
+  //   return false;
+  // };
+
   isInvalidDate = (date: dayjs.Dayjs): boolean => {
-    if (date.isBefore(dayjs())) return true;
+    if (date.isBefore(dayjs(), 'day')) return true;
+
     if (this.dateMap) {
-      return !(
-        this.dateMap.get(date.toISOString().slice(0, 19))?.isAvailable ?? true
-      );
+      const dateKey = date.format('YYYY-MM-DD');
+      const availabilityData = this.dateMap.get(dateKey);
+
+      if (availabilityData && availabilityData.isAvailable === false) {
+        return true;
+      }
     }
+
     return false;
   };
 
@@ -226,9 +380,8 @@ export class BookingCalendarComponent implements OnInit, AfterViewInit {
     if (this.clickedDate) {
       let date;
       for (let i = 1; this.dateMap && i < this.dateMap.size; i++) {
-        date = this.dateMap?.get(
-          dayjs(this.clickedDate).add(i, 'day').toISOString().slice(0, 19)
-        );
+        const nextDate = dayjs(this.clickedDate).add(i, 'day').format('YYYY-MM-DD');
+        date = this.dateMap?.get(nextDate);
 
         if (date && !date.isAvailable) {
           this.firstUnavailableDate = dayjs(date.date);
@@ -236,11 +389,11 @@ export class BookingCalendarComponent implements OnInit, AfterViewInit {
           break;
         }
       }
-    } else this.firstUnavailableDate = undefined;
+    } else {
+      this.firstUnavailableDate = undefined;
+    }
 
-    setTimeout(() => {
-      this.addPricesToCalendar();
-    }, 100);
+    this.reapplyPrices();
   }
 
   onDateRangeSelected(range: { startDate: any; endDate: any }) {
@@ -253,9 +406,7 @@ export class BookingCalendarComponent implements OnInit, AfterViewInit {
   onDatesChanged(range: range) {
     this.datedChange.emit(range);
 
-    setTimeout(() => {
-      this.addPricesToCalendar();
-    }, 100);
+    this.reapplyPrices();
   }
 
   datesUpdated(range: any): void {
@@ -283,5 +434,11 @@ export class BookingCalendarComponent implements OnInit, AfterViewInit {
 
   clearDates(): void {
     this.selectedDateRange = { startDate: dayjs(), endDate: dayjs() };
+  }
+
+  ngOnDestroy(): void {
+    if (this.calendarObserver) {
+      this.calendarObserver.disconnect();
+    }
   }
 }
