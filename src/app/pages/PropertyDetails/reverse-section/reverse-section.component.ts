@@ -214,7 +214,7 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
       next: (property: Property) => {
         this.property = property;
         this.maxGuests = property.maxGuests;
-
+        console.log("fetched property",property)
         this.pricePerNight = property.pricePerNight
         this.totalPrice = this.pricePerNight
         console.log("price per neight ", this.pricePerNight) // ✅ update maxGuests from backend
