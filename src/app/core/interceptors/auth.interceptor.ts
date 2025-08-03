@@ -35,7 +35,6 @@ export class AuthInterceptor implements HttpInterceptor {
       x.subscribe()
     }
 
-    console.log(this.authService.role)
     const accessToken = this.authService.accessToken;
 
     if (accessToken) {
