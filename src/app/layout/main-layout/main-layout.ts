@@ -4,11 +4,10 @@ import { Footer } from '../../components/footer/footer';
 import { HostProperties } from '../../components/host-properties/host-properties';
 import { Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ChatBot } from "../../components/chat-bot/chat-bot";
 
 @Component({
   selector: 'app-main-layout',
-  imports: [HeaderComponent, Footer, RouterOutlet, CommonModule, ChatBot],
+  imports: [HeaderComponent, Footer, RouterOutlet, CommonModule],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
 })

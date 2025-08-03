@@ -15,10 +15,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChatContextService } from '../../core/chatbot/chat-context.service';
 import { environment } from '../../../environments/environment.development';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ChatBot } from "../../components/chat-bot/chat-bot";
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, WishListModal, PropertySwiperComponent, FormsModule, TranslateModule],
+  imports: [CommonModule, WishListModal, PropertySwiperComponent, FormsModule, TranslateModule, ChatBot],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -112,18 +113,18 @@ export class Home implements OnInit, OnDestroy {
         title: this.translate.instant('HOME.SECTIONS.PARIS'),
         search: { country: 'France', city: 'Paris' },
       },
-      {
-        title: this.translate.instant('HOME.SECTIONS.MILAN'),
-        search: { country: 'Italy', city: 'Milan' },
-      },
+      // {
+      //   title: this.translate.instant('HOME.SECTIONS.MILAN'),
+      //   search: { country: 'Italy', city: 'Milan' },
+      // },
       {
         title: this.translate.instant('HOME.SECTIONS.SHEIKH_ZAYED'),
         search: { country: 'Egypt', city: 'Sheikh Zayed City' },
-      },
-      {
-        title: this.translate.instant('HOME.SECTIONS.BARCELONA'),
-        search: { country: 'Spain', city: 'Barcelona' },
-      },
+      }//,
+      // {
+      //   title: this.translate.instant('HOME.SECTIONS.BARCELONA'),
+      //   search: { country: 'Spain', city: 'Barcelona' },
+      // },
     ];
 
     this.sections = this.shuffleArray(this.sections);

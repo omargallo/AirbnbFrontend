@@ -13,78 +13,27 @@
     <!-- Host -->
     <div
       class="d-flex flex-column flex-lg-row gap-4 align-items-start mb-5"
-      style="max-width: 1000px; margin: 0 auto"
+      style="max-width: 1000px; margin: 0"
       *ngIf="canShowProfile"
     >
-      <div
-        class="bg-white rounded-4 p-4 shadow-sm border flex-shrink-0"
-        style="min-width: 400px"
-      >
-        <div class="d-flex flex-column flex-md-row align-items-center gap-4">
-          <div class="flex-shrink-0 text-center">
-            <div class="position-relative d-inline-block mb-3">
-              <img
-                [src]="
-                  userProfile.profilePictureURL || '/assets/default-avatar.png'
-                "
-                [alt]="
-                  (userProfile.firstName || '') +
-                  ' ' +
-                  (userProfile.lastName || '')
-                "
-                class="profile-avatar-img"
-              />
-              <div
-                class="heart-badge"
-                *ngIf="hostStats && hostStats.averageRating >= 4.8"
-              >
-                <i class="fas fa-heart"></i>
-              </div>
-            </div>
-            <h2 class="fs-1 fw-semibold mb-1 text-dark">
-              {{ userProfile.firstName || "Host" }}
-            </h2>
-            <p class="text-muted fs-5 fw-medium mb-0">
-              {{ userProfile.country || "Location not specified" }}
-            </p>
-          </div>
-
-          <div
-            class="flex-fill border-start ps-4"
-            *ngIf="canShowStats && hostStats"
-          >
-            <div class="d-flex flex-column gap-3">
-              <div
-                class="d-flex justify-content-between align-items-center py-2"
-              >
-                <span class="fs-5 text-dark fw-medium">Reviews</span>
-                <span class="fs-5 fw-semibold text-dark">{{
-                  hostStats.totalReviews
-                }}</span>
-              </div>
-              <div
-                class="d-flex justify-content-between align-items-center py-2"
-              >
-                <span class="fs-5 text-dark fw-medium">Rating</span>
-                <span
-                  class="fs-5 fw-semibold text-dark d-flex align-items-center gap-1"
-                >
-                  {{ hostStats.averageRating | number : "1.1-1" }}
-                  <i class="fas fa-star text-danger"></i>
-                </span>
-              </div>
-              <div
-                class="d-flex justify-content-between align-items-center py-2"
-              >
-                <span class="fs-5 text-dark fw-medium">Months hosting</span>
-                <span class="fs-5 fw-semibold text-dark">{{
-                  hostStats.monthsHosting
-                }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Use shared profile card component  -->
+      <app-profile-card
+        *ngIf="canShowProfile"
+        [firstName]="userProfile.user?.firstName || userProfile.firstName"
+        [lastName]="userProfile.user?.lastName || userProfile.lastName"
+        [country]="userProfile.country"
+        [profileImageUrl]="
+          userProfile.user?.profilePictureURL || userProfile.profilePictureURL
+        "
+        [userId]="userProfile.id"
+        [userType]="isHost ? 'Host' : 'Guest'"
+        [stats]="isHost ? hostStats : guestStats"
+        [showHeartBadge]="isHost && hostStats && hostStats.averageRating >= 4.8"
+        [imageBaseUrl]="imageBaseUrl"
+        [imageErrors]="imageErrors"
+        [clickable]="false"
+        [onImageErrorCallback]="onImageError.bind(this)"
+      ></app-profile-card>
 
       <div class="flex-fill ps-lg-3">
         <h3 class="fs-4 fw-semibold text-dark mb-4">
@@ -142,56 +91,89 @@
       </div>
     </div>
 
-    <div class="section-divider"></div>
+    <hr class="my-5" />
 
     <div class="mb-5" *ngIf="canShowReviews && hasHostReviews">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fs-3 fw-bold text-darker mb-0">
+        <h3 class="fs-3 fw-bold text-dark mb-0">
           {{ userProfile.firstName || "Host" }}'s reviews
         </h3>
-        <button
-          class="btn btn-link text-decoration-none p-0 fw-semibold text-darker"
-          (click)="openHostReviewsModal()"
-        >
-          Show all {{ hostReviews.length }} reviews
-          <i class="fas fa-chevron-right ms-1"></i>
-        </button>
+
+        <div class="d-flex align-items-center gap-2">
+          <button
+            class="btn btn-outline-secondary rounded-circle p-2"
+            style="width: 40px; height: 40px"
+            (click)="scrollReviews('left')"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button
+            class="btn btn-outline-secondary rounded-circle p-2"
+            style="width: 40px; height: 40px"
+            (click)="scrollReviews('right')"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
       </div>
 
-      <div class="reviews-scroll-container">
-        <div class="d-flex gap-3 pb-2" style="scroll-behavior: smooth">
+      <div class="overflow-hidden">
+        <div
+          #reviewsContainer
+          class="d-flex gap-3 pb-2 transition-transform"
+          style="scroll-behavior: smooth; transform: translateX(0px)"
+        >
           <div
             class="flex-shrink-0"
             *ngFor="let review of hostReviews.slice(0, 10)"
+            style="width: 220px"
           >
-            <div class="review-card card border shadow-sm h-100">
+            <div class="card border-0 h-100" style="min-height: 240px">
               <div class="card-body p-4">
                 <div class="d-flex align-items-center mb-3">
                   <img
-                    [src]="
-                      review.user?.profilePictureURL ||
-                      '/assets/default-avatar.png'
+                    *ngIf="
+                      review.user?.profilePictureURL &&
+                      !imageErrors.has(review.user.userId)
                     "
+                    [src]="getImageUrl(review.user.profilePictureURL)"
                     [alt]="
                       (review.user?.firstName || '') +
                       ' ' +
                       (review.user?.lastName || '')
                     "
-                    class="avatar-img me-3"
+                    class="rounded-circle me-3"
+                    style="width: 48px; height: 48px; object-fit: cover"
+                    (error)="onImageError($event, review.user)"
                   />
+                  <div
+                    *ngIf="
+                      !review.user?.profilePictureURL ||
+                      imageErrors.has(review.user?.userId)
+                    "
+                    class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3"
+                    style="width: 48px; height: 48px; font-size: 0.9rem"
+                  >
+                    {{
+                      getInitials(
+                        review.user?.firstName || "",
+                        review.user?.lastName || ""
+                      )
+                    }}
+                  </div>
                   <div>
-                    <h6 class="mb-0 fw-semibold text-darker">
+                    <h6 class="mb-0 fw-semibold text-dark">
                       {{ review.user.firstName }}
                     </h6>
-                    <small class="text-muted">{{
-                      review.user.country || formatDate(review.createdAt)
-                    }}</small>
+                    <small class="text-muted">
+                      {{ review.user.country || formatDate(review.createdAt) }}
+                    </small>
                   </div>
                 </div>
 
                 <div class="mb-3">
-                  <div class="d-flex align-items-center gap-1 mb-1">
-                    <span class="star-rating">
+                  <div class="d-flex align-items-center gap-1 mb-2">
+                    <span style="color: #000000">
                       <i
                         *ngFor="let star of getStarArray(review.rating)"
                         class="fas fa-star"
@@ -199,75 +181,116 @@
                       <i
                         *ngFor="let star of getStarArray(5 - review.rating)"
                         class="far fa-star"
+                        style="color: #dee2e6"
                       ></i>
                     </span>
                   </div>
                   <small class="text-muted">{{
-                    formatDate(review.createdAt)
+                    getTimeAgo(review.createdAt)
                   }}</small>
                 </div>
 
                 <p
-                  class="card-text text-darker mb-0"
-                  style="font-size: 0.95rem; line-height: 1.5"
+                  class="text-dark mb-0"
+                  style="font-size: 0.95rem; line-height: 1.6"
                 >
-                  {{ truncateText(review.comment || "", 120) }}
+                  {{ truncateText(review.comment || "", 150) }}
                 </p>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <button
+        class="btn btn-md mt-3 px-4 py-3 fw-medium border shadow-sm rounded-3 show-more-reviews-btn"
+        (click)="openHostReviewsModal()"
+      >
+        Show more reviews
+      </button>
     </div>
 
-    <div
-      class="section-divider"
+    <hr
+      class="my-5"
       *ngIf="canShowReviews && hasHostReviews && hasHostProperties"
-    ></div>
+    />
 
     <div class="mb-5" *ngIf="canShowReviews && hasHostProperties">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fs-3 fw-bold text-darker mb-0">
+        <h3 class="fs-3 fw-bold text-dark mb-0">
           {{ userProfile.firstName || "Host" }}'s listings
         </h3>
-        <button
-          class="btn btn-link text-decoration-none p-0 fw-semibold text-darker"
-          (click)="openHostPropertiesModal()"
-        >
-          Show all {{ uniqueHostProperties.length }} listings
-          <i class="fas fa-chevron-right ms-1"></i>
-        </button>
+        <div class="d-flex align-items-center gap-3">
+          <div class="d-flex align-items-center gap-2">
+            <button
+              class="btn btn-outline-secondary rounded-circle p-2"
+              style="width: 40px; height: 40px"
+              (click)="scrollListings('left')"
+            >
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button
+              class="btn btn-outline-secondary rounded-circle p-2"
+              style="width: 40px; height: 40px"
+              (click)="scrollListings('right')"
+            >
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+          <button
+            class="btn btn-link text-decoration-none p-0 fw-semibold text-dark"
+            (click)="openHostPropertiesModal()"
+          >
+            Show all {{ uniqueHostProperties.length }} listings
+            <i class="fas fa-chevron-right ms-1"></i>
+          </button>
+        </div>
       </div>
 
-      <div class="reviews-scroll-container">
-        <div class="d-flex gap-3 pb-2" style="scroll-behavior: smooth">
+      <div class="overflow-hidden">
+        <div
+          #listingsContainer
+          class="d-flex gap-3 pb-2 transition-transform"
+          style="scroll-behavior: smooth; transform: translateX(0px)"
+        >
           <div
             class="flex-shrink-0"
             *ngFor="let property of uniqueHostProperties.slice(0, 8)"
           >
             <div
-              class="listing-card card border shadow-sm h-100 cursor-pointer"
+              class="card border shadow-sm h-100"
+              style="width: 240px; cursor: pointer"
               (click)="navigateToProperty(property.id)"
             >
               <img
-                [src]="property.imageUrl || '/assets/default-property.jpg'"
+                *ngIf="shouldShowImage(property.imageUrl, property.id)"
+                [src]="getImageUrl(property.imageUrl)"
                 [alt]="property.title"
-                class="property-img card-img-top"
+                class="card-img-top"
+                style="height: 160px; object-fit: cover"
+                (error)="onImageError($event, property)"
               />
+              <div
+                *ngIf="shouldShowFallback(property.imageUrl, property.id)"
+                class="bg-light d-flex align-items-center justify-content-center card-img-top"
+                style="height: 160px"
+              >
+                <i class="fas fa-home text-muted fa-2x"></i>
+              </div>
               <div class="card-body p-3">
                 <h6
-                  class="card-title text-darker fw-semibold mb-2"
-                  style="font-size: 0.95rem"
+                  class="card-title text-dark fw-semibold mb-2"
+                  style="font-size: 0.9rem"
                 >
                   {{ property.title }}
                 </h6>
                 <div class="d-flex align-items-center">
-                  <span class="star-rating me-1">
+                  <span style="color: #000000" class="me-1">
                     <i class="fas fa-star"></i>
                   </span>
                   <span
-                    class="fw-semibold text-darker me-2"
-                    style="font-size: 0.9rem"
+                    class="fw-semibold text-dark me-2"
+                    style="font-size: 0.85rem"
                   >
                     {{
                       getAverageRatingForProperty(property.id)
@@ -298,72 +321,23 @@
     <!-- Guest-->
     <div
       class="d-flex flex-column flex-lg-row gap-4 align-items-start mb-5"
-      style="max-width: 1000px; margin: 0 auto"
+      style="max-width: 1000px; margin: 0"
       *ngIf="canShowProfile"
     >
-      <div
-        class="bg-white rounded-4 p-4 shadow-sm border flex-shrink-0"
-        style="min-width: 400px"
-      >
-        <div class="d-flex flex-column flex-md-row align-items-center gap-4">
-          <div class="flex-shrink-0 text-center">
-            <div class="position-relative d-inline-block mb-3">
-              <img
-                [src]="
-                  userProfile.profilePictureURL || '/assets/default-avatar.png'
-                "
-                [alt]="
-                  (userProfile.firstName || '') +
-                  ' ' +
-                  (userProfile.lastName || '')
-                "
-                class="profile-avatar-img"
-              />
-              <div class="heart-badge">
-                <i class="fas fa-heart"></i>
-              </div>
-            </div>
-            <h2 class="fs-1 fw-semibold mb-1 text-dark">
-              {{ userProfile.firstName || "Guest" }}
-            </h2>
-            <p class="text-muted fs-5 fw-medium mb-0">
-              {{ userProfile.country || "Location not specified" }}
-            </p>
-          </div>
-
-          <div
-            class="flex-fill border-start ps-4"
-            *ngIf="canShowStats && guestStats"
-          >
-            <div class="d-flex flex-column gap-3">
-              <div
-                class="d-flex justify-content-between align-items-center py-2"
-              >
-                <span class="fs-5 text-dark fw-medium">Trips</span>
-                <span class="fs-5 fw-semibold text-dark">{{
-                  guestStats.totalTrips
-                }}</span>
-              </div>
-              <div
-                class="d-flex justify-content-between align-items-center py-2"
-              >
-                <span class="fs-5 text-dark fw-medium">Reviews</span>
-                <span class="fs-5 fw-semibold text-dark">{{
-                  guestStats.totalReviews
-                }}</span>
-              </div>
-              <div
-                class="d-flex justify-content-between align-items-center py-2"
-              >
-                <span class="fs-5 text-dark fw-medium">Years on Airbnb</span>
-                <span class="fs-5 fw-semibold text-dark">{{
-                  guestStats.yearsOnPlatform
-                }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Use shared profile card component -->
+      <app-profile-card
+        [firstName]="userProfile.firstName"
+        [lastName]="userProfile.lastName"
+        [country]="userProfile.country"
+        [profileImageUrl]="userProfile.profilePictureURL"
+        [userId]="userProfile.id"
+        [userType]="'Guest'"
+        [stats]="guestStats"
+        [showHeartBadge]="true"
+        [imageBaseUrl]="imageBaseUrl"
+        [imageErrors]="imageErrors"
+        [onImageErrorCallback]="onImageError.bind(this)"
+      ></app-profile-card>
 
       <div class="flex-fill ps-lg-3">
         <h3 class="fs-4 fw-semibold text-dark mb-4">
@@ -421,119 +395,174 @@
       </div>
     </div>
 
-    <div
-      class="bg-white rounded-4 p-4 shadow-sm border mb-5"
-      *ngIf="canShowReviews && hasGuestReviews"
-    >
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>My Reviews ({{ guestReviews.length }})</h4>
-        <button
-          class="btn btn-outline-primary btn-sm"
-          (click)="openGuestReviewsModal()"
-        >
-          View all reviews
-        </button>
+    <hr class="my-5" />
+
+    <!-- Guest Reviews Section - Updated to match Host Reviews style -->
+    <div class="mb-5" *ngIf="canShowReviews && hasGuestReviews">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fs-3 fw-bold text-dark mb-0">
+          {{ userProfile.firstName || "Guest" }}'s reviews
+        </h3>
+
+        <div class="d-flex align-items-center gap-2">
+          <button
+            class="btn btn-outline-secondary rounded-circle p-2"
+            style="width: 40px; height: 40px"
+            (click)="scrollReviews('left')"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button
+            class="btn btn-outline-secondary rounded-circle p-2"
+            style="width: 40px; height: 40px"
+            (click)="scrollReviews('right')"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
       </div>
 
-      <div class="position-relative overflow-hidden my-3">
+      <div class="overflow-hidden">
         <div
-          class="d-flex gap-3 overflow-auto pb-2"
-          style="scroll-behavior: smooth"
+          #reviewsContainer
+          class="d-flex gap-3 pb-2 transition-transform"
+          style="scroll-behavior: smooth; transform: translateX(0px)"
         >
           <div
             class="flex-shrink-0"
-            style="width: 320px"
             *ngFor="let review of guestReviews.slice(0, 10)"
+            style="width: 220px"
           >
-            <div
-              class="card h-100 border rounded-3"
-              style="
-                min-height: 280px;
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
-              "
-              onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 25px rgba(0, 0, 0, 0.12)'"
-              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''"
-            >
-              <div class="card-body p-4 d-flex flex-column h-100">
-                <div class="mb-2">
-                  <h6 class="card-title">Property #{{ review.propertyId }}</h6>
+            <div class="card border-0 h-100" style="min-height: 240px">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                  <div
+                    class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3"
+                    style="width: 48px; height: 48px; font-size: 0.9rem"
+                  >
+                    {{
+                      getInitials(
+                        userProfile.firstName || "",
+                        userProfile.lastName || ""
+                      )
+                    }}
+                  </div>
+                  <div>
+                    <h6 class="mb-0 fw-semibold text-dark">
+                      {{ userProfile.firstName }}
+                    </h6>
+                    <small class="text-muted">
+                      Property #{{ review.propertyId }}
+                    </small>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <div class="d-flex align-items-center gap-1 mb-2">
+                    <span style="color: #000000">
+                      <i
+                        *ngFor="let star of getStarArray(review.rating)"
+                        class="fas fa-star"
+                      ></i>
+                      <i
+                        *ngFor="let star of getStarArray(5 - review.rating)"
+                        class="far fa-star"
+                        style="color: #dee2e6"
+                      ></i>
+                    </span>
+                  </div>
                   <small class="text-muted">{{
-                    formatDate(review.createdAt)
+                    getTimeAgo(review.createdAt)
                   }}</small>
                 </div>
 
-                <div class="mb-2">
-                  <span class="star-rating">
-                    <i
-                      *ngFor="let star of getStarArray(review.rating)"
-                      class="fas fa-star me-1"
-                    ></i>
-                    <i
-                      *ngFor="let star of getStarArray(5 - review.rating)"
-                      class="far fa-star me-1"
-                    ></i>
-                  </span>
-                  <span class="ms-2">{{ review.rating }}</span>
-                </div>
-
-                <p class="card-text text-muted small flex-grow-1 mb-3 lh-base">
-                  {{ truncateText(review.comment, 100) }}
+                <p
+                  class="text-dark mb-3"
+                  style="font-size: 0.95rem; line-height: 1.6"
+                >
+                  {{ truncateText(review.comment || "", 120) }}
                 </p>
 
                 <!-- Detailed Ratings -->
-                <div class="mt-3 pt-3 border-top border-light">
-                  <small class="d-block text-muted fw-medium lh-lg"
-                    >Cleanliness: {{ review.cleanliness }}/5</small
-                  >
-                  <small class="d-block text-muted fw-medium lh-lg"
-                    >Communication: {{ review.communication }}/5</small
-                  >
-                  <small class="d-block text-muted fw-medium lh-lg"
-                    >Location: {{ review.location }}/5</small
-                  >
-                </div>
+                <!-- <div class="mt-auto pt-3 border-top border-light">
+                  <div class="row text-center">
+                    <div class="col-4">
+                      <small
+                        class="text-muted d-block"
+                        style="font-size: 0.8rem"
+                        >Cleanliness</small
+                      >
+                      <strong class="text-dark" style="font-size: 0.9rem"
+                        >{{ review.cleanliness }}/5</strong
+                      >
+                    </div>
+                    <div class="col-4">
+                      <small
+                        class="text-muted d-block"
+                        style="font-size: 0.8rem"
+                        >Communication</small
+                      >
+                      <strong class="text-dark" style="font-size: 0.9rem"
+                        >{{ review.communication }}/5</strong
+                      >
+                    </div>
+                    <div class="col-4">
+                      <small
+                        class="text-muted d-block"
+                        style="font-size: 0.8rem"
+                        >Location</small
+                      >
+                      <strong class="text-dark" style="font-size: 0.9rem"
+                        >{{ review.location }}/5</strong
+                      >
+                    </div>
+                  </div>
+                </div> -->
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <button
+        class="btn btn-md mt-3 px-4 py-3 fw-medium border shadow-sm rounded-3 show-more-reviews-btn"
+        (click)="openGuestReviewsModal()"
+      >
+        Show more reviews
+      </button>
     </div>
 
-    <div
-      class="bg-white rounded-4 p-4 shadow-sm border mb-5"
-      *ngIf="canShowReviews && hasVisitedProperties"
-    >
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Places I've Visited ({{ uniqueVisitedProperties.length }})</h4>
+    <hr
+      class="my-5"
+      *ngIf="canShowReviews && hasGuestReviews && hasVisitedProperties"
+    />
+
+    <div class="mb-5" *ngIf="canShowReviews && hasVisitedProperties">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fs-4 fw-bold text-dark mb-0">
+          Places I've Visited ({{ uniqueVisitedProperties.length }})
+        </h4>
       </div>
 
-      <div class="position-relative overflow-hidden my-3">
-        <div
-          class="d-flex gap-3 overflow-auto pb-2"
-          style="scroll-behavior: smooth"
-        >
+      <div class="overflow-auto my-3">
+        <div class="d-flex gap-3 pb-2" style="scroll-behavior: smooth">
           <div
             class="flex-shrink-0"
-            style="width: 200px"
+            style="width: 180px"
             *ngFor="let place of uniqueVisitedProperties"
           >
             <div
-              class="card h-100 border rounded-3 cursor-pointer"
-              style="
-                min-height: 160px;
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
-              "
-              onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 25px rgba(0, 0, 0, 0.12)'"
-              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''"
+              class="card h-100 border rounded-3"
+              style="min-height: 140px; cursor: pointer"
               (click)="navigateToProperty(place.id)"
             >
               <div
-                class="card-body d-flex flex-column justify-content-center align-items-center text-center h-100 p-4"
+                class="card-body d-flex flex-column justify-content-center align-items-center text-center h-100 p-3"
               >
-                <div class="visited-icon mb-3 mx-auto">
+                <div class="text-dark mb-2 mx-auto" style="font-size: 1.5rem">
                   <i class="fas fa-map-marker-alt"></i>
                 </div>
-                <h6 class="card-title">Property #{{ place.id }}</h6>
+                <h6 class="card-title small">Property #{{ place.id }}</h6>
                 <p class="card-text text-muted small">Click to view details</p>
               </div>
             </div>
@@ -542,90 +571,124 @@
       </div>
     </div>
 
-    <div
-      class="bg-white rounded-4 p-4 shadow-sm border mb-5"
-      *ngIf="canShowReviews && !hasGuestReviews"
-    >
-      <div class="text-center py-5">
-        <i class="fas fa-suitcase fa-3x text-muted mb-3"></i>
-        <h5 class="text-muted">No reviews yet</h5>
-        <p class="text-muted">
-          Your reviews will appear here after your stays.
-        </p>
-      </div>
+    <div class="text-center py-5" *ngIf="canShowReviews && !hasGuestReviews">
+      <i class="fas fa-suitcase fa-3x text-muted mb-3"></i>
+      <h5 class="text-muted">No reviews yet</h5>
+      <p class="text-muted">Your reviews will appear here after your stays.</p>
     </div>
   </div>
 
+  <!-- Host Reviews Modal -->
   <div
-    class="modal fade"
+    class="modal fade airbnb-modal"
     [class.show]="showHostReviewsModal"
     [style.display]="showHostReviewsModal ? 'block' : 'none'"
     tabindex="-1"
   >
     <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            All Host Reviews ({{ hostReviews.length }})
-          </h5>
+      <div class="modal-content border-0">
+        <!-- Header -->
+        <div class="modal-header border-0 px-4 pt-4 pb-0">
+          <h1 class="modal-title fs-4 fw-semibold text-dark">
+            {{ hostReviews.length }} reviews
+          </h1>
           <button
             type="button"
-            class="btn-close"
+            class="btn-close-custom d-flex align-items-center justify-content-center border-0 bg-transparent"
             (click)="closeHostReviewsModal()"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <div
-            class="d-grid gap-4 p-2"
-            style="
-              grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-              max-height: 80vh;
-              overflow-y: auto;
-            "
           >
-            <div *ngFor="let review of hostReviews" class="card">
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-                  <img
-                    [src]="
-                      review.user.profilePictureURL ||
-                      '/assets/default-avatar.png'
-                    "
-                    [alt]="review.user.firstName + ' ' + review.user.lastName"
-                    class="avatar-img me-3 border border-light border-2"
-                  />
-                  <div>
-                    <h6 class="mb-0">
-                      {{ review.user.firstName }} {{ review.user.lastName }}
-                    </h6>
-                    <small class="text-muted">{{
-                      formatDate(review.createdAt)
-                    }}</small>
-                  </div>
-                </div>
+            <i class="fas fa-times fs-6 text-secondary"></i>
+          </button>
+        </div>
 
-                <div class="mb-2" *ngIf="review.property">
-                  <h6 class="card-title">{{ review.property.title }}</h6>
-                  <small class="text-muted">{{
-                    review.property.country
-                  }}</small>
-                </div>
+        <!-- Tab Navigation -->
+        <!-- if i added the reply button -->
+        <!-- <div class="mx-4 mt-3 border-bottom">
+          <div class="d-flex">
+            <button
+              class="tab-btn btn btn-link text-decoration-none p-0 pb-3 me-4 fw-medium text-dark border-0 active"
+            >
+              From guests • {{ hostReviews.length }}
+            </button>
+            <button
+              class="tab-btn btn btn-link text-decoration-none p-0 pb-3 me-4 fw-medium text-secondary border-0"
+            >
+              From hosts • 0
+            </button>
+          </div>
+        </div> -->
 
-                <div class="mb-2">
-                  <span class="star-rating">
-                    <i
-                      *ngFor="let star of getStarArray(review.rating)"
-                      class="fas fa-star me-1"
-                    ></i>
-                    <i
-                      *ngFor="let star of getStarArray(5 - review.rating)"
-                      class="far fa-star me-1"
-                    ></i>
-                  </span>
-                  <span class="ms-2">{{ review.rating }}</span>
-                </div>
+        <!-- Modal Body -->
+        <div
+          class="modal-body px-4 py-4"
+          style="max-height: 60vh; overflow-y: auto"
+        >
+          <div
+            *ngFor="let review of hostReviews; let last = last"
+            [class]="last ? 'd-flex' : 'd-flex pb-4 mb-4 border-bottom'"
+          >
+            <!-- Avatar -->
+            <img
+              *ngIf="
+                shouldShowImage(
+                  review.user?.profilePictureURL,
+                  review.user?.userId
+                )
+              "
+              [src]="getImageUrl(review.user?.profilePictureURL)"
+              [alt]="review.user.firstName + ' ' + review.user.lastName"
+              class="rounded-circle me-3 flex-shrink-0"
+              style="width: 56px; height: 56px; object-fit: cover"
+              (error)="onImageError($event, review.user)"
+            />
 
-                <p class="card-text">{{ review.comment }}</p>
+            <div
+              *ngIf="
+                shouldShowFallback(
+                  review.user?.profilePictureURL,
+                  review.user?.userId
+                )
+              "
+              class="avatar-fallback rounded-circle d-flex align-items-center justify-content-center text-white fw-semibold me-3 flex-shrink-0"
+              style="width: 56px; height: 56px; font-size: 20px"
+            >
+              {{
+                getInitials(
+                  review.user?.firstName || "",
+                  review.user?.lastName || ""
+                )
+              }}
+            </div>
+
+            <!-- Review Content -->
+            <div class="flex-grow-1">
+              <h3 class="fs-6 fw-semibold text-dark mb-0">
+                {{ review.user.firstName }} {{ review.user.lastName }}
+              </h3>
+
+              <div class="d-flex align-items-center my-2">
+                <div style="color: #000000" class="me-2">
+                  <i
+                    *ngFor="let star of getStarArray(review.rating)"
+                    class="fas fa-star"
+                  ></i>
+                  <i
+                    *ngFor="let star of getStarArray(5 - review.rating)"
+                    class="far fa-star"
+                    style="color: #dee2e6"
+                  ></i>
+                </div>
+                <span class="small text-secondary"
+                  >• {{ getTimeAgo(review.createdAt) }}</span
+                >
+              </div>
+
+              <p class="fs-6 text-dark mb-2" style="line-height: 1.5">
+                {{ review.comment }}
+              </p>
+
+              <div *ngIf="review.property" class="small text-secondary mt-2">
+                {{ review.property.title }} • {{ review.property.country }}
               </div>
             </div>
           </div>
@@ -634,66 +697,82 @@
     </div>
   </div>
 
+  <!-- Host Properties Modal -->
   <div
-    class="modal fade"
+    class="modal fade airbnb-modal"
     [class.show]="showHostPropertiesModal"
     [style.display]="showHostPropertiesModal ? 'block' : 'none'"
     tabindex="-1"
   >
     <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            All Properties ({{ uniqueHostProperties.length }})
-          </h5>
+      <div class="modal-content border-0">
+        <!-- Header -->
+        <div class="modal-header border-0 px-4 pt-4 pb-0">
+          <h1 class="modal-title fs-4 fw-semibold text-dark">
+            {{ uniqueHostProperties.length }} listings
+          </h1>
           <button
             type="button"
-            class="btn-close"
+            class="btn-close-custom d-flex align-items-center justify-content-center border-0 bg-transparent"
             (click)="closeHostPropertiesModal()"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <div
-            class="d-grid gap-4 p-2"
-            style="
-              grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-              max-height: 80vh;
-              overflow-y: auto;
-            "
           >
+            <i class="fas fa-times fs-6 text-secondary"></i>
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div
+          class="modal-body px-4 py-4"
+          style="max-height: 70vh; overflow-y: auto"
+        >
+          <div class="row g-4">
             <div
               *ngFor="let property of uniqueHostProperties"
-              class="card cursor-pointer"
-              (click)="navigateToProperty(property.id)"
+              class="col-12 col-md-6 col-lg-4"
             >
-              <img
-                [src]="property.imageUrl || '/assets/default-property.jpg'"
-                [alt]="property.title"
-                class="property-img card-img-top rounded-top"
-              />
-              <div class="card-body">
-                <h6 class="card-title">{{ property.title }}</h6>
-                <p class="card-text text-muted">{{ property.location }}</p>
-                <div class="d-flex align-items-center mb-2">
-                  <span class="star-rating me-1">
-                    <i class="fas fa-star"></i>
-                  </span>
-                  <span class="me-2">{{
-                    getAverageRatingForProperty(property.id) | number : "1.1-1"
-                  }}</span>
-                  <small class="text-muted"
-                    >({{
-                      getReviewCountForProperty(property.id)
-                    }}
-                    reviews)</small
-                  >
-                </div>
-                <button
-                  class="btn btn-sm btn-outline-primary"
-                  (click)="$event.stopPropagation()"
+              <div
+                class="card h-100 border shadow-sm"
+                style="cursor: pointer; transition: all 0.3s ease"
+                (click)="navigateToProperty(property.id)"
+              >
+                <img
+                  *ngIf="shouldShowImage(property.imageUrl, property.id)"
+                  [src]="getImageUrl(property.imageUrl)"
+                  [alt]="property.title"
+                  class="card-img-top"
+                  style="height: 200px; object-fit: cover"
+                  (error)="onImageError($event, property)"
+                />
+                <div
+                  *ngIf="shouldShowFallback(property.imageUrl, property.id)"
+                  class="bg-light d-flex align-items-center justify-content-center card-img-top"
+                  style="height: 200px"
                 >
-                  View Reviews
-                </button>
+                  <i class="fas fa-home text-muted fa-3x"></i>
+                </div>
+                <div class="card-body p-3">
+                  <h6 class="card-title fw-semibold mb-2">
+                    {{ property.title }}
+                  </h6>
+                  <p class="card-text text-muted small mb-2">
+                    {{ property.location }}
+                  </p>
+                  <div class="d-flex align-items-center">
+                    <span style="color: #000000" class="me-1">
+                      <i class="fas fa-star"></i>
+                    </span>
+                    <span class="fw-semibold me-2">{{
+                      getAverageRatingForProperty(property.id)
+                        | number : "1.1-1"
+                    }}</span>
+                    <small class="text-muted"
+                      >({{
+                        getReviewCountForProperty(property.id)
+                      }}
+                      reviews)</small
+                    >
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -702,76 +781,92 @@
     </div>
   </div>
 
+  <!-- Guest Reviews Modal -->
   <div
-    class="modal fade"
+    class="modal fade airbnb-modal"
     [class.show]="showGuestReviewsModal"
     [style.display]="showGuestReviewsModal ? 'block' : 'none'"
     tabindex="-1"
   >
     <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            All My Reviews ({{ guestReviews.length }})
-          </h5>
+      <div class="modal-content border-0">
+        <!-- Header -->
+        <div class="modal-header border-0 px-4 pt-4 pb-0">
+          <h1 class="modal-title fs-4 fw-semibold text-dark">
+            My Reviews ({{ guestReviews.length }})
+          </h1>
           <button
             type="button"
-            class="btn-close"
+            class="btn-close-custom d-flex align-items-center justify-content-center border-0 bg-transparent"
             (click)="closeGuestReviewsModal()"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <div
-            class="d-grid gap-4 p-2"
-            style="
-              grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-              max-height: 80vh;
-              overflow-y: auto;
-            "
           >
-            <div *ngFor="let review of guestReviews" class="card">
-              <div class="card-body">
-                <div
-                  class="d-flex justify-content-between align-items-start mb-3"
-                >
-                  <div>
-                    <h6 class="card-title">
-                      Property #{{ review.propertyId }}
-                    </h6>
-                    <small class="text-muted">{{
-                      formatDate(review.createdAt)
-                    }}</small>
-                  </div>
-                  <div class="text-end">
-                    <span class="star-rating">
-                      <i
-                        *ngFor="let star of getStarArray(review.rating)"
-                        class="fas fa-star me-1"
-                      ></i>
-                      <i
-                        *ngFor="let star of getStarArray(5 - review.rating)"
-                        class="far fa-star me-1"
-                      ></i>
-                    </span>
-                    <div class="small">{{ review.rating }}/5</div>
-                  </div>
-                </div>
+            <i class="fas fa-times fs-6 text-secondary"></i>
+          </button>
+        </div>
 
-                <p class="card-text mb-3">{{ review.comment }}</p>
+        <!-- Modal Body -->
+        <div
+          class="modal-body px-4 py-4"
+          style="max-height: 70vh; overflow-y: auto"
+        >
+          <div class="row g-4">
+            <div
+              *ngFor="let review of guestReviews"
+              class="col-12 col-md-6 col-lg-4"
+            >
+              <div class="card h-100" style="transition: all 0.2s ease">
+                <div class="card-body p-4">
+                  <div
+                    class="d-flex justify-content-between align-items-start mb-3"
+                  >
+                    <div>
+                      <h6 class="card-title fw-semibold">
+                        Property #{{ review.propertyId }}
+                      </h6>
+                      <small class="text-muted">{{
+                        getTimeAgo(review.createdAt)
+                      }}</small>
+                    </div>
+                    <div class="text-end">
+                      <div style="color: #000000" class="mb-1">
+                        <i
+                          *ngFor="let star of getStarArray(review?.rating || 0)"
+                          class="fas fa-star"
+                        ></i>
+                        <i
+                          *ngFor="
+                            let star of getStarArray(5 - (review?.rating || 0))
+                          "
+                          class="far fa-star"
+                          style="color: #dee2e6"
+                        ></i>
+                      </div>
+                      <small class="text-muted">{{ review?.rating }}/5</small>
+                    </div>
+                  </div>
 
-                <div class="row text-center">
-                  <div class="col-4">
-                    <small class="text-muted d-block">Cleanliness</small>
-                    <strong>{{ review.cleanliness }}/5</strong>
-                  </div>
-                  <div class="col-4">
-                    <small class="text-muted d-block">Communication</small>
-                    <strong>{{ review.communication }}/5</strong>
-                  </div>
-                  <div class="col-4">
-                    <small class="text-muted d-block">Value</small>
-                    <strong>{{ review.value }}/5</strong>
-                  </div>
+                  <p class="card-text mb-3" style="line-height: 1.5">
+                    {{ review?.comment }}
+                  </p>
+
+                  <!-- <div class="row text-center pt-3 border-top border-light">
+                    <div class="col-4">
+                      <small class="text-muted d-block">Cleanliness</small>
+                      <strong class="text-dark"
+                        >{{ review?.cleanliness }}/5</strong
+                      >
+                    </div>
+                    <div class="col-4">
+                      <small class="text-muted d-block">Communication</small>
+                      <strong class="text-dark"
+                        >{{ review?.communication }}/5</strong
+                      >
+                    </div>
+                    <div class="col-4">
+                      <small class="text-muted d-block">Value</small>
+                      <strong class="text-dark">{{ review?.value }}/5</strong>
+                    </div>
+                  </div> -->
                 </div>
               </div>
             </div>
@@ -780,17 +875,4 @@
       </div>
     </div>
   </div>
-
-  <!-- Modal Backdrop -->
-  <div
-    *ngIf="
-      showHostReviewsModal || showHostPropertiesModal || showGuestReviewsModal
-    "
-    class="modal-backdrop fade show"
-    (click)="
-      closeHostReviewsModal();
-      closeHostPropertiesModal();
-      closeGuestReviewsModal()
-    "
-  ></div>
 </div>
