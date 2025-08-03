@@ -5,9 +5,11 @@ import { Url } from './../../../../../node_modules/lightningcss/node/ast.d';
 import {
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   input,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import { PropertyImageService } from '../../../core/services/PropertyImage/property-image.service';
 import { CommonModule } from '@angular/common';
@@ -15,16 +17,21 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { DialogService } from '../../../core/services/dialog.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { environment } from '../../../../environments/environment.development';
 
 @Component({
   selector: 'app-propertImage-galary',
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   standalone: true,
   templateUrl: './propertImage-galary.component.html',
   styleUrls: ['./propertImage-galary.component.css'],
 })
 export class PropertImageGalaryComponent implements OnInit {
   @Input() propertyId!: number; // Default property ID, can be set from outside
+  @Output() wishlistToggle = new EventEmitter<number>();
+  @Input() isFavourite: boolean = false;
+
 
   images: string[] = [];
   isLoading: boolean = true;
@@ -39,8 +46,10 @@ export class PropertImageGalaryComponent implements OnInit {
     private PropertyService: PropertyService,
     private authService: AuthService,
     private dialogService: DialogService,
-    private snackBar: MatSnackBar
-  ) {}
+    private snackBar: MatSnackBar,
+    private translate: TranslateService
+
+  ) { }
 
   private showToast(
     message: string,
@@ -99,17 +108,22 @@ export class PropertImageGalaryComponent implements OnInit {
   }
 
   onShare() {
-    this.showToast('Share clicked!', 'bottom', 'left'); // replace with modal or copy link logic
+    const link = `${environment.domainBaseUrl}/property/${this.propertyId}`;
+    navigator.clipboard.writeText(link).then(() => {
+      const msg = this.translate.instant('PROPERTY.LINK_COPIED');
+      this.showToast(msg, 'bottom', 'left');
+    }).catch(() => {
+      const errorMsg = this.translate.instant('PROPERTY.COPY_FAILED');
+      this.showToast(errorMsg, 'bottom', 'left');
+    });
   }
 
 
-onSave() {
-  if (this.authService.accessToken !== null) {
-    // Proceed to save
-    console.log('Saved!');
-  } else {
-    
-    this.dialogService.openDialog('login');
+  onSave() {
+    if (this.authService.userId) {
+      this.wishlistToggle.emit(this.propertyId);
+    } else {
+      this.dialogService.openDialog('login');
+    }
   }
-  
-}}
+}

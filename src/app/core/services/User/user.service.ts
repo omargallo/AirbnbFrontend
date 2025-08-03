@@ -20,8 +20,8 @@ export class UserService {
         tap((response: any) => {
           this.authService.setAccessToken(response.accessToken);
           // this.authService.setRefreshToken(response.refreshToken);
-          this.authService.setUserId(response.userId);
-          this.authService.setRole(response.roles);
+          // this.authService.setUserId(response.userId);
+          // this.authService.setRole(response.roles);
         })
       );
   }

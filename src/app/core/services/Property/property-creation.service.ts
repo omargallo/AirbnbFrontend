@@ -10,6 +10,7 @@ import { UserService } from '../User/user.service';
 import { PropertyFormStorageService } from '../../../pages/add-property/services/property-form-storage.service';
 import { AmenityService } from '../Amenity/amenity.service';
 import { Router } from '@angular/router';
+import { PropertyAcceptStatus } from '../../../pages/add-property/models/property.model';
 
 interface ApiResponse<T> {
   isSuccess: boolean;
@@ -245,7 +246,8 @@ export class PropertyCreationService {
       reviewCount: 0,
       isActive: true,
       isDeleted: false,
-      hostId: this.authService.userId || ''
+      hostId: this.authService.userId || '',
+      status: PropertyAcceptStatus.pending,
     };
 
     console.log('Built property:', property);

@@ -89,7 +89,7 @@ overflow-x: hidden;
 .main-image img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 12px 0 0 12px;
 }
 
@@ -111,7 +111,7 @@ overflow-x: hidden;
 .grid-image img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   /* border-radius: 0;  */
 }
 
@@ -160,7 +160,7 @@ overflow-x: hidden;
 .main-image img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 12px 0 0 12px;
   transition: transform 0.3s ease;
 }
@@ -266,7 +266,7 @@ overflow-x: hidden;
   background-color: #f9f9f9;
   border-radius: 12px;
   padding: 10px;
-  margin-left: 20px;
+  /* margin-left: 20px; */
   text-align: center;
 }
 

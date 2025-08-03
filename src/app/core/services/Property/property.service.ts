@@ -7,10 +7,12 @@ import { environment } from '../../../../environments/environment.development';
 import { PropertyImage } from '../../models/PropertyImage';
 import { HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs';
+
 import {
   PropertyDisplayWithHostDataDto,
   PropertyDisplayDTO as PropertyDisplayDtoFromModels,
 } from '../../../pages/add-property/models/property.model';
+import { PropertyDisplayDTO as PropDisplayFromModelsTrueOne } from '../../models/PropertyDisplayDTO';
 
 interface ApiResponse<T> {
   data: T;
@@ -131,6 +133,15 @@ export class PropertyService {
   getByIdWithCover(propId: number): Observable<PropertyDisplayDtoFromModels> {
     return this.http
       .get<Result<PropertyDisplayDtoFromModels>>(
+        `${this.baseUrl}/cover/${propId}`
+      )
+      .pipe(map((res) => res.data));
+  }
+  getByIdWithCoverFor3ssam(
+    propId: number
+  ): Observable<PropDisplayFromModelsTrueOne> {
+    return this.http
+      .get<Result<PropDisplayFromModelsTrueOne>>(
         `${this.baseUrl}/cover/${propId}`
       )
       .pipe(map((res) => res.data));
@@ -433,10 +444,6 @@ export class PropertyService {
       .pipe(map((response) => response.data));
   }
 
-  /**
-   * Toggle amenity for a property (add/remove)
-   * Fixed the typo in the endpoint URL
-   */
   togglePropertyAmenity(
     amenityId: number,
     propertyId: number
@@ -448,15 +455,16 @@ export class PropertyService {
     );
   }
 
-  //for reviews
-
-  getPropertyWithHostData(
-    propId: number
-  ): Observable<PropertyDisplayWithHostDataDto> {
-    return this.http
-      .get<Result<PropertyDisplayWithHostDataDto>>(
-        `${this.baseUrl}/cover/${propId}`
-      )
-      .pipe(map((res) => res.data));
+  deactivate(propertyId: number): Observable<Result<string>> {
+    return this.http.put<Result<string>>(
+      this.baseUrl + '/deactivate/' + propertyId,
+      {}
+    );
+  }
+  activate(propertyId: number): Observable<Result<string>> {
+    return this.http.put<Result<string>>(
+      this.baseUrl + '/activate/' + propertyId,
+      {}
+    );
   }
 }

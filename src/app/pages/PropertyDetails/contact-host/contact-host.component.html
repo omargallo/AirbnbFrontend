@@ -1,6 +1,5 @@
-  <div class="airbnb-header">
 
-    <div class="main-container">
+    <div class="main-container py-5">
         <div class="hostMessage">
             <!-- Left Column - Contact Information -->
             <div class="left-column">
@@ -25,6 +24,12 @@
                     
                     <div class="faq-item">
                         <h3 class="faq-question">Getting there</h3>
+                        <ul style="list-style: disc;">
+                            <li>Free parking on the premises.</li>
+                            <li>
+                                Check-in time for this home starts at 1:00 PM and checkout is at 11:00 AM.
+                            </li>
+                        </ul>
                         <p class="faq-answer">Check-in time for this home starts at 3:00 PM and checkout is at 12:00 PM.</p>
                     </div>
 
@@ -61,14 +66,18 @@
 
             <!-- Right Column - Your Angular Component -->
             <div *ngIf="showReservationBox" class="col-md-3 sticky-box" style="position: sticky; top: 90px;">
-                <!-- <app-reverse-section 
+
+                <app-reverse-section
                     [dateMap]="dateMap"
                     [propertyId]="propertyId"
-                    [checkIn]="selectedDates.start"
-                    [checkOut]="selectedDates.end"
-                    [guests]="guestCount" 
-                    (guestChange)="onGuestChange($event)">
-                </app-reverse-section> -->
+                    [checkIn]="startDate"
+                    [checkOut]="endDate"
+                    [guests]="{adults:guests,children:children}"
+                    [isPreview]="false"
+                    (guestChange)="onGuestChange($event)"
+                    (dateChange)="onDateChange($event)"
+                >
+                </app-reverse-section>
             </div>
         </div>
     </div>

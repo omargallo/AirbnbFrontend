@@ -13,12 +13,12 @@
 .section-header h2 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #222222;
+  color: var(--primary-text-color);
   margin-bottom: 0.5rem;
 }
 
 .section-header p {
-  color: #717171;
+  color: var(--secondary-text-color);
   font-size: 1rem;
 }
 
@@ -43,9 +43,9 @@
 .counter-btn {
   width: 40px;
   height: 40px;
-  border: 2px solid #b0b0b0;
+  border: 2px solid var(--border-color);
   border-radius: 50%;
-  background: white;
+  background: var(--bg-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,24 +53,26 @@
   transition: all 0.2s ease;
   font-size: 18px;
   font-weight: 600;
+  color: var(--primary-text-color);
 }
 
 .counter-btn:hover:not(:disabled) {
-  border-color: #222222;
+  border-color: var(--primary-text-color);
   transform: scale(1.05);
 }
 
 .counter-btn:disabled {
-  border-color: #e5e7eb;
-  color: #e5e7eb;
+  border-color: var(--disabled-color);
+  color: var(--disabled-color);
   cursor: not-allowed;
   opacity: 0.5;
+  background: var(--disabled-bg);
 }
 
 .counter-value {
   font-weight: 600;
   font-size: 2rem;
-  color: #222222;
+  color: var(--primary-text-color);
   min-width: 60px;
   text-align: center;
 }
@@ -101,12 +103,12 @@
   object-fit: cover;
   border: 3px solid transparent;
   transition: all 0.2s ease;
-  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
+  /* box-shadow: 0 2px 8px var(--shadow-color); */
 }
 
 .guest-icon:hover {
   transform: scale(1.1);
-  /* border-color: #ff385c; */
+  /* border-color: var(--airbnb-red); */
   /* box-shadow: 0 4px 16px rgba(255, 56, 92, 0.3); */
 }
 

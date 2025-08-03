@@ -32,30 +32,32 @@ export class AuthService {
 
     const rolesJson = this.cookieService.get(this.roleKey);
     if (rolesJson) {
-      const roles = JSON.parse(rolesJson);
+      const decodedRoles = decodeURIComponent(rolesJson)
+      const roles = JSON.parse(decodedRoles);
+      
       this.roleSubject.next(roles);
     }
   }
 
   setAccessToken(token: string) {
-    this.cookieService.set(this.accessTokenKey, token, 100, '/');
+    // this.cookieService.set(this.accessTokenKey, token, 100, '/');
     this.accessTokenSubject.next(token);
   }
 
   setRefreshToken(token: string) {
-    this.cookieService.set(this.refreshTokenKey, token, 100, '/');
+    // this.cookieService.set(this.refreshTokenKey, token, 100, '/');
     this.refreshTokenSubject.next(token);
   }
 
   setUserId(userId: string) {
-    this.cookieService.set(this.userIdKey, userId, 100, '/');
+    // this.cookieService.set(this.userIdKey, userId, 100, '/');
     this.userIdSubject.next(userId);
   }
 
   setRole(roles: { name: string }[]) {
     const names = roles.map((r) => r.name);
-    sessionStorage.setItem(this.roleKey, JSON.stringify(names));
-    this.cookieService.set(this.roleKey, JSON.stringify(names), 7, '/');
+    // sessionStorage.setItem(this.roleKey, JSON.stringify(names));
+    // this.cookieService.set(this.roleKey, JSON.stringify(names), 7, '/');
     this.roleSubject.next(names);
   }
 
@@ -79,7 +81,8 @@ export class AuthService {
 
   get role(): string[] {
     const rolesJson = this.cookieService.get(this.roleKey);
-    return rolesJson ? JSON.parse(rolesJson) : [];
+    const decodedRoles = decodeURIComponent(rolesJson)
+    return rolesJson ? JSON.parse(decodedRoles) : [];
   }
 
   get accessToken$() {
