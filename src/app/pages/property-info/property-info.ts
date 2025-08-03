@@ -120,7 +120,9 @@ export class PropertyInfo implements OnInit {
         const dateMap = new Map<string, CalendarAvailabilityDto>();
 
         res.forEach(item => {
-          dateMap.set(item.date.slice(0, 19), item);
+          // dateMap.set(item.date.slice(0, 19), item);
+          const dateOnly = dayjs(item.date).format('YYYY-MM-DD');
+          dateMap.set(dateOnly, item);
         });
         console.log(dateMap)
         this.dateMap = dateMap;

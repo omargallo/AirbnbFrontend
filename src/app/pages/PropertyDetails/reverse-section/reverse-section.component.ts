@@ -55,7 +55,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 @Component({
   selector: 'app-reverse-section',
-  imports: [CommonModule, FormsModule, NgxDaterangepickerMd, ViolationModal, ReserveConfirmModal], 
+  imports: [CommonModule, FormsModule, NgxDaterangepickerMd, ViolationModal, ReserveConfirmModal],
   templateUrl: './reverse-section.component.html',
   styleUrls: ['./reverse-section.component.css'],
 })
@@ -115,27 +115,27 @@ dayjs.extend(timezone);
 //   @ViewChild('element') elemnt!: any;
 
 
-export class ReverseSectionComponent implements OnInit ,OnChanges {
-  showViolationModal:boolean = false
+export class ReverseSectionComponent implements OnInit, OnChanges {
+  showViolationModal: boolean = false
   showConfirmModal: boolean = false
-  nightsCount:number = 1
-constructor(
-  private propertyService: PropertyService,
-  private bookingService: BookingService ,
-  private calendarService: CalendarAvailabilityService,
-  private cdr: ChangeDetectorRef,
-  private commonService: CommonPropInfoService,
-  private chatService: ChatService  ,
-  private route: ActivatedRoute,  // used to read current route params
-  private router: Router ,    
-  private   paymentService :PaymentService,
-  private auth :AuthService,
-  private dialogService:DialogService,
-  private confirmService: ConfirmService,
-  private snackBar: MatSnackBar
+  nightsCount: number = 1
+  constructor(
+    private propertyService: PropertyService,
+    private bookingService: BookingService,
+    private calendarService: CalendarAvailabilityService,
+    private cdr: ChangeDetectorRef,
+    private commonService: CommonPropInfoService,
+    private chatService: ChatService,
+    private route: ActivatedRoute,  // used to read current route params
+    private router: Router,
+    private paymentService: PaymentService,
+    private auth: AuthService,
+    private dialogService: DialogService,
+    private confirmService: ConfirmService,
+    private snackBar: MatSnackBar
 
-) {}
-  
+  ) { }
+
   private showToast(
     message: string,
     vertical: 'top' | 'bottom',
@@ -148,43 +148,43 @@ constructor(
       panelClass: ['custom-snackbar'],
     });
   }
-    @Input() checkIn?: dayjs.Dayjs;
-    @Input() checkOut?: dayjs.Dayjs;
-    @Input() propertyId!: number;
-    @Input() isPreview: boolean = false
-    @Input() hostID!: string;
-    
-    @Output() guestChange = new EventEmitter<{
-        adults: number;
-        children: number;
-        // infants: number;
-    }>();
+  @Input() checkIn?: dayjs.Dayjs;
+  @Input() checkOut?: dayjs.Dayjs;
+  @Input() propertyId!: number;
+  @Input() isPreview: boolean = false
+  @Input() hostID!: string;
 
-    @Input() dateMap?: Map<string,CalendarAvailabilityDto>
-    @Output() dateChange = new EventEmitter<range>()
+  @Output() guestChange = new EventEmitter<{
+    adults: number;
+    children: number;
+    // infants: number;
+  }>();
 
-    @Input() guests: {
-        adults: number;
-        children: number;
-        // infants: number;
-    } = { adults: 1, children: 0}; // Default values
+  @Input() dateMap?: Map<string, CalendarAvailabilityDto>
+  @Output() dateChange = new EventEmitter<range>()
 
-    @ViewChild('picker',{read:DaterangepickerDirective}) picker!: DaterangepickerDirective;
+  @Input() guests: {
+    adults: number;
+    children: number;
+    // infants: number;
+  } = { adults: 1, children: 0 }; // Default values
 
-    @ViewChild("element") elemnt!: any
+  @ViewChild('picker', { read: DaterangepickerDirective }) picker!: DaterangepickerDirective;
 
-    clickedDate?:dayjs.Dayjs
-    firstUnavailableDate?:dayjs.Dayjs
+  @ViewChild("element") elemnt!: any
 
-    public Message: string = '';
+  clickedDate?: dayjs.Dayjs
+  firstUnavailableDate?: dayjs.Dayjs
 
-    displayMonths = 2;
+  public Message: string = '';
 
-    @Output() reserveClicked = new EventEmitter<any>();
+  displayMonths = 2;
 
-    showReservationMessage: boolean = false;
-    specialPriceFromAvailable !:any;
-  
+  @Output() reserveClicked = new EventEmitter<any>();
+
+  showReservationMessage: boolean = false;
+  specialPriceFromAvailable !: any;
+
 
   ngOnInit() {
     this.commonService.clear$.subscribe(() => {
@@ -215,9 +215,9 @@ constructor(
         this.property = property;
         this.maxGuests = property.maxGuests;
 
-        this.pricePerNight=property.pricePerNight
+        this.pricePerNight = property.pricePerNight
         this.totalPrice = this.pricePerNight
-        console.log("price per neight " ,this.pricePerNight) // ✅ update maxGuests from backend
+        console.log("price per neight ", this.pricePerNight) // ✅ update maxGuests from backend
 
       },
       error: (err) => {
@@ -236,41 +236,62 @@ constructor(
     );
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    // console.log("this.picker.nativeElement.nextElementSibling",this.picker)
-    // console.log("this.picker.nativeElement.nextElementSibling",this.elemnt)
+  // ngOnChanges(changes: SimpleChanges): void {
+  //   // console.log("this.picker.nativeElement.nextElementSibling",this.picker)
+  //   // console.log("this.picker.nativeElement.nextElementSibling",this.elemnt)
 
+  //   if (changes['checkIn'] && changes['checkOut'])
+  //     this.selected = {
+  //       startDate: changes['checkIn'].currentValue,
+  //       endDate: changes['checkOut'].currentValue,
+  //     };
+
+  //   // let x = {startDate:undefined,endDate:undefined}
+  //   // if (changes['checkIn']) {
+  //   //   // console.log('checkIn input changed:', this.checkIn);
+  //   //   x.startDate = changes['checkIn'].currentValue
+  //   // }
+  //   // if (changes['checkOut']) {
+  //   //   x.endDate = changes['checkOut'].currentValue
+
+  //   //   // console.log('checkOut input changed:', this.checkOut);
+  //   // }
+
+  //   // this.selected=x;
+  //   console.log(
+  //     this.selected.startDate,
+  //     ' fom on changes in reserve section',
+  //     this.selected.endDate
+  //   );
+  //   // console.log(this.picker)
+  //   this.picker.hide();
+
+  //   this.checkAvailabilityForSelectedRange();
+  //   // this.picker.nativeElement.nextElementSibling.setStartDate( dayjs(x.startDate.toDate()));
+  //   // this.picker.nativeElement.nextElementSibling.setEndDate( dayjs(x.endDate.toDate()));
+  // }
+
+
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes['checkIn'] && changes['checkOut'])
       this.selected = {
         startDate: changes['checkIn'].currentValue,
         endDate: changes['checkOut'].currentValue,
       };
 
-    // let x = {startDate:undefined,endDate:undefined}
-    // if (changes['checkIn']) {
-    //   // console.log('checkIn input changed:', this.checkIn);
-    //   x.startDate = changes['checkIn'].currentValue
-    // }
-    // if (changes['checkOut']) {
-    //   x.endDate = changes['checkOut'].currentValue
-
-    //   // console.log('checkOut input changed:', this.checkOut);
-    // }
-
-    // this.selected=x;
     console.log(
       this.selected.startDate,
-      ' fom on changes in reserve section',
+      ' from on changes in reserve section',
       this.selected.endDate
     );
-    // console.log(this.picker)
+
     this.picker.hide();
-
     this.checkAvailabilityForSelectedRange();
-    // this.picker.nativeElement.nextElementSibling.setStartDate( dayjs(x.startDate.toDate()));
-    // this.picker.nativeElement.nextElementSibling.setEndDate( dayjs(x.endDate.toDate()));
-  }
 
+    if (changes['dateMap'] || changes['checkIn'] || changes['checkOut']) {
+      this.calculateTotalPrice();
+    }
+  }
   @HostListener('window:resize', [])
   onResize() {
     this.updateDisplayMonths();
@@ -623,34 +644,76 @@ constructor(
     console.log('💰 Total price recalculated: ', this.totalPrice);
   }
 
+  //   calculateTotalPrice(): void {
+
+  //         if (!this.selected?.startDate || !this.selected?.endDate) return;
+
+  //         const start = dayjs(this.selected.startDate);
+  //         const end = dayjs(this.selected.endDate);
+  //         const numberOfNights = end.diff(start, 'day');
+  //         this.nightsCount = numberOfNights
+  //         if (numberOfNights <= 0) {
+  //           this.totalPrice = 0;
+  //           return;
+  //         }
+  //         const guestCount = (this.guests?.adults || 0) + (this.guests?.children || 0);
+  //         console.log(guestCount);
+
+  //         let totalNightly = 0;
+  //         // for (let d = start; d.isBefore(end); d = d.add(1, 'day')) {
+  //         //   const dateStr = d.format('YYYY-MM-DD');
+  //         //   const matchedDay = this.availability?.find(day => day.date === dateStr);
+  //         //   const priceForDay = matchedDay?.price ?? this.property.pricePerNight;
+  //         //   totalNightly += priceForDay;
+  //         // }
+  //             const BasePrice = numberOfNights *this.pricePerNight;
+  //       console.log("number of neights  from total price " ,numberOfNights)
+  //         this.totalPrice = BasePrice ;
+
+  //         console.log("💰 Total price recalculated   print :", this.totalPrice);
+  // }
+
+
   calculateTotalPrice(): void {
+    if (!this.selected?.startDate || !this.selected?.endDate || !this.dateMap) return;
 
-        if (!this.selected?.startDate || !this.selected?.endDate) return;
+    const start = dayjs(this.selected.startDate);
+    const end = dayjs(this.selected.endDate);
+    const numberOfNights = end.diff(start, 'day');
+    this.nightsCount = numberOfNights;
 
-        const start = dayjs(this.selected.startDate);
-        const end = dayjs(this.selected.endDate);
-        const numberOfNights = end.diff(start, 'day');
-        this.nightsCount = numberOfNights
-        if (numberOfNights <= 0) {
-          this.totalPrice = 0;
-          return;
-        }
-        const guestCount = (this.guests?.adults || 0) + (this.guests?.children || 0);
-        console.log(guestCount);
+    if (numberOfNights <= 0) {
+      this.totalPrice = 0;
+      return;
+    }
 
-        let totalNightly = 0;
-        // for (let d = start; d.isBefore(end); d = d.add(1, 'day')) {
-        //   const dateStr = d.format('YYYY-MM-DD');
-        //   const matchedDay = this.availability?.find(day => day.date === dateStr);
-        //   const priceForDay = matchedDay?.price ?? this.property.pricePerNight;
-        //   totalNightly += priceForDay;
-        // }
-            const BasePrice = numberOfNights *this.pricePerNight;
-      console.log("number of neights  from total price " ,numberOfNights)
-        this.totalPrice = BasePrice ;
+    let totalNightly = 0;
 
-        console.log("💰 Total price recalculated   print :", this.totalPrice);
-}
+    for (let d = start; d.isBefore(end); d = d.add(1, 'day')) {
+      const key = d.toISOString().slice(0, 19);
+      const priceForDay = this.dateMap.get(key)?.price ?? this.pricePerNight;
+      totalNightly += priceForDay;
+
+      console.log(`Date: ${key}, Price: ${priceForDay}`);
+    }
+
+    for (let d = start; d.isBefore(end); d = d.add(1, 'day')) {
+      const key = d.format('YYYY-MM-DD');
+      const availabilityItem = this.dateMap.get(key);
+      const priceForDay = availabilityItem?.price ?? this.pricePerNight;
+      totalNightly += priceForDay;
+
+      console.log(`Date: ${key}`);
+      console.log(`Found in dateMap: ${!!availabilityItem}`);
+      console.log(`Special price: ${availabilityItem?.price}`);
+      console.log(`Final price used: ${priceForDay}`);
+      console.log('---');
+    }
+
+    this.totalPrice = totalNightly;
+    console.log(`💰 Total price calculated: ${this.totalPrice}`);
+  }
+
 
   get totalGuests(): string {
     const total = this.guests.adults + this.guests.children;
@@ -680,97 +743,149 @@ constructor(
     const clicked = dayjs(this.clickedDate).format('YYYY-MM-DD');
 
 
-      this.guestCount = guestCount
+    this.guestCount = guestCount
     // this.calendarService.getAvailability(this.propertyId, formattedStart, formattedEnd).subscribe((availability: CalendarAvailabilityDto[]) => {
     // const allAvailable = availability.every(day => day.isAvailable);
     // this.isDateRangeAvailable = allAvailable;
 
-      // if(startDate ==undefined || endDate == undefined) return;
-      this.calculateTotalPrice(); // assumes this.totalPrice is calculated
+    // if(startDate ==undefined || endDate == undefined) return;
+    this.calculateTotalPrice(); // assumes this.totalPrice is calculated
 
   }
 
 
-  onReserveConfirmClick(){
-    
-    let userId=this.auth.userId;
+  // onReserveConfirmClick() {
 
-      if ( !userId ) 
-        {
-          console.log("User not logged in. Opening login dialog..."); 
-          this.dialogService.openDialog('login');
-          return;
-        }
-    const startDate = dayjs(this.selected.startDate);
-    const endDate = dayjs(this.selected.endDate);
-    const guestCount = (this.guests?.adults || 0) + (this.guests?.children || 0);
-    this.guestCount = guestCount
-    
-    // const formattedStart = startDate.format('YYYY-MM-DD');
-    // const formattedEnd = endDate.format('YYYY-MM-DD');
-      
+  //   let userId = this.auth.userId;
 
-        console.log("utc string",startDate.utc().format())
-      let bookingDTO: BookingDTO = {
-          propertyId: this.propertyId,
-          userId:userId,
-          checkInDate: startDate.utc().format(),
-          checkOutDate: endDate.utc().format(),
-          numberOfGuests: guestCount,
-        };
-        
-    this.bookingService.createBooking(bookingDTO).subscribe(bookingRes => {
-        console.log("booking result" ,bookingRes);
-      
-      const bookingId = bookingRes.data;
-      // const totalAmount = bookingRes.data.totalPrice;  
-      let createPaymentDto: CreatePaymentDTO = {
-        bookingId: bookingId,
-        amount: 0
-      }
-      this.paymentService.createCheckout(createPaymentDto).subscribe({
-        next: (res) => {
-          console.log("payment service ",res);  
-          this.confirmService.success("Reservation completed","",()=>{
-            window.location.href = res.url;
-            // this.router.navigateByUrl(res.url)
-          })
-          
-          
-          
-        },
-        error: (err) => {
-          this.confirmService.fail("Failed","")
-          console.error("Checkout session creation failed", err);
-        }
-      });
+  //   if (!userId) {
+  //     console.log("User not logged in. Opening login dialog...");
+  //     this.dialogService.openDialog('login');
+  //     return;
+  //   }
+  //   const startDate = dayjs(this.selected.startDate);
+  //   const endDate = dayjs(this.selected.endDate);
+  //   const guestCount = (this.guests?.adults || 0) + (this.guests?.children || 0);
+  //   this.guestCount = guestCount
 
-    // if(startDate ==undefined || endDate == undefined) return;
-    this.calculateTotalPrice(); // assumes this.totalPrice is calculated
+  //   // const formattedStart = startDate.format('YYYY-MM-DD');
+  //   // const formattedEnd = endDate.format('YYYY-MM-DD');
+
+
+  //   console.log("utc string", startDate.utc().format())
+  //   let bookingDTO: BookingDTO = {
+  //     propertyId: this.propertyId,
+  //     userId: userId,
+  //     checkInDate: startDate.utc().format(),
+  //     checkOutDate: endDate.utc().format(),
+  //     numberOfGuests: guestCount,
+  //   };
+
+  //   this.bookingService.createBooking(bookingDTO).subscribe(bookingRes => {
+  //     console.log("booking result", bookingRes);
+
+  //     const bookingId = bookingRes.data;
+  //     // const totalAmount = bookingRes.data.totalPrice;  
+  //     let createPaymentDto: CreatePaymentDTO = {
+  //       bookingId: bookingId,
+  //       amount: 0
+  //     }
+  //     this.paymentService.createCheckout(createPaymentDto).subscribe({
+  //       next: (res) => {
+  //         console.log("payment service ", res);
+  //         this.confirmService.success("Reservation completed", "", () => {
+  //           window.location.href = res.url;
+  //           // this.router.navigateByUrl(res.url)
+  //         })
+
+
+
+  //       },
+  //       error: (err) => {
+  //         this.confirmService.fail("Failed", "")
+  //         console.error("Checkout session creation failed", err);
+  //       }
+  //     });
+
+  //     // if(startDate ==undefined || endDate == undefined) return;
+  //     this.calculateTotalPrice(); // assumes this.totalPrice is calculated
+  //     let userId = this.auth.userId;
+
+  //     if (!userId) {
+  //       console.log('there is no userid'); //login
+  //       return;
+  //     }
+  //     //     let bookingDTO: BookingDTO = {
+  //     //       propertyId: this.propertyId,
+  //     //       userId:userId,
+  //     //       checkInDate: startDate.toDate().toUTCString(),
+  //     //       checkOutDate: endDate.toDate().toUTCString(),
+  //     //       numberOfGuests: guestCount,
+  //     //     };
+
+  //     // this.bookingService.createBooking(bookingDTO).subscribe(bookingRes => {
+  //     //     console.log("booking result" ,bookingRes);
+
+  //     //   const bookingId = bookingRes.data.id;
+  //     //   const totalAmount = bookingRes.data.totalPrice;
+
+
+  //   });
+  // }
+
+  onReserveConfirmClick() {
     let userId = this.auth.userId;
 
     if (!userId) {
-      console.log('there is no userid'); //login
+      console.log("User not logged in. Opening login dialog...");
+      this.dialogService.openDialog('login');
       return;
     }
-    //     let bookingDTO: BookingDTO = {
-    //       propertyId: this.propertyId,
-    //       userId:userId,
-    //       checkInDate: startDate.toDate().toUTCString(),
-    //       checkOutDate: endDate.toDate().toUTCString(),
-    //       numberOfGuests: guestCount,
-    //     };
 
-    // this.bookingService.createBooking(bookingDTO).subscribe(bookingRes => {
-    //     console.log("booking result" ,bookingRes);
+    const startDate = dayjs(this.selected.startDate);
+    const endDate = dayjs(this.selected.endDate);
+    const guestCount = (this.guests?.adults || 0) + (this.guests?.children || 0);
+    this.guestCount = guestCount;
 
-    //   const bookingId = bookingRes.data.id;
-    //   const totalAmount = bookingRes.data.totalPrice;
+    console.log("UTC string", startDate.utc().format());
 
+    let bookingDTO: BookingDTO = {
+      propertyId: this.propertyId,
+      userId: userId,
+      checkInDate: startDate.utc().format(),
+      checkOutDate: endDate.utc().format(),
+      numberOfGuests: guestCount,
+    };
 
+    this.bookingService.createBooking(bookingDTO).subscribe({
+      next: (bookingRes) => {
+        console.log("Booking result", bookingRes);
+
+        const bookingId = bookingRes.data;
+        let createPaymentDto: CreatePaymentDTO = {
+          bookingId: bookingId,
+          amount: this.totalPrice
+        }
+
+        this.paymentService.createCheckout(createPaymentDto).subscribe({
+          next: (res) => {
+            console.log("Payment service", res);
+            this.confirmService.success("Reservation completed", "", () => {
+              window.location.href = res.url;
+            });
+          },
+          error: (err) => {
+            this.confirmService.fail("Failed", "");
+            console.error("Checkout session creation failed", err);
+          }
+        });
+      },
+      error: (err) => {
+        console.error("Booking creation failed", err);
+        this.confirmService.fail("Booking Failed", "");
+      }
     });
   }
-
   // reserveFunction() :void{
   //       let userId=this.auth.userId;
 
@@ -788,10 +903,10 @@ constructor(
   //         checkOutDate: endDate.toDate().toUTCString(),
   //         numberOfGuests: guestCount,
   //       };
-        
+
   //   this.bookingService.createBooking(bookingDTO).subscribe(bookingRes => {
   //       console.log("booking result" ,bookingRes);
-      
+
   //     const bookingId = bookingRes.data.id;
   //     const totalAmount = bookingRes.data.totalPrice;
 
@@ -817,10 +932,10 @@ constructor(
     this.showViolationModal = false;
   }
 
-  onShowConfirmModal(){
+  onShowConfirmModal() {
     this.showConfirmModal = true
   }
-  onCloseConfirmModal(){
+  onCloseConfirmModal() {
     this.showConfirmModal = false
   }
 
