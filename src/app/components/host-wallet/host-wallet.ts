@@ -6,6 +6,7 @@ import {
 } from '../../core/services/payment/payment';
 import { AuthService } from '../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 enum PaymentStatus {
   Pending = 1,
@@ -28,7 +29,7 @@ enum TransferStatus {
   selector: 'app-host-wallet',
   templateUrl: './host-wallet.html',
   styleUrls: ['./host-wallet.css'],
-  imports: [CommonModule],
+  imports: [CommonModule,TranslateModule],
 })
 export class HostWalletComponent implements OnInit {
   pendingPayments: PaymentDTO[] = [];
@@ -46,7 +47,7 @@ export class HostWalletComponent implements OnInit {
 
   constructor(
     private paymentService: PaymentService,
-    private authService: AuthService
+    private authService: AuthService,
   ) { }
 
   ngOnInit() {
@@ -189,7 +190,7 @@ export class HostWalletComponent implements OnInit {
 
   formatAmount(amount?: number): string {
     if (typeof amount !== 'number') return '$0.00 USD';
-    const dollars = amount / 10;
+    const dollars = amount / 100;
     return `$${dollars.toFixed(2)} USD`;
   }
 

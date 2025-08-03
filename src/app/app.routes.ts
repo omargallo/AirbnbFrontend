@@ -49,6 +49,7 @@ import { UserProfile } from './pages/user-profile/user-profile';
 
 import { authGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
+import { HasListingGuard } from './core/guards/has-listing.guard';
 export const routes: Routes = [
   {
     path: '',
@@ -66,9 +67,9 @@ export const routes: Routes = [
         component: WishListProperties,
         canActivate: [authGuard],
       },
-      { path: 'Messages', component: Messages },
+      { path: 'Messages', component: Messages, canActivate: [authGuard] },
 
-      { path: 'user/:id', component: UserProfile },
+      { path: 'user/:id', component: UserProfile, canActivate: [authGuard] },
 
       { path: 'profile/:id', component: Profile, canActivate: [authGuard] },
       {
@@ -86,7 +87,6 @@ export const routes: Routes = [
         component: Notifications,
         canActivate: [authGuard],
       },
-
     ],
   },
   {
@@ -132,20 +132,20 @@ export const routes: Routes = [
   {
     path: 'AdminDashboard',
     component: AdminDashboard,
-    //canActivate: [authGuard, RoleGuard],
+    canActivate: [authGuard, RoleGuard],
     data: {
-     // roles: ['Admin'],
+      roles: ['Admin'],
     },
   },
 
-  // {
-  //   path: 'AdminDashboard',
-  //   component: AdminDashboard,
-  //   canActivate: [authGuard, RoleGuard],
-  //   data: {
-  //     roles: ['Admin'],
-  //   },
-  // },
+  {
+    path: 'AdminDashboard',
+    component: AdminDashboard,
+    canActivate: [authGuard, RoleGuard],
+    data: {
+      roles: ['Admin'],
+    },
+  },
   {
     path: 'dashboard',
     redirectTo: 'AdminDashboard',
@@ -161,6 +161,7 @@ export const routes: Routes = [
       {
         path: 'availability',
         component: Availability,
+        canActivate: [HasListingGuard],
         data: {
           roles: ['Host'],
         },

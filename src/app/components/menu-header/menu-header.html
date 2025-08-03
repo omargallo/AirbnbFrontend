@@ -1,7 +1,9 @@
 <div class="d-flex align-items-center position-relative">
-  <a class="switch-to-hosting-btn d-none d-lg-block" routerLink="/host">{{
-    "HEADER.SWITCH_TO_HOSTING" | translate
-  }}</a>
+  <a class="switch-to-hosting-btn d-none d-lg-block" (click)="switchMode()">
+    {{ currentRoute.includes("/host") ? ("HEADER.SWITCH_TO_TRAVELLER" |
+    translate) : ("HEADER.SWITCH_TO_HOSTING" | translate) }}
+  </a>
+
   <div class="dropdown" [ngClass]="{ show: dropdownOpen }">
     <button
       class="user-menu-button"
@@ -19,9 +21,9 @@
         (click)="$event.stopPropagation()"
       >
         <a href="#" routerLink="/profile/{{ userId }}"
-          ><span *ngIf="ifImg === ''" [ngStyle]="{ padding: '4px' }">{{
-            user?.charAt(0)?.toUpperCase() || "."
-          }}</span>
+          ><span *ngIf="ifImg === ''" [ngStyle]="{ padding: '4px' }"
+            >{{ user?.charAt(0)?.toUpperCase() || "K" }}</span
+          >
           <img
             *ngIf="ifImg"
             [src]="img"
@@ -41,8 +43,52 @@
         animate__fadeOut: dropdownClosing,
         show: dropdownOpen || dropdownClosing
       }"
+      [style.right]="lang.currentLang === 'en' ? '0' : 'auto'"
+      [style.left]="lang.currentLang === 'ar' ? '0' : 'auto'"
       (animationend)="onAnimationEnd()"
     >
+      <!-- <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          routerLink="/today"
+        >
+          <i class="bi bi-calendar-day"></i> {{ "HEADER.NAV.TODAY" | translate }}
+        </a>
+      </li> -->
+      <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          routerLink="/hostsettings/availability"
+        >
+          <i class="bi bi-calendar3"></i> {{ "HEADER.NAV.CALENDAR" | translate }}
+        </a>
+      </li>
+      <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          routerLink="/host"
+        >
+          <i class="bi bi-house-door"></i> {{ "HEADER.NAV.LISTINGS" | translate }}
+        </a>
+      </li>
+      <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          routerLink="/hostsettings/Messages"
+        >
+          <i class="bi bi-chat-dots"></i> {{ "HEADER.NAV.MESSAGES" | translate }}
+        </a>
+      </li>
+      <li class="d-lg-none" *ngIf="currentRoute.includes('/host')">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          routerLink="/hostsettings/Wallet"
+        >
+          <i class="bi bi-wallet2"></i>
+          {{ "HEADER.NAV.WALLET" | translate }}
+        </a>
+      </li>
+
       <li *ngIf="isLoggedIn">
         <a
           class="dropdown-item d-flex align-items-center gap-2"
@@ -51,6 +97,16 @@
         >
           <i class="bi bi-bell"></i>
           {{ "HEADER.notifications" | translate }}
+        </a>
+      </li>
+      <li *ngIf="isLoggedIn">
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          href="#"
+          routerLink="/profile/{{ userId }}"
+        >
+          <i class="bi bi-person-fill"></i>
+          {{ "HEADER.PROFILE" | translate }}
         </a>
       </li>
       <!-- <li>
@@ -89,7 +145,7 @@
               ></path>
             </svg>
           </div>
-          WishLists
+          {{ "HEADER.WISHLISTS" | translate }}
         </a>
       </li>
       <li>
@@ -97,20 +153,96 @@
           class="dropdown-item d-flex align-items-center gap-2"
           href="Messages"
         >
-          <i class="bi bi-chat"></i>
-          Messages
+          <div class="position-relative">
+            <i class="bi bi-chat"></i>
+            <span
+              *ngIf="unreadCount > 0"
+              class="position-absolute badge rounded-pill bg-danger"
+              [ngStyle]="{
+                top: '-12px',
+                left: lang.currentLang === 'en' ? '-12px' : null,
+                right: lang.currentLang === 'ar' ? '-12px' : null
+              }"
+            >
+              {{ unreadCount }}
+              <span class="visually-hidden">unread messages</span>
+            </span>
+          </div>
+          {{ "HEADER.NAV.MESSAGES" | translate }}
         </a>
       </li>
-      <li *ngIf="isLoggedIn">
+
+      <li [ngStyle]="!isLoggedIn ? { 'margin': '1.5rem 0rem' } : {}">
+        <hr class="dropdown-divider" />
+      </li>
+
+      <li
+        class="dropdown-item d-flex align-items-center gap-2"
+        style="cursor: pointer;"
+        (click)="toggleTheme()"
+      >
+        <i class="bi" [ngClass]="isDarkMode ? 'bi-sun' : 'bi-moon'"></i>
+        {{ isDarkMode ? ("HEADER.DARK_MODE" | translate) : ("HEADER.LIGHT_MODE"
+        | translate) }}
+      </li>
+
+      <li
+        class="dropdown-item d-flex align-items-center gap-2 dropdown-center"
+        style="padding: 0px !important;"
+      >
+        <!-- Dropstart Language Switcher -->
+        <div
+          type="button"
+          class="dropdown-toggle dropdown-item d-flex align-items-center gap-2 menu-dropdown"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <i class="bi bi-globe"></i>
+          {{ "HEADER.LANGUAGE" | translate }}
+        </div>
+        <ul
+          class="dropdown-menu"
+          style="left: 10px; background-color: var(--active);"
+        >
+          <li>
+            <button
+              class="dropdown-item"
+              [class.active]="lang.currentLang === 'en'"
+              (click)="lang.switchLang('en')"
+            >
+              {{ "HEADER.ENGLISH" | translate }}
+            </button>
+          </li>
+          <li>
+            <button
+              class="dropdown-item"
+              [class.active]="lang.currentLang === 'ar'"
+              (click)="lang.switchLang('ar')"
+            >
+              {{ "HEADER.ARABIC" | translate }}
+            </button>
+          </li>
+        </ul>
+      </li>
+      <!-- <li>
         <a
           class="dropdown-item d-flex align-items-center gap-2"
-          href="#"
-          (click)="logout()"
+          routerLink="/host"
         >
-          <i class="bi bi-box-arrow-right"></i>
-          {{ "HEADER.LOGOUT" | translate }}
+          <i class="bi bi-house-door-fill"></i>{{ "HEADER.AIRBNB_YOUR_HOME" |
+          translate }}
         </a>
-      </li>
+      </li> -->
+      <!--
+      <li>
+        <a
+          class="dropdown-item d-flex align-items-center gap-2"
+          routerLink="/help"
+        >
+          <i class="bi bi-question-circle"></i>
+          {{ "HEADER.HELP" | translate }}
+        </a>
+      </li> -->
 
       <li *ngIf="!isLoggedIn">
         <a
@@ -133,79 +265,14 @@
           {{ "HEADER.LOGIN" | translate }}
         </a>
       </li>
-
-      <li><hr class="dropdown-divider" /></li>
-
-      <li
-        class="dropdown-item d-flex align-items-center gap-2"
-        style="cursor: pointer"
-        (click)="toggleTheme()"
-      >
-        <i class="bi" [ngClass]="isDarkMode ? 'bi-sun' : 'bi-moon'"></i>
-        {{
-          isDarkMode
-            ? ("HEADER.DARK_MODE" | translate)
-            : ("HEADER.LIGHT_MODE" | translate)
-        }}
-      </li>
-
-      <li
-        class="dropdown-item d-flex align-items-center gap-2 dropdown-center"
-        style="padding: 0px !important"
-      >
-        <!-- Dropstart Language Switcher -->
-        <div
-          type="button"
-          class="dropdown-toggle dropdown-item d-flex align-items-center gap-2 menu-dropdown"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <i class="bi bi-globe"></i>
-          {{ "HEADER.LANGUAGE" | translate }}
-        </div>
-        <ul
-          class="dropdown-menu"
-          style="left: 10px; background-color: var(--active)"
-        >
-          <li>
-            <a
-              class="dropdown-item"
-              href="#"
-              [class.active]="lang.currentLang === 'en'"
-              (click)="lang.switchLang('en')"
-            >
-              {{ "HEADER.ENGLISH" | translate }}
-            </a>
-          </li>
-          <li>
-            <a
-              class="dropdown-item"
-              href="#"
-              [class.active]="lang.currentLang === 'ar'"
-              (click)="lang.switchLang('ar')"
-            >
-              {{ "HEADER.ARABIC" | translate }}
-            </a>
-          </li>
-        </ul>
-      </li>
-      <li>
+      <li *ngIf="isLoggedIn">
         <a
           class="dropdown-item d-flex align-items-center gap-2"
-          routerLink="/host"
+          href="#"
+          (click)="logout()"
         >
-          <i class="bi bi-house-door-fill"></i
-          >{{ "HEADER.AIRBNB_YOUR_HOME" | translate }}
-        </a>
-      </li>
-
-      <li>
-        <a
-          class="dropdown-item d-flex align-items-center gap-2"
-          routerLink="/help"
-        >
-          <i class="bi bi-question-circle"></i>
-          {{ "HEADER.HELP" | translate }}
+          <i class="bi bi-box-arrow-right"></i>
+          {{ "HEADER.LOGOUT" | translate }}
         </a>
       </li>
     </ul>

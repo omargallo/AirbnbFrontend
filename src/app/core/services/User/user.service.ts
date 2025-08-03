@@ -19,7 +19,7 @@ export class UserService {
       .pipe(
         tap((response: any) => {
           this.authService.setAccessToken(response.accessToken);
-          this.authService.setRefreshToken(response.refreshToken);
+          // this.authService.setRefreshToken(response.refreshToken);
           this.authService.setUserId(response.userId);
           this.authService.setRole(response.roles);
         })

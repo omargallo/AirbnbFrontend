@@ -1,40 +1,47 @@
+
+
 .calendar-container {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: white;
+  background: var(--bg-color);
   margin: 0 auto;
   /* height: 87vh; */
-
+  /* color: var(--primary-text-color); */
   display: flex;
   flex-direction: column;
 }
+
 @media (min-width: 1024px) {
   .calendar-container {
     height: 87vh !important;
   }
 }
+
 .calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap-reverse;
+  gap: 1rem;
   padding: 24px;
-  background: white;
+  background: var(--bg-color);
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid #eee;
-  border-top: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color);
   flex-shrink: 0;
 }
 
 .year-display {
   font-size: 32px;
   font-weight: 600;
-  color: #222;
+  color: var(--primary-text-color);
 }
 
 .view-selector {
   position: relative;
 }
+
 .view-selector-2 {
   position: relative;
 }
@@ -44,12 +51,12 @@
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: white;
-  border: 1px solid #ddd;
+  background: var(--active);
+  border: 1px solid var(--border-color);
   border-radius: 20px;
   cursor: pointer;
   font-size: 14px;
-  color: #484848;
+  color: var(--primary-text-color);
   transition: all 0.2s ease;
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
@@ -58,7 +65,7 @@
 }
 
 .view-btn:hover {
-  border-color: #222;
+  border-color: var(--primary-text-color);
 }
 
 .dropdown-icon {
@@ -71,10 +78,10 @@
   position: absolute;
   top: 114%;
   right: 0;
-  background: white;
-  border: 1px solid #ddd;
+  background: var(--active);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 32px var(--dropdown-shadow);
   padding: 16px;
   min-width: 200px;
   z-index: 1000;
@@ -93,14 +100,15 @@
   visibility: visible;
   transform: translateY(0);
 }
+
 .view-dropdown-2 {
   position: absolute;
   top: 114%;
   right: 0;
-  background: white;
-  border: 1px solid #ddd;
+  background: var(--active);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 32px var(--dropdown-shadow);
   padding: 16px;
   min-width: 200px;
   z-index: 1000;
@@ -108,11 +116,10 @@
   visibility: hidden;
   transform: translateY(-8px);
   transition: all 0.2s ease;
-
   max-height: 400px;
   overflow-y: scroll;
   scrollbar-width: thin;
-  scrollbar-color: #c3bfbf #fff;
+  scrollbar-color: var(--secondary-text-color) var(--bg-color);
   width: max-content !important;
 }
 
@@ -121,6 +128,7 @@
   visibility: visible;
   transform: translateY(0);
 }
+
 .propertyavatar {
   width: 30px;
   height: 30px;
@@ -136,7 +144,7 @@
   padding: 8px 0px;
   cursor: pointer;
   font-size: 14px;
-  color: #484848;
+  color: var(--secondary-text-color);
 }
 
 .radio-option input[type="radio"] {
@@ -146,14 +154,14 @@
 .radio-custom {
   width: 20px;
   height: 20px;
-  border: 2px solid #ddd;
+  border: 2px solid var(--border-color);
   border-radius: 50%;
   position: relative;
   transition: all 0.2s ease;
 }
 
 .radio-option input[type="radio"]:checked + .radio-custom {
-  border-color: #222;
+  border-color: var(--primary-text-color);
 }
 
 .radio-option input[type="radio"]:checked + .radio-custom::after {
@@ -164,7 +172,7 @@
   transform: translate(-50%, -50%);
   width: 8px;
   height: 8px;
-  background: #222;
+  background: var(--primary-text-color);
   border-radius: 50%;
 }
 
@@ -173,7 +181,7 @@
   gap: 8px;
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-color);
 }
 
 .close-btn,
@@ -188,23 +196,24 @@
 }
 
 .close-btn {
-  background: white;
-  border: 1px solid #ddd;
-  color: #484848;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  color: var(--secondary-text-color);
 }
 
 .close-btn:hover {
-  background: #f7f7f7;
+  background: var(--hover-bg);
 }
 
 .apply-btn {
-  background: #222;
-  border: 1px solid #222;
-  color: white;
+  background: var(--primary-text-color);
+  border: 1px solid var(--primary-text-color);
+  color: var(--bg-color);
 }
 
 .apply-btn:hover {
-  background: #000;
+  background: var(--selected-bg);
+  border-color: var(--selected-bg);
 }
 
 .calendar-grid {
@@ -213,7 +222,7 @@
   padding: 16px;
   scroll-behavior: smooth;
   scrollbar-width: thin;
-  scrollbar-color: #e0e0e0 #ffff;
+  scrollbar-color: var(--secondary-text-color) var(--bg-color);
 }
 
 /* Year View */
@@ -237,13 +246,13 @@
 .month-header h3 {
   font-size: 18px;
   font-weight: 600;
-  color: #222;
+  color: var(--primary-text-color);
   margin: 0;
 }
 
 .discount-indicator {
   font-size: 12px;
-  /* color: #0066cc; */
+  color: var(--airbnb-red);
   text-decoration: underline;
 }
 
@@ -263,15 +272,15 @@
 .month-navigation h2 {
   font-size: 24px;
   font-weight: 600;
-  color: #222;
+  color: var(--primary-text-color);
   margin: 0;
 }
 
 .nav-btn {
   width: 40px;
   height: 40px;
-  background: white;
-  border: 1px solid #ddd;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -281,8 +290,8 @@
 }
 
 .nav-btn:hover {
-  border-color: #222;
-  background: #f7f7f7;
+  border-color: var(--primary-text-color);
+  background: var(--hover-bg);
 }
 
 .nav-btn svg {
@@ -302,7 +311,7 @@
   text-align: center;
   font-size: 12px;
   font-weight: 600;
-  color: #717171;
+  color: var(--secondary-text-color);
   padding: 8px 4px;
 }
 
@@ -324,20 +333,20 @@
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
-  background: white;
+  background: var(--bg-color);
   min-height: 40px;
 }
 
 .day-number {
   font-size: 14px;
   font-weight: 500;
-  color: #222;
+  color: var(--primary-text-color);
   line-height: 1;
 }
 
 .day-price {
   font-size: 10px;
-  color: #717171;
+  color: var(--secondary-text-color);
   margin-top: 2px;
   line-height: 1;
 }
@@ -348,9 +357,9 @@
 }
 
 .day-cell.disabled {
-  color: #ddd;
+  color: var(--disabled-color);
   cursor: not-allowed;
-  background: #f7f7f7;
+  background: var(--disabled-bg);
 }
 
 .day-cell.disabled .day-price {
@@ -358,44 +367,45 @@
 }
 
 .day-cell.available:hover {
-  border-color: #222;
-  background: #f7f7f7;
+  border-color: var(--primary-text-color);
+  background: var(--hover-bg);
 }
 
 .day-cell.not-available {
-  background-color: #eee;
+  background-color: var(--not-available-bg);
 }
 
 .day-cell.not-available .day-number {
   text-decoration: line-through;
-  color: #999;
+  color: var(--not-available-text);
 }
 
 .day-cell.selected.not-available:hover .day-number {
-  color: #fff !important;
+  color: var(--selected-text) !important;
 }
 
 .day-cell.selected {
-  background: #222 !important;
-  color: white;
-  border-color: #222;
+  background: var(--selected-bg) !important;
+  color: var(--selected-text);
+  border-color: var(--selected-bg);
 }
 
 .day-cell.selected .day-number {
-  color: white;
+  color: var(--selected-text);
 }
 
 .day-cell.selected:hover .day-number {
-  color: white;
+  color: var(--selected-text);
 }
 
 .day-cell.selected .day-price {
-  color: #ccc;
+  color: var(--secondary-text-color);
+  opacity: 0.8;
 }
 
 .day-cell.highlighted {
-  background: #f0f0f0;
-  border-color: #ddd;
+  background: var(--highlighted-bg);
+  border-color: var(--border-color);
 }
 
 /* Responsive Design */
@@ -443,7 +453,7 @@
 
 /* Focus states for accessibility */
 /* .day-cell:focus {
-  outline: 2px solid #ff385c;
+  outline: 2px solid var(--airbnb-red);
   outline-offset: 2px;
 }
 
@@ -451,30 +461,64 @@
 .nav-btn:focus,
 .close-btn:focus,
 .apply-btn:focus {
-  outline: 2px solid #ff385c;
+  outline: 2px solid var(--airbnb-red);
   outline-offset: 2px;
 } */
 
 .nav-btn:disabled {
   cursor: not-allowed;
-  color: #717171;
+  color: var(--secondary-text-color);
 }
 
 .nav-btn:disabled:hover {
   cursor: not-allowed;
-  color: #717171;
-
-  background: white;
-  border-color: #ddd;
+  color: var(--secondary-text-color);
+  background: var(--bg-color);
+  border-color: var(--border-color);
 }
 
-
 .booked {
-  background-color: #ff385c !important;
-  color: white !important;
+  background-color: var(--airbnb-red) !important;
+  color: var(--selected-text) !important;
   cursor: not-allowed;
   /* opacity: 0.6; */
 }
-.booked .day-number{
-  color: white !important;
+
+.booked .day-number {
+  color: var(--selected-text) !important;
+}
+
+
+/* Mode Tabs */
+.mode-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  /* margin-bottom: 10px; */
+}
+
+.mode-tab {
+  padding: 6px 14px;
+  border: 1px solid var(--border-color);
+  background: var(--active);
+  color: var(--primary-text-color);
+  border-radius: 35px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  -webkit-border-radius: 35px;
+  -moz-border-radius: 35px;
+  -ms-border-radius: 35px;
+  -o-border-radius: 35px;
+}
+
+.mode-tab:hover {
+  background: var(--hover-bg);
+  border-color: var(--primary-text-color);
+}
+
+.mode-tab.active {
+  background: var(--primary-text-color);
+  color: var(--bg-color);
+  border-color: var(--primary-text-color);
 }

@@ -3,6 +3,8 @@
     <div class="col-md-3 p-0">
       <app-messages-box
         (chatSessionSelected)="onChatSessionSelected($event)"
+        (langChange)="onLangChange()"
+
       ></app-messages-box>
     </div>
 
@@ -16,7 +18,7 @@
     </div>
 
     <ng-container *ngIf="hasChatSelected">
-      <div [ngClass]="{'col-md-9': false, 'col-md-6': !isHost || isHost}" class="p-0">
+      <div  [ngClass]="false ? 'col-md-9' : 'col-md-6'" class="p-0">
         <app-chat-box
           [selectedChatSession]="selectedChatSession"
           [initialMessages]="initialMessages"

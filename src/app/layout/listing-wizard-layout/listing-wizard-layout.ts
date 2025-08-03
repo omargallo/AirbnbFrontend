@@ -6,6 +6,7 @@ import { ListingWizardService } from '../../core/services/ListingWizard/listing-
 import { PropertyCreationService } from '../../core/services/Property/property-creation.service';
 import { PropertyFormStorageService } from '../../pages/add-property/services/property-form-storage.service';
 import { ListingValidationService } from '../../core/services/ListingWizard/listing-validation.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-listing-wizard-layout',
@@ -24,10 +25,17 @@ export class ListingWizardLayoutComponent {
   @Input() progressPercentage = 0;
   @Input() showBackButton = true;
 
-  @Output() onSaveExit = new EventEmitter<void>();
+
   @Output() onPrevStep = new EventEmitter<void>();
   @Output() onNextStep = new EventEmitter<void>();
   @Output() onSubmit = new EventEmitter<void>();
+
+  
+  saveAndExit() {
+    // The form data is already being saved by the PropertyFormStorageService
+    // Just need to navigate to the host page
+    this.router.navigate(['/host']);
+  }
 
   private readonly stepRoutes: string[] = [
     '', // Corresponds to StepsPage
@@ -58,7 +66,8 @@ export class ListingWizardLayoutComponent {
     private formStorage: PropertyFormStorageService,
     private wizardService: ListingWizardService,
     private propertyCreationService: PropertyCreationService,
-    private validationService: ListingValidationService
+    private validationService: ListingValidationService,
+    private snackBar: MatSnackBar
   ) {
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
@@ -70,6 +79,19 @@ export class ListingWizardLayoutComponent {
 
     this.validationService.canProceed$.subscribe(canProceed => {
       this.canProceed = canProceed;
+    });
+  }
+
+  private showToast(
+    message: string,
+    vertical: 'top' | 'bottom',
+    horizontal: 'left' | 'right'
+  ) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: horizontal,
+      verticalPosition: vertical,
+      panelClass: ['custom-snackbar'],
     });
   }
 
@@ -104,7 +126,7 @@ export class ListingWizardLayoutComponent {
 
     if (!hasImages) {
       console.error('❌ No images found!');
-      alert('Please upload at least one image before submitting the property.');
+      this.showToast('Please upload at least one image before submitting the property.', 'bottom', 'left');
       return;
     }
 
@@ -116,19 +138,26 @@ export class ListingWizardLayoutComponent {
       images: propertyData.images || []
     };
 
-    this.propertyCreationService.createProperty(finalPropertyData).subscribe({
+    let  observable = this.propertyCreationService.createProperty(finalPropertyData)
+    console.log("returned observable",observable)
+    observable.subscribe({
       next: (response) => {
         console.log('✅ Property created successfully:', response);
         this.formStorage.clearFormData();
         localStorage.removeItem('property_form_data');
         // alert('Property created successfully!');
         this.router.navigate(['/host']);
+        this.showToast('property created', 'top', 'right');
       },
       error: (error) => {
         console.error('❌ Error creating property:', error);
-        alert('Failed to create property: ' + error.message);
+        this.showToast('Failed to create property: ' + error.message, 'bottom', 'left');
       }
     });
+    // setTimeout(
+    //   ()=> this.router.navigateByUrl("/host"),
+    //   500
+    // )
   }
   private getCurrentStepIndex(): number {
     const url = this.router.url;
@@ -168,7 +197,7 @@ export class ListingWizardLayoutComponent {
   navigateToNextStep(): void {
     const currentIndex = this.getCurrentStepIndex();
     const currentRoute = this.stepRoutes[currentIndex];
-    
+
     if (currentRoute && !this.validationService.validateStep(currentRoute)) {
       return; // Stop if validation fails
     }

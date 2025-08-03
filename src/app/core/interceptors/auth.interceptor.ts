@@ -14,6 +14,7 @@ import { AuthService } from '../services/auth.service';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private isRefreshing = false;
+  private firstTimeRefresh = true;
   private refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
   constructor(private authService: AuthService) { }
@@ -26,6 +27,12 @@ export class AuthInterceptor implements HttpInterceptor {
 
     if (isExternalRequest) {
       return next.handle(req);
+    }
+
+    if(this.firstTimeRefresh && !this.authService.userId){
+      let x = this.handle401Error(req,next)
+      console.log("after handle401error");
+      x.subscribe()
     }
 
     const accessToken = this.authService.accessToken;
@@ -56,17 +63,21 @@ export class AuthInterceptor implements HttpInterceptor {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
-
-      return this.authService.refreshTokenBackend$.pipe(
+      
+      return this.authService.refreshTokenBackend$().pipe(
         switchMap((token: any) => {
           this.isRefreshing = false;
+          this.firstTimeRefresh = false;
           this.authService.setAccessToken(token.accessToken);
-          this.refreshTokenSubject.next(token.accessToken);
+          // this.refreshTokenSubject.next(token.refreshToken);
+          this.authService.setUserId(token.userId);
+          this.authService.setRole(token.roles);
           return next.handle(this.addToken(request, token.accessToken));
         }),
         catchError((err) => {
           this.isRefreshing = false;
-          this.authService.clear();
+          this.firstTimeRefresh = false;
+          // this.authService.clear();
           return throwError(() => err);
         })
       );

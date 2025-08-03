@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface PricingSettings {
   basePrice: number;
@@ -39,7 +40,7 @@ export interface CalendarFullSettings {
 @Component({
   selector: 'app-calendar-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,TranslateModule],
   templateUrl: './calendar-settings.html',
   styleUrls: ['./calendar-settings.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,

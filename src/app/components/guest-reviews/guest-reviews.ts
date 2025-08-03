@@ -173,10 +173,10 @@ export class GuestReviews implements OnInit {
     }
 
     if (this.isLoadingBookings) {
-      console.log('Bookings are still loading.');
+      // console.log('Bookings are still loading.');
       return false;
     } else {
-      console.log('Bookings loaded:', this.userBookings);
+      // console.log('Bookings loaded:', this.userBookings);
     }
 
     const hasCompletedBooking = this.userBookings.some(

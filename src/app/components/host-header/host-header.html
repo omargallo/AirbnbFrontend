@@ -14,20 +14,20 @@
 
     <!-- Middle: Navigation Links -->
     <ul class="nav-middle list-unstyled">
-      <li>
+      <!-- <li>
         <a
           routerLink="today"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }"
-          >Today</a
+          >{{ 'HEADER.NAV.TODAY' | translate }}</a
         >
-      </li>
+      </li> -->
       <li>
         <a
           routerLink="/hostsettings/availability"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }"
-          >Calendar</a
+          >{{ 'HEADER.NAV.CALENDAR' | translate }}</a
         >
       </li>
       <li>
@@ -35,7 +35,7 @@
           routerLink="/host"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }"
-          >Listings</a
+          >{{ 'HEADER.NAV.LISTINGS' | translate }}</a
         >
       </li>
       <li>
@@ -43,7 +43,7 @@
           routerLink="/hostsettings/Messages"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }"
-          >Messages</a
+          >{{ 'HEADER.NAV.MESSAGES' | translate }}</a
         >
       </li>
       <li>
@@ -51,7 +51,7 @@
           routerLink="/hostsettings/Wallet"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }"
-          >Wallet</a
+          >{{ 'HEADER.NAV.WALLET' | translate }}</a
         >
       </li>
     </ul>

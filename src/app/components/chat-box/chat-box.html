@@ -8,7 +8,11 @@
   </div>
 
   <!-- Messages -->
-  <div #chatContainer class="chat-messages" (scroll)="onScroll($event)">
+  <cdk-virtual-scroll-viewport
+    #chatContainer
+    itemSize="50"
+    class="chat-messages"
+  >
     <!-- Loading indicator for older messages -->
     <div *ngIf="isLoadingOlderMessages" class="loading-older-messages">
       <div class="loading-dots">
@@ -25,11 +29,13 @@
         <span class="dot"></span>
         <span class="dot"></span>
       </div>
-      <span class="loading-text">Loading messages...</span>
+      <span class="loading-text"
+        >{{ 'CHAT.LOADING_MESSAGES' | translate }}</span
+      >
     </div>
 
     <ng-container
-      *ngFor="let item of chatItems; let i = index; trackBy: trackById"
+      *cdkVirtualFor="let item of chatItems; let i = index; trackBy: trackById"
     >
       <!-- Date separator -->
       <div *ngIf="item.type === 'date'" class="date-separator">
@@ -42,7 +48,7 @@
           {{ item.content }}
         </span>
         <span
-          style="color: #008489; text-decoration: underline; cursor: pointer"
+          style="color: #008489; text-decoration: underline; cursor: pointer;"
         >
           {{ item.action }}
         </span>
@@ -62,7 +68,7 @@
             [src]="hostProfileImage"
             class="profile-img"
             alt="Host"
-            style="width: 24px; height: 24px"
+            style="width: 24px; height: 24px;"
           />
           <span class="host-label">{{ hostName }}</span>
           <span class="timestamp">{{ item.timestamp }}</span>
@@ -124,7 +130,8 @@
         <div *ngIf="item.isCurrentUser" class="user-timestamp">
           <span class="timestamp">{{ item.timestamp }}</span>
           <span *ngIf="item.readBy" class="read-status"
-            >Read by {{ item.readBy }}</span
+            >  {{ 'CHAT.READ_BY' | translate:{ name: item.readBy } }}
+</span
           >
           <img
             *ngIf="item.readBy && i === getLastReadMessageIndex()"
@@ -135,7 +142,7 @@
         </div>
       </div>
     </ng-container>
-  </div>
+  </cdk-virtual-scroll-viewport>
 
   <!-- Input area -->
   <div class="chat-input-area">
@@ -143,7 +150,7 @@
       <input
         type="text"
         class="message-input"
-        placeholder="Write a message..."
+        [placeholder]="'CHAT.WRITE_MESSAGE' | translate"
         [(ngModel)]="messageInput"
         (keypress)="onKeyPress($event)"
       />
@@ -174,7 +181,7 @@
           stroke-linecap="round"
         />
       </svg>
-      <span>Typical response time: 11 hours</span>
+      <span> {{ 'CHAT.RESPONSE_TIME' | translate:{ time: '11 hours' } }} </span>
     </div>
   </div>
 </div>

@@ -1,8 +1,22 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnDestroy,
+  AfterViewInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import * as L from 'leaflet';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface LocationSectionData {
   location: {
@@ -23,7 +37,9 @@ export interface LocationSectionData {
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './location-section.html',
 })
-export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewInit {
+export class LocationSectionComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   @Input() data: LocationSectionData | null = null;
   @Output() dataChange = new EventEmitter<LocationSectionData>();
   @Output() hasChanges = new EventEmitter<boolean>();
@@ -37,19 +53,28 @@ export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewIni
   private marker: any;
   private geocoder: any;
 
- 
   private propertyLocationIcon = L.icon({
-    iconUrl: 'https://www.svgrepo.com/show/127575/location-sign.svg', 
-    
+    iconUrl: 'https://www.svgrepo.com/show/127575/location-sign.svg',
 
-    iconSize: [25, 41], 
-    iconAnchor: [12, 41], 
-    popupAnchor: [1, -34], 
-    
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
   });
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private snackBar: MatSnackBar) {
     this.initializeForm();
+  }
+  private showToast(
+    message: string,
+    vertical: 'top' | 'bottom',
+    horizontal: 'left' | 'right'
+  ) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: horizontal,
+      verticalPosition: vertical,
+      panelClass: ['custom-snackbar'],
+    });
   }
 
   ngOnInit(): void {
@@ -75,7 +100,7 @@ export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewIni
       city: ['', Validators.required],
       country: ['', Validators.required],
       latitude: [null],
-      longitude: [null]
+      longitude: [null],
     });
   }
 
@@ -94,11 +119,15 @@ export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewIni
     this.map = L.map('map').setView([defaultLat, defaultLng], zoom);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.map);
 
     if (this.data?.location?.coordinates) {
-      this.addMarker(this.data.location.coordinates.lat, this.data.location.coordinates.lng);
+      this.addMarker(
+        this.data.location.coordinates.lat,
+        this.data.location.coordinates.lng
+      );
     }
 
     this.map.on('click', (e: any) => {
@@ -115,8 +144,9 @@ export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewIni
 
     this.marker = L.marker([lat, lng], {
       draggable: true,
-      icon: this.propertyLocationIcon 
-    }).addTo(this.map)
+      icon: this.propertyLocationIcon,
+    })
+      .addTo(this.map)
       .bindPopup('Your property location')
       .openPopup();
 
@@ -130,7 +160,7 @@ export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewIni
   private updateFormCoordinates(lat: number, lng: number): void {
     this.locationForm.patchValue({
       latitude: lat,
-      longitude: lng
+      longitude: lng,
     });
     this.showCoordinates = true;
   }
@@ -142,7 +172,7 @@ export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewIni
         city: this.data.location.city,
         country: this.data.location.country,
         latitude: this.data.location.coordinates?.lat || null,
-        longitude: this.data.location.coordinates?.lng || null
+        longitude: this.data.location.coordinates?.lng || null,
       };
       this.locationForm.patchValue(this.initialValue);
     }
@@ -152,11 +182,14 @@ export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewIni
     this.locationForm.valueChanges
       .pipe(
         debounceTime(300),
-        distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
+        distinctUntilChanged(
+          (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)
+        ),
         takeUntil(this.destroy$)
       )
       .subscribe((value) => {
-        const hasChanges = JSON.stringify(value) !== JSON.stringify(this.initialValue);
+        const hasChanges =
+          JSON.stringify(value) !== JSON.stringify(this.initialValue);
         const isValid = this.locationForm.valid;
         this.hasChanges.emit(hasChanges);
         this.validationChange.emit(isValid);
@@ -166,11 +199,14 @@ export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewIni
               address: value.address || '',
               city: value.city || '',
               country: value.country || '',
-              coordinates: (value.latitude && value.longitude) ? {
-                lat: Number(value.latitude),
-                lng: Number(value.longitude)
-              } : undefined
-            }
+              coordinates:
+                value.latitude && value.longitude
+                  ? {
+                      lat: Number(value.latitude),
+                      lng: Number(value.longitude),
+                    }
+                  : undefined,
+            },
           };
           this.dataChange.emit(locationData);
         }
@@ -185,7 +221,10 @@ export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewIni
   getFieldError(fieldName: string): string {
     const field = this.locationForm.get(fieldName);
     if (field?.errors && field.touched) {
-      if (field.errors['required']) return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
+      if (field.errors['required'])
+        return `${
+          fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+        } is required`;
     }
     return '';
   }
@@ -195,13 +234,16 @@ export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewIni
     if (!this.showCoordinates) {
       this.locationForm.patchValue({
         latitude: null,
-        longitude: null
+        longitude: null,
       });
       if (this.marker) {
         this.map.removeLayer(this.marker);
         this.marker = null;
       }
-    } else if (this.locationForm.value.latitude && this.locationForm.value.longitude) {
+    } else if (
+      this.locationForm.value.latitude &&
+      this.locationForm.value.longitude
+    ) {
       this.addMarker(
         this.locationForm.value.latitude,
         this.locationForm.value.longitude
@@ -222,11 +264,19 @@ export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewIni
         },
         (error) => {
           console.error('Error getting current location:', error);
-          alert('Unable to retrieve your location. Please check your browser settings.');
+          this.showToast(
+            'Unable to retrieve your location. Please check your browser settings.',
+            'bottom',
+            'left'
+          );
         }
       );
     } else {
-      alert('Geolocation is not supported by your browser.');
+      this.showToast(
+        'Geolocation is not supported by your browser.',
+        'bottom',
+        'left'
+      );
     }
   }
 
@@ -242,11 +292,14 @@ export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewIni
         address: formValue.address || '',
         city: formValue.city || '',
         country: formValue.country || '',
-        coordinates: (formValue.latitude && formValue.longitude) ? {
-          lat: Number(formValue.latitude),
-          lng: Number(formValue.longitude)
-        } : undefined
-      }
+        coordinates:
+          formValue.latitude && formValue.longitude
+            ? {
+                lat: Number(formValue.latitude),
+                lng: Number(formValue.longitude),
+              }
+            : undefined,
+      },
     };
   }
 
@@ -256,7 +309,9 @@ export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewIni
 
   getFullAddress(): string {
     const formValue = this.locationForm.value;
-    const parts = [formValue.address, formValue.city, formValue.country].filter(Boolean);
+    const parts = [formValue.address, formValue.city, formValue.country].filter(
+      Boolean
+    );
     return parts.join(', ');
   }
 
@@ -266,13 +321,15 @@ export class LocationSectionComponent implements OnInit, OnDestroy, AfterViewIni
     if (!lat || !lng) return false;
     const latitude = Number(lat);
     const longitude = Number(lng);
-    return latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180;
+    return (
+      latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180
+    );
   }
 
   clearCoordinates(): void {
     this.locationForm.patchValue({
       latitude: null,
-      longitude: null
+      longitude: null,
     });
     if (this.marker) {
       this.map.removeLayer(this.marker);

@@ -26,7 +26,7 @@
     font-size: 22px;
     font-weight: 600;
     margin-bottom: 16px;
-    color: #222; /* Ensure text is visible */
+    color: #181818; /* Ensure text is visible */
 
     span {
       color: #717171;
@@ -79,9 +79,15 @@
     background: linear-gradient(90deg, #d94659, #e8047a); 
     transition: background 0.3s ease, opacity 0.3s ease;
     &:hover {
-      background-color: #e2859b;
+      background-color: #dd5e3b;
+      
     }
   }
+  .check-btn:hover {
+  /* opacity: 0.9;
+  background-color: #dd5e3b; */
+
+}
 
 /* Rare Find Badge */
 .rare-find-badge {

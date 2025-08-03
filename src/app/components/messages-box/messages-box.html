@@ -1,7 +1,7 @@
 <div class="component-container">
   <!-- Header -->
   <div class="d-flex justify-content-between align-items-center">
-    <h2 class="fs-3 fw-bold mb-1">Messages</h2>
+    <h2 class="fs-3 fw-bold mb-1">{{ "MESSAGES.TITLE" | translate }}</h2>
 
     <!-- Loading indicator in header when loading more -->
     <!-- <div *ngIf="isLoadingMore" class="loading-indicator">
@@ -17,15 +17,65 @@
       [class.active]="activeFilter === 'all'"
       (click)="setActiveFilter('all')"
     >
-      All
+      {{ "MESSAGES.FILTER.ALL" | translate }}
     </button>
     <button
       class="filter-btn"
       [class.active]="activeFilter === 'unread'"
       (click)="setActiveFilter('unread')"
     >
-      Unread ({{ getUnreadCount() }})
+      <!-- Unread ({{ getUnreadCount() }}) -->
+      {{ "MESSAGES.FILTER.UNREAD" | translate:{ count: getUnreadCount() } }}
     </button>
+    <!-- Language Settings -->
+    <div class="language-settings">
+      <button class="settings-btn" (click)="toggleLanguageSettings()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="3"></circle>
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+          ></path>
+        </svg>
+      </button>
+      <div class="language-dropdown" *ngIf="showLanguageSettings">
+        <div class="language-dropdown-content">
+          <label for="languageSearch"
+            >{{ "MESSAGES.LANGUAGE.LABEL" | translate }}</label
+          >
+          <div class="search-container">
+            <input
+              type="text"
+              id="languageSearch"
+              [(ngModel)]="searchQuery"
+              placeholder="{{ 'MESSAGES.LANGUAGE.PLACEHOLDER' | translate }}"
+              class="form-control mb-2"
+            />
+          </div>
+          <select
+            id="languageSelect"
+            [(ngModel)]="selectedLanguage"
+            (change)="onLanguageChange()"
+            class="form-select"
+            size="10"
+          >
+            <option [value]="null"
+              >{{ "MESSAGES.LANGUAGE.ORIGINAL" | translate }}</option
+            >
+            <option *ngFor="let lang of filteredLanguages" [value]="lang.code">
+              {{ lang.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Loading State for initial load -->
@@ -33,14 +83,14 @@
     <div class="spinner-border" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
-    <p class="mt-2">Loading messages...</p>
+    <p class="mt-2">{{ "MESSAGES.LOADING_INITIAL" | translate }}</p>
   </div>
 
   <!-- Error State -->
   <div *ngIf="error" class="alert alert-danger mt-3">
     {{ error }}
     <button class="btn btn-link p-0 ms-2" (click)="resetAndLoadChatSessions()">
-      Try again
+      {{ "MESSAGES.TRY_AGAIN" | translate }}
     </button>
   </div>
 
@@ -94,7 +144,9 @@
       <div class="spinner-border spinner-border-sm" role="status">
         <span class="visually-hidden">Loading more...</span>
       </div>
-      <small class="d-block mt-1 text-muted">Loading more messages...</small>
+      <small class="d-block mt-1 text-muted">
+        {{ "MESSAGES.LOADING_MORE" | translate }}</small
+      >
     </div>
 
     <!-- End of data indicator -->
@@ -104,7 +156,7 @@
     >
       <small class="text-muted">
         <i class="bi bi-check-circle me-1"></i>
-        All messages loaded ({{ messageThreads.length }} total)
+        {{ "MESSAGES.ALL_LOADED" | translate:{ count: messageThreads.length } }}
       </small>
     </div>
 
@@ -115,7 +167,7 @@
         (click)="loadMoreManually()"
         [disabled]="isLoadingMore"
       >
-        Load More Messages
+        {{ "MESSAGES.LOAD_MORE_BTN" | translate }}
       </button>
     </div>
   </div>
@@ -129,20 +181,12 @@
       <i class="bi bi-chat-dots"></i>
     </div>
     <div class="empty-title mb-2">
-      {{
-        activeFilter === "unread"
-          ? "No unread messages"
-          : "You don't have any
-      messages"
-      }}
+      {{ activeFilter === 'unread' ? ('MESSAGES.EMPTY_STATE.UNREAD_TITLE' |
+      translate) : ('MESSAGES.EMPTY_STATE.DEFAULT_TITLE' | translate) }}
     </div>
     <div class="empty-subtitle">
-      {{
-        activeFilter === "unread"
-          ? "All your messages have been read."
-          : "When
-      you receive a new message, it will appear here."
-      }}
+      {{ activeFilter === 'unread' ? ('MESSAGES.EMPTY_STATE.UNREAD_SUB' |
+      translate) : ('MESSAGES.EMPTY_STATE.DEFAULT_SUB' | translate) }}
     </div>
   </div>
 

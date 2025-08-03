@@ -13,6 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HandleImgService } from '../../core/services/handleImg.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 type CropArea = {
   x: number;
@@ -31,8 +32,20 @@ type CropArea = {
 })
 export class UpdateProfile {
   authService = inject(AuthService);
-  constructor(private userService: UserService, private router: Router) {}
+  constructor(private userService: UserService, private router: Router, private snackBar: MatSnackBar) {}
 
+  private showToast(
+    message: string,
+    vertical: 'top' | 'bottom',
+    horizontal: 'left' | 'right'
+  ) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: horizontal,
+      verticalPosition: vertical,
+      panelClass: ['custom-snackbar'],
+    });
+  }
   userId = this.authService.userId || '';
   firstName: string | null = (() => {
     const storedUser = localStorage.getItem('user');
@@ -90,9 +103,38 @@ export class UpdateProfile {
       bio: this.bio,
     };
 
+    if (!this.firstName) {
+      this.showToast('Please enter your first name', 'bottom', 'left');
+      return;
+    }
+
+    if (!this.lastName) {
+      this.showToast('Please enter your last name', 'bottom', 'left');
+      return;
+    }
+
+    if (!this.phoneNumber) {
+      this.showToast('Please enter your phone number', 'bottom', 'left');
+      return;
+    }
+
+    if (!this.country) {
+      this.showToast('Please enter your country', 'bottom', 'left');
+      return;
+    }
+
+    if (!this.birthDate) {
+      this.showToast('Please enter your birth date', 'bottom', 'left');
+      return;
+    }
+    if (!this.bio) {
+      this.showToast('Please enter your bio', 'bottom', 'left');
+      return;
+    }
+
     this.userService.updateProfile(this.userId, updatedUser).subscribe({
       next: (res) => {
-        alert('Profile updated successfully');
+        this.showToast('Profile updated successfully', 'bottom', 'left');
         this.userService.getProfile(this.userId).subscribe({
           next: (res) => {
             console.log(res);
@@ -106,7 +148,7 @@ export class UpdateProfile {
         });
       },
       error: (err) => {
-        alert('Profile update failed');
+        this.showToast('Profile update failed', 'bottom', 'left');
         console.error(err);
       },
     });

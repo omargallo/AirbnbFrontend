@@ -1,7 +1,7 @@
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ConfirmService } from './../../core/services/confirm.service';
 import { CommonModule } from '@angular/common';
-import { Component, inject, resource } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { WishListModal } from '../../components/wish-list-modal/wish-list-modal';
 import { PropertySwiperComponent } from '../../components/mainswiper/mainswiper';
 import { Property } from '../../core/models/Property';
@@ -14,22 +14,36 @@ import { DialogService } from '../../core/services/dialog.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChatContextService } from '../../core/chatbot/chat-context.service';
 import { environment } from '../../../environments/environment.development';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, WishListModal, PropertySwiperComponent, FormsModule],
-
+  imports: [CommonModule, WishListModal, PropertySwiperComponent, FormsModule, TranslateModule],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home {
+export class Home implements OnInit, OnDestroy {
   properties: Property[] = [];
   selectedPropertyId!: number;
   show = false;
   isLoading = false;
   private contextLoaded = false;
+  private langChangeSubscription?: Subscription;
 
   private readonly contextService = inject(ChatContextService);
+
+  sections: {
+    title: string;
+    search: any;
+  }[] = [];
+
+  sectionProperties: {
+    title: string;
+    properties: Property[];
+    isLoading: boolean;
+    slidesPerView: number;
+  }[] = [];
+
   constructor(
     private confirm: ConfirmService,
     private propertyService: PropertyService,
@@ -37,12 +51,87 @@ export class Home {
     private wishlistService: WishlistService,
     public authService: AuthService,
     private dialogService: DialogService,
-    private snackBar: MatSnackBar
-  ) {}
+    private snackBar: MatSnackBar,
+    private translate: TranslateService
+  ) { }
 
   ngOnInit() {
+    // الاشتراك في تغيير اللغة
+    this.langChangeSubscription = this.translate.onLangChange.subscribe(() => {
+      this.reinitializeSections();
+    });
+
+    // انتظار تحميل الترجمات قبل تهيئة الأقسام
+    this.translate.get('HOME.SECTIONS.POPULAR_CAIRO').subscribe(() => {
+      this.initializeSections();
+      this.loadAllSections();
+    });
+  }
+
+  ngOnDestroy() {
+    // إلغاء الاشتراك لتجنب memory leaks
+    if (this.langChangeSubscription) {
+      this.langChangeSubscription.unsubscribe();
+    }
+  }
+
+  private reinitializeSections() {
+    // إعادة تهيئة الأقسام مع الترجمات الجديدة
+    this.initializeSections();
+
+    // تحديث العناوين في sectionProperties
+    this.sectionProperties.forEach((sectionProp, index) => {
+      if (this.sections[index]) {
+        sectionProp.title = this.sections[index].title;
+      }
+    });
+  }
+
+  private initializeSections() {
+    this.sections = [
+      {
+        title: this.translate.instant('HOME.SECTIONS.POPULAR_CAIRO'),
+        search: { country: 'Egypt', city: 'Cairo' },
+      },
+      {
+        title: this.translate.instant('HOME.SECTIONS.HURGHADA_NEXT_WEEKEND'),
+        search: { country: 'Egypt', city: 'Hurghada', startDate: this.getNextWeekend() },
+      },
+      {
+        title: this.translate.instant('HOME.SECTIONS.STAY_NEW_CAIRO'),
+        search: { country: 'Egypt', city: 'New Cairo' },
+      },
+      {
+        title: this.translate.instant('HOME.SECTIONS.DUBAI_NEXT_MONTH'),
+        search: { country: 'UAE', city: 'Dubai', startDate: this.getNextMonth() },
+      },
+      {
+        title: this.translate.instant('HOME.SECTIONS.AIN_SOKHNA'),
+        search: { country: 'Egypt', city: 'Ain Sokhna' },
+      },
+      {
+        title: this.translate.instant('HOME.SECTIONS.ALEX_NEXT_WEEKEND'),
+        search: { country: 'Egypt', city: 'Alexandria', startDate: this.getNextWeekend() },
+      },
+      {
+        title: this.translate.instant('HOME.SECTIONS.PARIS'),
+        search: { country: 'France', city: 'Paris' },
+      },
+      {
+        title: this.translate.instant('HOME.SECTIONS.MILAN'),
+        search: { country: 'Italy', city: 'Milan' },
+      },
+      {
+        title: this.translate.instant('HOME.SECTIONS.SHEIKH_ZAYED'),
+        search: { country: 'Egypt', city: 'Sheikh Zayed City' },
+      },
+      {
+        title: this.translate.instant('HOME.SECTIONS.BARCELONA'),
+        search: { country: 'Spain', city: 'Barcelona' },
+      },
+    ];
+
     this.sections = this.shuffleArray(this.sections);
-    this.loadAllSections();
   }
 
   private prepareHomeContext() {
@@ -60,8 +149,8 @@ export class Home {
           .map((p) => {
             const url = `${environment.domainBaseUrl}/property/${p.id}`;
             return `• <strong>${p.title}</strong> in ${p.city},
-           ${p.country}  , Descrption ${p.description}  , AVerage Rating${p.averageRating}, 
-            Max guests ${p.maxGuests},Reviews  ${p.reviewCount} 
+           ${p.country}  , Descrption ${p.description}  , AVerage Rating${p.averageRating},
+            Max guests ${p.maxGuests},Reviews  ${p.reviewCount}
           - $${p.pricePerNight}
           /night<br><a href="${url}" class="view-link" target="_blank">View Property</a>`;
           })
@@ -72,56 +161,6 @@ export class Home {
 
     this.contextService.setHomeContext(result.join('\n\n'));
   }
-  sections = [
-    {
-      title: 'Popular homes in Cairo',
-      search: { country: 'Egypt', city: 'Cairo' },
-    },
-    {
-      title: 'Available in Hurghada next weekend',
-      search: {
-        country: 'Egypt',
-        city: 'Hurghada',
-        startDate: this.getNextWeekend(),
-      },
-    },
-    {
-      title: 'Stay in New Cairo',
-      search: { country: 'Egypt', city: 'New Cairo' },
-    },
-    {
-      title: 'Available next month in Dubai',
-      search: { country: 'UAE', city: 'Dubai', startDate: this.getNextMonth() },
-    },
-    {
-      title: 'Homes in Ain Sokhna',
-      search: { country: 'Egypt', city: 'Ain Sokhna' },
-    },
-    {
-      title: 'Available in Alexandria next weekend',
-      search: {
-        country: 'Egypt',
-        city: 'Alexandria',
-        startDate: this.getNextWeekend(),
-      },
-    },
-    {
-      title: 'Places to stay in Paris',
-      search: { country: 'France', city: 'Paris' },
-    },
-    {
-      title: 'Check out homes in Milan',
-      search: { country: 'Italy', city: 'Milan' },
-    },
-    {
-      title: 'Popular homes in Sheikh Zayed City',
-      search: { country: 'Egypt', city: 'Sheikh Zayed City' },
-    },
-    {
-      title: 'Stay in Barcelona',
-      search: { country: 'Spain', city: 'Barcelona' },
-    },
-  ];
 
   getNextWeekend(): string {
     const today = new Date();
@@ -136,12 +175,6 @@ export class Home {
     return nextMonth.toISOString();
   }
 
-  sectionProperties: {
-    title: string;
-    properties: Property[];
-    isLoading: boolean;
-    slidesPerView: number;
-  }[] = [];
   getRandomSlidesCount(): number {
     const options = [5, 6, 7];
     return options[Math.floor(Math.random() * options.length)];
@@ -189,15 +222,10 @@ export class Home {
   onPropertyClick(id: number) {
     this.router.navigate(['/property', id]);
   }
-  // onWishlistClick(id:number){
-
-  //   this.selectedPropertyId = id;
-  //   this.show = !this.show;
-  // }
 
   onWishlistClick(id: number) {
     if (!this.authService.userId) {
-      this.showToast('Please log in to add to wishlist.', 'top', 'right');
+      this.showToast(this.translate.instant('HOME.TOAST.LOGIN_REQUIRED'), 'top', 'right');
       this.dialogService.openDialog('login');
       return;
     }
@@ -232,13 +260,13 @@ export class Home {
               property.isFavourite = false;
             }
           }
-          this.showToast('Property removed from wishlist', 'bottom', 'left');
+          this.showToast(this.translate.instant('HOME.TOAST.REMOVED'), 'bottom', 'left');
         } else {
-          this.showToast("Couldn't remove the property", 'bottom', 'left');
+          this.showToast(this.translate.instant('HOME.TOAST.REMOVE_FAILED'), 'bottom', 'left');
         }
       },
       error: () => {
-        this.showToast("Couldn't remove the property", 'bottom', 'left');
+        this.showToast(this.translate.instant('HOME.TOAST.REMOVE_FAILED'), 'bottom', 'left');
       },
     });
   }
@@ -256,14 +284,13 @@ export class Home {
               property.isFavourite = true;
             }
           }
-
-          this.showToast('Property added to wishlist', 'bottom', 'left');
+          this.showToast(this.translate.instant('HOME.TOAST.ADDED'), 'bottom', 'left');
         } else {
-          this.showToast("Couldn't add the property", 'bottom', 'left');
+          this.showToast(this.translate.instant('HOME.TOAST.ADD_FAILED'), 'bottom', 'left');
         }
       },
       error: () => {
-        this.showToast("Couldn't add the property", 'bottom', 'left');
+        this.showToast(this.translate.instant('HOME.TOAST.ADD_FAILED'), 'bottom', 'left');
       },
     });
   }
@@ -280,24 +307,6 @@ export class Home {
       panelClass: ['custom-snackbar'],
     });
   }
-
-  // loadProperties() {
-  //   this.isLoading = true;
-  //   this.propertyService.searchProperties({}).subscribe({
-  //     next: (response) => {
-
-  //       if (response.isSuccess) {
-  //         this.properties = response.data.items;
-  //       }
-
-  //       this.isLoading = false;
-  //     },
-  //     error: (err) => {
-  //       console.error('❌ API Error:', err);
-  //       this.isLoading = false;
-  //     },
-  //   });
-  // }
 
   onClose() {
     this.show = false;

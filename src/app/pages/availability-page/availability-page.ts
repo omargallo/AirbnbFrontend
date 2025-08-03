@@ -5,13 +5,14 @@ import { CalendarComponent, CalendarSettings, DayAvailability } from "../../comp
 import { CalendarDateDTO, CalendarService } from '../../core/services/Calendar/calendar.service';
 import { finalize } from 'rxjs';
 import { CalendarFullSettings, CalendarSettingsComponent } from "../../components/calendar-settings/calendar-settings";
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 // import { parseISO } from 'date-fns';
 
 
 @Component({
   selector: 'app-availability',
   standalone: true,
-  imports: [CommonModule, CalendarComponent, CalendarSettingsComponent],
+  imports: [CommonModule, CalendarComponent, CalendarSettingsComponent,TranslateModule],
   templateUrl: './availability-page.html',
   styleUrls: ['./availability-page.css'],
 })
@@ -21,7 +22,7 @@ export class Availability implements OnInit {
   selectedPropertyId: string | null = null;
 
   showBlockOptions = false;
-  constructor(private cd: ChangeDetectorRef, private calendarService: CalendarService) { }
+  constructor(private cd: ChangeDetectorRef, private calendarService: CalendarService,  private translate: TranslateService) { }
 
 
   onPropertySelected(propertyId: string) {
@@ -52,7 +53,7 @@ export class Availability implements OnInit {
         console.log("calendarData", calendarData)
       },
       error: (error) => {
-        console.error('Error loading calendar data:', error);
+          this.translate.instant('AVAILABILITY.ERRORS.LOAD_FAILED')
       }
     });
   }
@@ -277,7 +278,7 @@ export class Availability implements OnInit {
         if (success) {
           console.log(datesToUpdate)
 
-          console.log('Calendar updated successfully', success);
+         console.log(this.translate.instant('AVAILABILITY.SUCCESS.UPDATE'));
           this.updateLocalAvailability();
           this.clearSelection();
         } else {
@@ -290,12 +291,62 @@ export class Availability implements OnInit {
     });
   }
 
+  // private updateLocalAvailability() {
+  //   const selectedDates = this.calendarSettings.selectedDates;
+
+  //   selectedDates.forEach(selectedDate => {
+  //     const existingIndex = this.calendarSettings.availability.findIndex((a) =>
+  //       isSameDay(a.date, selectedDate)
+  //     );
+
+  //     if (existingIndex >= 0) {
+  //       this.calendarSettings.availability[existingIndex].available =
+  //         this.availabilityMode === 'open';
+
+  //       this.calendarSettings.availability[existingIndex].price =
+  //         this.availabilityMode === 'open'
+  //           ? this.selectedDatePrice
+  //           : this.calendarSettings.availability[existingIndex].price;
+  //     }
+  //   });
+
+  //   this.calendarSettings = {
+  //     ...this.calendarSettings,
+  //     availability: [...this.calendarSettings.availability]
+  //   };
+
+  //   this.clearSelection();
+  //   this.cd.detectChanges();
+  // }
+
   private updateLocalAvailability() {
     const selectedDates = this.calendarSettings.selectedDates;
 
-    selectedDates.forEach(selectedDate => {
+    if (selectedDates.length === 0) return;
+
+    let datesToUpdate: Date[] = [];
+
+    if (selectedDates.length === 1) {
+      // Single date selection
+      datesToUpdate = [selectedDates[0]];
+    } else if (selectedDates.length === 2) {
+      // Range selection - generate all dates between start and end
+      const [startDate, endDate] = selectedDates.sort((a, b) => a.getTime() - b.getTime());
+      let currentDate = new Date(startDate);
+
+      while (currentDate <= endDate) {
+        datesToUpdate.push(new Date(currentDate));
+        currentDate = addDays(currentDate, 1);
+      }
+    } else {
+      // Multiple selection
+      datesToUpdate = [...selectedDates];
+    }
+
+    // Update availability for all dates
+    datesToUpdate.forEach(dateToUpdate => {
       const existingIndex = this.calendarSettings.availability.findIndex((a) =>
-        isSameDay(a.date, selectedDate)
+        isSameDay(a.date, dateToUpdate)
       );
 
       if (existingIndex >= 0) {
@@ -309,6 +360,7 @@ export class Availability implements OnInit {
       }
     });
 
+    // Update the calendar settings
     this.calendarSettings = {
       ...this.calendarSettings,
       availability: [...this.calendarSettings.availability]
@@ -317,6 +369,5 @@ export class Availability implements OnInit {
     this.clearSelection();
     this.cd.detectChanges();
   }
-
 
 }

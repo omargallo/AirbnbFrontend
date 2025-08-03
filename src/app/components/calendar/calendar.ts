@@ -29,6 +29,7 @@ import { Router } from '@angular/router';
 import { HostPropertiesService } from '../../core/services/Property/HostPropertiesService';
 import { PropertyDisplayDTO } from '../../core/models/PropertyDisplayDTO';
 import { environment } from '../../../environments/environment.development';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 export interface DayAvailability {
   date: Date;
@@ -44,6 +45,8 @@ export interface CalendarSettings {
   availability: DayAvailability[];
   minNights: number;
   maxNights: number;
+  selectionMode?: SelectionMode;
+
 }
 
 interface ProcessedDay {
@@ -62,11 +65,12 @@ interface ProcessedMonth {
   month: Date;
   days: ProcessedDay[];
 }
+export type SelectionMode = 'single' | 'range' | 'multiple';
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './calendar.html',
   styleUrls: ['./calendar.css'],
   changeDetection: ChangeDetectionStrategy.OnPush, // very important for performance optimization
@@ -78,6 +82,7 @@ export class CalendarComponent implements OnInit, OnChanges {
     availability: [],
     minNights: 1,
     maxNights: 365,
+    selectionMode: 'multiple',
   };
 
   @Output() dateSelected = new EventEmitter<Date[]>();
@@ -151,12 +156,33 @@ export class CalendarComponent implements OnInit, OnChanges {
     }
   }
 
+  // private generateProcessedYearMonths(): ProcessedMonth[] {
+  //   const months: ProcessedMonth[] = [];
+  //   for (let i = 0; i < 12; i++) {
+  //     const monthDate = new Date(this.currentYear, i, 1);
+  //     months.push(this.generateProcessedMonth(monthDate));
+  //   }
+  //   return months;
+  // }
+
   private generateProcessedYearMonths(): ProcessedMonth[] {
     const months: ProcessedMonth[] = [];
-    for (let i = 0; i < 12; i++) {
-      const monthDate = new Date(this.currentYear, i, 1);
-      months.push(this.generateProcessedMonth(monthDate));
+
+    const today = new Date();
+    const startMonth = new Date(today.getFullYear(), 0, 1);
+    const endMonth = new Date(today.getFullYear() + 1, today.getMonth(), 1);
+
+    let currentMonth = new Date(startMonth);
+
+    while (
+      currentMonth.getFullYear() < endMonth.getFullYear() ||
+      (currentMonth.getFullYear() === endMonth.getFullYear() &&
+        currentMonth.getMonth() <= endMonth.getMonth())
+    ) {
+      months.push(this.generateProcessedMonth(new Date(currentMonth)));
+      currentMonth.setMonth(currentMonth.getMonth() + 1);
     }
+
     return months;
   }
 
@@ -260,7 +286,13 @@ export class CalendarComponent implements OnInit, OnChanges {
       const isAvailable =
         !isDisabled && (availability ? availability.available : true);
       const isSelected = this.selectedDatesSet.has(dateKey);
-      const isHighlighted = this.calculateIsHighlighted(day.date);
+      // const isHighlighted = this.calculateIsHighlighted(day.date);
+      const isHighlighted =
+        isSelected ||
+        (this.settings.selectionMode === 'range' &&
+          this.settings.selectedDates.length === 2 &&
+          isAfter(day.date, this.settings.selectedDates[0]) &&
+          isBefore(day.date, this.settings.selectedDates[1]));
       const price = availability ? availability.price : null;
 
       const isBooked = availability?.isBooked ?? false;
@@ -292,34 +324,96 @@ export class CalendarComponent implements OnInit, OnChanges {
     return isAfter(date, start) && isBefore(date, end);
   }
 
-  selectDate(date: Date) {
+  // selectDate(date: Date) {
 
+  //   const today = startOfDay(new Date());
+  //   if (isBefore(date, today)) return;
+
+
+  //   const dateKey = format(date, 'yyyy-MM-dd');
+  //   const availability = this.availabilityMap.get(dateKey);
+
+  //   if (availability?.isBooked) return;
+
+
+  //   const index = this.settings.selectedDates.findIndex((d) =>
+  //     isSameDay(d, date)
+  //   );
+
+  //   if (index > -1) {
+  //     this.settings.selectedDates.splice(index, 1);
+  //   } else {
+  //     this.settings.selectedDates.push(date);
+  //   }
+
+  //   this.settings = {
+  //     ...this.settings,
+  //     selectedDates: [...this.settings.selectedDates],
+  //   };
+
+  //   // Update caches and reprocess data
+  //   this.updateCaches();
+  //   this.processAllData();
+
+  //   this.dateSelected.emit(this.settings.selectedDates);
+  //   this.settingsChanged.emit(this.settings);
+  // }
+
+  get selectionMode(): SelectionMode {
+    return this.settings.selectionMode ?? 'multiple';
+  }
+
+  setSelectionMode(mode: SelectionMode) {
+    this.settings.selectionMode = mode;
+    this.updateCaches();
+    this.processAllData();
+    this.settingsChanged.emit(this.settings);
+  }
+
+  selectDate(date: Date) {
     const today = startOfDay(new Date());
     if (isBefore(date, today)) return;
 
-
     const dateKey = format(date, 'yyyy-MM-dd');
     const availability = this.availabilityMap.get(dateKey);
-
     if (availability?.isBooked) return;
 
+    const mode = this.settings.selectionMode ?? 'multiple';
 
-    const index = this.settings.selectedDates.findIndex((d) =>
-      isSameDay(d, date)
-    );
+    let newSelectedDates: Date[] = [];
 
-    if (index > -1) {
-      this.settings.selectedDates.splice(index, 1);
-    } else {
-      this.settings.selectedDates.push(date);
+    if (mode === 'single') {
+      newSelectedDates = [date];
+    }
+
+    else if (mode === 'range') {
+      if (this.settings.selectedDates.length === 0 || this.settings.selectedDates.length === 2) {
+        newSelectedDates = [date];
+      } else if (this.settings.selectedDates.length === 1) {
+        const first = this.settings.selectedDates[0];
+        if (isBefore(date, first)) {
+          newSelectedDates = [date, first];
+        } else {
+          newSelectedDates = [first, date];
+        }
+      }
+    }
+
+    else if (mode === 'multiple') {
+      const index = this.settings.selectedDates.findIndex((d) => isSameDay(d, date));
+      if (index > -1) {
+        newSelectedDates = [...this.settings.selectedDates];
+        newSelectedDates.splice(index, 1);
+      } else {
+        newSelectedDates = [...this.settings.selectedDates, date];
+      }
     }
 
     this.settings = {
       ...this.settings,
-      selectedDates: [...this.settings.selectedDates],
+      selectedDates: newSelectedDates,
     };
 
-    // Update caches and reprocess data
     this.updateCaches();
     this.processAllData();
 
@@ -327,26 +421,61 @@ export class CalendarComponent implements OnInit, OnChanges {
     this.settingsChanged.emit(this.settings);
   }
 
+  // previousMonth() {
+  //   const prev = subMonths(this.currentMonth, 1);
+  //   if (prev.getFullYear() === this.currentYear) {
+  //     this.currentMonth = prev;
+  //     if (this.settings.viewType === 'month') {
+  //       this.processedCurrentMonth = this.generateProcessedMonth(
+  //         this.currentMonth
+  //       );
+  //     }
+  //   }
+  // }
+
+  // nextMonth() {
+  //   const next = addMonths(this.currentMonth, 1);
+  //   if (next.getFullYear() === this.currentYear) {
+  //     this.currentMonth = next;
+  //     if (this.settings.viewType === 'month') {
+  //       this.processedCurrentMonth = this.generateProcessedMonth(
+  //         this.currentMonth
+  //       );
+  //     }
+  //   }
+  // }
+
   previousMonth() {
+    const minMonth = new Date(new Date().getFullYear(), 0, 1);
     const prev = subMonths(this.currentMonth, 1);
-    if (prev.getFullYear() === this.currentYear) {
+
+    const canGo =
+      prev.getFullYear() > minMonth.getFullYear() ||
+      (prev.getFullYear() === minMonth.getFullYear() &&
+        prev.getMonth() >= minMonth.getMonth());
+
+    if (canGo) {
       this.currentMonth = prev;
       if (this.settings.viewType === 'month') {
-        this.processedCurrentMonth = this.generateProcessedMonth(
-          this.currentMonth
-        );
+        this.processedCurrentMonth = this.generateProcessedMonth(this.currentMonth);
       }
     }
   }
 
   nextMonth() {
+    const today = new Date();
+    const maxMonth = new Date(today.getFullYear() + 1, today.getMonth(), 1);
     const next = addMonths(this.currentMonth, 1);
-    if (next.getFullYear() === this.currentYear) {
+
+    const canGo =
+      next.getFullYear() < maxMonth.getFullYear() ||
+      (next.getFullYear() === maxMonth.getFullYear() &&
+        next.getMonth() <= maxMonth.getMonth());
+
+    if (canGo) {
       this.currentMonth = next;
       if (this.settings.viewType === 'month') {
-        this.processedCurrentMonth = this.generateProcessedMonth(
-          this.currentMonth
-        );
+        this.processedCurrentMonth = this.generateProcessedMonth(this.currentMonth);
       }
     }
   }
@@ -397,15 +526,39 @@ export class CalendarComponent implements OnInit, OnChanges {
     return format(month.month, 'yyyy-MM');
   }
 
-  get canGoToPreviousMonth(): boolean {
-    const prev = subMonths(this.currentMonth, 1);
-    return prev.getFullYear() === this.currentYear;
+  // get canGoToPreviousMonth(): boolean {
+  //   const prev = subMonths(this.currentMonth, 1);
+  //   return prev.getFullYear() === this.currentYear;
+  // }
+
+  // get canGoToNextMonth(): boolean {
+  //   const next = addMonths(this.currentMonth, 1);
+  //   return next.getFullYear() === this.currentYear;
+  // }
+  get canGoToNextMonth(): boolean {
+    const today = new Date();
+    const maxMonth = new Date(today.getFullYear() + 1, today.getMonth(), 1);
+    const next = addMonths(this.currentMonth, 1);
+
+    return (
+      next.getFullYear() < maxMonth.getFullYear() ||
+      (next.getFullYear() === maxMonth.getFullYear() &&
+        next.getMonth() <= maxMonth.getMonth())
+    );
   }
 
-  get canGoToNextMonth(): boolean {
-    const next = addMonths(this.currentMonth, 1);
-    return next.getFullYear() === this.currentYear;
+  get canGoToPreviousMonth(): boolean {
+    const today = new Date();
+    const minMonth = new Date(new Date().getFullYear(), 0, 1);
+    const prev = subMonths(this.currentMonth, 1);
+
+    return (
+      prev.getFullYear() > minMonth.getFullYear() ||
+      (prev.getFullYear() === minMonth.getFullYear() &&
+        prev.getMonth() >= minMonth.getMonth())
+    );
   }
+
 
   @Output() propertySelected = new EventEmitter<string>();
   properties: PropertyDisplayDTO[] = [];
@@ -416,13 +569,15 @@ export class CalendarComponent implements OnInit, OnChanges {
   constructor(
     private hostPropertiesService: HostPropertiesService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private translate: TranslateService
   ) { }
 
   loadHostProperties(): void {
     // Check if hostId is available
     if (!this.hostId) {
-      this.error = 'User not authenticated';
+      // this.error = 'User not authenticated';
+      this.error = this.translate.instant('CALENDAR.ERRORS.USER_NOT_AUTHENTICATED');
       this.isLoading = false;
       return;
     }
@@ -441,7 +596,9 @@ export class CalendarComponent implements OnInit, OnChanges {
         this.isLoading = false;
       },
       error: (err) => {
-        this.error = 'Failed to load properties. Please try again later.';
+        // this.error = 'Failed to load properties. Please try again later.';
+        this.error = this.translate.instant('CALENDAR.ERRORS.FAILED_TO_LOAD_PROPERTIES');
+
         this.isLoading = false;
         console.error('Error loading properties:', err);
       },
@@ -451,7 +608,9 @@ export class CalendarComponent implements OnInit, OnChanges {
     const property = this.properties.find(
       (p) => p.id.toString() === this.selectedPropertyId
     );
-    return property?.title || 'Select Property';
+    // return property?.title || 'Select Property';
+    return property?.title || this.translate.instant('CALENDAR.SELECT_PROPERTY');
+
   }
   getPropertyImage(property: PropertyDisplayDTO): string {
     const cover = property.images?.find((img) => img.isCover && !img.isDeleted);

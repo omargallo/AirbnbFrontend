@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MessagesBoxComponent } from "../../components/messages-box/messages-box";
 import { ChatBoxComponent } from "../../components/chat-box/chat-box";
 import { ReservationBoxComponent } from "../../components/reservation-box/reservation-box";
@@ -21,8 +21,9 @@ export class Messages implements OnInit, OnDestroy {
   initialMessages: MessageDto[] = [];
   ReservationWithProperty: any | null = null;
   isLoadingChat: boolean = false;
-
+  currentOpenChatId?:string
   isHost: boolean = false;
+  hasLangChanged = false;
 
 
   private currentUserId: string | null = null;
@@ -30,7 +31,9 @@ export class Messages implements OnInit, OnDestroy {
 
   constructor(
     private signalRService: SignalRService,
-    private messageService: ChatService, private authService: AuthService) { }
+    private messageService: ChatService, private authService: AuthService,
+    private cdr: ChangeDetectorRef
+) { }
 
   ngOnInit(): void {
     this.startSignalRConnection();
@@ -51,6 +54,9 @@ export class Messages implements OnInit, OnDestroy {
   }
 
   onChatSessionSelected(session: ChatSessionDto): void {
+    if(this.currentOpenChatId == session.id && !this.hasLangChanged)
+      return
+    this.currentOpenChatId = session.id
     if (session.hostId === this.currentUserId) {
       this.isHost = true;
     } else {
@@ -58,10 +64,8 @@ export class Messages implements OnInit, OnDestroy {
     }
     console.log("isHost", this.isHost)
 
-    this.selectedChatSession = session;
     this.isLoadingChat = true;
     // Reset previous data
-    this.selectedChatSession = null;
     this.initialMessages = [];
     this.ReservationWithProperty = null;
 
@@ -74,57 +78,72 @@ export class Messages implements OnInit, OnDestroy {
     };
 
     console.log(reserveRequest)
+    const start = performance.now()
     if (!this.isHost) {
       this.messageService.getSessionForHost(session.id).subscribe({
         next: (res) => {
+          this.hasLangChanged = false
           console.log("reserveRequest", reserveRequest)
           console.log("res", res.data)
           // Add slight delay for better UX
-          setTimeout(() => {
-            this.selectedChatSession = res?.data?.chatSession;
-            this.initialMessages = res?.data?.messages;
-            this.ReservationWithProperty = res?.data;
+         
+          if (res.data) {
+            // Update the session immediately to show loading state
+            const end = performance.now();
+      
+            this.selectedChatSession = res.data.chatSession;
+            
+            // Load messages and other data
+            this.initialMessages = res.data.messages || [];
+            this.ReservationWithProperty = res.data;
+                  
+            // Hide loading state after a small delay for smooth transition
+            setTimeout(() => {
+              this.isLoadingChat = false;
+              this.cdr.detectChanges()
+            }, 200);
+          } else {
             this.isLoadingChat = false;
-          }, 200);
-          console.log("from next !ishost",this.authService.userId)
-          
+            console.error('No data received from server');
+          }
+
         },
         error: (err) => {
-          console.log("from error !ishost",this.authService.userId)
-          console.error('Error reserving property:', err);
+          console.error('Error loading conversation:', err);
           this.isLoadingChat = false;
+          this.selectedChatSession = null;
         }
       });
     } else {
-      this.selectedChatSession = session;
-      // this.messageService.getChatMessages(session.id, 1, 50).subscribe({
-      //   next: (messages: MessageDto[]) => {
-      //     this.initialMessages = messages || [];
-      //     this.isLoadingChat = false;
-      //   },
-      //   error: (err) => {
-      //     console.error('Error loading host messages:', err);
-      //     this.isLoadingChat = false;
-      //     this.initialMessages = [];
-      //   }
-      // });
-
-      this.messageService
-            .getSessionForHost(session.id)
-            .subscribe({
-              next:(res)=>{
-                console.log("chat for host ",res.data)
-                setTimeout(() => {
-                    this.selectedChatSession = res?.data?.chatSession;
-                    this.initialMessages = res?.data?.messages;
-                    this.ReservationWithProperty = res?.data;
-                    this.isLoadingChat = false;
-                  }, 200);
-              },
-              error:(res)=>{
-                  console.log(res)
-              }
-            })
+      // For host view, use the same endpoint
+      this.messageService.getSessionForHost(session.id).subscribe({
+        next: (res) => {
+          this.hasLangChanged = false
+          if (res.data) {
+            // Update the session immediately to show loading state
+            this.selectedChatSession = res.data.chatSession;
+            
+            // Load messages and other data
+            this.initialMessages = res.data.messages || [];
+            this.ReservationWithProperty = res.data;
+                        
+            // Hide loading state after a small delay for smooth transition
+            setTimeout(() => {
+              this.isLoadingChat = false;
+              this.cdr.detectChanges()
+              
+            }, 200);
+          } else {
+            this.isLoadingChat = false;
+            console.error('No data received from server');
+          }
+        },
+        error: (err) => {
+          console.error('Error loading host conversation:', err);
+          this.isLoadingChat = false;
+          this.selectedChatSession = null;
+        }
+      });
     }
 
   }
@@ -135,5 +154,10 @@ export class Messages implements OnInit, OnDestroy {
 
   get showPlaceholder(): boolean {
     return !this.isLoadingChat && !this.hasChatSelected;
+  }
+  onLangChange(){
+    this.hasLangChanged = true
+    if(this.selectedChatSession)
+      this.onChatSessionSelected(this.selectedChatSession)
   }
 }

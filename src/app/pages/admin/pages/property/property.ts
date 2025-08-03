@@ -388,6 +388,9 @@ export class Property {
               {
                 next:(res)=>{
                   this.confirm.success("Property Accepted","")
+                  let prop = this.properties.find(p=> p.id == this.selectedProperty?.id)
+                  if(prop)
+                    prop.status = PropertyAcceptStatus.accepted
                 },
                 error:(err)=>{
                   if(err?.data?.message)
@@ -407,6 +410,10 @@ export class Property {
               {
                 next:(res)=>{
                   this.confirm.success("Property Rejected","")
+                  
+                  let prop = this.properties.find(p=> p.id == this.selectedProperty?.id)
+                  if(prop)
+                    prop.status = PropertyAcceptStatus.rejected
                 },
                 error:(err)=>{
                   if(err?.data?.message)

@@ -10,6 +10,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DialogService } from '../../core/services/dialog.service';
 import { Observable } from 'rxjs';
+import { LangService } from '../../core/services/lang.service';
 
 @Component({
   selector: 'app-wish-list-properties',
@@ -117,7 +118,9 @@ export class WishListProperties implements OnInit {
     private router: Router,
     public authService: AuthService,
     private dialogService: DialogService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    public lang: LangService,
+
   ) { }
 
   ngOnInit(): void {

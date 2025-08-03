@@ -47,6 +47,7 @@ export class HostProperties implements OnInit {
     this.hostPropertiesService.getPropertiesByHostId(this.hostId).subscribe({
       next: (properties) => {
         this.properties = properties;
+        console.log(properties)
         this.isLoading = false;
       },
       error: (err) => {
