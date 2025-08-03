@@ -79,7 +79,7 @@ export class Property {
       color: '#007bff' 
     },
     { 
-      icon: 'fas fa-eye', 
+      icon: 'bi bi-ban', 
       tooltip: 'View Details', 
       type: 'activationStatus', 
       color: '#00' 
