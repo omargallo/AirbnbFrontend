@@ -1,3 +1,7 @@
+import {
+  PropertyDisplayDTO,
+  PropertyService,
+} from './../../core/services/Property/property.service';
 import { UserService } from './../../core/services/Admin/user-service';
 import { AuthService } from './../../core/services/auth.service';
 import {
@@ -117,26 +121,26 @@ export class UserProfile implements OnInit, OnDestroy {
   }
 
   onImageError(event: any, item: any): void {
-    if (item && item.id) {
-      this.imageErrors.add(item.id);
+    if (item && (item.id || item.userId)) {
+      const id = item.id?.toString() || item.userId?.toString();
+      this.imageErrors.add(id);
     }
   }
+
   shouldShowImage(
     imageUrl: string | undefined,
-    itemId: string | undefined
+    itemId: string | number | undefined
   ): boolean {
-    return !!(
-      imageUrl &&
-      imageUrl.trim() !== '' &&
-      !this.imageErrors.has(itemId)
-    );
+    const id = itemId?.toString();
+    return !!(imageUrl && imageUrl.trim() !== '' && !this.imageErrors.has(id));
   }
 
   shouldShowFallback(
     imageUrl: string | undefined,
-    itemId: string | undefined
+    itemId: string | number | undefined
   ): boolean {
-    return !imageUrl || imageUrl.trim() === '' || this.imageErrors.has(itemId);
+    const id = itemId?.toString();
+    return !imageUrl || imageUrl.trim() === '' || this.imageErrors.has(id);
   }
   //the idea of it to show the initials of the user if the image is not available :)
   getInitials(firstName: string, lastName: string): string {
@@ -187,7 +191,8 @@ export class UserProfile implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private reviewService: ReviewService,
-    private userService: UserService
+    private userService: UserService,
+    private PropertyService: PropertyService
   ) {}
 
   ngOnInit(): void {
@@ -283,8 +288,9 @@ export class UserProfile implements OnInit, OnDestroy {
     container.style.transition = 'transform 0.3s ease';
   }
 
+  hostProperties: PropertyDisplayDTO[] = [];
+
   private loadAllDataParallel(): void {
-    // Load user profile, role check, and reviews all at once
     const userProfile$ = this.userService.getUserProfile(this.userId).pipe(
       catchError((error) => {
         console.error('Error fetching user profile:', error);
@@ -317,21 +323,38 @@ export class UserProfile implements OnInit, OnDestroy {
         })
       );
 
-    // Execute all requests in parallel
-    combineLatest([userProfile$, isHost$, hostReviews$, guestReviews$])
+    const hostProperties$ = this.PropertyService.getPropertiesByHostId(
+      this.userId
+    ).pipe(
+      catchError((error) => {
+        console.error('Error loading host properties:', error);
+        return of([]);
+      })
+    );
+
+    combineLatest([
+      userProfile$,
+      isHost$,
+      hostReviews$,
+      guestReviews$,
+      hostProperties$,
+    ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([profile, isHost, hostReviews, guestReviews]) => {
-        this.userProfile = profile;
-        this.profileLoading = false;
+      .subscribe(
+        ([profile, isHost, hostReviews, guestReviews, hostProperties]) => {
+          this.userProfile = profile;
+          this.profileLoading = false;
 
-        this.isHost = isHost;
-        this.hostReviews = hostReviews || [];
-        this.guestReviews = guestReviews || [];
+          this.isHost = isHost;
+          this.hostReviews = hostReviews || [];
+          this.guestReviews = guestReviews || [];
+          this.hostProperties = hostProperties || []; // NEW: Store all properties
 
-        this.reviewsLoading = false;
+          this.reviewsLoading = false;
 
-        this.calculateAllStats();
-      });
+          this.calculateAllStats();
+        }
+      );
   }
 
   private calculateAllStats(): void {
@@ -344,12 +367,14 @@ export class UserProfile implements OnInit, OnDestroy {
   }
 
   private calculateHostStats(): void {
-    if (this.hostReviews.length === 0) {
+    const totalReviews = this.hostReviews.length;
+
+    if (totalReviews === 0) {
       this.hostStats = {
         totalReviews: 0,
         averageRating: 0,
         monthsHosting: 1,
-        totalProperties: 0,
+        totalProperties: this.hostProperties.length, // Use all properties i will tests this first
       };
       return;
     }
@@ -358,7 +383,7 @@ export class UserProfile implements OnInit, OnDestroy {
       (sum, review) => sum + review.rating,
       0
     );
-    const averageRating = totalRating / this.hostReviews.length;
+    const averageRating = totalRating / totalReviews;
 
     const oldestReview = this.hostReviews.reduce((oldest, review) =>
       new Date(review.createdAt) < new Date(oldest.createdAt) ? review : oldest
@@ -369,10 +394,10 @@ export class UserProfile implements OnInit, OnDestroy {
     );
 
     this.hostStats = {
-      totalReviews: this.hostReviews.length,
+      totalReviews: totalReviews,
       averageRating: averageRating,
       monthsHosting: monthsHosting,
-      totalProperties: this.uniqueHostProperties.length,
+      totalProperties: this.hostProperties.length, // Use all properties count
     };
   }
 
@@ -408,24 +433,8 @@ export class UserProfile implements OnInit, OnDestroy {
     return `Born in the ${decade}s`;
   }
 
-  private _uniqueHostProperties: any[] | null = null;
   get uniqueHostProperties() {
-    if (!this.hostReviews || this.hostReviews.length === 0) {
-      return [];
-    }
-
-    const propertyMap = new Map();
-    this.hostReviews.forEach((review) => {
-      if (
-        review.property &&
-        review.property.id &&
-        !propertyMap.has(review.property.id)
-      ) {
-        propertyMap.set(review.property.id, review.property);
-      }
-    });
-
-    return Array.from(propertyMap.values());
+    return this.hostProperties || [];
   }
 
   debugApiResponse(): void {
@@ -527,7 +536,24 @@ export class UserProfile implements OnInit, OnDestroy {
       return '';
     }
   }
+  get propertiesWithReviews() {
+    if (!this.hostReviews || this.hostReviews.length === 0) {
+      return [];
+    }
 
+    const propertyMap = new Map();
+    this.hostReviews.forEach((review) => {
+      if (
+        review.property &&
+        review.property.id &&
+        !propertyMap.has(review.property.id)
+      ) {
+        propertyMap.set(review.property.id, review.property);
+      }
+    });
+
+    return Array.from(propertyMap.values());
+  }
   truncateText(text: string, maxLength: number): string {
     if (!text) return '';
     return text.length > maxLength
@@ -541,7 +567,7 @@ export class UserProfile implements OnInit, OnDestroy {
     this.statsCalculated = false;
     this.error = null;
 
-    this._uniqueHostProperties = null;
+    //   this._uniqueHostProperties = null;
     this._uniqueVisitedProperties = null;
 
     this.loadAllDataParallel();
