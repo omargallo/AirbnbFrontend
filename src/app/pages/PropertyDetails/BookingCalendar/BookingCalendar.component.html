@@ -1,9 +1,12 @@
-<div class="airbnb-calendar-container mt-1">
-    <div class=" mb-4">
-          <h2 class="titlecalender mb-4">2 nights in L'Hospitalet de Llobregat</h2>
-          <!-- <p>{{ checkIn | checkin: 'MMM d, y' }} - {{ checkOut | date: 'MMM d, y' }}</p> -->
-    </div>
-    <ngx-daterangepicker-material
+<div class="airbnb-calendar-container mt-1 px-0">
+  <div class="mb-4">
+    <h2 class="titlecalender mb-4">2 nights in L'Hospitalet de Llobregat</h2>
+    <!-- <p>{{ checkIn | checkin: 'MMM d, y' }} - {{ checkOut | date: 'MMM d, y' }}</p> -->
+  </div>
+  <ngx-daterangepicker-material
+    [minDate]="minDate"
+    [maxDate]="maxDate"
+    
     ngxDaterangepickerMd
     #picker
     (choosedDate)="onDatesChanged($event)"
@@ -11,12 +14,11 @@
     [showClearButton]="true"
     [linkedCalendars]="true"
     [alwaysShowCalendars]="true"
-    [ranges]="ranges"
     [autoApply]="true"
     [locale]="locale"
     (startDateChanged)="onStartDateChange($event)"
-        ></ngx-daterangepicker-material>
-    <!-- <ngx-daterangepicker-material
+  ></ngx-daterangepicker-material>
+  <!-- <ngx-daterangepicker-material
     *ngIf="showPicker"
     #picker
     (choosedDate)="onDatesChanged($event)"
@@ -30,8 +32,8 @@
     (startDateChanged)="onStartDateChange($event)"
         ></ngx-daterangepicker-material> -->
 
-    <!-- (choosedDate)="onDateRangeSelected($event)" -->
-    <!-- <input
+  <!-- (choosedDate)="onDateRangeSelected($event)" -->
+  <!-- <input
     class="custom-date-input"
     ngxDaterangepickerMd
     [(ngModel)] = "selected"
@@ -50,8 +52,8 @@
     [autoApply]="true"
     /> -->
 
-    <!-- <div class="bg-danger text-black"> <p>{{selected.startDate.toDate()}}</p></div> -->
-    <!-- <ngx-daterangepicker-material
+  <!-- <div class="bg-danger text-black"> <p>{{selected.startDate.toDate()}}</p></div> -->
+  <!-- <ngx-daterangepicker-material
       [locale]="locale"
       [linkedCalendars]="true"
       [alwaysShowCalendars]="true"
@@ -65,5 +67,5 @@
     >
     </ngx-daterangepicker-material> -->
 
-    <!-- <a class="report-link mt-3"  (click)="clearDates()">Clear Dates</a> -->
-  </div>
+  <!-- <a class="report-link mt-3"  (click)="clearDates()">Clear Dates</a> -->
+</div>
