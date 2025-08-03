@@ -17,7 +17,7 @@ export class Step342PricingTax implements OnInit, OnDestroy {
   premiumPercent: number = 10;
   maxPremium: number = 99;
   guestFeePercent: number = 0.14;
-  hostFeePercent: number = 0.03;
+  hostFeePercent: number = 0.1;
   view: 'guest' | 'host' = 'guest';
   isBreakdownVisible: boolean = false;
 

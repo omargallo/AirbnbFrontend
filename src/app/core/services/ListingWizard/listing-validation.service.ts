@@ -78,7 +78,7 @@ export class ListingValidationService {
 
       case 'step2-6-description':
         const description = formData['step2-6']?.description;
-        isValid = !!(description && description.length >= 50);
+        isValid = !!(description && description.length >= 20);
         break;
 
       case 'step3-2-pick-booking':

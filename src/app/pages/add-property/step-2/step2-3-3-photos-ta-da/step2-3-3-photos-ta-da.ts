@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { ListingWizardService } from '../../../../core/services/ListingWizard/listing-wizard.service';
 import { Subscription } from 'rxjs';
@@ -7,7 +8,7 @@ import { ListingValidationService } from '../../../../core/services/ListingWizar
 
 @Component({
   selector: 'app-step2-3-3-photos-ta-da',
-  imports: [CommonModule],
+  imports: [CommonModule, MatSnackBarModule],
   templateUrl: './step2-3-3-photos-ta-da.html',
   styleUrl: './step2-3-3-photos-ta-da.css'
 })
@@ -19,7 +20,8 @@ export class Step233PhotosTaDa implements OnInit, OnDestroy {
   constructor(
     private formStorage: PropertyFormStorageService,
     private wizardService: ListingWizardService,
-    private validationService: ListingValidationService
+    private validationService: ListingValidationService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -81,6 +83,19 @@ export class Step233PhotosTaDa implements OnInit, OnDestroy {
     this.saveFormData();
   }
 
+    private showToast(
+    message: string,
+    vertical: 'top' | 'bottom',
+    horizontal: 'left' | 'right'
+  ) {
+    this.snackBar.open(message, 'Close', {
+      duration: 1500,
+      horizontalPosition: horizontal,
+      verticalPosition: vertical,
+      panelClass: ['custom-snackbar'],
+    });
+  }
+
   removePhoto(index: number): void {
     // Only allow removal if we have more than 5 photos
     if (this.photos.length > 5) {
@@ -97,6 +112,8 @@ export class Step233PhotosTaDa implements OnInit, OnDestroy {
       this.formStorage.setImageFiles(updatedFiles);
 
       this.saveFormData();
+      // this.snackBar.open('Photo Deleted Successfully', '', { duration: 1500 });
+      this.showToast('Photo Deleted', 'top', 'right');
     }
   }
 

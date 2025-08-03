@@ -235,7 +235,7 @@ export class PropertyCreationService {
       state: formData['step1-4-2']?.state || '',
       latitude: parseFloat(formData['step1-4-1']?.coordinates?.lat) || 0,
       longitude: parseFloat(formData['step1-4-1']?.coordinates?.lng) || 0,
-      pricePerNight: formData['step3-4-1']?.price || 0,
+      pricePerNight: formData['step3-4-1']?.price ?? 50,
       maxGuests: formData['step1-5']?.guests || 0,
       bedrooms: formData['step1-5']?.bedrooms || 0,
       beds: formData['step1-5']?.beds || 0,
