@@ -17,7 +17,7 @@ export class Step341Pricing implements OnInit, OnDestroy {
   minPrice: number = 50;
   maxPrice: number = 10000;
   guestFeePercent: number = 0.14;
-  hostFeePercent: number = 0.03;
+  hostFeePercent: number = 0.1;
   view: 'guest' | 'host' = 'guest';
   isBreakdownVisible: boolean = false;
 

@@ -65,9 +65,13 @@ export class Step15BasicAbout implements OnInit, OnDestroy {
 
   // Minimum values
   minGuests: number = 1;
+  maxGuests: number = 16; 
   minBedrooms: number = 0;
+  maxBedrooms: number = 10;
   minBeds: number = 1;
+  maxBeds: number = 16;
   minBathrooms: number = 1;
+  maxBathrooms: number = 6;
 
   // Counter methods
   increaseCounter(type: 'guests' | 'bedrooms' | 'beds' | 'bathrooms'): void {
