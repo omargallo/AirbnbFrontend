@@ -12,7 +12,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-availability',
   standalone: true,
-  imports: [CommonModule, CalendarComponent, CalendarSettingsComponent,TranslateModule],
+  imports: [CommonModule, CalendarComponent, CalendarSettingsComponent, TranslateModule],
   templateUrl: './availability-page.html',
   styleUrls: ['./availability-page.css'],
 })
@@ -22,7 +22,7 @@ export class Availability implements OnInit {
   selectedPropertyId: string | null = null;
 
   showBlockOptions = false;
-  constructor(private cd: ChangeDetectorRef, private calendarService: CalendarService,  private translate: TranslateService) { }
+  constructor(private cd: ChangeDetectorRef, private calendarService: CalendarService, private translate: TranslateService) { }
 
 
   onPropertySelected(propertyId: string) {
@@ -53,7 +53,7 @@ export class Availability implements OnInit {
         console.log("calendarData", calendarData)
       },
       error: (error) => {
-          this.translate.instant('AVAILABILITY.ERRORS.LOAD_FAILED')
+        this.translate.instant('AVAILABILITY.ERRORS.LOAD_FAILED')
       }
     });
   }
@@ -210,6 +210,87 @@ export class Availability implements OnInit {
   }
 
 
+  // saveChanges() {
+  //   if (
+  //     this.calendarSettings.selectedDates.length === 0 ||
+  //     !this.selectedPropertyId
+  //   ) {
+  //     return;
+  //   }
+
+  //   const selectedDates = this.calendarSettings.selectedDates.sort(
+  //     (a, b) => a.getTime() - b.getTime()
+  //   );
+
+  //   const datesToUpdate: CalendarDateDTO[] = [];
+
+  //   if (selectedDates.length === 1) {
+  //     const selectedDate = selectedDates[0];
+  //     const existingAvailability = this.calendarSettings.availability.find((a) =>
+  //       isSameDay(a.date, selectedDate)
+  //     );
+
+  //     const price = this.availabilityMode === 'open'
+  //       ? (this.fullSettings.pricing.basePrice || existingAvailability?.price || 0)
+  //       : (existingAvailability?.price || 0);
+
+  //     datesToUpdate.push({
+  //       date: format(selectedDate, 'yyyy-MM-dd'),
+  //       isAvailable: this.availabilityMode === 'open',
+  //       price: price
+  //     });
+  //   }
+  //   else if (selectedDates.length === 2) {
+  //     const [startDate, endDate] = selectedDates;
+  //     let currentDate = new Date(startDate);
+
+  //     while (currentDate <= endDate) {
+  //       const existingAvailability = this.calendarSettings.availability.find((a) =>
+  //         isSameDay(a.date, currentDate)
+  //       );
+
+  //       const price = this.availabilityMode === 'open'
+  //         ? this.selectedDatePrice
+  //         : (existingAvailability?.price || 0);
+
+
+  //       datesToUpdate.push({
+  //         date: format(currentDate, 'yyyy-MM-dd'),
+  //         isAvailable: this.availabilityMode === 'open',
+  //         price: price
+  //       });
+
+  //       currentDate = addDays(currentDate, 1);
+  //     }
+  //   }
+
+  //   this.isLoading = true;
+  //   this.calendarService.updatePropertyCalendar(
+  //     parseInt(this.selectedPropertyId),
+  //     datesToUpdate
+  //   ).pipe(
+  //     finalize(() => {
+  //       this.isLoading = false;
+  //       this.cd.markForCheck();
+  //     })
+  //   ).subscribe({
+  //     next: (success) => {
+  //       if (success) {
+  //         console.log(datesToUpdate)
+
+  //         console.log(this.translate.instant('AVAILABILITY.SUCCESS.UPDATE'));
+  //         this.updateLocalAvailability();
+  //         this.clearSelection();
+  //       } else {
+  //         console.error('Failed to update calendar');
+  //       }
+  //     },
+  //     error: (error) => {
+  //       console.error('Error updating calendar:', error);
+  //     }
+  //   });
+  // }
+
   saveChanges() {
     if (
       this.calendarSettings.selectedDates.length === 0 ||
@@ -224,45 +305,48 @@ export class Availability implements OnInit {
 
     const datesToUpdate: CalendarDateDTO[] = [];
 
-    if (selectedDates.length === 1) {
+    // Check the actual selection mode to determine how to process dates
+    const selectionMode = this.calendarSettings.selectionMode || 'multiple';
+
+    if (selectionMode === 'single') {
+      // Single date selection
       const selectedDate = selectedDates[0];
-      const existingAvailability = this.calendarSettings.availability.find((a) =>
-        isSameDay(a.date, selectedDate)
-      );
-
-      const price = this.availabilityMode === 'open'
-        ? (this.fullSettings.pricing.basePrice || existingAvailability?.price || 0)
-        : (existingAvailability?.price || 0);
-
       datesToUpdate.push({
         date: format(selectedDate, 'yyyy-MM-dd'),
         isAvailable: this.availabilityMode === 'open',
-        price: price
+        price: this.selectedDatePrice
       });
     }
-    else if (selectedDates.length === 2) {
+    else if (selectionMode === 'range' && selectedDates.length === 2) {
+      // Range selection - fill all dates between start and end
       const [startDate, endDate] = selectedDates;
       let currentDate = new Date(startDate);
 
       while (currentDate <= endDate) {
-        const existingAvailability = this.calendarSettings.availability.find((a) =>
-          isSameDay(a.date, currentDate)
-        );
-
-        const price = this.availabilityMode === 'open'
-          ? this.selectedDatePrice
-          : (existingAvailability?.price || 0);
-
-
         datesToUpdate.push({
           date: format(currentDate, 'yyyy-MM-dd'),
           isAvailable: this.availabilityMode === 'open',
-          price: price
+          price: this.selectedDatePrice
         });
 
         currentDate = addDays(currentDate, 1);
       }
     }
+    else {
+      // Multiple selection mode OR single date in range mode OR any other case
+      // Process each selected date individually
+      selectedDates.forEach(selectedDate => {
+        datesToUpdate.push({
+          date: format(selectedDate, 'yyyy-MM-dd'),
+          isAvailable: this.availabilityMode === 'open',
+          price: this.selectedDatePrice
+        });
+      });
+    }
+
+    console.log('Selection mode:', selectionMode);
+    console.log('Selected dates:', selectedDates);
+    console.log('Dates to update:', datesToUpdate);
 
     this.isLoading = true;
     this.calendarService.updatePropertyCalendar(
@@ -276,9 +360,8 @@ export class Availability implements OnInit {
     ).subscribe({
       next: (success) => {
         if (success) {
-          console.log(datesToUpdate)
-
-         console.log(this.translate.instant('AVAILABILITY.SUCCESS.UPDATE'));
+          console.log('Successfully updated dates:', datesToUpdate);
+          console.log(this.translate.instant('AVAILABILITY.SUCCESS.UPDATE'));
           this.updateLocalAvailability();
           this.clearSelection();
         } else {
@@ -290,7 +373,6 @@ export class Availability implements OnInit {
       }
     });
   }
-
   // private updateLocalAvailability() {
   //   const selectedDates = this.calendarSettings.selectedDates;
 
@@ -325,11 +407,13 @@ export class Availability implements OnInit {
     if (selectedDates.length === 0) return;
 
     let datesToUpdate: Date[] = [];
+    const selectionMode = this.calendarSettings.selectionMode || 'multiple';
 
-    if (selectedDates.length === 1) {
+    if (selectionMode === 'single') {
       // Single date selection
       datesToUpdate = [selectedDates[0]];
-    } else if (selectedDates.length === 2) {
+    }
+    else if (selectionMode === 'range' && selectedDates.length === 2) {
       // Range selection - generate all dates between start and end
       const [startDate, endDate] = selectedDates.sort((a, b) => a.getTime() - b.getTime());
       let currentDate = new Date(startDate);
@@ -338,10 +422,13 @@ export class Availability implements OnInit {
         datesToUpdate.push(new Date(currentDate));
         currentDate = addDays(currentDate, 1);
       }
-    } else {
-      // Multiple selection
+    }
+    else {
+      // Multiple selection OR single date in range mode OR any other case
       datesToUpdate = [...selectedDates];
     }
+
+    console.log('Updating local availability for dates:', datesToUpdate);
 
     // Update availability for all dates
     datesToUpdate.forEach(dateToUpdate => {
@@ -350,13 +437,18 @@ export class Availability implements OnInit {
       );
 
       if (existingIndex >= 0) {
+        // Update existing availability
         this.calendarSettings.availability[existingIndex].available =
           this.availabilityMode === 'open';
-
-        this.calendarSettings.availability[existingIndex].price =
-          this.availabilityMode === 'open'
-            ? this.selectedDatePrice
-            : this.calendarSettings.availability[existingIndex].price;
+        this.calendarSettings.availability[existingIndex].price = this.selectedDatePrice;
+      } else {
+        // Add new availability entry if it doesn't exist
+        this.calendarSettings.availability.push({
+          date: dateToUpdate,
+          available: this.availabilityMode === 'open',
+          price: this.selectedDatePrice,
+          isBooked: false
+        });
       }
     });
 
@@ -366,7 +458,6 @@ export class Availability implements OnInit {
       availability: [...this.calendarSettings.availability]
     };
 
-    this.clearSelection();
     this.cd.detectChanges();
   }
 
