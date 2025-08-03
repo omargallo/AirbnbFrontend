@@ -19,6 +19,7 @@ import { DialogService } from '../../core/services/dialog.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
+import { ChatBot } from "../../components/chat-bot/chat-bot";
 
 // interface CalendarAvailability{
 //   price:number;
@@ -27,7 +28,7 @@ import { Observable } from 'rxjs';
 // }
 @Component({
   selector: 'app-property-info',
-  imports: [CommonModule, PropertImageGalaryComponent, ReverseSectionComponent, AmenitiesSectionComponent, BookingCalendarComponent, MapLocationComponent, GuestReviews, WishListModal],
+  imports: [CommonModule, PropertImageGalaryComponent, ReverseSectionComponent, AmenitiesSectionComponent, BookingCalendarComponent, MapLocationComponent, GuestReviews, WishListModal, ChatBot],
   templateUrl: './property-info.html',
   styleUrl: './property-info.css'
 })

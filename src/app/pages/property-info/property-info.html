@@ -16,18 +16,17 @@
           [property]="selectedProperty"
         ></app-amenities-section>
       </div>
-        <!-- <app-reverse-section ></app-reverse-section> -->
-        <div class="col-md-12 d-flex justify-content-center px-0">
-          <app-BookingCalendar
-            [propertyId]="propertyId"
-            [checkIn]="selectedDates.start"
-            [checkOut]="selectedDates.end"
-            [dateMap]="dateMap"
-            (datedChange)="onDateChange($event)"
-          >
-          </app-BookingCalendar>
-        </div>
-      
+      <!-- <app-reverse-section ></app-reverse-section> -->
+      <div class="col-md-12 d-flex justify-content-center px-0">
+        <app-BookingCalendar
+          [propertyId]="propertyId"
+          [checkIn]="selectedDates.start"
+          [checkOut]="selectedDates.end"
+          [dateMap]="dateMap"
+          (datedChange)="onDateChange($event)"
+        >
+        </app-BookingCalendar>
+      </div>
     </div>
     <div
       class="bookinCalender position-relative d-flex d-md-block"
@@ -41,7 +40,10 @@
         </app-BookingCalendar>
 
       </div> -->
-      <div class="col-md-12 sticky-box mx-auto" style="position: sticky; top: 90px;">
+      <div
+        class="col-md-12 sticky-box mx-auto"
+        style="position: sticky; top: 90px;"
+      >
         <app-reverse-section
           [dateMap]="dateMap"
           [propertyId]="propertyId"
@@ -120,4 +122,6 @@
     class="col-12"
   >
   </app-wish-list-modal>
+
+  <app-chat-bot></app-chat-bot>
 </div>
