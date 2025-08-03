@@ -26,6 +26,7 @@ import { register } from 'swiper/element/bundle';
 import { PropertySwiperComponent } from '../../components/mainswiper/mainswiper';
 import { UserProfileDto } from './../../core/models/ReviewInterfaces/guest-review-dto';
 import { environment } from '../../../environments/environment.development';
+import { ProfileCard } from '../../shared/components/profile-card/profile-card';
 register();
 
 @Component({
@@ -35,6 +36,7 @@ register();
     CommonModule,
     PropertImageGalaryComponent,
     PropertySwiperComponent,
+    ProfileCard,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './user-profile.html',
@@ -45,7 +47,21 @@ export class UserProfile implements OnInit, OnDestroy {
   isHost: boolean = false;
   loading: boolean = false;
   error: string | null = null;
-
+  debugStats(): void {
+    console.log('=== STATS DEBUG ===');
+    console.log('isHost:', this.isHost);
+    console.log('hostStats:', this.hostStats);
+    console.log('guestStats:', this.guestStats);
+    console.log('statsCalculated:', this.statsCalculated);
+    console.log('canShowStats:', this.canShowStats);
+    console.log('canShowProfile:', this.canShowProfile);
+    console.log('profileLoading:', this.profileLoading);
+    console.log('reviewsLoading:', this.reviewsLoading);
+    console.log('userProfile:', this.userProfile);
+    console.log('hostReviews length:', this.hostReviews?.length || 0);
+    console.log('guestReviews length:', this.guestReviews?.length || 0);
+    console.log('=== END STATS DEBUG ===');
+  }
   userProfile: any = null;
 
   hostReviews: HostReviewDTO[] = [];
@@ -89,7 +105,7 @@ export class UserProfile implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  private imageBaseUrl = environment.baseUrl.replace('/api', '');
+  public imageBaseUrl = environment.baseUrl.replace('/api', '');
   imageErrors: Set<string | undefined> = new Set();
 
   // Add these methods at the end of your class (before the closing brace)
@@ -450,6 +466,8 @@ export class UserProfile implements OnInit, OnDestroy {
     return this._uniqueVisitedProperties;
   }
 
+
+  
   navigateToProperty(propertyId: number): void {
     if (!propertyId) {
       console.warn('Property ID is required for navigation');

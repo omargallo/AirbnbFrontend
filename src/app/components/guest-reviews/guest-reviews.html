@@ -353,3 +353,21 @@
   </button>
 </div>
 }
+
+<div class="meet-host-section mt-5" *ngIf="hostInfo && hostStats">
+  <h2 class="section-title mb-4">Meet your host</h2>
+
+  <app-profile-card
+    [firstName]="hostInfo.firstName"
+    [lastName]="hostInfo.lastName"
+    [country]="hostInfo.country"
+    [profileImageUrl]="hostInfo.profilePictureURL"
+    [userId]="hostInfo.userId"
+    [userType]="'Host'"
+    [stats]="hostStats"
+    [showHeartBadge]="isHostSuperhost()"
+    [imageBaseUrl]="imageBaseUrl"
+    [imageErrors]="imageErrors"
+    [onImageErrorCallback]="onHostImageError"
+  ></app-profile-card>
+</div>

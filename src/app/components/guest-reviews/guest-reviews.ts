@@ -1,3 +1,5 @@
+import { PropertyDisplayWithHostDataDto } from './../../pages/add-property/models/property.model';
+import { PropertyService } from './../../pages/add-property/services/property.service';
 import { Property } from './../../core/models/Property';
 
 import { UserBookingService } from './../../core/services/Booking/user-booking-service';
@@ -25,6 +27,8 @@ import { ConfirmService } from '../../core/services/confirm.service';
 import { Modal } from '../../shared/components/modal/modal';
 import { ReviewsModalComponent } from './guest-review-modal/guest-review-modal';
 import { environment } from '../../../environments/environment.development';
+import { HostReviewDTO } from '../../core/models/ReviewInterfaces/host-review-dto';
+import { ProfileCard } from "../../shared/components/profile-card/profile-card";
 
 @Component({
   selector: 'app-guest-reviews',
@@ -33,12 +37,11 @@ import { environment } from '../../../environments/environment.development';
     CommonModule,
     StarComponent,
     //ReviewsModalComponent ,
-
     // Confirm,
     //  Modal,
-
     ReviewsModalComponent,
-  ],
+    ProfileCard
+],
   templateUrl: './guest-reviews.html',
   styleUrl: './guest-reviews.css',
 })
@@ -72,7 +75,8 @@ export class GuestReviews implements OnInit {
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
     private router: Router,
-    private UserBookingService: UserBookingService
+    private UserBookingService: UserBookingService,
+    private PropertyService: PropertyService
   ) {}
 
   ngOnInit(): void {
@@ -83,6 +87,10 @@ export class GuestReviews implements OnInit {
 
     if (this.propertyId) {
       this.loadReviewsByPropertyId();
+
+      //for profile card
+    //    this.loadHostInformation();
+        //
 
       if (this.currentUser) {
         //this.checkUserReviewEligibility();
@@ -460,6 +468,79 @@ export class GuestReviews implements OnInit {
   averageCleanliness =
     this.cleanlinessRatings.reduce((sum, value) => sum + value, 0) /
     (this.cleanlinessRatings.length || 1);
+
+
+
+
+
+
+
+
+
+//for profile card 
+hostInfo: any = null;
+hostStats: any = null;
+isLoadingHost: boolean = false;
+// Update your loadHostInformation method in GuestReviews component
+
+loadHostInfo(): void {
+  if (!this.propertyId) return;
+
+  this.isLoadingHost = true;
+
+  this.PropertyService.getByIdWithCover(this.propertyId).subscribe({
+    next: (property: PropertyDisplayWithHostDataDto) => {
+      console.log('Property with host data:', property);
+      
+      this.hostInfo = {
+        userId: property.hostId,
+        firstName: property.host?.firstName || 'Host',
+        lastName: property.host?.lastName || '',
+        profilePictureURL: property.host?.profilePictureURL,
+        country: property.host?.country || property.country,
+        description: property.host?.bio
+      };
+
+      this.calculateSimpleHostStats();
+      
+      this.isLoadingHost = false;
+      this.cdr.detectChanges();
+    },
+    error: (error) => {
+      console.error('Error loading host info:', error);
+      this.isLoadingHost = false;
+    }
+  });
+}
+
+calculateSimpleHostStats(): void {
+  // Simple calculation from current reviews
+  const hostReviews = this.reviews.length;
+  const totalRating = this.reviews.reduce((sum, review) => sum + review.rating, 0);
+  const averageRating = hostReviews > 0 ? totalRating / hostReviews : 0;
+  
+  // Simple months calculation (assume 6 months if no specific data)
+  const monthsHosting = 6;
+
+  this.hostStats = {
+    totalReviews: hostReviews,
+    averageRating: Number(averageRating.toFixed(1)),
+    monthsHosting: monthsHosting
+  };
+}
+
+onHostImageError = (event: any, item: any): void => {
+  this.imageErrors.add(item.id);
+  this.cdr.detectChanges();
+};
+
+isHostSuperhost(): boolean {
+  return this.hostStats?.averageRating >= 4.8 && this.hostStats?.totalReviews >= 5;
+}
+
+
+
+
 }
 
 // loadUserCompletedBookings(): void {

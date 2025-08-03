@@ -1,10 +1,17 @@
-import { Component, Input } from '@angular/core';
+interface StatItem {
+  label: string;
+  value: any;
+  icon?: string;
+}
+
+import { CommonModule } from '@angular/common';
+import { Component, Input, input } from '@angular/core';
 
 @Component({
   selector: 'app-profile-card',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './profile-card.html',
-  styleUrl: './profile-card.css'
+  styleUrl: './profile-card.css',
 })
 export class ProfileCard {
   @Input() firstName?: string;
@@ -14,26 +21,43 @@ export class ProfileCard {
   @Input() userId?: string;
   @Input() userType: 'Host' | 'Guest' = 'Host';
   @Input() stats?: any;
-  @Input() showHeartBadge: boolean = false;
+  @Input() showHeartBadge: boolean | null = false;
   @Input() imageBaseUrl: string = '';
   @Input() imageErrors: Set<string | undefined> = new Set();
   @Input() onImageErrorCallback?: (event: any, item: any) => void;
 
-  get statsArray() {
+  get statsArray(): StatItem[] {
     if (!this.stats) return [];
-    
+
     if (this.userType === 'Host') {
       return [
         { label: 'Reviews', value: this.stats.totalReviews },
-        { label: 'Rating', value: this.stats.averageRating?.toFixed(1), icon: 'fas fa-star text-warning' },
-        { label: 'Months hosting', value: this.stats.monthsHosting }
+        {
+          label: 'Rating',
+          value: this.stats.averageRating?.toFixed(1),
+          icon: 'fas fa-star text-warning',
+        },
+        { label: 'Months hosting', value: this.stats.monthsHosting },
       ];
     } else {
       return [
         { label: 'Trips', value: this.stats.totalTrips },
         { label: 'Reviews', value: this.stats.totalReviews },
-        { label: 'Years on Platform', value: this.stats.yearsOnPlatform }
+        { label: 'Years on Platform', value: this.stats.yearsOnPlatform },
       ];
+    }
+  }
+
+  getHostStatus(): string {
+    if (this.userType === 'Guest') {
+      return this.country || 'Location not specified';
+    }
+
+    // For hosts, determine status based on rating
+    if (this.stats?.averageRating >= 4.8) {
+      return 'Super Host';
+    } else {
+      return 'Host';
     }
   }
 
@@ -51,11 +75,21 @@ export class ProfileCard {
     this.imageErrors.add(this.userId);
   }
 
-  shouldShowImage(imageUrl: string | undefined, itemId: string | undefined): boolean {
-    return !!(imageUrl && imageUrl.trim() !== '' && !this.imageErrors.has(itemId));
+  shouldShowImage(
+    imageUrl: string | undefined,
+    itemId: string | undefined
+  ): boolean {
+    return !!(
+      imageUrl &&
+      imageUrl.trim() !== '' &&
+      !this.imageErrors.has(itemId)
+    );
   }
 
-  shouldShowFallback(imageUrl: string | undefined, itemId: string | undefined): boolean {
+  shouldShowFallback(
+    imageUrl: string | undefined,
+    itemId: string | undefined
+  ): boolean {
     return !imageUrl || imageUrl.trim() === '' || this.imageErrors.has(itemId);
   }
 
