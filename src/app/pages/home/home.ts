@@ -15,10 +15,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChatContextService } from '../../core/chatbot/chat-context.service';
 import { environment } from '../../../environments/environment.development';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ChatBot } from "../../components/chat-bot/chat-bot";
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, WishListModal, PropertySwiperComponent, FormsModule, TranslateModule],
+  imports: [CommonModule, WishListModal, PropertySwiperComponent, FormsModule, TranslateModule, ChatBot],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
