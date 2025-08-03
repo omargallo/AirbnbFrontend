@@ -1,6 +1,11 @@
 <div
   class="bg-white rounded-4 p-4 shadow-sm border flex-shrink-0"
   style="min-width: 380px"
+  [class.clickable]="clickable && userId"
+  (click)="navigateToProfile()"
+  (keydown)="onKeyDown($event)"
+  [attr.tabindex]="clickable && userId ? '0' : null"
+  style="min-width: 380px; cursor: pointer"
 >
   <div class="d-flex flex-column flex-md-row align-items-center gap-4">
     <div class="flex-shrink-0 text-center">
@@ -15,8 +20,8 @@
         />
         <div
           *ngIf="shouldShowFallback(profileImageUrl, userId)"
-          class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
-          style="width: 80px; height: 80px"
+          class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+          style="width: 80px; height: 80px; font-size: 2rem"
         >
           {{ getInitials(firstName || "", lastName || "") }}
         </div>

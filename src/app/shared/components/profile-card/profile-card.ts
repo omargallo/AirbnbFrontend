@@ -6,6 +6,7 @@ interface StatItem {
 
 import { CommonModule } from '@angular/common';
 import { Component, Input, input } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile-card',
@@ -25,6 +26,21 @@ export class ProfileCard {
   @Input() imageBaseUrl: string = '';
   @Input() imageErrors: Set<string | undefined> = new Set();
   @Input() onImageErrorCallback?: (event: any, item: any) => void;
+  @Input() clickable: boolean = true;
+
+  navigateToProfile(): void {
+    if (this.clickable && this.userId) {
+      this.router.navigate(['/user', this.userId]);
+    }
+  }
+
+  onKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.navigateToProfile();
+    }
+  }
+  constructor(private router: Router) {}
 
   get statsArray(): StatItem[] {
     if (!this.stats) return [];
@@ -35,7 +51,7 @@ export class ProfileCard {
         {
           label: 'Rating',
           value: this.stats.averageRating?.toFixed(1),
-          icon: 'fas fa-star text-warning',
+          // icon: 'fas fa-star text-warning',
         },
         { label: 'Months hosting', value: this.stats.monthsHosting },
       ];

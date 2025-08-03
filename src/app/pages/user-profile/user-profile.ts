@@ -348,7 +348,7 @@ export class UserProfile implements OnInit, OnDestroy {
       this.hostStats = {
         totalReviews: 0,
         averageRating: 0,
-        monthsHosting: 0,
+        monthsHosting: 1,
         totalProperties: 0,
       };
       return;
@@ -466,8 +466,6 @@ export class UserProfile implements OnInit, OnDestroy {
     return this._uniqueVisitedProperties;
   }
 
-
-  
   navigateToProperty(propertyId: number): void {
     if (!propertyId) {
       console.warn('Property ID is required for navigation');

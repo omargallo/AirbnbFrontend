@@ -1,5 +1,5 @@
+import { PropertyService } from './../../core/services/Property/property.service';
 import { PropertyDisplayWithHostDataDto } from './../../pages/add-property/models/property.model';
-import { PropertyService } from './../../pages/add-property/services/property.service';
 import { Property } from './../../core/models/Property';
 
 import { UserBookingService } from './../../core/services/Booking/user-booking-service';
@@ -28,7 +28,7 @@ import { Modal } from '../../shared/components/modal/modal';
 import { ReviewsModalComponent } from './guest-review-modal/guest-review-modal';
 import { environment } from '../../../environments/environment.development';
 import { HostReviewDTO } from '../../core/models/ReviewInterfaces/host-review-dto';
-import { ProfileCard } from "../../shared/components/profile-card/profile-card";
+import { ProfileCard } from '../../shared/components/profile-card/profile-card';
 
 @Component({
   selector: 'app-guest-reviews',
@@ -40,8 +40,8 @@ import { ProfileCard } from "../../shared/components/profile-card/profile-card";
     // Confirm,
     //  Modal,
     ReviewsModalComponent,
-    ProfileCard
-],
+    ProfileCard,
+  ],
   templateUrl: './guest-reviews.html',
   styleUrl: './guest-reviews.css',
 })
@@ -80,17 +80,16 @@ export class GuestReviews implements OnInit {
   ) {}
 
   ngOnInit(): void {
- 
     this.currentUser = this.authService.userId;
-
+    this.loadHostInfo();
     // this.loadUserCompletedBookings();
 
     if (this.propertyId) {
       this.loadReviewsByPropertyId();
 
       //for profile card
-    //    this.loadHostInformation();
-        //
+      //    this.loadHostInformation();
+      //
 
       if (this.currentUser) {
         //this.checkUserReviewEligibility();
@@ -103,16 +102,17 @@ export class GuestReviews implements OnInit {
     // }
   }
 
-  private imageBaseUrl = environment.baseUrl.replace('/api', '');
+  public imageBaseUrl = environment.baseUrl.replace('/api', '');
 
   getImageUrl(profilePictureURL: string): string {
     return this.imageBaseUrl + profilePictureURL;
   }
 
+  imageError: Set<string | undefined> = new Set();
   imageErrors: Set<number> = new Set();
 
   onImageError(event: any, review: IGuestReviewDto): void {
-    this.imageErrors.add(review.id);
+    this.imageError.add(review.id.toString());
   }
 
   getOverallRating(): number {
@@ -267,7 +267,11 @@ export class GuestReviews implements OnInit {
       );
     }
   }
-
+  navigateToReviewerProfile(userId: string): void {
+    if (userId) {
+      this.router.navigate(['/user', userId]);
+    }
+  }
   navigateToAddReview() {
     this.router.navigate(['/review/0'], {
       queryParams: {
@@ -469,78 +473,144 @@ export class GuestReviews implements OnInit {
     this.cleanlinessRatings.reduce((sum, value) => sum + value, 0) /
     (this.cleanlinessRatings.length || 1);
 
+  //for profile card
 
+  hostInfo: any = null;
+  hostStats: any = null;
+  isLoadingHost: boolean = false;
 
+  // Update your loadHostInformation method in GuestReviews component
 
+  loadHostInfo(): void {
+    if (!this.propertyId) return;
 
+    this.isLoadingHost = true;
 
+    // Use the new method that returns PropertyDisplayWithHostDataDto
+    this.PropertyService.getPropertyWithHostData(this.propertyId).subscribe({
+      next: (property: PropertyDisplayWithHostDataDto) => {
+        console.log('Property with host data:', property);
 
+        this.hostInfo = {
+          userId: property.host?.userId || property.hostId,
+          firstName: property.host?.firstName || 'Host',
+          lastName: property.host?.lastName || '',
+          userName: property.host?.userName,
+          email: property.host?.email,
+          phoneNumber: property.host?.phoneNumber,
+          profilePictureURL: property.host?.profilePictureURL,
+          country: property.host?.country || property.country,
+          description: property.host?.bio, // bio maps to description
+          birthDate: property.host?.birthDate,
+        };
 
+        this.calculateSimpleHostStats();
 
-//for profile card 
-hostInfo: any = null;
-hostStats: any = null;
-isLoadingHost: boolean = false;
-// Update your loadHostInformation method in GuestReviews component
+        this.isLoadingHost = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading host info:', error);
+        this.isLoadingHost = false;
+      },
+    });
+  }
 
-loadHostInfo(): void {
-  if (!this.propertyId) return;
+  calculateSimpleHostStats(): void {
+    // Simple calculation from current reviews
+    const hostReviews = this.reviews.length;
+    const totalRating = this.reviews.reduce(
+      (sum, review) => sum + review.rating,
+      0
+    );
+    const averageRating = hostReviews > 0 ? totalRating / hostReviews : 0;
 
-  this.isLoadingHost = true;
+    // Simple months calculation (assume 1 months if no specific data)
+    const monthsHosting = 1;
 
-  this.PropertyService.getByIdWithCover(this.propertyId).subscribe({
-    next: (property: PropertyDisplayWithHostDataDto) => {
-      console.log('Property with host data:', property);
-      
-      this.hostInfo = {
-        userId: property.hostId,
-        firstName: property.host?.firstName || 'Host',
-        lastName: property.host?.lastName || '',
-        profilePictureURL: property.host?.profilePictureURL,
-        country: property.host?.country || property.country,
-        description: property.host?.bio
-      };
+    this.hostStats = {
+      totalReviews: hostReviews,
+      averageRating: Number(averageRating.toFixed(1)),
+      monthsHosting: monthsHosting,
+    };
+  }
 
-      this.calculateSimpleHostStats();
-      
-      this.isLoadingHost = false;
-      this.cdr.detectChanges();
-    },
-    error: (error) => {
-      console.error('Error loading host info:', error);
-      this.isLoadingHost = false;
-    }
-  });
-}
-
-calculateSimpleHostStats(): void {
-  // Simple calculation from current reviews
-  const hostReviews = this.reviews.length;
-  const totalRating = this.reviews.reduce((sum, review) => sum + review.rating, 0);
-  const averageRating = hostReviews > 0 ? totalRating / hostReviews : 0;
-  
-  // Simple months calculation (assume 6 months if no specific data)
-  const monthsHosting = 6;
-
-  this.hostStats = {
-    totalReviews: hostReviews,
-    averageRating: Number(averageRating.toFixed(1)),
-    monthsHosting: monthsHosting
+  onHostImageError = (event: any, item: any): void => {
+    this.imageErrors.add(item.id);
+    this.cdr.detectChanges();
   };
-}
 
-onHostImageError = (event: any, item: any): void => {
-  this.imageErrors.add(item.id);
-  this.cdr.detectChanges();
-};
+  isHostSuperhost(): boolean {
+    return (
+      this.hostStats?.averageRating >= 4.8 && this.hostStats?.totalReviews >= 5
+    );
+  }
 
-isHostSuperhost(): boolean {
-  return this.hostStats?.averageRating >= 4.8 && this.hostStats?.totalReviews >= 5;
-}
+  getDaysAgo(dateString: string): string {
+    const reviewDate = new Date(dateString);
+    const currentDate = new Date();
+    const timeDifference = currentDate.getTime() - reviewDate.getTime();
+    const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
 
+    if (daysDifference === 0) {
+      return 'Today';
+    } else if (daysDifference === 1) {
+      return '1 day ago';
+    } else if (daysDifference < 7) {
+      return `${daysDifference} days ago`;
+    } else if (daysDifference < 14) {
+      return '1 week ago';
+    } else if (daysDifference < 30) {
+      const weeksAgo = Math.floor(daysDifference / 7);
+      return `${weeksAgo} weeks ago`;
+    } else if (daysDifference < 365) {
+      const monthsAgo = Math.floor(daysDifference / 30);
+      return monthsAgo === 1 ? '1 month ago' : `${monthsAgo} months ago`;
+    } else {
+      const yearsAgo = Math.floor(daysDifference / 365);
+      return yearsAgo === 1 ? '1 year ago' : `${yearsAgo} years ago`;
+    }
+  }
 
+  getStayDuration(review: IGuestReviewDto): string {
+    if (this.userBookings && this.userBookings.length > 0) {
+      const booking = this.userBookings.find(
+        (b) =>
+          b.propertyId === this.propertyId && b.userId === review.user.userId
+      );
 
+      if (booking) {
+        return this.calculateStayText(
+          booking.checkInDate,
+          booking.checkOutDate
+        );
+      }
+    }
+    return 'Guest stay';
+  }
 
+  private calculateStayText(checkInDate: string, checkOutDate: string): string {
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+    const timeDifference = checkOut.getTime() - checkIn.getTime();
+    const nights = Math.floor(timeDifference / (1000 * 3600 * 24));
+
+    if (nights === 1) {
+      return 'Stayed 1 night';
+    } else if (nights === 2) {
+      return 'Stayed a couple nights';
+    } else if (nights <= 4) {
+      return 'Stayed a few nights';
+    } else if (nights <= 7) {
+      return 'Stayed a week';
+    } else if (nights <= 14) {
+      return 'Stayed a couple weeks';
+    } else if (nights <= 30) {
+      return 'Stayed a few weeks';
+    } else {
+      return 'Extended stay';
+    }
+  }
 }
 
 // loadUserCompletedBookings(): void {

@@ -47,7 +47,6 @@
 }
 
 
-/* Only add this if you want custom separator styling */
 .custom-separator {
     border-right: 1px solid #dee2e6;
     height: 80%;
@@ -112,7 +111,6 @@
     margin-bottom: 30px;
 }
 
-/* Summary Row */
 .summary-row {
     display: flex;
     justify-content: space-between;
@@ -123,7 +121,6 @@
     gap: 40px;
 }
 
-/* Rating Breakdown */
 .rating-breakdown {
     flex: 1;
     max-width: 250px;
@@ -168,7 +165,6 @@
     transition: width 0.3s ease;
 }
 
-/* Category Ratings */
 .category-ratings {
     flex: 2;
     display: grid;
@@ -214,7 +210,7 @@
     color: #222;
 }
 
-/* Reviews Grid */
+
 .reviews-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -229,7 +225,7 @@
     padding-bottom: 30px;
 }
 
-/* Review Header */
+
 .review-header {
     display: flex;
     justify-content: space-between;
@@ -298,7 +294,6 @@
     transform: scale(1.1);
 }
 
-/* Review Meta */
 .review-meta {
     display: flex;
     align-items: center;
@@ -312,7 +307,6 @@
     align-items: center;
 }
 
-/* Make stars smaller and black */
 .review-stars ::ng-deep .star-component {
     font-size: 12px !important;
 }
@@ -394,7 +388,6 @@
     color: #717171;
 }
 
-/* Bottom Actions */
 .bottom-actions {
     text-align: center;
     padding: 40px 0;
@@ -436,7 +429,7 @@
     color: #222;
 }
 
-/* Tooltip Styles */
+
 .tooltip-popup {
     position: absolute;
     bottom: 100%;
@@ -549,7 +542,6 @@
     max-width: 200px;
 }
 
-/* Responsive Design */
 @media (max-width: 1024px) {
     .category-ratings {
         grid-template-columns: repeat(2, 1fr);
@@ -611,6 +603,8 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
+    max-width: 1280px;
+    margin: 30px auto;
 }
 
 .review-cta-container::before {
@@ -752,7 +746,6 @@
     }
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
     .review-cta-container {
         margin: 20px 0;
