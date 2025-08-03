@@ -486,7 +486,6 @@ export class GuestReviews implements OnInit {
 
     this.isLoadingHost = true;
 
-    // Use the new method that returns PropertyDisplayWithHostDataDto
     this.PropertyService.getPropertyWithHostData(this.propertyId).subscribe({
       next: (property: PropertyDisplayWithHostDataDto) => {
         console.log('Property with host data:', property);
@@ -504,7 +503,11 @@ export class GuestReviews implements OnInit {
           birthDate: property.host?.birthDate,
         };
 
-        this.calculateSimpleHostStats();
+        this.loadAllHostReviewsForStats(
+          property.host?.userId || property.hostId
+        );
+
+        // this.calculateSimpleHostStats();
 
         this.isLoadingHost = false;
         this.cdr.detectChanges();
@@ -515,7 +518,57 @@ export class GuestReviews implements OnInit {
       },
     });
   }
+  loadAllHostReviewsForStats(hostId: string): void {
+    this.ReviewService.getHostReviewsWithProperties(hostId).subscribe({
+      next: (allHostReviews: HostReviewDTO[]) => {
+        this.calculateAccurateHostStats(allHostReviews);
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading all host reviews:', error);
+        // Fallback to simple calculation if this fails
+        this.calculateSimpleHostStats();
+      },
+    });
+  }
+  calculateAccurateHostStats(allHostReviews: HostReviewDTO[]): void {
+    if (allHostReviews.length === 0) {
+      this.hostStats = {
+        totalReviews: 0,
+        averageRating: 0,
+        monthsHosting: 1,
+        totalProperties: 0,
+      };
+      return;
+    }
 
+    const totalRating = allHostReviews.reduce(
+      (sum, review) => sum + review.rating,
+      0
+    );
+    const averageRating = totalRating / allHostReviews.length;
+
+    // Calculate months hosting from oldest review
+    const oldestReview = allHostReviews.reduce((oldest, review) =>
+      new Date(review.createdAt) < new Date(oldest.createdAt) ? review : oldest
+    );
+    const monthsHosting = Math.ceil(
+      (Date.now() - new Date(oldestReview.createdAt).getTime()) /
+        (1000 * 60 * 60 * 24 * 30)
+    );
+
+    // Count unique properties
+    const uniqueProperties = new Set(
+      allHostReviews.map((review) => review.propertyId)
+    );
+
+    this.hostStats = {
+      totalReviews: allHostReviews.length,
+      averageRating: Number(averageRating.toFixed(1)),
+      monthsHosting: monthsHosting,
+      totalProperties: uniqueProperties.size,
+    };
+  }
   calculateSimpleHostStats(): void {
     // Simple calculation from current reviews
     const hostReviews = this.reviews.length;
