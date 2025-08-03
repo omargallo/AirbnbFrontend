@@ -92,7 +92,21 @@
     "uploadImage": "تعديل",
     "previewImage": "معاينة الصورة",
     "upload": "تحميل",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "yourTravels": "الرحلات السابقة",
+    "manageYourReservations": "إدارة الحجزات واستكشاف المواقع الجديدة",
+    "noTripsYet": "لا توجد مرات بعد",
+    "timeToDustOff": "الوقت لتجميع حقائبك وبدء التخطيط لمسافرتك القادمة",
+    "startSearching": "بدء البحث",
+    "checkIn": "الدخول",
+    "guests": "ضيوف",
+    "nights": "الامسيات",
+    "bookingId": "رقم الحجز",
+    "totalPaid": "المبلغ الإجمالي",
+    "perNight": "لكل ليلة",
+    "manageBooking": "إدارة الحجز",
+    "somethingWentWrong": "حدث خطأ ما",
+    "pleaseTryAgain": "يرجى المحاولة لاحقًا"
   },
   "notifications": {
     "title": "الإشعارات",

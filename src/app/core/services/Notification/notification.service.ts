@@ -9,12 +9,14 @@ import { Notification } from '../../models/Notification';
 export class NotificationService implements OnDestroy {
   private hubConnection!: signalR.HubConnection;
   private baseUrl = `${environment.baseUrl}/Notification`;
-  private HubUrl = `${environment.baseUrl}/notificationHub`;
+  private HubUrl = `${environment.base}/notificationHub`;
 
   private notificationSubject = new Subject<Notification | string>();
   public newNotification$ = this.notificationSubject.asObservable();
 
   constructor(private http: HttpClient) {}
+
+  unReadCount: number = 0;
 
   public startConnection(token: string): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
