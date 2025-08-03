@@ -138,7 +138,12 @@
         </div>
       </div>
     </div>
-    <button type="button" class="check-btn" (click)="onShowConfirmModal()">
+    <button
+      type="button"
+      class="check-btn"
+      (click)="onShowConfirmModal()"
+      [disabled]="!selected?.startDate || !selected?.endDate"
+    >
       Reserve
     </button>
     <!-- If available -->
