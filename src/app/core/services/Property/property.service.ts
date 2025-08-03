@@ -121,7 +121,11 @@ export class PropertyService {
         return this.http.get<Result<PropertyDisplayWithHostDataDto[]>>(`${this.baseUrl}/dashboard`).pipe(map(res=>res.data));
     }
   
-  getByIdWithCover(propId:number):Observable<PropDisplayFromModelsTrueOne>{
+  getByIdWithCover(propId:number):Observable<PropertyDisplayDtoFromModels>{
+    return this.http.get<Result<PropertyDisplayDtoFromModels>>(`${this.baseUrl}/cover/${propId}`)
+                        .pipe(map(res=> res.data))
+  }
+  getByIdWithCoverFor3ssam(propId:number):Observable<PropDisplayFromModelsTrueOne>{
     return this.http.get<Result<PropDisplayFromModelsTrueOne>>(`${this.baseUrl}/cover/${propId}`)
                         .pipe(map(res=> res.data))
   }
@@ -390,4 +394,14 @@ togglePropertyAmenity(amenityId: number, propertyId: number): Observable<Result<
     { withCredentials: true }
   );
 }
+
+
+  deactivate(propertyId:number):Observable<Result<string>>{
+    return this.http
+          .put<Result<string>>(this.baseUrl+"/deactivate/"+propertyId,{})
+  }
+  activate(propertyId:number):Observable<Result<string>>{
+    return this.http
+          .put<Result<string>>(this.baseUrl+"/activate/"+propertyId,{})
+  }
 }
