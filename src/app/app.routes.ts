@@ -50,6 +50,7 @@ import { UserProfile } from './pages/user-profile/user-profile';
 import { authGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { HasListingGuard } from './core/guards/has-listing.guard';
+import { ContactHostComponent } from './pages/PropertyDetails/contact-host/contact-host.component';
 export const routes: Routes = [
   {
     path: '',
@@ -121,7 +122,9 @@ export const routes: Routes = [
   },
   { path: 'take-info/:id', component: UpdateProfile, canActivate: [authGuard] },
   { path: 'host', component: HostProperties, canActivate: [authGuard] },
-
+  
+  { path: 'contact-host/:propertyId', component: ContactHostComponent },
+  
   {
     path: 'propertybookings/:propertyId',
     component: PropertyBookings,
