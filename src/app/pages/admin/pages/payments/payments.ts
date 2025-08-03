@@ -284,7 +284,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
 
   canTransferPayment(payment: AdminPaymentDTO): boolean {
   return payment.paymentStatus === 'Succeeded' && 
-         payment.transferStatus === 'NotTransferred' && 
+         payment.transferStatus === 'PendingTransfer' && 
          payment.hostAccountCompleted;
 }
 

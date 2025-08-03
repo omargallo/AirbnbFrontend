@@ -898,4 +898,42 @@
   .error-content {
     padding: 2rem 1.5rem;
   }
+}/* Validation Errors Styles */
+.validation-errors {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-left: 4px solid #dc3545;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.error-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  color: #721c24;
+  font-size: 14px;
+}
+
+.error-item:last-child {
+  margin-bottom: 0;
+}
+
+.error-item i {
+  color: #dc3545;
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+/* Disabled button styles */
+.btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.transfer-confirm-btn[disabled] {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
 }
