@@ -112,18 +112,18 @@ export class Home implements OnInit, OnDestroy {
         title: this.translate.instant('HOME.SECTIONS.PARIS'),
         search: { country: 'France', city: 'Paris' },
       },
-      {
-        title: this.translate.instant('HOME.SECTIONS.MILAN'),
-        search: { country: 'Italy', city: 'Milan' },
-      },
+      // {
+      //   title: this.translate.instant('HOME.SECTIONS.MILAN'),
+      //   search: { country: 'Italy', city: 'Milan' },
+      // },
       {
         title: this.translate.instant('HOME.SECTIONS.SHEIKH_ZAYED'),
         search: { country: 'Egypt', city: 'Sheikh Zayed City' },
-      },
-      {
-        title: this.translate.instant('HOME.SECTIONS.BARCELONA'),
-        search: { country: 'Spain', city: 'Barcelona' },
-      },
+      }//,
+      // {
+      //   title: this.translate.instant('HOME.SECTIONS.BARCELONA'),
+      //   search: { country: 'Spain', city: 'Barcelona' },
+      // },
     ];
 
     this.sections = this.shuffleArray(this.sections);
