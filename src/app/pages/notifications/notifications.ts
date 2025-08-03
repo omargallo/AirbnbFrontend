@@ -47,6 +47,8 @@ export class Notifications implements OnInit, OnDestroy {
     const notificationsSub = this.notificationService.getNotificationsByUserId(userId).subscribe({
       next: (notifications) => {
         this.notifications = notifications;
+        this.notificationService.unReadCount = this.notifications.filter(n => !n.isRead).length;
+        localStorage.setItem('unReadCount', this.notificationService.unReadCount.toString());
         this.loading = false;
       },
       error: (err) => {
@@ -83,6 +85,8 @@ export class Notifications implements OnInit, OnDestroy {
     const markReadSub = this.notificationService.setNotificationRead(notification.id).subscribe({
       next: () => {
         notification.isRead = true;
+        this.notificationService.unReadCount--;
+        localStorage.setItem('unReadCount', this.notificationService.unReadCount.toString());
       },
       error: (err) => {
         console.error('Error marking notification as read:', err);
@@ -98,6 +102,8 @@ export class Notifications implements OnInit, OnDestroy {
     const deleteSub = this.notificationService.deleteNotification(notification.id).subscribe({
       next: () => {
         this.notifications = this.notifications.filter(n => n.id !== notification.id);
+        this.notificationService.unReadCount--;
+        localStorage.setItem('unReadCount', this.notificationService.unReadCount.toString());
       },
       error: (err) => {
         console.error('Error deleting notification:', err);

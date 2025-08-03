@@ -10,7 +10,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px 0;
-  border-bottom: 1px solid #DDDDDD;
+  border-bottom: 1px solid var(--border-color);
   position: relative;
 }
 
@@ -25,13 +25,13 @@
 .room-label {
   font-size: 16px;
   font-weight: 600;
-  color: #222222;
+  color: var(--primary-text-color);
   margin-bottom: 4px;
 }
 
 .room-description {
   font-size: 14px;
-  color: #717171;
+  color: var(--secondary-text-color);
   line-height: 1.4;
 }
 
@@ -44,26 +44,27 @@
 .counter-btn {
   width: 32px;
   height: 32px;
-  border: 1px solid #B0B0B0;
+  border: 1px solid var(--border-color);
   border-radius: 50%;
-  background: white;
+  background: var(--bg-color);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: #717171;
+  color: var(--secondary-text-color);
 }
 
 .counter-btn:hover:not(:disabled) {
-  border-color: #222222;
-  color: #222222;
+  border-color: var(--primary-text-color);
+  color: var(--primary-text-color);
 }
 
 .counter-btn:disabled {
-  border-color: #EBEBEB;
-  color: #EBEBEB;
+  border-color: var(--disabled-color);
+  color: var(--disabled-color);
   cursor: not-allowed;
+  background: var(--disabled-bg);
 }
 
 .counter-btn-minus:disabled {
@@ -87,7 +88,7 @@
   background: transparent;
   font-size: 16px;
   font-weight: 400;
-  color: #222222;
+  color: var(--primary-text-color);
   cursor: default;
 }
 
@@ -142,12 +143,12 @@
 
 /* Focus styles for accessibility */
 .counter-btn:focus {
-  /* outline: 2px solid ; */
+  outline: 2px solid var(--airbnb-red);
   outline-offset: 2px;
 }
 
 .counter-input:focus {
-  /* outline: 2px solid; */
+  outline: 2px solid var(--airbnb-red);
   outline-offset: 1px;
   border-radius: 4px;
 }

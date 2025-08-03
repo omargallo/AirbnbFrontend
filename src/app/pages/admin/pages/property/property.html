@@ -133,7 +133,7 @@
         ></app-property-info>
       </div>
       <!-- Modal Footer -->
-      <div class="modal-footer d-flex justify-content-between">
+      <div class="modal-footer d-flex justify-content-between align-items-center p-3">
         <div class="d-flex">
             <div class="d-flex col-12">
                 <div class="status-badge" [style.background-color]="getStatusColor(selectedProperty?.status)">
@@ -170,3 +170,7 @@
     </div>
   </div>
 </div>
+
+
+
+<app-property-activate-modal [currentProperty]="selectedProperty"></app-property-activate-modal>

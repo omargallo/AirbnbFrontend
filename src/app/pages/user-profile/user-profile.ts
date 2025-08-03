@@ -30,8 +30,6 @@ register();
   imports: [
     DecimalPipe,
     CommonModule,
-    PropertImageGalaryComponent,
-    PropertySwiperComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './user-profile.html',

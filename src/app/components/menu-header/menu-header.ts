@@ -83,6 +83,10 @@ export class MenuHeader implements AfterViewInit, OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  get unreadCountNotifications(): number {
+    return Number(localStorage.getItem('unReadCount')) || 0;
+  }
+
   // Getters for user info
   get userId(): string | null {
     return this.authService.userId;
