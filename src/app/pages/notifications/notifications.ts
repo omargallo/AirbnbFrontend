@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../core/services/Notification/notification.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -22,7 +22,8 @@ export class Notifications implements OnInit, OnDestroy {
 
   constructor(
     private notificationService: NotificationService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -47,14 +48,15 @@ export class Notifications implements OnInit, OnDestroy {
     const notificationsSub = this.notificationService.getNotificationsByUserId(userId).subscribe({
       next: (notifications) => {
         this.notifications = notifications;
-        this.notificationService.unReadCount = this.notifications.filter(n => !n.isRead).length;
-        localStorage.setItem('unReadCount', this.notificationService.unReadCount.toString());
+        this.updateUnreadCount();
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading notifications:', err);
         this.error = 'Failed to load notifications';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
 
@@ -62,21 +64,45 @@ export class Notifications implements OnInit, OnDestroy {
   }
 
   private subscribeToNewNotifications(): void {
-    const newNotificationSub = this.notificationService.newNotification$.subscribe((msgOrNotification) => {
-      if (typeof msgOrNotification === 'string') {
-        const newNotification: Notification = {
-          userId: this.authService.userId || '',
-          message: msgOrNotification,
-          isRead: false,
-          createdAt: new Date()
-        };
-        this.notifications.unshift(newNotification);
+    const newNotificationSub = this.notificationService.newNotification$.subscribe((notification) => {
+      console.log('New notification received in component:', notification);
+      
+      if (notification && notification.id) {
+        const exists = this.notifications.find(n => n.id === notification.id);
+        if (!exists) {
+          this.notifications.unshift(notification);
+          this.updateUnreadCount();
+          this.cdr.detectChanges(); 
+        }
       } else {
-        this.notifications.unshift(msgOrNotification);
+        console.warn('Received notification without ID:', notification);
+        this.refreshNotifications();
       }
     });
 
     this.subscriptions.add(newNotificationSub);
+  }
+
+  private refreshNotifications(): void {
+    const userId = this.authService.userId || '';
+    
+    const refreshSub = this.notificationService.getNotificationsByUserId(userId).subscribe({
+      next: (notifications) => {
+        this.notifications = notifications;
+        this.updateUnreadCount();
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error refreshing notifications:', err);
+      }
+    });
+
+    this.subscriptions.add(refreshSub);
+  }
+
+  private updateUnreadCount(): void {
+    this.notificationService.unReadCount = this.notifications.filter(n => !n.isRead).length;
+    localStorage.setItem('unReadCount', this.notificationService.unReadCount.toString());
   }
 
   markAsRead(notification: Notification): void {
@@ -85,8 +111,8 @@ export class Notifications implements OnInit, OnDestroy {
     const markReadSub = this.notificationService.setNotificationRead(notification.id).subscribe({
       next: () => {
         notification.isRead = true;
-        this.notificationService.unReadCount--;
-        localStorage.setItem('unReadCount', this.notificationService.unReadCount.toString());
+        this.updateUnreadCount();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error marking notification as read:', err);
@@ -102,8 +128,8 @@ export class Notifications implements OnInit, OnDestroy {
     const deleteSub = this.notificationService.deleteNotification(notification.id).subscribe({
       next: () => {
         this.notifications = this.notifications.filter(n => n.id !== notification.id);
-        this.notificationService.unReadCount--;
-        localStorage.setItem('unReadCount', this.notificationService.unReadCount.toString());
+        this.updateUnreadCount();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error deleting notification:', err);
@@ -140,5 +166,9 @@ export class Notifications implements OnInit, OnDestroy {
   getFormattedDate(date: Date | undefined): string {
     if (!date) return '';
     return new Date(date).toLocaleString();
+  }
+
+  refreshManually(): void {
+    this.refreshNotifications();
   }
 }

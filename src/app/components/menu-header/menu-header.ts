@@ -51,7 +51,10 @@ export class MenuHeader implements AfterViewInit, OnInit, OnDestroy {
     private chatService: ChatService
   ) {
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd), takeUntil(this.destroy$))
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.destroy$)
+      )
       .subscribe((event: NavigationEnd) => {
         this.currentRoute = event.urlAfterRedirects;
         this.checkIfMessagesRoute();
@@ -142,18 +145,14 @@ export class MenuHeader implements AfterViewInit, OnInit, OnDestroy {
 
   logout() {
     // this.authService.clear();
-    this.userService.Logout().subscribe(
-      {
-        next:(res)=>{
-          this.isLoggedIn = false;
-            this.router.navigate(['/']);        
-        },
-        error:(err)=>{
-
-         }
-      }
-    );
-    
+    this.userService.Logout().subscribe({
+      next: (res) => {
+        this.isLoggedIn = false;
+        localStorage.removeItem('unReadCount');
+        this.router.navigate(['/']);
+      },
+      error: (err) => {},
+    });
   }
 
   // Dropdown & UI Interaction
@@ -178,7 +177,6 @@ export class MenuHeader implements AfterViewInit, OnInit, OnDestroy {
   onWindowResize(event: Event) {
     this.closeDropdown();
   }
-
 
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
