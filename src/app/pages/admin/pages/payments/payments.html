@@ -258,107 +258,123 @@
   </div>
 
   <!-- Transfer Confirmation Modal -->
+ <div 
+  class="modal-overlay" 
+  *ngIf="showTransferModal" 
+  (click)="closeTransferModal()">
   <div 
-    class="modal-overlay" 
-    *ngIf="showTransferModal" 
-    (click)="closeTransferModal()">
-    <div 
-      class="modal-container transfer-modal" 
-      (click)="$event.stopPropagation()">
-      
-      <!-- Modal Header -->
-      <div class="modal-header transfer-header">
-        <h3 class="modal-title">
-          <i class="fas fa-hand-holding-usd transfer-icon"></i>
-          Confirm Transfer
-        </h3>
-        <button 
-          class="modal-close" 
-          (click)="closeTransferModal()"
-          [disabled]="transferringPayment"
-          aria-label="Close modal">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      
-      <!-- Modal Content -->
-      <div class="modal-content transfer-content" *ngIf="selectedPayment">
-        <!-- Transfer Warning -->
-        <div class="transfer-confirmation-warning">
-          <div class="warning-icon">
-            <i class="fas fa-exclamation-triangle"></i>
-          </div>
-          <div class="warning-content">
-            <h4>You are about to transfer funds</h4>
-            <p>This action cannot be undone. Please review the details carefully.</p>
-          </div>
+    class="modal-container transfer-modal" 
+    (click)="$event.stopPropagation()">
+    
+    <!-- Modal Header -->
+    <div class="modal-header transfer-header">
+      <h3 class="modal-title">
+        <i class="fas fa-hand-holding-usd transfer-icon"></i>
+        Confirm Transfer
+      </h3>
+      <button 
+        class="modal-close" 
+        (click)="closeTransferModal()"
+        [disabled]="transferringPayment"
+        aria-label="Close modal">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <!-- Modal Content -->
+    <div class="modal-content transfer-content" *ngIf="selectedPayment">
+      <!-- Transfer Warning -->
+      <div class="transfer-confirmation-warning">
+        <div class="warning-icon">
+          <i class="fas fa-exclamation-triangle"></i>
         </div>
-
-        <!-- Transfer Details -->
-        <div class="transfer-details">
-          <div class="transfer-item">
-            <span class="transfer-label">Payment ID:</span>
-            <span class="transfer-value">#{{ selectedPayment.paymentId }}</span>
-          </div>
-          
-          <div class="transfer-item">
-            <span class="transfer-label">Booking ID:</span>
-            <span class="transfer-value">#{{ selectedPayment.bookingId }}</span>
-          </div>
-          
-          <div class="transfer-item">
-            <span class="transfer-label">Host:</span>
-            <span class="transfer-value">{{ selectedPayment.hostName }}</span>
-          </div>
-          
-          <div class="transfer-item">
-            <span class="transfer-label">Guest:</span>
-            <span class="transfer-value">{{ selectedPayment.guestName }}</span>
-          </div>
-          
-          <div class="transfer-item highlight">
-            <span class="transfer-label">Transfer Amount:</span>
-            <span class="transfer-value amount">${{ selectedPayment.hostAmount | number:'1.2-2' }}</span>
-          </div>
-          
-          <div class="transfer-item">
-            <span class="transfer-label">Platform Fee:</span>
-            <span class="transfer-value">${{ selectedPayment.platformFee | number:'1.2-2' }}</span>
-          </div>
-        </div>
-
-        <!-- Transfer Process Animation (shown when transferring) -->
-        <div class="transfer-animation" *ngIf="transferringPayment">
-          <div class="transfer-progress">
-            <div class="progress-bar">
-              <div class="progress-fill"></div>
-            </div>
-            <p>Processing transfer...</p>
-          </div>
+        <div class="warning-content">
+          <h4>You are about to transfer funds</h4>
+          <p>This action cannot be undone. Please review the details carefully.</p>
         </div>
       </div>
-      
-      <!-- Modal Footer -->
-      <div class="modal-footer transfer-footer">
-        <button 
-          class="btn btn-secondary" 
-          (click)="closeTransferModal()"
-          [disabled]="transferringPayment">
-          <i class="fas fa-times"></i>
-          Cancel
-        </button>
+
+      <!-- Validation Errors (shown when conditions are not met) -->
+      <div class="validation-errors" *ngIf="!canTransferPayment(selectedPayment)">
+        <div class="error-item" *ngIf="selectedPayment.paymentStatus !== 'Succeeded'">
+          <i class="fas fa-times-circle"></i>
+          <span>Payment status must be "Succeeded" (Current: {{ selectedPayment.paymentStatus }})</span>
+        </div>
+        <div class="error-item" *ngIf="selectedPayment.transferStatus !== 'NotTransferred'">
+          <i class="fas fa-times-circle"></i>
+          <span>Payment has already been processed (Status: {{ selectedPayment.transferStatus }})</span>
+        </div>
+        <div class="error-item" *ngIf="!selectedPayment.hostAccountCompleted">
+          <i class="fas fa-times-circle"></i>
+          <span>Host account setup is incomplete</span>
+        </div>
+      </div>
+
+      <!-- Transfer Details -->
+      <div class="transfer-details">
+        <div class="transfer-item">
+          <span class="transfer-label">Payment ID:</span>
+          <span class="transfer-value">#{{ selectedPayment.paymentId }}</span>
+        </div>
         
-        <button 
-          class="btn btn-success transfer-confirm-btn" 
-          (click)="transferToHost(selectedPayment!)"
-          [disabled]="transferringPayment">
-          <i class="fas fa-spinner fa-spin" *ngIf="transferringPayment"></i>
-          <i class="fas fa-hand-holding-usd" *ngIf="!transferringPayment"></i>
-          {{ transferringPayment ? 'Transferring...' : 'Confirm Transfer' }}
-        </button>
+        <div class="transfer-item">
+          <span class="transfer-label">Booking ID:</span>
+          <span class="transfer-value">#{{ selectedPayment.bookingId }}</span>
+        </div>
+        
+        <div class="transfer-item">
+          <span class="transfer-label">Host:</span>
+          <span class="transfer-value">{{ selectedPayment.hostName }}</span>
+        </div>
+        
+        <div class="transfer-item">
+          <span class="transfer-label">Guest:</span>
+          <span class="transfer-value">{{ selectedPayment.guestName }}</span>
+        </div>
+        
+        <div class="transfer-item highlight">
+          <span class="transfer-label">Transfer Amount:</span>
+          <span class="transfer-value amount">${{ selectedPayment.hostAmount | number:'1.2-2' }}</span>
+        </div>
+        
+        <div class="transfer-item">
+          <span class="transfer-label">Platform Fee:</span>
+          <span class="transfer-value">${{ selectedPayment.platformFee | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <!-- Transfer Process Animation (shown when transferring) -->
+      <div class="transfer-animation" *ngIf="transferringPayment">
+        <div class="transfer-progress">
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+          <p>Processing transfer...</p>
+        </div>
       </div>
     </div>
+    
+    <!-- Modal Footer -->
+    <div class="modal-footer transfer-footer">
+      <button 
+        class="btn btn-secondary" 
+        (click)="closeTransferModal()"
+        [disabled]="transferringPayment">
+        <i class="fas fa-times"></i>
+        Cancel
+      </button>
+      
+      <button 
+        class="btn btn-success transfer-confirm-btn" 
+        (click)="transferToHost(selectedPayment!)"
+        [disabled]="transferringPayment || !canTransferPayment(selectedPayment!)">
+        <i class="fas fa-spinner fa-spin" *ngIf="transferringPayment"></i>
+        <i class="fas fa-hand-holding-usd" *ngIf="!transferringPayment"></i>
+        {{ transferringPayment ? 'Transferring...' : 'Confirm Transfer' }}
+      </button>
+    </div>
   </div>
+</div>
 
   <!-- Success Modal -->
   <div 

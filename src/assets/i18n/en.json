@@ -92,7 +92,21 @@
     "uploadImage": "Upload Image",
     "previewImage": "Preview Image",
     "upload": "Upload",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "yourTravels": "Your Travels",
+    "manageYourReservations": "Manage your reservations and explore new destinations",
+    "noTripsYet": "No trips yet",
+    "timeToDustOff": "Time to dust off your bags and start planning your next adventure",
+    "startSearching": "Start searching",
+    "checkIn": "Check-in",
+    "guests": "Guests",
+    "nights": "Nights",
+    "bookingId": "Booking ID",
+    "totalPaid": "Total paid",
+    "perNight": "per night",
+    "manageBooking": "Manage booking",
+    "somethingWentWrong": "Something went wrong",
+    "pleaseTryAgain": "Please try again later"
   },
   "notifications": {
     "title": "Notifications",
@@ -281,5 +295,11 @@
       "NEED_TO_CREATE_LISTING": "Please create a listing first to access the calendar",
       "OK": "OK"
     }
+  },
+  "PROPERTY": {
+    "ADD_TO_WISHLIST": "Add to Wishlist",
+    "REMOVE_FROM_WISHLIST": "Remove from Wishlist",
+    "LINK_COPIED": "Link copied successfully",
+    "COPY_FAILED": "Failed to copy link"
   }
 }

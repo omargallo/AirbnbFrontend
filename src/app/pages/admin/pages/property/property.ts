@@ -4,22 +4,25 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { UserService, User, UserProfileDto } from '../../../../core/services/Admin/user-service';
 import { Table, TableColumn, TableAction, PaginationInfo } from '../../table/table';
-import { PropertyAcceptStatus, PropertyDisplayDTO, PropertyDisplayWithHostDataDto } from '../../../add-property/models/property.model';
+import { PropertyAcceptStatus, PropertyDisplayWithHostDataDto } from '../../../add-property/models/property.model';
+import { PropertyDisplayDTO } from '../../../../core/models/PropertyDisplayDTO';
 import { PropertyService } from '../../../../core/services/Property/property.service';
 import { PropertyInfo } from "../../../property-info/property-info";
 import { ConfirmService } from '../../../../core/services/confirm.service';
+import { PropertyActivateModal } from "./components/property-activate-modal/property-activate-modal";
 
 @Component({
   selector: 'app-property',
-  imports: [CommonModule, Table, PropertyInfo],
+  imports: [CommonModule, Table, PropertyInfo, PropertyActivateModal],
   templateUrl: './property.html',
   styleUrl: './property.css'
 })
 export class Property {
-
+  showActivationModal:boolean =  false;
   properties: PropertyDisplayWithHostDataDto[] = [];
   loading = false;
   selectedProperty: PropertyDisplayDTO | null = null;
+  seletctedPropertyForActivateStatus!:PropertyDisplayWithHostDataDto | null
   showUserDetails = false;
   previewPropertyId?:number
   currentSort: {field:string,direction:"desc"| "asc"} = {field: "title", direction:"asc"}
@@ -51,9 +54,9 @@ export class Property {
       sortable: false 
     },
     { 
-      label: 'Deleted', 
-      field: 'isDeleted', 
-      pipe: 'deletedStatus', 
+      label: 'Active', 
+      field: 'isActive', 
+      pipe: 'active', 
       sortable: true 
     },
     { 
@@ -74,6 +77,12 @@ export class Property {
       tooltip: 'View Details', 
       type: 'view', 
       color: '#007bff' 
+    },
+    { 
+      icon: 'fas fa-eye', 
+      tooltip: 'View Details', 
+      type: 'activationStatus', 
+      color: '#00' 
     }
   ];
 
@@ -158,6 +167,7 @@ export class Property {
   onActionClick(event: { type: string; row: any }): void {
     const { type, row } = event;
     
+    console.log("actionCliked",event)
     switch (type) {
       case 'view':
         this.viewUserDetails(row.id);
@@ -167,6 +177,9 @@ export class Property {
         break;
       case 'delete':
         this.deleteProperty(row);
+        break;
+      case 'activationStatus':
+        this.handleActivationStatus(row)
         break;
       default:
         console.warn('Unknown action type:', type);
@@ -185,7 +198,7 @@ export class Property {
 
     // this.loading = true;
     
-    this.propertyService.getByIdWithCover(propertyId)
+    this.propertyService.getByIdWithCoverFor3ssam(propertyId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (prop) => {
@@ -391,6 +404,8 @@ export class Property {
                   let prop = this.properties.find(p=> p.id == this.selectedProperty?.id)
                   if(prop)
                     prop.status = PropertyAcceptStatus.accepted
+                  if(this.selectedProperty)
+                    this.selectedProperty.status = PropertyAcceptStatus.accepted  
                 },
                 error:(err)=>{
                   if(err?.data?.message)
@@ -414,6 +429,8 @@ export class Property {
                   let prop = this.properties.find(p=> p.id == this.selectedProperty?.id)
                   if(prop)
                     prop.status = PropertyAcceptStatus.rejected
+                  if(this.selectedProperty)
+                    this.selectedProperty.status = PropertyAcceptStatus.rejected
                 },
                 error:(err)=>{
                   if(err?.data?.message)
@@ -425,4 +442,77 @@ export class Property {
               }
             )
   }
+
+  handleActivationStatus(row:any){
+    if(!row || !row.id)
+      return
+    console.log("handleActivationStatus",row)
+    
+    this.showActivationModal = true
+    this.seletctedPropertyForActivateStatus =  this.properties.find(p=> p.id == row.id) ?? null
+  }
+  onActivationSatusConfirm(isActive:boolean){
+    console.log("onActivationSatusConfirm")
+    if(! this.seletctedPropertyForActivateStatus || !this.seletctedPropertyForActivateStatus.id)
+    {
+      this.showActivationModal = false
+      return 
+    } 
+    
+    
+    if(isActive == this.seletctedPropertyForActivateStatus?.isActive)
+      return
+    if(isActive)
+      this.propertyService
+    .activate(this.seletctedPropertyForActivateStatus.id)
+    .subscribe({
+      next:(res)=>{
+        if(res.isSuccess){
+            this.confirm.success(res.data,"")
+            this.showActivationModal = false
+            if(this.seletctedPropertyForActivateStatus){
+              this.seletctedPropertyForActivateStatus.isActive = isActive
+              let prop = this.properties.find(p=> p.id == this.seletctedPropertyForActivateStatus?.id)
+              if(prop)
+                prop.isActive = isActive
+            }
+            return
+          }
+          this.confirm.fail(res.data)
+        },
+        error:(res)=>{
+                this.showActivationModal = false
+                this.confirm.fail(res.data)
+              }
+            })
+    else
+        this.propertyService
+              .deactivate(this.seletctedPropertyForActivateStatus.id)
+              .subscribe({
+                next:(res)=>{
+                  this.showActivationModal = false
+                  if(res.isSuccess){
+                    this.confirm.success(res.data,"")
+                    if(this.seletctedPropertyForActivateStatus)
+                    {
+                      this.seletctedPropertyForActivateStatus.isActive = isActive
+                      let prop = this.properties.find(p=> p.id == this.seletctedPropertyForActivateStatus?.id)
+                      if(prop)
+                        prop.isActive = isActive
+                    }
+                    return
+                  }
+                  this.confirm.fail(res.data)
+                },
+                error:(res)=>{
+                  this.showActivationModal = false
+                  this.confirm.fail(res.data)
+                }
+              })
+        
+      }
+
+    onHideActivationStatusModal(){
+      this.showActivationModal = false
+    }
 }

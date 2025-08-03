@@ -1,3 +1,4 @@
+// في BookingCalendarComponent.ts
 import {
   ChangeDetectorRef,
   Component,
@@ -8,6 +9,8 @@ import {
   SimpleChange,
   SimpleChanges,
   ViewChild,
+  AfterViewInit,
+  ElementRef,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -20,7 +23,6 @@ import {
 } from '../../../core/services/CalendarAvailability/calendar-availability.service';
 import dayjs, { Dayjs } from 'dayjs';
 import localeData from 'dayjs/plugin/localeData';
-import 'dayjs/locale/en'; // or your desired locale
 import 'dayjs/locale/en';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
@@ -48,15 +50,16 @@ export type range = { startDate: any; endDate: any };
   templateUrl: './BookingCalendar.component.html',
   styleUrls: ['./BookingCalendar.component.css'],
 })
-export class BookingCalendarComponent implements OnInit {
+export class BookingCalendarComponent implements OnInit, AfterViewInit {
   constructor(
     private calendarService: CalendarAvailabilityService,
     private property: PropertyService,
     private http: HttpClient,
     private cdr: ChangeDetectorRef,
     private commonService: CommonPropInfoService,
-    private snackBar: MatSnackBar
-  ) {}
+    private snackBar: MatSnackBar,
+    private elementRef: ElementRef
+  ) { }
 
   private showToast(
     message: string,
@@ -70,14 +73,19 @@ export class BookingCalendarComponent implements OnInit {
       panelClass: ['custom-snackbar'],
     });
   }
+
   @Input() propertyId!: number;
   @Input() checkIn?: dayjs.Dayjs;
   @Input() checkOut?: dayjs.Dayjs;
   @Output() dateSelected = new EventEmitter<{ start: string; end: string }>();
   @Output() datedChange = new EventEmitter<range>();
   @Input() dateMap?: Map<string, CalendarAvailabilityDto>;
+  @Input() defaultPricePerNight?: number;
 
   @ViewChild('picker') picker!: DaterangepickerComponent;
+
+  minDate = moment().startOf('year').format('YYYY-MM-DD');
+  maxDate = moment().add(1, 'year').endOf('month').format('YYYY-MM-DD');
 
   showPicker = true;
   clickedDate?: dayjs.Dayjs;
@@ -85,17 +93,6 @@ export class BookingCalendarComponent implements OnInit {
   selected: { startDate?: dayjs.Dayjs; endDate?: dayjs.Dayjs } = {
     startDate: undefined,
     endDate: undefined,
-  };
-  ranges: any = {
-    Today: [moment(), moment()],
-    Yesterday: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    'This Month': [moment().startOf('month'), moment().endOf('month')],
-    'Last Month': [
-      moment().subtract(1, 'month').startOf('month'),
-      moment().subtract(1, 'month').endOf('month'),
-    ],
   };
 
   locale = {
@@ -111,59 +108,31 @@ export class BookingCalendarComponent implements OnInit {
   };
 
   totalPrice!: number;
-
   munavailableDates: string[] = [];
-  // minDate = dayjs().format('YYYY-MM-DD');
-
-  //  locale = {
-  //   format: 'MMM DD',
-  //   separator: ' - ',
-  //   applyLabel: 'Apply',
-  //   cancelLabel: 'Cancel',
-  //   daysOfWeek: dayjs.weekdaysMin().map(d => d.toUpperCase()),
-  //   monthNames: dayjs.monthsShort().map(m => m.toUpperCase()),
-  //   firstDay: 0
-  // };
 
   ngOnInit(): void {
     this.commonService.clear$.subscribe(() => this.clear());
     this.selectedDateRange = { startDate: dayjs(), endDate: dayjs() };
-    // console.log('enter oninit of booking service rawan ')
-    // this.fetchUnavailableDates();
-    // console.log("finish");
-    // this.selected={
-    //   startDate : dayjs(),
-    //   endDate: dayjs()
-    // }
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.addPricesToCalendar();
+    }, 1000);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // console.log("onChanges From BookingCalendar",changes)
     let x = { startDate: undefined, endDate: undefined };
-    // console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",x)
+
     if (changes['checkIn']) {
-      // console.log('checkIn input changed:', this.checkIn);
       if (this.selected) x.startDate = changes['checkIn'].currentValue;
     }
     if (changes['checkOut']) {
       if (this.selected) x.endDate = changes['checkOut'].currentValue;
-
-      // console.log('checkOut input changed:', this.checkOut);
     }
+
     this.selected = x;
 
-    // this.picker.choosedDate.emit({
-
-    //           startDate:dayjs(this.selected.startDate.toDate()),
-    //           endDate:dayjs(this.selected.startDate.toDate()),
-    //           chosenLabel:"dhsga"
-    //         })
-
-    // console.log(this.picker)
-    // console.log(this.selected?.startDate
-    // console.log(this.selected?.endDate)
-    // this.picker.setStartDate(this.selected.startDate)
-    // this.picker.setEndDate(this.selected?.endDate)
     if (this.picker) {
       if (this.selected.startDate)
         this.picker.startDate = this.selected?.startDate;
@@ -172,18 +141,68 @@ export class BookingCalendarComponent implements OnInit {
       this.picker.updateCalendars();
       this.picker.hide();
     }
+
+    if (changes['dateMap'] && this.dateMap) {
+      setTimeout(() => {
+        this.addPricesToCalendar();
+      }, 500);
+    }
   }
+
+  addPricesToCalendar(): void {
+    if (!this.dateMap) return;
+
+    const calendarElement = this.elementRef.nativeElement.querySelector('.md-drppicker');
+    if (!calendarElement) return;
+
+    const dateCells = calendarElement.querySelectorAll('td.available');
+
+    dateCells.forEach((cell: HTMLElement) => {
+      const existingPrice = cell.querySelector('.date-price');
+      if (existingPrice) {
+        existingPrice.remove();
+      }
+
+      const dayText = cell.textContent?.trim();
+      if (!dayText || isNaN(parseInt(dayText))) return;
+
+      const monthHeader = cell.closest('.calendar-table')?.querySelector('.month');
+      const monthText = monthHeader?.textContent?.trim();
+
+      if (!monthText) return;
+
+      const monthDate = moment(monthText, 'MMMM YYYY');
+      const fullDate = monthDate.clone().date(parseInt(dayText));
+
+      const dateKey = fullDate.format('YYYY-MM-DD');
+      const availabilityData = this.dateMap!.get(dateKey);
+      const price = availabilityData?.price || this.defaultPricePerNight;
+
+      if (price) {
+        const priceElement = document.createElement('div');
+        priceElement.className = 'date-price';
+        priceElement.textContent = `$${price}`;
+
+        if (availabilityData?.price && availabilityData.price !== this.defaultPricePerNight) {
+          priceElement.classList.add('special-price');
+        }
+
+        cell.appendChild(priceElement);
+      }
+    });
+  }
+
   onClear() {
     this.clear();
     this.commonService.clear();
   }
+
   clear() {
     console.log('clear');
     this.selected = {
       endDate: undefined,
       startDate: undefined,
     };
-    // this.picker.
     this.picker.clear();
     this.cdr.detectChanges();
     this.datedChange.emit({
@@ -193,26 +212,12 @@ export class BookingCalendarComponent implements OnInit {
   }
 
   isInvalidDate = (date: dayjs.Dayjs): boolean => {
-    // // console.log("selected start date is ", this.selected.startDate)
-    // if(this.clickedDate ){
-    //   if(date.isBefore(this.clickedDate))
-    //     return true
-    //   if(!this.firstUnavailableDate)
-    //     return false
-    //   if(date.isBefore(this.firstUnavailableDate))
-    //     return false
-    //   return true
-    // }
-
     if (date.isBefore(dayjs())) return true;
     if (this.dateMap) {
-      // if( !(this.dateMap.get(date.toString())?.isAvailable?? true))
-      // console.log(date, (this.dateMap.get(date.toISOString().slice(0,19))?.isAvailable))
       return !(
         this.dateMap.get(date.toISOString().slice(0, 19))?.isAvailable ?? true
       );
     }
-    // .some(d => dayjs(d.date).isSame(date, 'day') && d.isAvailable )
     return false;
   };
 
@@ -232,71 +237,38 @@ export class BookingCalendarComponent implements OnInit {
         }
       }
     } else this.firstUnavailableDate = undefined;
+
+    setTimeout(() => {
+      this.addPricesToCalendar();
+    }, 100);
   }
-  // selectPropertyName_price(propertyId: number): Observable<{ title: string; pricePerNight: number }> {
-  //   const url = `${this.property}/${propertyId}`;
-  //   return this.http.get<Result<Property>>(url).pipe(
-  //     map(response => {
-  //       const property = response.data;
-  //       return {
-  //         title: property.title,
-  //         pricePerNight: property.pricePerNight
-  //       };
-  //     })
-  //   );
-  // }
 
   onDateRangeSelected(range: { startDate: any; endDate: any }) {
-    // this.selected = range;
-
     this.selected = {
       endDate: range?.endDate,
       startDate: range?.startDate,
     };
-
-    // console.log("range", range)
   }
+
   onDatesChanged(range: range) {
-    // console.log(range)
-    // console.log('Start:', range.startDate.format('YYYY-MM-DD'));
-    // console.log('End:', range.endDate.format('YYYY-MM-DD'));
-
-    // this.selected = {
-    //   startDate: moment(range?.startDate?.toDate()),
-    //   endDate: moment(range?.endDate?.toDate()),
-    // }
     this.datedChange.emit(range);
+
+    setTimeout(() => {
+      this.addPricesToCalendar();
+    }, 100);
   }
-
-  // fetchUnavailableDates(): void {
-  //   const start = dayjs().startOf('month').format('YYYY-MM-DD');
-  //   const end = dayjs().add(3, 'month').endOf('month').format('YYYY-MM-DD');
-
-  //   this.calendarService.reverseIThink(this.propertyId, start, end).subscribe(res => {
-  //       console.log(this.calendarService);
-  //     console.log(this.propertyId, this.selectedDateRange ,"first date ",start ,"lastdate rawan ", end)
-  //     if (res.isSuccess && res.data.unavailableDates) {
-  //       this.munavailableDates = res.data.unavailableDates;
-  //       console.log(res)
-  //     }
-  //   }
-  // );
-  // }
 
   datesUpdated(range: any): void {
     const start = moment(range.startDate).format('YYYY-MM-DD');
     const end = moment(range.endDate).format('YYYY-MM-DD');
 
-    // console.log('User selected range:', { start, end });
-
-    // Check if any selected date is unavailable
     const anyUnavailable = this.munavailableDates.some(
       (date) =>
         moment(date).isSameOrAfter(start) && moment(date).isSameOrBefore(end)
     );
+
     if (anyUnavailable) {
       console.warn('Selected range includes unavailable dates!');
-      // Optional: Reset selection or show error
       this.clearDates();
       this.showToast(
         'Some of the selected dates are unavailable. Please select different dates.',
@@ -306,8 +278,7 @@ export class BookingCalendarComponent implements OnInit {
       return;
     }
 
-    // this.selectedDateRange = { startDate: start, endDate: end };
-    this.dateSelected.emit({ start, end }); //emit that to
+    this.dateSelected.emit({ start, end });
   }
 
   clearDates(): void {

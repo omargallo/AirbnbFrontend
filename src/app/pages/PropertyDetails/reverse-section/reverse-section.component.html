@@ -1,91 +1,120 @@
 <div class="leftsection booking-sticky-box">
-     <div class="rare-find-badge mt-2 mb-4">
-        <div class="rare-find-content d-flex align-items-center">
-          <i class="bi bi-gem rare-find-icon me-2"></i>
-          <span class="rare-find-title">Rare find! This place is usually booked</span>
-        </div>
-      </div>
+  <div class="rare-find-badge mt-2 mb-4">
+    <div class="rare-find-content d-flex align-items-center">
+      <i class="bi bi-gem rare-find-icon me-2"></i>
+      <span class="rare-find-title"
+        >Rare find! This place is usually booked</span
+      >
+    </div>
+  </div>
 
-  <div class="reserve-box " >
-        <div class="price-info" >price:-
-          <span class="price" >{{ pricePerNight | currency }}</span> <span> for {{nightsCount}} night</span>
-      </div>
-          <div class="total-price" *ngIf="totalPrice"  class="mt-2 text-success fs-5 fw-medium d-flex m-auto align-items-center">
-            
-              Total <img style="width: 20px; height: 25px;" src="assets/images/dollars.png" alt="dolar image"> 
-              : {{ totalPrice |  currency }}
-          </div>
+  <div class="reserve-box">
+    <div class="price-info">
+      price:- <span class="price">{{ pricePerNight | currency }}</span>
+      <span> for {{nightsCount}} night</span>
+    </div>
+    <div
+      class="total-price"
+      *ngIf="totalPrice"
+      class="mt-2 text-success fs-5 fw-medium d-flex m-auto align-items-center"
+    >
+      Total
+      <img
+        style="width: 20px; height: 25px;"
+        src="assets/images/dollars.png"
+        alt="dolar image"
+      />
+      : {{ totalPrice | currency }}
+    </div>
 
-  <!-- Check-in / Check-out -->
-  <div class="date-picker mt-4 d-flex flex-column">
-    <!-- <label>
+    <!-- Check-in / Check-out -->
+    <div class="date-picker mt-4 d-flex flex-column">
+      <!-- <label>
       <span>Check-in</span>
       <input  type="date" [(ngModel)]="checkInDate"  (ngModelChange)="isCheckIn($event)" />
     </label>
     <label> -->
       <!-- <span class="font-black fw-medium fs-5 ">Price per Neight : <span style="color: cornflowerblue;"> {{pricePerNight}}</span> </span> -->
 
-    <div class="flex justify-content-end mb-2"(click)="onClear()"><button >clear</button></div>
-    <input
-    #picker
-    [(ngModel)] = "selected"
-    [isInvalidDate]="isInvalidDate"
-    
-    class="custom-date-input text-center fs-6 mx-auto"
-      
-    ngxDaterangepickerMd
-    [useMap]="false"
-    [linkedCalendars]="true"
-    [showClearButton]="false"
-    [alwaysShowCalendars]="true"
-    [ranges]="ranges"
-    [locale]="locale"
-    [autoApply]="true"
-    [showCancel]="false"
-    [showDropdowns]="false"
-    [locale]="locale"
-    (datesUpdated)="onDatesChanged($event)"
-    (startDateChanged)="onStartDateChange($event)"
-
-    />
-  </div>
-   
-  
-  <!-- <input type="date"     > -->
- <!-- Guest Selector Dropdown -->
-<div class="guest-selector-container">
-    <div class="guest-selector-trigger" (click)="toggleGuestDropdown()">
-      <span>Guests</span>
-      <span class="guest-summary">{{ totalGuests }}</span>
-      <i class="bi bi-chevron-down dropdown-icon"></i>
+      <div class="flex justify-content-end mb-2" (click)="onClear()">
+        <button>clear</button>
+      </div>
+      <input
+        #picker
+        [(ngModel)]="selected"
+        [isInvalidDate]="isInvalidDate"
+        class="custom-date-input text-center fs-6 mx-auto"
+        ngxDaterangepickerMd
+        [useMap]="false"
+        [linkedCalendars]="true"
+        [showClearButton]="false"
+        [alwaysShowCalendars]="true"
+        [ranges]="ranges"
+        [locale]="locale"
+        [autoApply]="true"
+        [showCancel]="false"
+        [showDropdowns]="false"
+        [locale]="locale"
+        (datesUpdated)="onDatesChanged($event)"
+        (startDateChanged)="onStartDateChange($event)"
+      />
     </div>
 
-    <div class="guest-dropdown" *ngIf="showGuestDropdown">
-      <div class="guest-option">
-        <div class="guest-type">
-          <div class="guest-label">Adults</div>
-          <div class="guest-description">Age 13+</div>
-        </div>
-        <div class="guest-counter">
-          <button [disabled]="guests.adults <= 1" (click)="updateGuests('adults', -1)">−</button>
-          <span>{{ guests.adults }}</span>
-          <button [disabled]="(guests.adults + guests.children) >= maxGuests" (click)="updateGuests('adults', 1)">+</button>
-        </div>
+    <!-- <input type="date"     > -->
+    <!-- Guest Selector Dropdown -->
+    <div class="guest-selector-container">
+      <div class="guest-selector-trigger" (click)="toggleGuestDropdown()">
+        <span>Guests</span>
+        <span class="guest-summary">{{ totalGuests }}</span>
+        <i class="bi bi-chevron-down dropdown-icon"></i>
       </div>
 
-      <div class="guest-option">
-        <div class="guest-type">
-          <div class="guest-label">Children</div>
-          <div class="guest-description">Ages 2-12</div>
+      <div class="guest-dropdown" *ngIf="showGuestDropdown">
+        <div class="guest-option">
+          <div class="guest-type">
+            <div class="guest-label">Adults</div>
+            <div class="guest-description">Age 13+</div>
+          </div>
+          <div class="guest-counter">
+            <button
+              [disabled]="guests.adults <= 1"
+              (click)="updateGuests('adults', -1)"
+            >
+              −
+            </button>
+            <span>{{ guests.adults }}</span>
+            <button
+              [disabled]="(guests.adults + guests.children) >= maxGuests"
+              (click)="updateGuests('adults', 1)"
+            >
+              +
+            </button>
+          </div>
         </div>
-        <div class="guest-counter">
-          <button [disabled]="guests.children <= 0" (click)="updateGuests('children', -1)">−</button>
-          <span>{{ guests.children }}</span>
-          <button [disabled]="(guests.adults + guests.children) >= maxGuests" (click)="updateGuests('children', 1)">+</button>
-        </div>
-      </div>
 
-      <!-- <div class="guest-option">
+        <div class="guest-option">
+          <div class="guest-type">
+            <div class="guest-label">Children</div>
+            <div class="guest-description">Ages 2-12</div>
+          </div>
+          <div class="guest-counter">
+            <button
+              [disabled]="guests.children <= 0"
+              (click)="updateGuests('children', -1)"
+            >
+              −
+            </button>
+            <span>{{ guests.children }}</span>
+            <button
+              [disabled]="(guests.adults + guests.children) >= maxGuests"
+              (click)="updateGuests('children', 1)"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        <!-- <div class="guest-option">
         <div class="guest-type">
           <div class="guest-label">Infants</div>
           <div class="guest-description">Under 2</div>
@@ -96,57 +125,53 @@
           <button (click)="updateGuests('infants', 1)">+</button>
         </div>
       </div> -->
-   
-        <div class="guest-limit-note" *ngIf="maxGuests">
-        This place has a maximum of <span style="color: rgb(24, 162, 242);font-size: large;"> {{ maxGuests }}</span> guests 
-        If you're bringing more than 2 pets, please let your host know.
-      </div>
-      <div class="text-red-500 mt-2" *ngIf="errorMessage">
-            {{ errorMessage }}
-      </div>
-      </div>
 
-    
+        <div class="guest-limit-note" *ngIf="maxGuests">
+          This place has a maximum of
+          <span style="color: rgb(24, 162, 242); font-size: large;">
+            {{ maxGuests }}</span
+          >
+          guests If you're bringing more than 2 pets, please let your host know.
+        </div>
+        <div class="text-red-500 mt-2" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+      </div>
     </div>
-         <button type="button" class="check-btn" (click)="onShowConfirmModal()">
-          Reserve
-        </button>  
-        <!-- If available -->
-<!-- <div *ngIf="isDateRangeAvailable === true" class="mt-2 text-success">
+    <button type="button" class="check-btn" (click)="onShowConfirmModal()">
+      Reserve
+    </button>
+    <!-- If available -->
+    <!-- <div *ngIf="isDateRangeAvailable === true" class="mt-2 text-success">
   ✅ Available — Total Price: {{ totalPrice }}$
 </div> -->
 
-<!-- If unavailable -->
-<div *ngIf="isDateRangeAvailable === false" class="mt-2 text-danger">
-  ❌ Unavailable Dates: {{ unavailableDates.join(', ') }}
-</div>
-      <div class="button-subtext mt-3">You won't be charged yet</div>
+    <!-- If unavailable -->
+    <div *ngIf="isDateRangeAvailable === false" class="mt-2 text-danger">
+      ❌ Unavailable Dates: {{ unavailableDates.join(', ') }}
+    </div>
+    <div class="button-subtext mt-3">You won't be charged yet</div>
   </div>
-
- 
 </div>
-        <div class="report-listing"
-        (click)="showViolationModalFn()"
-        >
-            <i class="fa-regular fa-flag"></i> <a class="report-link">Report this listing</a>
-        </div>
-<app-violation-modal 
-    [show]="showViolationModal"
-    [propertyId]="propertyId"
-    (close)="closeViolationModal()"
+<div class="report-listing" (click)="showViolationModalFn()">
+  <i class="fa-regular fa-flag"></i>
+  <a class="report-link">Report this listing</a>
+</div>
+<app-violation-modal
+  [show]="showViolationModal"
+  [propertyId]="propertyId"
+  (close)="closeViolationModal()"
 ></app-violation-modal>
-  
-  
 
 <app-reserve-confirm-modal
-        *ngIf="showConfirmModal"
-        (close)="onCloseConfirmModal()"
-        [checkIn]="selected.startDate"
-        [checkOut]="selected.endDate"
-        [guestsCount]="guestCount"
-        [pricePerNight]="property.pricePerNight"
-        [totalPrice]="totalPrice"
-        [nightsCount]="nightsCount"
-        (confirm)="onReserveConfirmClick()"
-        >
+  *ngIf="showConfirmModal"
+  (close)="onCloseConfirmModal()"
+  [checkIn]="selected.startDate"
+  [checkOut]="selected.endDate"
+  [guestsCount]="guestCount"
+  [pricePerNight]="property.pricePerNight"
+  [totalPrice]="totalPrice"
+  [nightsCount]="nightsCount"
+  (confirm)="onReserveConfirmClick()"
+>
 </app-reserve-confirm-modal>

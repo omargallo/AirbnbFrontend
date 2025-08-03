@@ -59,6 +59,12 @@
                 {{ row[col.field] ? 'Deleted' : 'Active' }}
               </span>
               <span
+                *ngSwitchCase="'active'"
+                [class]="row[col.field] ? 'status-active' : 'status-inactive'"
+              >
+                {{ row[col.field] ? 'Active' : 'Inactive'}}
+              </span>
+              <span
                 *ngSwitchCase="'acceptStatus'"
                 [class]="row[col.field]==1? 'status-pending':(row[col.field]==2? 'status-accepted':'status-rejected')"
               >

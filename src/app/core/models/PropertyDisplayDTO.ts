@@ -6,6 +6,7 @@ import { Booking } from './Booking';
 import { PropertyType } from './PropertyType';
 import { User } from './user';
 import { Wishlist } from './Wishlist';
+import { PropertyAcceptStatus } from '../../pages/add-property/models/property.model';
 
 export interface PropertyDisplayDTO {
     id: number;
@@ -37,4 +38,5 @@ export interface PropertyDisplayDTO {
     wishlist?: Wishlist[];
     images?: PropertyImage[];
     bookings?: Booking[];
+    status: PropertyAcceptStatus
 }

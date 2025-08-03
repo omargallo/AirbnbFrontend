@@ -68,9 +68,9 @@
     <div class="travels" *ngIf="selectedSection === 'travels'">
       <div class="bookings-container">
         <div class="bookings-header">
-          <h1 class="page-title">Your trips</h1>
+          <h1 class="page-title">{{ "profile.yourTravels" | translate }}</h1>
           <p class="page-subtitle">
-            Manage your reservations and explore new destinations
+            {{ "profile.manageYourReservations" | translate }}
           </p>
         </div>
 
@@ -84,7 +84,7 @@
         <div *ngIf="error && !isLoading" class="error-state">
           <div class="error-card">
             <i class="bi bi-exclamation-triangle error-icon"></i>
-            <h3 class="error-title">Something went wrong</h3>
+            <h3 class="error-title">{{ "profile.somethingWentWrong" | translate }}</h3>
             <p class="error-message">{{ error }}</p>
             <button class="btn-retry" (click)="refreshBookings()">
               <i class="bi bi-arrow-clockwise"></i>
@@ -98,12 +98,12 @@
             <div class="empty-illustration">
               <i class="bi bi-compass"></i>
             </div>
-            <h3 class="empty-title">No trips yet</h3>
+            <h3 class="empty-title">{{ "profile.noTripsYet" | translate }}</h3>
             <p class="empty-message">
-              Time to dust off your bags and start planning your next adventure
+              {{ "profile.timeToDustOff" | translate }}
             </p>
-            <a routerLink="/properties" class="btn-start-searching">
-              Start searching
+            <a routerLink="/" class="btn-start-searching">
+              {{ "profile.startSearching" | translate }}
             </a>
           </div>
 
@@ -152,7 +152,7 @@
                 <div class="stay-details">
                   <div class="date-range">
                     <div class="date-item">
-                      <span class="date-label">Check-in</span>
+                      <span class="date-label">{{ "profile.checkIn" | translate }}</span>
                       <span class="date-value">{{
                         formatDateWithYear(booking.checkInDate)
                       }}</span>
@@ -175,7 +175,7 @@
                         <i class="bi bi-people-fill"></i>
                       </div>
                       <div class="meta-content">
-                        <span class="meta-label">Guests</span>
+                        <span class="meta-label">{{ "profile.guests" | translate }}</span>
                         <span class="meta-value">{{
                           booking.numberOfGuests
                         }}</span>
@@ -187,7 +187,7 @@
                         <i class="bi bi-moon-fill"></i>
                       </div>
                       <div class="meta-content">
-                        <span class="meta-label">Nights</span>
+                        <span class="meta-label">{{ "profile.nights" | translate }}</span>
                         <span class="meta-value">{{
                           getNightCount(
                             booking.checkInDate,
@@ -202,7 +202,7 @@
                         <i class="bi bi-hash"></i>
                       </div>
                       <div class="meta-content">
-                        <span class="meta-label">Booking ID</span>
+                        <span class="meta-label">{{ "profile.bookingId" | translate }}</span>
                         <span class="meta-value"
                           >#{{ booking.id.toString().slice(-6) }}</span
                         >
@@ -216,7 +216,7 @@
                   <div class="price-section">
                     <div class="price-breakdown">
                       <div class="price-item">
-                        <span class="price-label">Total paid</span>
+                        <span class="price-label">{{ "profile.totalPaid" | translate }}</span>
                         <span class="price-value"
                           >${{ booking.totalPrice | number : "1.0-0" }}</span
                         >
@@ -238,7 +238,7 @@
                                 booking.checkOutDate
                               ) | number : "1.0-0"
                           }}
-                          per night
+                          {{ "profile.perNight" | translate }}
                         </span>
                       </div>
                     </div>
@@ -254,7 +254,7 @@
                       type="button"
                     >
                       <i class="bi bi-gear-fill"></i>
-                      Manage booking
+                      {{ "profile.manageBooking" | translate }}
                     </button>
                   </div>
                 </div>

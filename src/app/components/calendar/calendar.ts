@@ -27,7 +27,7 @@ import {
 import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { HostPropertiesService } from '../../core/services/Property/HostPropertiesService';
-import { PropertyDisplayDTO } from '../../core/models/PropertyDisplayDTO';
+import { PropertyDisplayDTO } from '../../core/services/Property/HostPropertiesService';
 import { environment } from '../../../environments/environment.development';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
