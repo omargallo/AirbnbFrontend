@@ -1,101 +1,100 @@
-
-
-
 .reserve-box {
   background: white;
   border: 1px solid #ddd;
   border-radius: 16px;
   padding: 24px;
   width: 100%;
-  max-width: 360px;   
+  max-width: 360px;
   position: relative;
   transition: top 0.3s ease;
   /* margin-left: 10px; */
   position: sticky;
   /* top: 100px;  */
 
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
 
-  }  
+.guest-limit-note {
+  color: green;
+}
 
-  .guest-limit-note{
-    color: green;
+.price-info {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #181818; /* Ensure text is visible */
+
+  span {
+    color: #717171;
+    font-size: 14px;
   }
+}
 
-  .price-info {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 16px;
-    color: #181818; /* Ensure text is visible */
-
-    span {
-      color: #717171;
-      font-size: 14px;
-    }
-  }
-
-  .price-info .price {
+.price-info .price {
   color: #161616;
 }
 
-.price{
+.price {
   color: #161616;
   font-weight: 25;
 }
 
-  .date-picker {
+.date-picker {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+
+  label {
+    flex: 1;
     display: flex;
-    justify-content: space-between;
-    gap: 5px;
+    flex-direction: column;
+    font-size: 12px;
+    font-weight: 600;
+    color: #222;
 
-    label {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      font-size: 12px;
-      font-weight: 600;
-      color: #222;
-
-      input {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 14px;
-      }
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
     }
   }
-  
-  .check-btn {
-    margin-top: 20px;
-    width: 100%;
-    color: white;
-    border: none;
-    padding: 13px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    background: linear-gradient(90deg, #d94659, #e8047a); 
-    transition: background 0.3s ease, opacity 0.3s ease;
-    &:hover {
-      background-color: #dd5e3b;
-      
-    }
+}
+
+.check-btn {
+  margin-top: 20px;
+  width: 100%;
+  color: white;
+  border: none;
+  padding: 13px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  background: linear-gradient(90deg, #d94659, #e8047a);
+  transition: background 0.3s ease, opacity 0.3s ease;
+  &:hover {
+    background-color: #dd5e3b;
   }
-  .check-btn:hover {
+  &:disabled {
+    background: var(--secondary-text-color);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+.check-btn:hover {
   /* opacity: 0.9;
   background-color: #dd5e3b; */
-
 }
 
 /* Rare Find Badge */
 .rare-find-badge {
-  background: #FFFFFF;
+  background: #ffffff;
 
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 
-    width: 360px;
+  width: 360px;
 
   border-radius: 12px;
   padding: 12px;
@@ -123,46 +122,46 @@
 .rare-find-description {
   font-size: 14px;
   color: #171616;
-} 
+}
 
 .button-subtext {
-    color: #3b3b3b; 
-    font-size: 0.9rem; 
-    text-align: center; 
-    margin-top: 8px; 
+  color: #3b3b3b;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 8px;
 }
 
 .report-listing {
-    display: flex;
-    align-items: center;
-    justify-content: center; 
-    gap: 8px;
-    margin-top: 15px; 
-    font-size: 0.9rem;
-    color: #202020; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: #202020;
 }
 
 .report-listing .fa-flag {
-    color: #292828; 
+  color: #292828;
 }
 
 .report-listing .report-link {
-    color: #201f1f; 
-    text-decoration: underline; 
-    font-weight: 600; 
-    transition: color 0.2s ease;
+  color: #201f1f;
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.2s ease;
 }
 
 .report-listing .report-link:hover {
-    color: #484646; /* Slightly darker on hover */
+  color: #484646; /* Slightly darker on hover */
 }
 
-.reverse-box, .guest-selector {
+.reverse-box,
+.guest-selector {
   margin-bottom: 16px;
 }
 
-
-  /* Guest Selector Styles */
+/* Guest Selector Styles */
 .guest-selector-container {
   position: relative;
   margin: 16px 0;
@@ -278,17 +277,17 @@
 }
 
 /* Responsive Design  @media (max-width: 768px) { */
-  .guest-dropdown {
-    position: absolute;
-    top: auto;
-    bottom: auto;
-    left: 0;
-    right: 0;
-    border-radius: 12px 12px 0 0;
-    max-height: 70vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
+.guest-dropdown {
+  position: absolute;
+  top: auto;
+  bottom: auto;
+  left: 0;
+  right: 0;
+  border-radius: 12px 12px 0 0;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 .leftsection ::ng-deep .md-drppicker {
   min-width: fit-content !important;
   display: flex !important;
@@ -299,13 +298,11 @@
   font-size: large;
   font-weight: bolder;
   z-index: 1000 !important;
-
 }
-.left ::ng-deep .md-drppicker .calendar{
+.left ::ng-deep .md-drppicker .calendar {
   min-width: 45% !important;
   /* border-width: 1px; */
 }
-
 
 /* Calendar Container Styles */
 .airbnb-calendar-container {
@@ -315,7 +312,7 @@
   overflow-x: hidden;
 }
 
-.titlecalender{
+.titlecalender {
   font-weight: bold;
   font-size: 19px;
   margin: 0;
@@ -324,7 +321,7 @@
 /* Calendar Wrapper */
 .airbnb-calendar-wrapper {
   display: flex;
-  gap: 1.6rem ;
+  gap: 1.6rem;
   justify-content: center;
   align-items: flex-start;
 }
@@ -395,19 +392,18 @@
   background-color: #e0dbdb !important;
   /* border-radius: 0 !important; */
 }
-.leftsection ::ng-deep .calendar-table td.start-date, ::ng-deep .calendar-table td.end-date{
+.leftsection ::ng-deep .calendar-table td.start-date,
+::ng-deep .calendar-table td.end-date {
   background-color: #000000 !important;
   color: white !important;
   font-weight: 600 !important;
 }
-
 
 /* Hide Unnecessary Elements */
 .leftsection ::ng-deep .drp-buttons,
 .leftsection ::ng-deep .ranges {
   display: none !important;
 }
-
 
 .leftsection ::ng-deep .calendar-table td.available {
   color: #222;
@@ -418,7 +414,7 @@
   background-color: #dcd9d9 !important;
 }
 
-.leftsection ::ng-deep .calendar-table{
+.leftsection ::ng-deep .calendar-table {
   gap: 100px;
 }
 .leftsection ::ng-deep .calendar-table td {
@@ -433,8 +429,6 @@
   color: black;
 }
 
-
-
 .custom-date-input {
   padding: 10px 15px;
   border: 2px solid #007bff;
@@ -443,7 +437,7 @@
   width: 250px;
   cursor: pointer;
 }
-.leftsection ::ng-deep .md-drppicker{
+.leftsection ::ng-deep .md-drppicker {
   background-color: rgb(255, 255, 255) !important;
   border-width: 1px;
   left: -100% !important;
@@ -451,6 +445,6 @@
   z-index: 10000000 !important;
 }
 
-.leftsection{
+.leftsection {
   z-index: 100000;
 }
