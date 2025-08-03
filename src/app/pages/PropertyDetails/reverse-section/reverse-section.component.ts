@@ -675,6 +675,7 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
 
 
   calculateTotalPrice(): void {
+    console.log("start calculatePrice",!this.selected?.startDate ,!this.selected?.endDate ,!this.dateMap)
     if (!this.selected?.startDate || !this.selected?.endDate || !this.dateMap) return;
 
     const start = dayjs(this.selected.startDate);

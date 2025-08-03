@@ -2,7 +2,7 @@
     <div class="main-container py-5">
         <div class="hostMessage">
             <!-- Left Column - Contact Information -->
-            <div class="left-column">
+            <div class="left-column ">
                 <a href="#" class="back-button">
                     <svg class="back-arrow" viewBox="0 0 16 16">
                         <path d="m10.5 13.5-5-5 5-5"></path>
@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="faq-section">
-                    <h2 class="faq-title">Most travelers ask about</h2>
+                    <h2 class="faq-title fs-3 fw-bolder">Most travelers ask about</h2>
                     
                     <div class="faq-item">
                         <h3 class="faq-question">Getting there</h3>
@@ -30,7 +30,6 @@
                                 Check-in time for this home starts at 1:00 PM and checkout is at 11:00 AM.
                             </li>
                         </ul>
-                        <p class="faq-answer">Check-in time for this home starts at 3:00 PM and checkout is at 12:00 PM.</p>
                     </div>
 
                     <div class="faq-item">
@@ -43,9 +42,16 @@
                     <div class="faq-item">
                         <h3 class="faq-question">Price and availability</h3>
                         <div class="faq-answer">
-                            <p>Get a 25% discount on stays longer than a month.</p>
-                            <p style="margin-top: 8px;">Brassbell's home is available from Sep 19 – 21. Book soon.</p>
-                            <p style="margin-top: 8px;">Cancel up to 24 hours before check-in and get a full refund. After that, cancel before check-in and get a full refund, minus the first night and service fee.</p>
+                            <ul>
+                                    <li 
+                                        style="margin-top: 8px;"
+                                        *ngIf="startDate && endDate"
+                                    >Brassbell's home is available from {{startDate.format("MMM DD YY")}} – {{endDate.format("MMM DD YY")}}. Book soon.</li>
+                                    <li 
+                                        style="margin-top: 8px;"
+                                    >Cancel up to 24 hours before check-in and get a full refund. After that, cancel before check-in and get a full refund, minus the first night and service fee.</li>
+                        
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -53,13 +59,33 @@
                 <div class="message-section">
                     <h2 class="message-title">Still have questions? Message the host</h2>
                     
-                    <form class="message-form">
+                    <form 
+                        class="message-form"
+                        (click)="onSendMessage()"
+                    >
                         <textarea 
                             class="message-textarea" 
                             placeholder="Hi Brassbell! I'll be visiting..."
-                            name="message">
+                            name="message"
+                            [(ngModel)] = "message"
+                            (ngModelChange)="onModelChange()"
+                            >
                         </textarea>
-                        <button type="submit" class="send-button">Send message</button>
+                        <div 
+                            class="d-flex justify-content-end"
+                            
+                        >
+                            <span 
+                                *ngIf="message.length> 0 && (!startDate || !endDate)"
+                                class="small text-danger"    
+                            >Select your dates</span>
+                        </div>
+                        <button 
+                            class="btn send-button"
+                            type="submit" 
+                            [disabled]="message.length<1 || !endDate || !startDate"
+                            >
+                        Send message</button>
                     </form>
                 </div>
             </div>

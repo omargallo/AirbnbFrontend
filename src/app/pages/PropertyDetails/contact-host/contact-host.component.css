@@ -212,6 +212,7 @@
 
 ul{
     list-style: disc !important;
+    padding-left: 2rem;
 }
         .property-preview {
             display: flex;
