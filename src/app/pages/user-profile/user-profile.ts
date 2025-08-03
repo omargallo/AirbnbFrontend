@@ -38,8 +38,6 @@ register();
   imports: [
     DecimalPipe,
     CommonModule,
-    PropertImageGalaryComponent,
-    PropertySwiperComponent,
     ProfileCard,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

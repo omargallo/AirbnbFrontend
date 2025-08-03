@@ -1,3 +1,4 @@
+
 <div class="container-xl py-4" style="max-width: 1200px">
   <div class="alert alert-danger" role="alert" *ngIf="error">
     <h4 class="alert-heading">Error</h4>
@@ -139,9 +140,9 @@
                     "
                     [src]="getImageUrl(review.user.profilePictureURL)"
                     [alt]="
-                      (review.user?.firstName || '') +
+                      (review.user.firstName || '') +
                       ' ' +
-                      (review.user?.lastName || '')
+                      (review.user.lastName || '')
                     "
                     class="rounded-circle me-3"
                     style="width: 48px; height: 48px; object-fit: cover"
@@ -157,8 +158,8 @@
                   >
                     {{
                       getInitials(
-                        review.user?.firstName || "",
-                        review.user?.lastName || ""
+                        review.user.firstName || "",
+                        review.user.lastName || ""
                       )
                     }}
                   </div>
@@ -635,7 +636,7 @@
                   review.user?.userId
                 )
               "
-              [src]="getImageUrl(review.user?.profilePictureURL)"
+              [src]="getImageUrl(review.user.profilePictureURL)"
               [alt]="review.user.firstName + ' ' + review.user.lastName"
               class="rounded-circle me-3 flex-shrink-0"
               style="width: 56px; height: 56px; object-fit: cover"
@@ -654,8 +655,8 @@
             >
               {{
                 getInitials(
-                  review.user?.firstName || "",
-                  review.user?.lastName || ""
+                  review.user.firstName || "",
+                  review.user.lastName || ""
                 )
               }}
             </div>
