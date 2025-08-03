@@ -56,7 +56,7 @@ export class Property {
     { 
       label: 'Active', 
       field: 'isActive', 
-      pipe: 'deletedStatus', 
+      pipe: 'active', 
       sortable: true 
     },
     { 
@@ -470,9 +470,13 @@ export class Property {
         if(res.isSuccess){
             this.confirm.success(res.data,"")
             this.showActivationModal = false
-            if(this.seletctedPropertyForActivateStatus)
+            if(this.seletctedPropertyForActivateStatus){
               this.seletctedPropertyForActivateStatus.isActive = isActive
-            
+              let prop = this.properties.find(p=> p.id == this.seletctedPropertyForActivateStatus?.id)
+              if(prop)
+                prop.isActive = isActive
+            }
+            return
           }
           this.confirm.fail(res.data)
         },
@@ -481,26 +485,32 @@ export class Property {
                 this.confirm.fail(res.data)
               }
             })
-            else
-              this.propertyService
-                    .deactivate(this.seletctedPropertyForActivateStatus.id)
-                    .subscribe({
-                      next:(res)=>{
-                        this.showActivationModal = false
-                        if(res.isSuccess){
-                          this.confirm.success(res.data,"")
-                          if(this.seletctedPropertyForActivateStatus)
-                            this.seletctedPropertyForActivateStatus.isActive = isActive
-                        }
-                        this.confirm.fail(res.data)
-                      },
-                      error:(res)=>{
-                        this.showActivationModal = false
-                        this.confirm.fail(res.data)
-                      }
-                    })
-              
-            }
+    else
+        this.propertyService
+              .deactivate(this.seletctedPropertyForActivateStatus.id)
+              .subscribe({
+                next:(res)=>{
+                  this.showActivationModal = false
+                  if(res.isSuccess){
+                    this.confirm.success(res.data,"")
+                    if(this.seletctedPropertyForActivateStatus)
+                    {
+                      this.seletctedPropertyForActivateStatus.isActive = isActive
+                      let prop = this.properties.find(p=> p.id == this.seletctedPropertyForActivateStatus?.id)
+                      if(prop)
+                        prop.isActive = isActive
+                    }
+                    return
+                  }
+                  this.confirm.fail(res.data)
+                },
+                error:(res)=>{
+                  this.showActivationModal = false
+                  this.confirm.fail(res.data)
+                }
+              })
+        
+      }
 
     onHideActivationStatusModal(){
       this.showActivationModal = false

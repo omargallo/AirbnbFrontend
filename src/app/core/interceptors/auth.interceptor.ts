@@ -29,12 +29,13 @@ export class AuthInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
-    if(this.firstTimeRefresh && !this.authService.userId){
+    if(this.firstTimeRefresh){
       let x = this.handle401Error(req,next)
       console.log("after handle401error");
       x.subscribe()
     }
 
+    console.log(this.authService.role)
     const accessToken = this.authService.accessToken;
 
     if (accessToken) {

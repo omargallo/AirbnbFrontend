@@ -121,10 +121,11 @@
         }
 
         .custom-toggle.active {
-            background: linear-gradient(135deg, var(--success-green) 0%, #4ecdc4 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ed6767 100%) !important;
         }
 
         .toggle-slider {
+
             position: absolute;
             top: 4px;
             left: 4px;
@@ -162,7 +163,7 @@
         }
 
         .btn-confirm {
-            background: linear-gradient(135deg, var(--success-green) 0%, #4ecdc4 100%);
+            background: linear-gradient(135deg, #ed6767 0%, #df4251 100%);
             border: none;
             border-radius: 25px;
             padding: 12px 30px;
