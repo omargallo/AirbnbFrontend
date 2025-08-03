@@ -7,8 +7,10 @@ import { environment } from '../../../../environments/environment.development';
 import { PropertyImage } from '../../models/PropertyImage';
 import { HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs';
+
 import { PropertyDisplayWithHostDataDto ,PropertyDisplayDTO as PropertyDisplayDtoFromModels} from '../../../pages/add-property/models/property.model';
 import { PropertyDisplayDTO as PropDisplayFromModelsTrueOne } from '../../models/PropertyDisplayDTO';
+
 
 
 interface ApiResponse<T> {
@@ -110,80 +112,111 @@ export class PropertyService {
   private propertyTypeUrl = `${environment.baseUrl}/PropertyType`; // NEW: Property Type endpoint
   private countriesApiUrl = 'https://countriesnow.space/api/v0.1/countries';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   // NEW: Get all property types from API
   getAllPropertyTypes(): Observable<PropertyTypeDto[]> {
-    return this.http.get<PropertyTypeDto[]>(this.propertyTypeUrl, { withCredentials: true });
+    return this.http.get<PropertyTypeDto[]>(this.propertyTypeUrl, {
+      withCredentials: true,
+    });
   }
 
-  getAllForDashboard():Observable<PropertyDisplayWithHostDataDto[]>{
-        return this.http.get<Result<PropertyDisplayWithHostDataDto[]>>(`${this.baseUrl}/dashboard`).pipe(map(res=>res.data));
-    }
-  
-  getByIdWithCover(propId:number):Observable<PropertyDisplayDtoFromModels>{
-    return this.http.get<Result<PropertyDisplayDtoFromModels>>(`${this.baseUrl}/cover/${propId}`)
-                        .pipe(map(res=> res.data))
+  getAllForDashboard(): Observable<PropertyDisplayWithHostDataDto[]> {
+    return this.http
+      .get<Result<PropertyDisplayWithHostDataDto[]>>(
+        `${this.baseUrl}/dashboard`
+      )
+      .pipe(map((res) => res.data));
+  }
+
+  getByIdWithCover(propId: number): Observable<PropertyDisplayDtoFromModels> {
+    return this.http
+      .get<Result<PropertyDisplayDtoFromModels>>(
+        `${this.baseUrl}/cover/${propId}`
+      )
+      .pipe(map((res) => res.data));
   }
   getByIdWithCoverFor3ssam(propId:number):Observable<PropDisplayFromModelsTrueOne>{
     return this.http.get<Result<PropDisplayFromModelsTrueOne>>(`${this.baseUrl}/cover/${propId}`)
                         .pipe(map(res=> res.data))
   }
   getImagesByPropertyId(id: number): Observable<PropertyImage[]> {
-    return this.http.get<Result<PropertyImage[]>>(`${this.baseUrl}/${id}/images`).pipe(
-      map(res => res.data)
-    );
+    return this.http
+      .get<Result<PropertyImage[]>>(`${this.baseUrl}/${id}/images`)
+      .pipe(map((res) => res.data));
   }
 
   uploadPhotos(formData: FormData) {
     return this.http.post(`${this.baseUrl}/property-images/upload`, formData, {
       reportProgress: true,
-      observe: 'events'
+      observe: 'events',
     });
   }
 
   getAllProperties(): Observable<Property[]> {
-    return this.http.get<ApiResponse<Property[]>>(this.propertyUrl)
-      .pipe(
-        map(response => response.data)
-      );
-  } 
+    return this.http
+      .get<ApiResponse<Property[]>>(this.propertyUrl)
+      .pipe(map((response) => response.data));
+  }
 
   getPropertyById(propertyId: number): Observable<Property> {
     const url = `${this.propertyUrl}/${propertyId}`;
-    return this.http.get<ApiResponse<Property>>(url)
-      .pipe(
-        map(response => response.data)
-      );
+    return this.http
+      .get<ApiResponse<Property>>(url)
+      .pipe(map((response) => response.data));
   }
 
   // UPDATED: Update property method to match new backend - no propertyId in URL
-  updateProperty(propertyData: PropertyDisplayDTO): Observable<Result<PropertyDisplayDTO>> {
+  updateProperty(
+    propertyData: PropertyDisplayDTO
+  ): Observable<Result<PropertyDisplayDTO>> {
     // Log the payload being sent for debugging
     console.log('Sending update payload:', propertyData);
 
     // Send PUT request to base URL without property ID in path
-    return this.http.put<Result<PropertyDisplayDTO>>(this.baseUrl, propertyData, {
-      withCredentials: true // Add credentials for authorization
-    });
+    return this.http.put<Result<PropertyDisplayDTO>>(
+      this.baseUrl,
+      propertyData,
+      {
+        withCredentials: true, // Add credentials for authorization
+      }
+    );
   }
-  reject(propId:number):Observable<Result<boolean>>{
-    return this.http.put<Result<boolean>>(`${this.baseUrl}/reject/${propId}`,{})
+  reject(propId: number): Observable<Result<boolean>> {
+    return this.http.put<Result<boolean>>(
+      `${this.baseUrl}/reject/${propId}`,
+      {}
+    );
   }
 
-  accept(propId:number):Observable<Result<boolean>>{
-    return this.http.put<Result<boolean>>(`${this.baseUrl}/accept/${propId}`,{})
+  accept(propId: number): Observable<Result<boolean>> {
+    return this.http.put<Result<boolean>>(
+      `${this.baseUrl}/accept/${propId}`,
+      {}
+    );
   }
 
   // UPDATED: Update specific property section with complete DTO
-  updatePropertySection(property: Property, sectionData: any, sectionType: string): Observable<Result<PropertyDisplayDTO>> {
+  updatePropertySection(
+    property: Property,
+    sectionData: any,
+    sectionType: string
+  ): Observable<Result<PropertyDisplayDTO>> {
     // Create complete DTO with all required fields
-    const completeDTO = this.createCompleteDTO(property, sectionData, sectionType);
+    const completeDTO = this.createCompleteDTO(
+      property,
+      sectionData,
+      sectionType
+    );
     return this.updateProperty(completeDTO);
   }
 
   // UPDATED: Create complete DTO with all required fields
-  private createCompleteDTO(property: Property, sectionData: any, sectionType: string): PropertyDisplayDTO {
+  private createCompleteDTO(
+    property: Property,
+    sectionData: any,
+    sectionType: string
+  ): PropertyDisplayDTO {
     // Start with the current property data
     const dto: PropertyDisplayDTO = {
       id: property.id, // ID is now required in the body
@@ -205,7 +238,7 @@ export class PropertyService {
       isActive: property.isActive || true,
       isDeleted: property.isDeleted || false,
       propertyTypeId: property.propertyTypeId,
-      hostId: property.hostId // This is required for authorization
+      hostId: property.hostId, // This is required for authorization
     };
 
     // Update specific section based on type
@@ -217,7 +250,8 @@ export class PropertyService {
       case 'rooms':
         dto.bedrooms = Number(sectionData.bedrooms) || property.bedrooms || 1;
         dto.beds = Number(sectionData.beds) || property.beds || 1;
-        dto.bathrooms = Number(sectionData.bathrooms) || property.bathrooms || 1;
+        dto.bathrooms =
+          Number(sectionData.bathrooms) || property.bathrooms || 1;
         break;
 
       case 'description':
@@ -241,8 +275,10 @@ export class PropertyService {
         dto.country = sectionData.country || property.country;
         dto.state = sectionData.address || property.state;
         if (sectionData.coordinates) {
-          dto.latitude = Number(sectionData.coordinates.lat) || property.latitude;
-          dto.longitude = Number(sectionData.coordinates.lng) || property.longitude;
+          dto.latitude =
+            Number(sectionData.coordinates.lat) || property.latitude;
+          dto.longitude =
+            Number(sectionData.coordinates.lng) || property.longitude;
         }
         break;
 
@@ -251,54 +287,74 @@ export class PropertyService {
         Object.assign(dto, sectionData);
     }
 
-
     console.log(`Created complete DTO for ${sectionType}:`, dto);
     return dto;
   }
 
-  getNearestProperties(page: number = 1, pageSize: number = 10, maxDistanceKm: number = 10): Observable<Result<{ items: Property[] }>> {
+  getNearestProperties(
+    page: number = 1,
+    pageSize: number = 10,
+    maxDistanceKm: number = 10
+  ): Observable<Result<{ items: Property[] }>> {
     const headers = new HttpHeaders()
       .set('page', page.toString())
       .set('pageSize', pageSize.toString())
       .set('maxDistanceKm', maxDistanceKm.toString());
 
-    return this.http.get<Result<{ items: Property[] }>>(`${this.baseUrl}/nearest`, { headers });
+    return this.http.get<Result<{ items: Property[] }>>(
+      `${this.baseUrl}/nearest`,
+      { headers }
+    );
   }
 
   getAllCountries(): Observable<CountriesResponse> {
     return this.http.get<CountriesResponse>(this.countriesApiUrl, {
-      withCredentials: false
+      withCredentials: false,
     });
   }
 
-  searchProperties(params: SearchParams): Observable<Result<SearchPropertiesResponse>> {
+  searchProperties(
+    params: SearchParams
+  ): Observable<Result<SearchPropertiesResponse>> {
     const queryParams: any = {};
 
     if (params.country) queryParams.Country = params.country;
     if (params.longitude != null) queryParams.Longitude = params.longitude;
     if (params.latitude != null) queryParams.Latitude = params.latitude;
-    if (params.guestsCount != null) queryParams.GuestsCount = params.guestsCount;
+    if (params.guestsCount != null)
+      queryParams.GuestsCount = params.guestsCount;
     if (params.startDate) queryParams.StartDate = params.startDate;
     if (params.endDate) queryParams.endDate = params.endDate;
     if (params.page) queryParams.Page = params.page;
     queryParams.PageSize = 12;
-    if (params.maxDistanceKm != null) queryParams.maxDistanceKm = params.maxDistanceKm;
+    if (params.maxDistanceKm != null)
+      queryParams.maxDistanceKm = params.maxDistanceKm;
 
-    return this.http.get<Result<SearchPropertiesResponse>>(`${this.baseUrl}/search`, {
-      params: queryParams
-    });
+    return this.http.get<Result<SearchPropertiesResponse>>(
+      `${this.baseUrl}/search`,
+      {
+        params: queryParams,
+      }
+    );
   }
 
   // To reverse
-  getGuetsAndPricePerNeightPropertyById(id: number): Observable<{ maxGuests: number, pricePerNeight: number }> {
-    return this.http.get<{ maxGuests: number, pricePerNeight: number }>(`${this.baseUrl}/property/${id}`);
+  getGuetsAndPricePerNeightPropertyById(
+    id: number
+  ): Observable<{ maxGuests: number; pricePerNeight: number }> {
+    return this.http.get<{ maxGuests: number; pricePerNeight: number }>(
+      `${this.baseUrl}/property/${id}`
+    );
   }
 
-  deletePropertyImages(propertyId: number, imageIds: number[]): Observable<Result<boolean>> {
+  deletePropertyImages(
+    propertyId: number,
+    imageIds: number[]
+  ): Observable<Result<boolean>> {
     const formData = new FormData();
 
     // Add image IDs to form data
-    imageIds.forEach(id => {
+    imageIds.forEach((id) => {
       formData.append('imgIds', id.toString());
     });
 
@@ -309,13 +365,9 @@ export class PropertyService {
       formData,
       {
         reportProgress: false,
-        withCredentials: true
+        withCredentials: true,
       }
-    );  
-
-    
-
-
+    );
 
     return this.http.request<Result<boolean>>(request).pipe(
       map((event: any): Result<boolean> => {
@@ -332,7 +384,7 @@ export class PropertyService {
           return {
             data: true,
             isSuccess: true,
-            message: 'Images deleted successfully'
+            message: 'Images deleted successfully',
           } as Result<boolean>;
         }
 
@@ -340,7 +392,7 @@ export class PropertyService {
         return {
           data: true,
           isSuccess: true,
-          message: 'Images deleted successfully'
+          message: 'Images deleted successfully',
         } as Result<boolean>;
       }),
       // Add error handling
@@ -350,11 +402,11 @@ export class PropertyService {
         // FIXED: Handle 204 as success in error handler too
         if (error.status === 204) {
           // 204 is actually success, Angular treats it as error due to no content
-          return new Observable<Result<boolean>>(observer => {
+          return new Observable<Result<boolean>>((observer) => {
             observer.next({
               data: true,
               isSuccess: true,
-              message: 'Images deleted successfully'
+              message: 'Images deleted successfully',
             });
             observer.complete();
           });
@@ -364,25 +416,54 @@ export class PropertyService {
       })
     );
   }
- getAllAmenities(): Observable<AmenityDTO[]> {
-  return this.http.get<Result<AmenityDTO[]>>(`${environment.baseUrl}/Amenity/all`, {
-    withCredentials: true
-  }).pipe(
-    map(response => response.data)
-  );
-}
+  getAllAmenities(): Observable<AmenityDTO[]> {
+    return this.http
+      .get<Result<AmenityDTO[]>>(`${environment.baseUrl}/Amenity/all`, {
+        withCredentials: true,
+      })
+      .pipe(map((response) => response.data));
+  }
 
-/**
- * Get amenities for a specific property
- */
-getAmenitiesByPropertyId(propertyId: number): Observable<AmenityDTO[]> {
-  return this.http.get<Result<AmenityDTO[]>>(`${environment.baseUrl}/Amenity/property/${propertyId}/amenities`, {
-    withCredentials: true
-  }).pipe(
-    map(response => response.data)
-  );
-}
+  /**
+   * Get amenities for a specific property
+   */
+  getAmenitiesByPropertyId(propertyId: number): Observable<AmenityDTO[]> {
+    return this.http
+      .get<Result<AmenityDTO[]>>(
+        `${environment.baseUrl}/Amenity/property/${propertyId}/amenities`,
+        {
+          withCredentials: true,
+        }
+      )
+      .pipe(map((response) => response.data));
+  }
 
+
+  /**
+   * Toggle amenity for a property (add/remove)
+   * Fixed the typo in the endpoint URL
+   */
+  togglePropertyAmenity(
+    amenityId: number,
+    propertyId: number
+  ): Observable<Result<boolean>> {
+    return this.http.post<Result<boolean>>(
+      `${environment.baseUrl}/Amenity/assign/${amenityId}/porperty/${propertyId}`, // FIXED: 'porperty' to match backend typo
+      {},
+      { withCredentials: true }
+    );
+  }
+
+  //for reviews
+
+  getPropertyWithHostData(
+    propId: number
+  ): Observable<PropertyDisplayWithHostDataDto> {
+    return this.http
+      .get<Result<PropertyDisplayWithHostDataDto>>(
+        `${this.baseUrl}/cover/${propId}`
+      )
+      .pipe(map((res) => res.data));
 /**
  * Toggle amenity for a property (add/remove)
  * Fixed the typo in the endpoint URL

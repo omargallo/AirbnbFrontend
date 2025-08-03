@@ -12,6 +12,7 @@ import { environment } from '../../../../environments/environment.development';
 import { BookingDetailsDTO } from '../Booking/user-booking-service';
 import { UserProfileDto } from '../Admin/user-service';
 import { HostReviewDTO } from '../../models/ReviewInterfaces/host-review-dto';
+import { PropertyDisplayWithHostDataDto } from '../../../pages/add-property/models/property.model';
 
 @Injectable({
   providedIn: 'root',
@@ -195,4 +196,11 @@ getMyReviews(): Observable<IGuestReviewDto[]> {
         })
       );
   }
+
+
+  //from property to get   the property with host information from a property Endpoint
+  
+
+
+
 }

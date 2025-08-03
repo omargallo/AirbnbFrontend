@@ -191,19 +191,28 @@
 
         <!-- Navigation Buttons -->
         <div class="d-flex justify-content-between mt-4">
-          <!-- Previous Button -->
+          <!-- Return Button (always visible on left) -->
           <button
-            *ngIf="currentStep > 1 && mode !== 'view'"
             type="button"
             class="btn btn-outline-secondary"
-            (click)="previousStep()"
+            (click)="goBack()"
           >
-            <i class="bi bi-arrow-left me-1"></i>Previous
+            <i class="bi bi-arrow-left me-1"></i>Return
           </button>
-          <div *ngIf="currentStep === 1 || mode === 'view'"></div>
 
-          <!-- Next/Submit Button -->
-          <div>
+          <!-- Navigation buttons (right side) -->
+          <div class="d-flex gap-2">
+            <!-- Previous Button -->
+            <button
+              *ngIf="currentStep > 1 && mode !== 'view'"
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="previousStep()"
+            >
+              <i class="bi bi-arrow-left me-1"></i>Previous
+            </button>
+
+            <!-- Next/Submit Button -->
             <button
               *ngIf="currentStep < totalSteps && mode !== 'view'"
               type="button"

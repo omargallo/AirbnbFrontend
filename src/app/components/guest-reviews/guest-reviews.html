@@ -121,15 +121,39 @@
     >
       <!-- Profile Section -->
       <div class="review-header">
-        <div class="profile-section">
+        <div
+          class="profile-section"
+          role="button"
+          tabindex="0"
+          (click)="navigateToReviewerProfile(review.user.userId)"
+          style="cursor: pointer"
+        >
           <div class="profile-avatar">
-            {{ getInitials(review.user.firstName, review.user.lastName) }}
+            @if(review.user.profilePictureURL && !imageErrors.has(review.id)){
+            <img
+              [src]="getImageUrl(review.user.profilePictureURL)"
+              class="rounded-circle"
+              width="48"
+              height="48"
+              (error)="onImageError($event, review)"
+            />
+            } @if(!review.user.profilePictureURL || imageErrors.has(review.id)){
+            <div
+              class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+              style="width: 48px; height: 48px"
+            >
+              {{ getInitials(review.user.firstName, review.user.lastName) }}
+            </div>
+            }
           </div>
           <div class="profile-info">
-            <h6 class="reviewer-name">
+            <h6 class="reviewer-name text-decoration-underline-hover">
               {{ getFullName(review.user.firstName, review.user.lastName) }}
             </h6>
-            <p class="reviewer-meta">Guest</p>
+            <p class="reviewer-location text-muted" *ngIf="review.user.country">
+              {{ review.user.country }}
+            </p>
+            <!-- <p class="reviewer-meta">Guest</p> -->
           </div>
         </div>
 
@@ -138,7 +162,7 @@
         <div class="review-actions">
           <i
             (click)="navigateToEditReview(review)"
-            class="action-icon text-dark bi bi-pencil-square"
+            class="action-icon text-dark bi bi-pencil-fill"
             title="Edit"
             style="cursor: pointer"
           ></i>
@@ -148,7 +172,7 @@
             (click)="deleteHandler(review.id)"
             title="Delete"
           >
-            <i class="bi bi-trash3-fill"></i>
+            <i class="bi bi-x-circle"></i>
           </button>
         </div>
         }
@@ -165,10 +189,8 @@
           >
           </app-star-component>
         </div>
-        <span class="review-date">{{
-          review.createdAt | date : "MMM yyyy"
-        }}</span>
-        <span class="review-type">Guest stay</span>
+        <span class="review-date">{{ getDaysAgo(review.createdAt) }}</span>
+        <span class="review-type">{{ getStayDuration(review) }}</span>
       </div>
 
       <!-- Review Content -->
@@ -238,7 +260,6 @@
 </div>
 
 @if( shouldShowReviewButton()){
-<!-- Add Review Call-to-Action with Animation -->
 <div class="review-cta-container">
   <div class="character-illustration">
     <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
@@ -336,3 +357,81 @@
   </button>
 </div>
 }
+
+<div class="container" *ngIf="hostInfo && !isLoadingHost">
+  <div class="row mt-5 pt-4" style="border-top: 1px solid #dee2e6">
+    <div class="col-12">
+      <h3 class="mb-4 fw-bold fs-3" style="letter-spacing: 1px">
+        Meet your host
+      </h3>
+
+      <div class="row">
+        <div class="col-xl-4 col-lg-5 col-md-6 col-12 mb-4 mb-lg-0">
+          <app-profile-card
+            [firstName]="hostInfo.firstName"
+            [lastName]="hostInfo.lastName"
+            [country]="hostInfo.country"
+            [profileImageUrl]="hostInfo.profilePictureURL"
+            [userId]="hostInfo.userId"
+            [userType]="'Host'"
+            [stats]="hostStats"
+            [showHeartBadge]="isHostSuperhost()"
+            [imageBaseUrl]="imageBaseUrl"
+            [imageErrors]="imageError"
+            [onImageErrorCallback]="onHostImageError"
+          ></app-profile-card>
+        </div>
+
+        <div class="col-xl-1 d-none d-xl-block"></div>
+
+        <div class="col-xl-7 col-lg-7 col-md-6 col-12">
+          <div class="ms-lg-4 ms-md-3 ms-0">
+            <h5 class="mb-3 fw-bold fs-4">Host details</h5>
+            <div class="mb-3">
+              <div class="text-muted mb-1 fs-5">
+                Response rate: <span class="fw-semibold">100%</span>
+              </div>
+              <div class="text-muted fs-5">Responds within an hour</div>
+            </div>
+
+            <button
+              class="btn mb-3 fw-semibold px-4 py-2"
+              style="
+                border-radius: 8px;
+                font-size: 1rem;
+                border: 1px solid #ebebeb;
+                background-color: #ebebeb;
+                color: #333;
+                transition: all 0.2s ease;
+              "
+              onmouseover="this.style.backgroundColor='#d4d4d4'; this.style.borderColor='#d4d4d4'"
+              onmouseout="this.style.backgroundColor='#ebebeb'; this.style.borderColor='#ebebeb'"
+              onmousedown="this.style.transform='scale(0.95)'"
+              onmouseup="this.style.transform='scale(1)'"
+            >
+              Message host
+            </button>
+
+            <div class="d-flex align-items-start text-muted">
+              <i
+                class="fas fa-shield-alt text-danger me-2 mt-1 flex-shrink-0"
+              ></i>
+              <span class="fs-6">
+                To help protect your payment, always use Airbnb to send money
+                and communicate with hosts.
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4" *ngIf="hostInfo.description">
+        <p class="text-muted fs-5">{{ hostInfo.description }}</p>
+      </div>
+
+      <!-- <div class="mt-2" *ngIf="hostInfo.userName">
+        <small class="text-muted fs-6">{{ hostInfo.userName }}</small>
+      </div> -->
+    </div>
+  </div>
+</div>
