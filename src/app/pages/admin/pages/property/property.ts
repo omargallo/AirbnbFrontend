@@ -4,14 +4,16 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { UserService, User, UserProfileDto } from '../../../../core/services/Admin/user-service';
 import { Table, TableColumn, TableAction, PaginationInfo } from '../../table/table';
-import { PropertyAcceptStatus, PropertyDisplayDTO, PropertyDisplayWithHostDataDto } from '../../../add-property/models/property.model';
+import { PropertyAcceptStatus, PropertyDisplayWithHostDataDto } from '../../../add-property/models/property.model';
+import { PropertyDisplayDTO } from '../../../../core/models/PropertyDisplayDTO';
 import { PropertyService } from '../../../../core/services/Property/property.service';
 import { PropertyInfo } from "../../../property-info/property-info";
 import { ConfirmService } from '../../../../core/services/confirm.service';
+import { PropertyActivateModal } from "./components/property-activate-modal/property-activate-modal";
 
 @Component({
   selector: 'app-property',
-  imports: [CommonModule, Table, PropertyInfo],
+  imports: [CommonModule, Table, PropertyInfo, PropertyActivateModal],
   templateUrl: './property.html',
   styleUrl: './property.css'
 })
@@ -51,8 +53,8 @@ export class Property {
       sortable: false 
     },
     { 
-      label: 'Deleted', 
-      field: 'isDeleted', 
+      label: 'Active', 
+      field: 'isActive', 
       pipe: 'deletedStatus', 
       sortable: true 
     },
@@ -391,6 +393,8 @@ export class Property {
                   let prop = this.properties.find(p=> p.id == this.selectedProperty?.id)
                   if(prop)
                     prop.status = PropertyAcceptStatus.accepted
+                  if(this.selectedProperty)
+                    this.selectedProperty.status = PropertyAcceptStatus.accepted  
                 },
                 error:(err)=>{
                   if(err?.data?.message)
@@ -414,6 +418,8 @@ export class Property {
                   let prop = this.properties.find(p=> p.id == this.selectedProperty?.id)
                   if(prop)
                     prop.status = PropertyAcceptStatus.rejected
+                  if(this.selectedProperty)
+                    this.selectedProperty.status = PropertyAcceptStatus.rejected
                 },
                 error:(err)=>{
                   if(err?.data?.message)
