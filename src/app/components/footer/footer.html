@@ -1,113 +1,149 @@
-<footer class="footer-container d-flex flex-column justify-content-center col-12 mx-auto p-5  ">
-    <div class="col-12 col-md-11 align-self-center ">
-        <!-- Tab Buttons -->
-        <ul class="nav nav-tabs mb-4" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" [class.active]="activeTab === 'unique'" (click)="selectTab('unique')">Unique
-                    stays</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" [class.active]="activeTab === 'categories'"
-                    (click)="selectTab('categories')">Categories</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" [class.active]="activeTab === 'tips'" (click)="selectTab('tips')">Travel tips &
-                    inspiration</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" [class.active]="activeTab === 'apartments'"
-                    (click)="selectTab('apartments')">Airbnb-friendly apartments</button>
-            </li>
-        </ul>
+<footer
+  class="footer-container d-flex flex-column justify-content-center col-12 mx-auto p-5"
+>
+  <div class="col-12 col-md-11 align-self-center">
+    <!-- Tab Buttons -->
+    <ul class="nav nav-tabs mb-4" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          [class.active]="activeTab === 'unique'"
+          (click)="selectTab('unique')"
+        >
+          Unique stays
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          [class.active]="activeTab === 'categories'"
+          (click)="selectTab('categories')"
+        >
+          Categories
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          [class.active]="activeTab === 'tips'"
+          (click)="selectTab('tips')"
+        >
+          Travel tips & inspiration
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          [class.active]="activeTab === 'apartments'"
+          (click)="selectTab('apartments')"
+        >
+          Airbnb-friendly apartments
+        </button>
+      </li>
+    </ul>
 
-        <!-- Tab Contents -->
-        <div [hidden]="activeTab !== 'unique'" class="row text-dark mb-5">
-            <div class="col-6 col-md-3 d-flex flex-column" *ngFor="let item of unique">
-                <p class="primary-text bold text-bold">{{ item.style}}</p>
-                <p class="secondary-text">{{item.location }}</p>
-            </div>
-        </div>
-        <div [hidden]="activeTab !== 'categories'" class="row text-dark mb-5">
-            <div class="col-6 col-md-3" *ngFor="let category of categories">
-                <p class="primary-text">{{ category }}</p>
-            </div>
-        </div>
-        <div [hidden]="activeTab !== 'tips'" class="row text-dark mb-5">
-            <div class="col-6 col-md-3 d-flex flex-column" *ngFor="let item of tips">
-                <p class="primary-text bold text-bold">{{ item.tip}}</p>
-                <p class="secondary-text">{{item.note}}</p>
-            </div>
-        </div>
-        <div [hidden]="activeTab !== 'apartments'" class="row text-dark mb-5">
-            <div class="col-6 col-md-3" *ngFor="let apartment of apartments ">
-                <p class="primary-text">{{ apartment.city}}</p>
-                <p class="secondary-text">{{ apartment.state}}</p>
-            </div>
-        </div>
-        <!-- Add other tab contents here with [hidden]="activeTab !== 'unique'" etc. -->
+    <!-- Tab Contents -->
+    <div [hidden]="activeTab !== 'unique'" class="row text-dark mb-5">
+      <div
+        class="col-6 col-md-3 d-flex flex-column"
+        *ngFor="let item of unique"
+      >
+        <p class="primary-text bold text-bold">{{ item.style }}</p>
+        <p class="secondary-text">{{ item.location }}</p>
+      </div>
+    </div>
+    <div [hidden]="activeTab !== 'categories'" class="row text-dark mb-5">
+      <div class="col-6 col-md-3" *ngFor="let category of categories">
+        <p class="primary-text">{{ category }}</p>
+      </div>
+    </div>
+    <div [hidden]="activeTab !== 'tips'" class="row text-dark mb-5">
+      <div class="col-6 col-md-3 d-flex flex-column" *ngFor="let item of tips">
+        <p class="primary-text bold text-bold">{{ item.tip }}</p>
+        <p class="secondary-text">{{ item.note }}</p>
+      </div>
+    </div>
+    <div [hidden]="activeTab !== 'apartments'" class="row text-dark mb-5">
+      <div class="col-6 col-md-3" *ngFor="let apartment of apartments">
+        <p class="primary-text">{{ apartment.city }}</p>
+        <p class="secondary-text">{{ apartment.state }}</p>
+      </div>
+    </div>
+    <!-- Add other tab contents here with [hidden]="activeTab !== 'unique'" etc. -->
+  </div>
+
+  <!-- Footer Links Section -->
+  <div class="row col-12 col-md-11 align-self-center border-top pt-4">
+    <div class="col-md-4 mb-3">
+      <strong>Support</strong>
+      <ul class="list-unstyled">
+        <li *ngFor="let item of supportLinks" class="mb-2">
+          <a href="#" class="text-decoration-none secondary-text mb-2">{{
+            item
+          }}</a>
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-4 mb-3">
+      <strong>Hosting</strong>
+      <ul class="list-unstyled">
+        <li *ngFor="let item of hostingLinks" class="mb-2">
+          <a href="#" class="text-decoration-none secondary-text">{{ item }}</a>
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-4 mb-3">
+      <strong>Airbnb</strong>
+      <ul class="list-unstyled">
+        <li *ngFor="let item of airbnbLinks" class="mb-2">
+          <a href="#" class="text-decoration-none secondary-text">{{ item }}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- Bottom section -->
+  <div class="d-flex justify-content-between">
+    <div class="mb-2 mb-md-0">
+      © 2025 Airbnb, Inc.
+      <span class="mx-1">·</span>
+      <a href="#" class="primary-text text-decoration-none">Terms</a>
+      <span class="mx-1">·</span>
+      <a href="#" class="primary-text text-decoration-none">Sitemap</a>
+      <span class="mx-1">·</span>
+      <a href="#" class="primary-text text-decoration-none">Privacy</a>
+      <span class="mx-1">·</span>
+      <a href="#" class="primary-text text-decoration-none"
+        >Your Privacy Choices</a
+      >
+      <span class="ms-1">
+        <img
+          src="public/privacy.png"
+          loading="lazy"
+          alt="Privacy Icon"
+          style="height: 16px"
+        />
+      </span>
     </div>
 
-    <!-- Footer Links Section -->
-    <div class="row col-12 col-md-11 align-self-center  border-top pt-4">
-        <div class="col-md-4 mb-3">
-            <strong>Support</strong>
-            <ul class="list-unstyled ">
-                <li *ngFor="let item of supportLinks" class="mb-2"><a href="#" class="text-decoration-none secondary-text mb-2">{{ item }}</a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-md-4 mb-3">
-            <strong>Hosting</strong>
-            <ul class="list-unstyled">
-                <li *ngFor="let item of hostingLinks" class="mb-2"><a href="#" class="text-decoration-none secondary-text">{{ item }}</a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-md-4 mb-3">
-            <strong>Airbnb</strong>
-            <ul class="list-unstyled" >
-                <li *ngFor="let item of airbnbLinks" class="mb-2"><a href="#" class="text-decoration-none secondary-text">{{ item }}</a>
-                </li>
-            </ul>
-        </div>
+    <!-- Right side: Language, Currency, Socials -->
+    <div class="d-flex align-items-center gap-3">
+      <a
+        href="#"
+        class="secondary-text text-decoration-none d-flex align-items-center gap-1"
+      >
+        <i class="bi bi-globe2"></i> English (US)
+      </a>
+      <span>EGP</span>
+      <a href="#" class="secondary-text text-decoration-none">
+        <i class="bi bi-facebook"></i>
+      </a>
+      <a href="#" class="secondary-text text-decoration-none">
+        <i class="bi bi-twitter-x"></i>
+      </a>
+      <a href="#" class="secondary-text text-decoration-none">
+        <i class="bi bi-instagram"></i>
+      </a>
     </div>
-    <!-- Bottom section -->
-    <div class="d-flex justify-content-between">
-        <div class="mb-2 mb-md-0">
-            © 2025 Airbnb, Inc.
-            <span class="mx-1">·</span>
-            <a href="#" class="primary-text text-decoration-none">Terms</a>
-            <span class="mx-1">·</span>
-            <a href="#" class="primary-text text-decoration-none">Sitemap</a>
-            <span class="mx-1">·</span>
-            <a href="#" class="primary-text text-decoration-none">Privacy</a>
-            <span class="mx-1">·</span>
-            <a href="#" class="primary-text text-decoration-none">Your Privacy Choices</a>
-            <span class="ms-1">
-                <img src="public/privacy.png"
-                    alt="Privacy Icon" style="height: 16px;">
-            </span>
-        </div>
-
-        <!-- Right side: Language, Currency, Socials -->
-        <div class="d-flex align-items-center gap-3">
-            <a href="#" class="secondary-text text-decoration-none d-flex align-items-center gap-1">
-                <i class="bi bi-globe2"></i> English (US)
-            </a>
-            <span>EGP</span>
-            <a href="#" 
-                class="secondary-text text-decoration-none">
-                
-                <i class="bi bi-facebook"></i>
-            </a>
-            <a href="#" 
-                class="secondary-text text-decoration-none">
-                <i class="bi bi-twitter-x"></i>
-            </a>
-            <a href="#" 
-                class="secondary-text text-decoration-none">
-                <i class="bi bi-instagram"></i>
-            </a>
-        </div>
-    </div>
-</footer><!-- Bootstrap CSS -->
+  </div>
+</footer>
+<!-- Bootstrap CSS -->

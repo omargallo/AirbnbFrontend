@@ -5,15 +5,13 @@
 >
   <div class="dialog" (click)="$event.stopPropagation()">
     <div class="dialog-header">
-      <span *ngIf="user">
-        {{ "login.welcome" | translate }} {{ user }}
-      </span>
+      <span *ngIf="user"> {{ "login.welcome" | translate }} {{ user }} </span>
       <i class="icon-close" (click)="close()">×</i>
     </div>
 
     <div class="last-info" *ngIf="img || lastLoginEmail">
       <ng-container *ngIf="ifImg; else initialLetter">
-        <img [src]="img" alt="user-img" />
+        <img [src]="img" alt="user-img" loading="lazy" />
       </ng-container>
 
       <ng-template #initialLetter>

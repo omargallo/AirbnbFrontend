@@ -1,74 +1,101 @@
-<div class="section ">
+<div class="section">
   <!-- <hr> -->
 
-    <div class="guest-favorite-box d-flex align-items-center gap-1 my-2">
-        <div class="guest-favorite-content d-flex align-items-center gap-1 ">
-                <img class="reviewImage" src="assets/images/gold.png" alt="Guest Favorite icon">
-                  <span class="Guestfavorite ">Guest favorite</span>
-                      <img class="reviewImage" src="assets/images/goldright.png" alt="Guest Favorite icon">
+  <div class="guest-favorite-box d-flex align-items-center gap-1 my-2">
+    <div class="guest-favorite-content d-flex align-items-center gap-1">
+      <img
+        class="reviewImage"
+        src="assets/images/gold.png"
+        alt="Guest Favorite icon"
+        loading="lazy"
+      />
+      <span class="Guestfavorite">Guest favorite</span>
+      <img
+        class="reviewImage"
+        src="assets/images/goldright.png"
+        alt="Guest Favorite icon"
+        loading="lazy"
+      />
 
-                  <div class="subtitle text-black ">
-                      One of the most loved homes on <br />
-                      Airbnb,according to guests
-                  </div>
+      <div class="subtitle text-black">
+        One of the most loved homes on <br />
+        Airbnb,according to guests
+      </div>
+    </div>
+    <div class="guest-reviews-summary d-flex align-items-center col-3">
+      <div class="rating d-flex align-items-center gap-1">
+        <div class="stars" aria-label="Rating out of 5 stars">
+          <i class="bi bi-star-fill"></i>
         </div>
-        <div class="guest-reviews-summary d-flex align-items-center col-3 ">
-            <div class="rating d-flex align-items-center gap-1">
-                <div class="stars" aria-label="Rating out of 5 stars">
-                    <i class="bi bi-star-fill"></i>
-                </div>
-                <p class="score">{{property?.averageRating??0}}</p> 
-            </div>
-            <div class="reviews-count">Reviews
-                <span class="count">{{property?.reviewCount??0}}</span> 
-            </div>
-        </div>
+        <p class="score">{{ property?.averageRating ?? 0 }}</p>
+      </div>
+      <div class="reviews-count">
+        Reviews
+        <span class="count">{{ property?.reviewCount ?? 0 }}</span>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+  <h2 class="mt-5 mb-2">What this place offers</h2>
+
+  <div class="amenities-container mb-4">
+    <div class="amenities-column mt-3">
+      <div
+        *ngFor="let amenity of firstColumnAmenities; trackBy: trackByAmenityId"
+        class="amenity-item"
+      >
+        <img
+          [src]="amenity.iconUrl"
+          [alt]="amenity.name"
+          class="amenity-icon"
+          (error)="onImageError($event)"
+          loading="lazy"
+        />
+        <span class="amenity-name">{{ amenity.name }}</span>
+      </div>
     </div>
 
-    <hr>
-    <h2 class="mt-5 mb-2">What this place offers</h2>
-
-
-    <div class="amenities-container mb-4">
-        <div class="amenities-column mt-3">
-            <div *ngFor="let amenity of firstColumnAmenities; trackBy: trackByAmenityId" class="amenity-item">
-                <img [src]="amenity.iconUrl"
-                     [alt]="amenity.name"
-                     class="amenity-icon"
-                     (error)="onImageError($event)"
-                     loading="lazy">
-                <span class="amenity-name">{{ amenity.name }}</span>
-            </div>
-        </div>
-
-        <div class="amenities-column mt-3">
-            <div *ngFor="let amenity of secondColumnAmenities; trackBy: trackByAmenityId" class="amenity-item">
-                <img [src]="amenity.iconUrl"
-                     [alt]="amenity.name"
-                     class="amenity-icon"
-                     (error)="onImageError($event)"
-                     loading="lazy">
-                <span class="amenity-name">{{ amenity.name }}</span>
-            </div>
-        </div>
+    <div class="amenities-column mt-3">
+      <div
+        *ngFor="let amenity of secondColumnAmenities; trackBy: trackByAmenityId"
+        class="amenity-item"
+      >
+        <img
+          [src]="amenity.iconUrl"
+          [alt]="amenity.name"
+          class="amenity-icon"
+          (error)="onImageError($event)"
+          loading="lazy"
+        />
+        <span class="amenity-name">{{ amenity.name }}</span>
+      </div>
     </div>
+  </div>
 
-    <button *ngIf="shouldShowToggle && amenities.length > 5"
-            class="show-all-btn mb-3"
-            (click)="toggleShowAll()"
-            [attr.aria-expanded]="showAllAmenities"
-            [attr.aria-label]="showAllAmenities ? 'Show fewer amenities' : 'Show all ' + amenities.length + ' amenities'">
-        {{ showAllAmenities ? 'Show less' : 'Show all ' + amenities.length + ' amenities' }}
-    </button>
+  <button
+    *ngIf="shouldShowToggle && amenities.length > 5"
+    class="show-all-btn mb-3"
+    (click)="toggleShowAll()"
+    [attr.aria-expanded]="showAllAmenities"
+    [attr.aria-label]="
+      showAllAmenities
+        ? 'Show fewer amenities'
+        : 'Show all ' + amenities.length + ' amenities'
+    "
+  >
+    {{
+      showAllAmenities
+        ? "Show less"
+        : "Show all " + amenities.length + " amenities"
+    }}
+  </button>
 
-    <div *ngIf="amenities.length === 0" class="empty-state">
-        <div class="empty-state-icon">🏠</div>
-        <h3>No amenities listed</h3>
-        <p>This property doesn't have any amenities listed at the moment.</p>
-    </div>
+  <div *ngIf="amenities.length === 0" class="empty-state">
+    <div class="empty-state-icon">🏠</div>
+    <h3>No amenities listed</h3>
+    <p>This property doesn't have any amenities listed at the moment.</p>
+  </div>
 
-    <hr class="mt-5">
-
-   
+  <hr class="mt-5" />
 </div>
-

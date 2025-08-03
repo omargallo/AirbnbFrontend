@@ -2,23 +2,35 @@
   <div class="title-container">
     <h1 tabindex="-1">Which of these best describes your place?</h1>
   </div>
-  
+
   <!-- Loading State -->
   <div *ngIf="isLoadingPropertyTypes" class="loading-state">
     Loading property types...
   </div>
 
   <!-- Error State -->
-  <div *ngIf="propertyTypesError && !isLoadingPropertyTypes" class="error-state">
+  <div
+    *ngIf="propertyTypesError && !isLoadingPropertyTypes"
+    class="error-state"
+  >
     {{ propertyTypesError }}
-    <button type="button" class="retry-btn" (click)="retryLoadPropertyTypes()">Try Again</button>
+    <button type="button" class="retry-btn" (click)="retryLoadPropertyTypes()">
+      Try Again
+    </button>
   </div>
 
   <!-- Property Types Grid -->
-  <form [formGroup]="propertyTypeForm" *ngIf="!isLoadingPropertyTypes && !propertyTypesError">
+  <form
+    [formGroup]="propertyTypeForm"
+    *ngIf="!isLoadingPropertyTypes && !propertyTypesError"
+  >
     <div role="radiogroup" class="property-selector">
       <div
-        *ngFor="let type of propertyTypes; let i = index; trackBy: trackByPropertyType"
+        *ngFor="
+          let type of propertyTypes;
+          let i = index;
+          trackBy: trackByPropertyType
+        "
         class="property-item"
         [style.animation-delay]="400 + i * 50 + 'ms'"
       >
@@ -26,11 +38,18 @@
           type="button"
           role="radio"
           class="property-button"
-          [attr.aria-checked]="propertyTypeForm.get('propertyTypeId')?.value === type.id"
+          [attr.aria-checked]="
+            propertyTypeForm.get('propertyTypeId')?.value === type.id
+          "
           (click)="selectPropertyType(type.id)"
         >
           <div class="icon-wrapper">
-            <img [src]="getPropertyTypeImg(type.iconURL)" [alt]="type.name" class="property-icon">
+            <img
+              [src]="getPropertyTypeImg(type.iconURL)"
+              loading="lazy"
+              [alt]="type.name"
+              class="property-icon"
+            />
           </div>
           <div class="label-wrapper">
             <div class="property-label">{{ type.name }}</div>
@@ -39,10 +58,16 @@
       </div>
     </div>
   </form>
-  
+
   <!-- Fallback message if no property types loaded -->
-  <div *ngIf="!isLoadingPropertyTypes && !propertyTypesError && propertyTypes.length === 0" class="empty-state">
+  <div
+    *ngIf="
+      !isLoadingPropertyTypes &&
+      !propertyTypesError &&
+      propertyTypes.length === 0
+    "
+    class="empty-state"
+  >
     <p>No property types available at the moment.</p>
   </div>
 </div>
-

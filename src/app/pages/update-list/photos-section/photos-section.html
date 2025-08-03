@@ -1,16 +1,19 @@
 <div class="section-content">
   <div class="section-header">
     <h2>Add some photos of your house</h2>
-    <p>You'll need at least 5 photos to continue. You can add more or make changes later.</p>
+    <p>
+      You'll need at least 5 photos to continue. You can add more or make
+      changes later.
+    </p>
   </div>
-  
+
   <!-- Upload Status -->
   <div *ngIf="uploading || deleting" class="upload-status">
     <div class="upload-progress" *ngIf="uploading">
       <div class="progress-bar">
         <div class="progress-fill" [style.width.%]="uploadProgress"></div>
       </div>
-      <span class="progress-text">Uploading... {{uploadProgress}}%</span>
+      <span class="progress-text">Uploading... {{ uploadProgress }}%</span>
     </div>
     <div class="delete-progress" *ngIf="deleting">
       <div class="spinner">🗑️</div>
@@ -20,66 +23,112 @@
 
   <!-- Photo Count Status -->
   <div class="photo-count-status">
-    <div class="count-indicator" [class.valid]="getTotalPhotoCount() >= 5" [class.invalid]="getTotalPhotoCount() < 5">
-      <svg *ngIf="getTotalPhotoCount() >= 5" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.061L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+    <div
+      class="count-indicator"
+      [class.valid]="getTotalPhotoCount() >= 5"
+      [class.invalid]="getTotalPhotoCount() < 5"
+    >
+      <svg
+        *ngIf="getTotalPhotoCount() >= 5"
+        width="16"
+        height="16"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+      >
+        <path
+          d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.061L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"
+        />
       </svg>
-      <svg *ngIf="getTotalPhotoCount() < 5" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+      <svg
+        *ngIf="getTotalPhotoCount() < 5"
+        width="16"
+        height="16"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+      >
+        <path
+          d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+        />
+        <path
+          d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
+        />
       </svg>
-      <span>{{getTotalPhotoCount()}} of 5 minimum photos</span>
+      <span>{{ getTotalPhotoCount() }} of 5 minimum photos</span>
     </div>
   </div>
 
   <!-- Delete Mode Controls -->
-<div class="delete-controls" *ngIf="(internalData?.photos?.length ?? 0) > 0">
+  <div class="delete-controls" *ngIf="(internalData?.photos?.length ?? 0) > 0">
     <div class="delete-mode-toggle">
-      <button 
-        type="button" 
+      <button
+        type="button"
         class="delete-mode-btn"
         [class.active]="deleteMode"
         (click)="toggleDeleteMode()"
-        [disabled]="uploading || deleting">
+        [disabled]="uploading || deleting"
+      >
         <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-          <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+          <path
+            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
+          />
+          <path
+            fill-rule="evenodd"
+            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+          />
         </svg>
-        {{deleteMode ? 'Cancel Delete' : 'Delete Photos'}}
+        {{ deleteMode ? "Cancel Delete" : "Delete Photos" }}
       </button>
-      
-      <button 
+
+      <button
         *ngIf="deleteMode && imagesToDelete.size > 0"
         type="button"
         class="confirm-delete-btn"
         (click)="deleteSelectedImages()"
-        [disabled]="deleting">
-        Delete {{imagesToDelete.size}} Image{{imagesToDelete.size > 1 ? 's' : ''}}
+        [disabled]="deleting"
+      >
+        Delete {{ imagesToDelete.size }} Image{{
+          imagesToDelete.size > 1 ? "s" : ""
+        }}
       </button>
     </div>
   </div>
-  
+
   <div class="photos-grid">
     <!-- Existing Property Photos -->
-    <div class="photo-item" 
-         *ngFor="let photo of internalData?.photos; let i = index"
-         [class.delete-mode]="deleteMode"
-         [class.selected-for-delete]="isImageSelectedForDeletion(photo.id)">
+    <div
+      class="photo-item"
+      *ngFor="let photo of internalData?.photos; let i = index"
+      [class.delete-mode]="deleteMode"
+      [class.selected-for-delete]="isImageSelectedForDeletion(photo.id)"
+    >
       <div class="photo-wrapper">
-        <img [src]="baseUrl + '/' + photo.imageUrl" 
-             [alt]="'Property photo ' + (i + 1)" 
-             class="photo-image" 
-             >
-        
+        <img
+          [src]="baseUrl + '/' + photo.imageUrl"
+          [alt]="'Property photo ' + (i + 1)"
+          class="photo-image"
+          loading="lazy"
+        />
+
         <!-- Delete Selection Overlay -->
-        <div class="delete-overlay" 
-             *ngIf="deleteMode"
-             (click)="toggleImageForDeletion(photo.id)">
-          <div class="delete-checkbox" 
-               [class.checked]="isImageSelectedForDeletion(photo.id)">
-            <svg *ngIf="isImageSelectedForDeletion(photo.id)" 
-                 width="16" height="16" fill="white" viewBox="0 0 16 16">
-              <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+        <div
+          class="delete-overlay"
+          *ngIf="deleteMode"
+          (click)="toggleImageForDeletion(photo.id)"
+        >
+          <div
+            class="delete-checkbox"
+            [class.checked]="isImageSelectedForDeletion(photo.id)"
+          >
+            <svg
+              *ngIf="isImageSelectedForDeletion(photo.id)"
+              width="16"
+              height="16"
+              fill="white"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"
+              />
             </svg>
           </div>
         </div>
@@ -89,35 +138,53 @@
     <!-- Preview Selected Files (before upload) -->
     <div class="photo-item" *ngFor="let file of selectedFiles; let i = index">
       <div class="photo-wrapper preview-photo">
-        <img [src]="getPreviewUrl(file)" [alt]="'Preview ' + (i + 1)" class="photo-image">
-        <button type="button" class="photo-remove-btn" (click)="removeSelectedFile(i)">
+        <img
+          [src]="getPreviewUrl(file)"
+          [alt]="'Preview ' + (i + 1)"
+          class="photo-image"
+          loading="lazy"
+        />
+        <button
+          type="button"
+          class="photo-remove-btn"
+          (click)="removeSelectedFile(i)"
+        >
           <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+            <path
+              d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"
+            />
           </svg>
         </button>
         <div class="preview-badge">Preview</div>
       </div>
     </div>
-    
+
     <!-- Add Photo Button -->
     <div class="photo-item" *ngIf="!deleteMode">
       <div class="add-photo-btn" (click)="photoInput.click()">
         <div class="add-photo-content">
           <svg width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            <path
+              d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+            />
+            <path
+              d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"
+            />
           </svg>
           <span>Add photos</span>
-          <small *ngIf="selectedFiles.length > 0">({{selectedFiles.length}} selected)</small>
+          <small *ngIf="selectedFiles.length > 0"
+            >({{ selectedFiles.length }} selected)</small
+          >
         </div>
       </div>
-      <input 
-        type="file" 
-        #photoInput 
-        (change)="onFilesSelected($event)" 
-        accept="image/*" 
-        multiple 
-        class="d-none">
+      <input
+        type="file"
+        #photoInput
+        (change)="onFilesSelected($event)"
+        accept="image/*"
+        multiple
+        class="d-none"
+      />
     </div>
   </div>
 
@@ -127,15 +194,21 @@
       type="button"
       class="upload-selected-btn"
       [disabled]="uploading"
-      (click)="uploadSelectedPhotos()">
+      (click)="uploadSelectedPhotos()"
+    >
       <span *ngIf="uploading" class="spinner">⏳</span>
-      <span *ngIf="!uploading">Upload {{selectedFiles.length}} Photo{{selectedFiles.length > 1 ? 's' : ''}}</span>
+      <span *ngIf="!uploading"
+        >Upload {{ selectedFiles.length }} Photo{{
+          selectedFiles.length > 1 ? "s" : ""
+        }}</span
+      >
     </button>
     <button
       type="button"
       class="clear-selected-btn"
       [disabled]="uploading"
-      (click)="clearSelectedFiles()">
+      (click)="clearSelectedFiles()"
+    >
       Clear Selection
     </button>
   </div>
@@ -144,9 +217,19 @@
   <div class="photo-requirements" *ngIf="getTotalPhotoCount() < 5">
     <div class="requirement-item error">
       <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+        <path
+          d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"
+        />
       </svg>
-      <span><strong>{{5 - getTotalPhotoCount()}} more photo{{5 - getTotalPhotoCount() > 1 ? 's' : ''}} required</strong> - You need at least 5 photos to save and continue</span>
+      <span
+        ><strong
+          >{{ 5 - getTotalPhotoCount() }} more photo{{
+            5 - getTotalPhotoCount() > 1 ? "s" : ""
+          }}
+          required</strong
+        >
+        - You need at least 5 photos to save and continue</span
+      >
     </div>
   </div>
 
@@ -154,9 +237,14 @@
   <div class="photo-requirements" *ngIf="getTotalPhotoCount() >= 5">
     <div class="requirement-item success">
       <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.061L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+        <path
+          d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.061L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"
+        />
       </svg>
-      <span><strong>Great!</strong> You have enough photos to continue. You can still add more if you'd like.</span>
+      <span
+        ><strong>Great!</strong> You have enough photos to continue. You can
+        still add more if you'd like.</span
+      >
     </div>
   </div>
 </div>

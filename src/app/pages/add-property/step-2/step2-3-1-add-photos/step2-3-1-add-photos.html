@@ -3,7 +3,8 @@
     <header class="page-header">
       <h1 class="page-title">Add some photos of your house</h1>
       <p class="page-subtitle">
-        You'll need 5 photos to get started. You can add more or make changes later.
+        You'll need 5 photos to get started. You can add more or make changes
+        later.
       </p>
     </header>
 
@@ -18,17 +19,34 @@
         [class.highlight]="dropzoneHighlight"
       >
         <div class="uploader-icon">
-          <img src="https://a0.muscache.com/im/pictures/mediaverse/mys-amenities-n8/original/c83b2a87-3be4-43c9-ad47-12dd2aee24c4.jpeg" alt="Upload Icon">
+          <img
+            loading="lazy"
+            src="https://a0.muscache.com/im/pictures/mediaverse/mys-amenities-n8/original/c83b2a87-3be4-43c9-ad47-12dd2aee24c4.jpeg"
+            alt="Upload Icon"
+          />
         </div>
         <h2 class="uploader-title">Drag your photos here</h2>
         <p class="uploader-text">Choose at least 5 photos</p>
-        <button type="button" class="uploader-button" (click)="openPhotosModal()">Upload from your device</button>
+        <button
+          type="button"
+          class="uploader-button"
+          (click)="openPhotosModal()"
+        >
+          Upload from your device
+        </button>
       </div>
 
       <!-- Container for photo previews -->
-      <div class="photo-previews-grid" *ngIf="photos.length > 0" style="display:grid;">
-        <div class="photo-preview-item" *ngFor="let photo of photos; let i = index">
-          <img [src]="photo" alt="Photo preview" />
+      <div
+        class="photo-previews-grid"
+        *ngIf="photos.length > 0"
+        style="display: grid"
+      >
+        <div
+          class="photo-preview-item"
+          *ngFor="let photo of photos; let i = index"
+        >
+          <img [src]="photo" alt="Photo preview" loading="lazy" />
           <button class="remove-photo-btn">&times;</button>
         </div>
       </div>
