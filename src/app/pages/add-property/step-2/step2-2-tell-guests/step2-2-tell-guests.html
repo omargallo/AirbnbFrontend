@@ -35,11 +35,18 @@
             [style.animation-delay]="i * 50 + 'ms'"
           >
             <div class="amenity-icon">
-              <img [src]="getAmenitiesImg(amenity.iconUrl)" [alt]="amenity.name + ' icon'" *ngIf="amenity.iconUrl">
+              <img
+                [src]="getAmenitiesImg(amenity.iconUrl)"
+                [alt]="amenity.name + ' icon'"
+                *ngIf="amenity.iconUrl"
+                loading="lazy"
+              />
               <i *ngIf="!amenity.iconUrl" class="default-icon"></i>
             </div>
             <span class="amenity-label">{{ amenity.name }}</span>
-            <span *ngIf="amenity.description" class="amenity-description">{{ amenity.description }}</span>
+            <span *ngIf="amenity.description" class="amenity-description">{{
+              amenity.description
+            }}</span>
           </button>
         </div>
       </section>

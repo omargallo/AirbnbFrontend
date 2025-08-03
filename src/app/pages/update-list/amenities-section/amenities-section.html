@@ -18,74 +18,98 @@
           type="button"
           class="amenity-btn"
           [class.selected]="isAmenitySelected(amenity)"
-          (click)="toggleAmenity(amenity)">
-          
+          (click)="toggleAmenity(amenity)"
+        >
           <!-- Amenity icon -->
           <div class="amenity-icon" *ngIf="amenity.iconUrl">
-            <img [src]="amenity.iconUrl" [alt]="amenity.name + ' icon'" />
+            <img
+              [src]="amenity.iconUrl"
+              [alt]="amenity.name + ' icon'"
+              loading="lazy"
+            />
           </div>
-          
+
           <!-- Fallback icon if no image -->
           <div class="amenity-icon-fallback" *ngIf="!amenity.iconUrl">
             <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+              <path
+                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+              />
+              <path
+                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"
+              />
             </svg>
           </div>
-          
+
           <!-- Amenity name -->
           <span class="amenity-name">{{ amenity.name }}</span>
-          
+
           <!-- Selected checkmark -->
-          <svg 
-            *ngIf="isAmenitySelected(amenity)" 
+          <svg
+            *ngIf="isAmenitySelected(amenity)"
             class="checkmark-icon"
-            width="16" 
-            height="16" 
-            fill="currentColor" 
-            viewBox="0 0 16 16">
-            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+            width="16"
+            height="16"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"
+            />
           </svg>
         </button>
       </div>
     </div>
 
     <!-- Selected amenities summary -->
-    <div class="selected-amenities-summary" *ngIf="getSelectedAmenities().length > 0">
+    <div
+      class="selected-amenities-summary"
+      *ngIf="getSelectedAmenities().length > 0"
+    >
       <h4>Selected amenities ({{ getSelectedAmenities().length }}):</h4>
       <div class="selected-amenities-list">
-        <span class="selected-amenity-tag" *ngFor="let amenity of getSelectedAmenities()">
+        <span
+          class="selected-amenity-tag"
+          *ngFor="let amenity of getSelectedAmenities()"
+        >
           <!-- Mini icon in tag -->
-          <img 
-            *ngIf="amenity.iconUrl" 
-            [src]="amenity.iconUrl" 
-            [alt]="amenity.name" 
-            class="amenity-tag-icon" />
-          
+          <img
+            *ngIf="amenity.iconUrl"
+            [src]="amenity.iconUrl"
+            [alt]="amenity.name"
+            class="amenity-tag-icon"
+            loading="lazy"
+          />
+
           {{ amenity.name }}
-          
-          <button 
-            type="button" 
-            class="remove-amenity-btn" 
+
+          <button
+            type="button"
+            class="remove-amenity-btn"
             (click)="removeAmenity(amenity)"
-            [title]="'Remove ' + amenity.name">
+            [title]="'Remove ' + amenity.name"
+          >
             ×
           </button>
         </span>
       </div>
-      
+
       <!-- Clear all button -->
-      <button 
-        type="button" 
-        class="clear-all-btn" 
+      <button
+        type="button"
+        class="clear-all-btn"
         (click)="clearAllAmenities()"
-        *ngIf="getSelectedAmenities().length > 1">
+        *ngIf="getSelectedAmenities().length > 1"
+      >
         Clear All
       </button>
     </div>
 
     <!-- Empty state -->
-    <div class="empty-state" *ngIf="availableAmenities.length === 0 && !isLoading">
+    <div
+      class="empty-state"
+      *ngIf="availableAmenities.length === 0 && !isLoading"
+    >
       <p>No amenities available at the moment.</p>
     </div>
   </form>

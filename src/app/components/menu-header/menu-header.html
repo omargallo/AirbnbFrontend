@@ -1,5 +1,5 @@
 <div class="d-flex align-items-center position-relative">
-  <a class="switch-to-hosting-btn d-none d-lg-block" (click)="switchMode()">
+  <a class="switch-to-hosting-btn" (click)="switchMode()">
     {{
       currentRoute.includes("/host")
         ? ("HEADER.SWITCH_TO_TRAVELLER" | translate)
@@ -33,6 +33,7 @@
             alt="user-img"
             class="user-img"
             (click)="$event.stopPropagation()"
+            loading="lazy"
           />
         </a>
       </div>
@@ -96,12 +97,25 @@
       </li>
 
       <li *ngIf="isLoggedIn">
-        <span>{{ unreadCountNotifications }}</span>
         <a
           class="dropdown-item d-flex align-items-center gap-2"
           href="#"
           routerLink="/notifications"
         >
+          <div class="position-relative">
+            <span
+              *ngIf="unreadCountNotifications > 0"
+              class="position-absolute badge rounded-pill bg-danger"
+              [ngStyle]="{
+                top: '-20px',
+                right: lang.currentLang === 'en' ? '-12px' : null,
+                left: lang.currentLang === 'ar' ? '-12px' : null
+              }"
+            >
+              {{ unreadCountNotifications }}
+              <span class="visually-hidden">unread notifications </span>
+            </span>
+          </div>
           <i class="bi bi-bell"></i>
           {{ "HEADER.notifications" | translate }}
         </a>
@@ -205,7 +219,6 @@
           type="button"
           class="dropdown-toggle dropdown-item d-flex align-items-center gap-2 menu-dropdown"
           data-bs-toggle="dropdown"
-          aria-expanded="false"
         >
           <i class="bi bi-globe"></i>
           {{ "HEADER.LANGUAGE" | translate }}

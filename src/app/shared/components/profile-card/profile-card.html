@@ -17,6 +17,7 @@
           class="rounded-circle"
           style="width: 80px; height: 80px; object-fit: cover"
           (error)="onImageError($event)"
+          loading="lazy"
         />
         <div
           *ngIf="shouldShowFallback(profileImageUrl, userId)"

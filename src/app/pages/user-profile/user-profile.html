@@ -132,6 +132,7 @@
               <div class="card-body p-4">
                 <div class="d-flex align-items-center mb-3">
                   <img
+                    loading="lazy"
                     *ngIf="
                       review.user?.profilePictureURL &&
                       !imageErrors.has(review.user.userId)
@@ -269,6 +270,7 @@
                 class="card-img-top"
                 style="height: 160px; object-fit: cover"
                 (error)="onImageError($event, property)"
+                loading="lazy"
               />
               <div
                 *ngIf="shouldShowFallback(property.imageUrl, property.id)"
@@ -629,6 +631,7 @@
           >
             <!-- Avatar -->
             <img
+              loading="lazy"
               *ngIf="
                 shouldShowImage(
                   review.user?.profilePictureURL,
@@ -741,6 +744,7 @@
                   [alt]="property.title"
                   class="card-img-top"
                   style="height: 200px; object-fit: cover"
+                  loading="lazy"
                   (error)="onImageError($event, property)"
                 />
                 <div

@@ -2,11 +2,9 @@
   <div class="title-container">
     <h1 tabindex="-1">Which of these best describes your&nbsp;place?</h1>
   </div>
-  
+
   <!-- Loading State -->
-  <div *ngIf="isLoading" class="loading-state">
-    Loading property types...
-  </div>
+  <div *ngIf="isLoading" class="loading-state">Loading property types...</div>
 
   <!-- Error State -->
   <div *ngIf="error" class="error-state">
@@ -28,7 +26,12 @@
         (click)="selectType(type)"
       >
         <div class="icon-wrapper">
-          <img [src]="getPropertyTypeImg(type.iconURL)" [alt]="type.name" class="property-icon">
+          <img
+            [src]="getPropertyTypeImg(type.iconURL)"
+            [alt]="type.name"
+            class="property-icon"
+            loading="lazy"
+          />
         </div>
         <div class="label-wrapper">
           <div class="property-label">{{ type.name }}</div>

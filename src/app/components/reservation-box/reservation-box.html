@@ -15,7 +15,7 @@
 
   <!-- Error State -->
   <div *ngIf="error && !isLoading" class="error-state">
-    <span>{{error}}</span>
+    <span>{{ error }}</span>
     <button (click)="refreshReservationData()" class="retry-button">
       Retry
     </button>
@@ -39,16 +39,21 @@
   >
     <!-- Property Image with Status -->
     <div class="property-image-container">
-      <img [src]="reservation.image" alt="Property" class="property-image" />
+      <img
+        [src]="reservation.image"
+        alt="Property"
+        class="property-image"
+        loading="lazy"
+      />
       <div class="status-overlay">
         <span
           class="status-badge"
           [ngClass]="{
-                'status-pending': isPending,
-                'status-approved': isApproved,
-                'status-declined': isDeclined,
-                'status-cancelled': isCancelled
-              }"
+            'status-pending': isPending,
+            'status-approved': isApproved,
+            'status-declined': isDeclined,
+            'status-cancelled': isCancelled
+          }"
         >
           {{ reservation.status }}
         </span>
@@ -60,15 +65,17 @@
       <h3
         class="inquiry-title"
         [ngClass]="{
-            'inquiry-pending': isPending,
-            'inquiry-approved': isApproved,
-            'inquiry-declined': isDeclined,
-            'inquiry-cancelled': isCancelled
-          }"
+          'inquiry-pending': isPending,
+          'inquiry-approved': isApproved,
+          'inquiry-declined': isDeclined,
+          'inquiry-cancelled': isCancelled
+        }"
       >
         {{ getInquiryTitle() }}
       </h3>
-      <p class="inquiry-message">{{ !selectedChatSession.isHost? reservation.hostMessage:'' }}</p>
+      <p class="inquiry-message">
+        {{ !selectedChatSession.isHost ? reservation.hostMessage : "" }}
+      </p>
 
       <!-- Action button based on status -->
       <button
@@ -81,27 +88,30 @@
       <button *ngIf="isPending" class="pending-btn" disabled>
         Waiting for response
       </button>
-      <button *ngIf="isApproved && !selectedChatSession.isHost" class="approved-btn">
+      <button
+        *ngIf="isApproved && !selectedChatSession.isHost"
+        class="approved-btn"
+      >
         View booking details
       </button>
     </div>
     <div
       *ngIf="selectedChatSession.isHost && isPending"
-      class="d-flex justify-content-center mb-2">
+      class="d-flex justify-content-center mb-2"
+    >
       <button
         class="btn btn-primary me-3 py-0 px-2 rounded-5 m-0"
         title="Accept"
         (click)="acceptReservation()"
-        >
-        <i class="bi bi-check fs-2 m-0 rounded-5">
-        </i>
+      >
+        <i class="bi bi-check fs-2 m-0 rounded-5"> </i>
       </button>
       <button
         class="btn btn-secondary ms-3 py-0 px-2 rounded-5 m-0"
         title="Decline"
         (click)="declineReservation()"
-        >
-         <i class="bi bi-x fs-2 m-0 rounded-5"></i>
+      >
+        <i class="bi bi-x fs-2 m-0 rounded-5"></i>
       </button>
     </div>
     <!-- Trip Details Section -->
@@ -111,30 +121,46 @@
       <div class="property-info">
         <div class="property-details">
           <h4 class="property-name">{{ reservation.propertyName }}</h4>
-          <p class="property-type">Entire condo • {{ reservation.propertyType }}</p>
+          <p class="property-type">
+            Entire condo • {{ reservation.propertyType }}
+          </p>
         </div>
         <!-- <span class="chevron-right">›</span> -->
       </div>
 
       <!-- Host Info in Trip Details -->
       <div class="host-info" *ngIf="!selectedChatSession.isHost">
-        <div class="host-details d-flex align-items-start justify-content-center gap-1 flex-column">
+        <div
+          class="host-details d-flex align-items-start justify-content-center gap-1 flex-column"
+        >
           <span class="host-label">Hosted by {{ reservation.hostName }}</span>
           <span class="host-reviews">{{ reservation.hostReviews }}</span>
         </div>
         <div class="host-avatar">
-          <img [src]="reservation.hostAvatar" alt="Host" class="avatar-img" />
+          <img
+            [src]="reservation.hostAvatar"
+            alt="Host"
+            class="avatar-img"
+            loading="lazy"
+          />
           <div class="host-badge"></div>
         </div>
       </div>
       <!-- User Info -->
       <div class="host-info" *ngIf="selectedChatSession.isHost">
-        <div class="host-details d-flex align-items-start justify-content-center gap-1 flex-column">
+        <div
+          class="host-details d-flex align-items-start justify-content-center gap-1 flex-column"
+        >
           <span class="host-label">Request by {{ reservation.userName }}</span>
           <span class="host-reviews">{{ reservation.hostReviews }}</span>
         </div>
         <div class="host-avatar">
-          <img [src]="reservation.userAvatar" alt="Host" class="avatar-img" />
+          <img
+            [src]="reservation.userAvatar"
+            alt="Host"
+            class="avatar-img"
+            loading="lazy"
+          />
           <div class="host-badge"></div>
         </div>
       </div>
@@ -158,8 +184,6 @@
       </div> -->
     </div>
 
-
-
     <!-- Host Info -->
     <div class="host-info" *ngIf="!hasReservation">
       <div class="host-details">
@@ -167,7 +191,12 @@
         <p class="host-reviews">{{ reservation.hostReviews }}</p>
       </div>
       <div class="host-avatar">
-        <img [src]="reservation.hostAvatar" alt="Host" class="avatar-img" />
+        <img
+          [src]="reservation.hostAvatar"
+          alt="Host"
+          class="avatar-img"
+          loading="lazy"
+        />
         <div class="host-badge"></div>
       </div>
     </div>
@@ -176,11 +205,13 @@
     <div class="checkin-details">
       <div class="detail-row">
         <span class="detail-label">Check-in</span>
-        <span class="detail-value">{{ reservation.checkIn || 'Not set' }}</span>
+        <span class="detail-value">{{ reservation.checkIn || "Not set" }}</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">Checkout</span>
-        <span class="detail-value">{{ reservation.checkOut || 'Not set' }}</span>
+        <span class="detail-value">{{
+          reservation.checkOut || "Not set"
+        }}</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">Guests</span>
@@ -189,15 +220,13 @@
     </div>
 
     <!-- Payment Details -->
-    <div
-      class="payment-section"
-    >
+    <div class="payment-section">
       <h3 class="section-title">Payment Details</h3>
 
       <div class="payment-row">
         <span class="payment-description"
-          >{{ reservation.pricePerNight }} × {{ reservation.nights }}
-          nights</span
+          >{{ reservation.pricePerNight }} ×
+          {{ reservation.nights }} nights</span
         >
         <span class="payment-amount">{{ reservation.subtotal }}</span>
       </div>
