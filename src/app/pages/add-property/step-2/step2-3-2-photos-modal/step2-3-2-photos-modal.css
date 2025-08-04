@@ -8,8 +8,8 @@ html {
 } */
 
 .button-primary {
-  background-color: #222;
-  color: #fff;
+  background-color: var(--primary-text-color);
+  color: var(--bg-color);
   border: none;
   border-radius: 8px;
   padding: 14px 24px;
@@ -20,18 +20,18 @@ html {
 }
 
 .button-primary:hover {
-  background-color: #000;
+  background-color: var(--selected-bg);
 }
 
 .button-primary:disabled {
-  background-color: #ddd;
+  background-color: var(--disabled-color);
   cursor: not-allowed;
 }
 
 .button-secondary {
-  background-color: #fff;
-  color: #222;
-  border: 1px solid #222;
+  background-color: var(--bg-color);
+  color: var(--primary-text-color);
+  border: 1px solid var(--primary-text-color);
   border-radius: 8px;
   padding: 10px 18px;
   font-size: 14px;
@@ -42,7 +42,7 @@ html {
 .button-tertiary {
   background: none;
   border: none;
-  color: #222;
+  color: var(--primary-text-color);
   text-decoration: underline;
   font-size: 16px;
   font-weight: 500;
@@ -63,14 +63,14 @@ html {
 }
 
 .modal-content {
-  background-color: #fff;
+  background-color: var(--bg-color);
   border-radius: 12px;
   width: 100%;
   max-width: 568px;
   display: flex;
   flex-direction: column;
   max-height: 90vh;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 8px 28px var(--shadow-color);
 }
 
 .modal-header {
@@ -79,7 +79,7 @@ html {
   justify-content: center;
   padding: 0 24px;
   min-height: 64px;
-  border-bottom: 1px solid #ebebeb;
+  border-bottom: 1px solid var(--border-color);
   position: relative;
 }
 
@@ -97,7 +97,7 @@ html {
 .close-button svg {
   width: 16px;
   height: 16px;
-  stroke: #222;
+  stroke: var(--primary-text-color);
   stroke-width: 3px;
 }
 
@@ -118,9 +118,9 @@ html {
   align-items: center;
   justify-content: center;
   padding: 32px;
-  border: 2px dashed #ddd;
+  border: 2px dashed var(--border-color);
   border-radius: 12px;
-  background-color: #f7f7f7;
+  background-color: var(--light-grey-bg);
   text-align: center;
 }
 
@@ -128,7 +128,7 @@ html {
   width: 64px;
   height: 64px;
   margin-bottom: 16px;
-  fill: #717171;
+  fill: var(--secondary-text-color);
 }
 
 .upload-prompt {
@@ -142,5 +142,5 @@ html {
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  border-top: 1px solid #ebebeb;
+  border-top: 1px solid var(--border-color);
 }
