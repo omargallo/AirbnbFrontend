@@ -99,6 +99,7 @@
     "timeToDustOff": "الوقت لتجميع حقائبك وبدء التخطيط لمسافرتك القادمة",
     "startSearching": "بدء البحث",
     "checkIn": "الدخول",
+    "checkOut": "الخروج",
     "guests": "ضيوف",
     "nights": "الامسيات",
     "bookingId": "رقم الحجز",
@@ -106,7 +107,12 @@
     "perNight": "لكل ليلة",
     "manageBooking": "إدارة الحجز",
     "somethingWentWrong": "حدث خطأ ما",
-    "pleaseTryAgain": "يرجى المحاولة لاحقًا"
+    "pleaseTryAgain": "يرجى المحاولة لاحقًا",
+    "status": {
+      "upcoming": "قادمة",
+      "past": "منتهية",
+      "current": "حالياً"
+    }
   },
   "notifications": {
     "title": "الإشعارات",
@@ -300,7 +306,6 @@
     "ADD_TO_WISHLIST": "أضف إلى المفضلة",
     "REMOVE_FROM_WISHLIST": "إزالة من المفضلة",
     "LINK_COPIED": "تم نسخ الرابط بنجاح",
-  "COPY_FAILED": "حدث خطأ أثناء نسخ الرابط"
+    "COPY_FAILED": "حدث خطأ أثناء نسخ الرابط"
   }
-
 }
