@@ -7,6 +7,7 @@ import { PropertyCreationService } from '../../core/services/Property/property-c
 import { PropertyFormStorageService } from '../../pages/add-property/services/property-form-storage.service';
 import { ListingValidationService } from '../../core/services/ListingWizard/listing-validation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ThemeService } from '../../core/services/theme.service';
 
 @Component({
   selector: 'app-listing-wizard-layout',
@@ -20,6 +21,7 @@ export class ListingWizardLayoutComponent {
   @Input() isFirstStep = false;
   @Input() isLastStep = false;
   canProceed = true;
+  currentTheme: string;
   @Input() currentStep = 1;
   @Input() totalSteps = 3;
   @Input() progressPercentage = 0;
@@ -67,8 +69,10 @@ export class ListingWizardLayoutComponent {
     private wizardService: ListingWizardService,
     private propertyCreationService: PropertyCreationService,
     private validationService: ListingValidationService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private themeService: ThemeService
   ) {
+    this.currentTheme = this.themeService.currentTheme;
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe(() => {
