@@ -59,11 +59,11 @@ export class Register {
       .subscribe({
         next: (res) => {
           localStorage.setItem('email', this.email);
+          localStorage.removeItem('user');
           this.showToast('Registered successfully', 'bottom', 'left');
           this.close();
           this.dialogService.openDialog('confirmOtp');
           (window as any).startOtpTimerR?.();
-          localStorage.removeItem('user');
         },
         error: (err) => {
           this.showToast('Register failed', 'bottom', 'left');
