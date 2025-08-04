@@ -39,6 +39,8 @@ register();
     DecimalPipe,
     CommonModule,
     ProfileCard,
+    PropertImageGalaryComponent,
+    PropertySwiperComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './user-profile.html',
@@ -191,7 +193,7 @@ export class UserProfile implements OnInit, OnDestroy {
     private reviewService: ReviewService,
     private userService: UserService,
     private PropertyService: PropertyService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userId = this.route.snapshot.params['id'];
@@ -388,7 +390,7 @@ export class UserProfile implements OnInit, OnDestroy {
     );
     const monthsHosting = Math.ceil(
       (Date.now() - new Date(oldestReview.createdAt).getTime()) /
-        (1000 * 60 * 60 * 24 * 30)
+      (1000 * 60 * 60 * 24 * 30)
     );
 
     this.hostStats = {
@@ -414,7 +416,7 @@ export class UserProfile implements OnInit, OnDestroy {
     );
     const yearsOnPlatform = Math.ceil(
       (Date.now() - new Date(oldestReview.createdAt).getTime()) /
-        (1000 * 60 * 60 * 24 * 365)
+      (1000 * 60 * 60 * 24 * 365)
     );
 
     this.guestStats = {

@@ -187,9 +187,9 @@ export class FilteredProperties implements OnInit {
       const zoom = Number(params['zoom']);
       if (!isNaN(zoom)) {
         // searchParams.maxDistanceKm = this.calculateDistanceFromZoom(zoom);
-        searchParams.maxDistanceKm = 1000;
+        searchParams.maxDistanceKm = 100;
       } else {
-        searchParams.maxDistanceKm = 1000;
+        searchParams.maxDistanceKm = 100;
       }
 
       this.searchParams = searchParams;
@@ -392,7 +392,7 @@ export class FilteredProperties implements OnInit {
       fadeAnimation: true,
       markerZoomAnimation: true,
       zoomAnimationThreshold: 4
-    }).setView([lat, lng], 10);
+    }).setView([lat, lng], 13);
 
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -660,14 +660,14 @@ export class FilteredProperties implements OnInit {
       lng: lng.toFixed(4),
       zoom,
       // distance: this.calculateDistanceFromZoom(zoom)
-      distance: 10000
+      distance: 100
     });
 
     // Update search parameters with new location and distance
     this.searchParams.latitude = lat;
     this.searchParams.longitude = lng;
     // this.searchParams.maxDistanceKm = this.calculateDistanceFromZoom(zoom);
-    this.searchParams.maxDistanceKm = 1000;
+    this.searchParams.maxDistanceKm = 100;
     this.searchParams.page = 1; // Reset to first page when location changes
     this.currentPage = 1;
 
