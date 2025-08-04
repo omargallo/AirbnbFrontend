@@ -59,7 +59,7 @@
     "password": "Password",
     "showPass": "Show",
     "register": "Register",
-    "hi": "Login or Sign up"
+    "hi": "Sign up"
   },
   "confirmOtp": {
     "welcome": "Your OTP is valid for 1 minute",

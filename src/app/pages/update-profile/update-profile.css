@@ -79,12 +79,16 @@
 }
 
 .user-img .initial-letter {
-  font-size: 5.5rem;
-  font-weight: bold;
-  border-radius: 50%;
-  padding: 55px 90px;
   background-color: var(--primary-text-color);
   color: var(--bg-color);
+  border-radius: 50%;
+  height: 250px;
+  width: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5.5rem;
+  font-weight: bold;
 }
 
 .user-img .upload-label {
