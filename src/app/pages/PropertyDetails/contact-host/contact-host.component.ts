@@ -24,7 +24,8 @@ import { ConfirmService } from '../../../core/services/confirm.service';
 export class ContactHostComponent implements OnInit {
   message:string = "";
   isFirstTime=true;
-  
+  isRequestLoading=false;
+
   firstCalendarDate = dayjs().add(-5, 'months')
   lastCalendarDate = dayjs().add(1, 'year')
   availability!: CalendarAvailabilityDto[]
@@ -151,17 +152,19 @@ getHostProfile(hostId: string) {
     } 
     console.log(request)
     
-
+    this.isRequestLoading = true
     this.messageService
         .reserveIntPropertyId(request)
         .subscribe({
           next:(res)=>{
+            this.isRequestLoading = false
             if(res.isSuccess)
             {
               this.confirm.success(res.message,"Go to message to see your request",()=>{this.router.navigateByUrl("/Messages")})
             }
           },
           error:(res)=>{
+            this.isRequestLoading = false
             console.log(res)
             this.confirm.fail(res.message,"")
           }

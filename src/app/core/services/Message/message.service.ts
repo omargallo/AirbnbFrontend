@@ -239,6 +239,13 @@ export interface ReservePropertyRequest {
   guestCount: number;
   message: string;
 }
+export interface ReserveRequestIntProeprtyId {
+  propertyId: number;
+  checkInDate: string;
+  checkOutDate: string;
+  guestCount: number;
+  message: string;
+}
 
 export interface User {
   userId: string | null;
@@ -383,6 +390,10 @@ export class ChatService {
 
   // Reserve a property (creates chat session and reservation request)
   reserveProperty(request: ReservePropertyRequest): Observable<Result<ReservePropertyResponse>> {
+    const params = getLanguageParams();
+    return this.http.post<Result<ReservePropertyResponse>>(`${this.baseUrl}/reserve`, request, { params });
+  }
+  reserveIntPropertyId(request: ReserveRequestIntProeprtyId): Observable<Result<ReservePropertyResponse>> {
     const params = getLanguageParams();
     return this.http.post<Result<ReservePropertyResponse>>(`${this.baseUrl}/reserve`, request, { params });
   }

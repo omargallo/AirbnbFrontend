@@ -46,7 +46,7 @@
                                     <li 
                                         style="margin-top: 8px;"
                                         *ngIf="startDate && endDate"
-                                    >Brassbell's home is available from {{startDate.format("MMM DD YY")}} – {{endDate.format("MMM DD YY")}}. Book soon.</li>
+                                    >Home is available from {{startDate.format("MMM DD YY")}} – {{endDate.format("MMM DD YY")}}. Book soon.</li>
                                     <li 
                                         style="margin-top: 8px;"
                                     >Cancel up to 24 hours before check-in and get a full refund. After that, cancel before check-in and get a full refund, minus the first night and service fee.</li>
@@ -65,7 +65,7 @@
                     >
                         <textarea 
                             class="message-textarea" 
-                            placeholder="Hi Brassbell! I'll be visiting..."
+                            placeholder="Hi! I'll be visiting..."
                             name="message"
                             [(ngModel)] = "message"
                             (ngModelChange)="onModelChange()"
@@ -83,8 +83,10 @@
                         <button 
                             class="btn send-button"
                             type="submit" 
-                            [disabled]="message.length<1 || !endDate || !startDate"
+                            [disabled]="message.length<1 || !endDate || !startDate || isRequestLoading"
                             >
+                            <span *ngIf="isRequestLoading" class="btn-loader"></span>
+
                         Send message</button>
                     </form>
                 </div>
