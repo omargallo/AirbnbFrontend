@@ -9,6 +9,19 @@ import { Icon } from 'leaflet';
 import { PropertyFormStorageService } from '../../services/property-form-storage.service';
 import { ListingValidationService } from '../../../../core/services/ListingWizard/listing-validation.service';
 
+// Fix for default Leaflet marker icons
+const iconDefault = L.icon({
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  tooltipAnchor: [16, -28],
+  shadowSize: [41, 41]
+});
+L.Marker.prototype.options.icon = iconDefault;
+
 @Component({
   selector: 'app-step1-4-where',
   standalone: true,
@@ -153,8 +166,21 @@ export class Step14Where implements OnInit, AfterViewInit, OnDestroy {
         this.marker.remove();
       }
 
+      // Create a custom marker icon that matches Airbnb style
+      const customIcon = L.icon({
+        iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+        iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize: [41, 41]
+      });
+
       this.marker = L.marker([lat, lng], {
-        draggable: true
+        draggable: true,
+        icon: customIcon
       }).addTo(this.map);
 
       // Handle marker drag events

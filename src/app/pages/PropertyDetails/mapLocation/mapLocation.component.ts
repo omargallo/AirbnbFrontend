@@ -53,7 +53,7 @@ export class MapLocationComponent implements OnInit {
           })
         ],
         zoom: this.zoom,
-        center: this.center
+        center: this.center 
       };
 
       this.layers = [
