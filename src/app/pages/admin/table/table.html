@@ -93,7 +93,10 @@
               class="action-btn"
               [style.color]="action.color || '#007bff'"
             >
-              <i [class]="action.icon"></i>
+              
+              <i *ngIf="action.type == 'activationStatus' && row.isActive" [class]="'bi bi-toggle-on fw-bolder'"></i>
+              <i *ngIf="action.type == 'activationStatus' && !row.isActive" [class]="'bi bi-toggle-off fw-bolder'"></i>
+              <i *ngIf="action.type != 'activationStatus'" [class]="action.icon"></i>
             </button>
           </div>
         </div>

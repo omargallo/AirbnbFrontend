@@ -80,7 +80,7 @@ export class Property {
     },
     { 
       icon: 'bi bi-ban', 
-      tooltip: 'View Details', 
+      tooltip: 'Toggle Active status', 
       type: 'activationStatus', 
       color: '#00' 
     }

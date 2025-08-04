@@ -440,8 +440,8 @@
 .leftsection ::ng-deep .md-drppicker {
   background-color: rgb(255, 255, 255) !important;
   border-width: 1px;
-  left: -80% !important;
-  bottom: -15% !important;
+  left: -80% !important; 
+  bottom: -10% !important;
   position: absolute;
   z-index: 10000000 !important;
 }

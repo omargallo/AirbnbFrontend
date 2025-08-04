@@ -191,10 +191,10 @@
         }
 
         .sticky-box {
-            position: sticky !important;
-            top: 90px !important;
-            width: 375px;
-            max-width: 375px;
+            /* position: sticky !important; */
+            /* top: 90px !important; */
+            /* width: 375px; */
+            /* max-width: 375px; */
         }
 
         /* app-reverse-section styling wrapper */ 
