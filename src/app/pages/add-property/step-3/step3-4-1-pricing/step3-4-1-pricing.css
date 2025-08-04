@@ -38,7 +38,7 @@ html {
 .page-subtitle {
   font-size: 18px;
   line-height: 24px;
-  color: #6a6a6a;
+  color: var(--secondary-text-color);
   margin: 0;
 }
 
@@ -54,7 +54,7 @@ html {
   justify-content: center;
   font-weight: 700;
   margin-right: 50px;
-  color: #222;
+  color: var(--primary-text-color);
 }
 
 .currency-symbol {
@@ -75,16 +75,18 @@ html {
   line-height: 1;
   padding: 0;
   letter-spacing: -3px;
+  color: var(--primary-text-color);
 }
 
 .price-breakdown {
   width: 100%;
   max-width: 320px;
   margin-top: 32px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   overflow: hidden;
   display: none;
+  background-color: var(--bg-color);
 }
 
 .price-breakdown.visible {
@@ -104,7 +106,7 @@ html {
 .breakdown-details {
   padding-bottom: 8px;
   margin-bottom: 8px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .detail-row {
@@ -112,7 +114,7 @@ html {
   justify-content: space-between;
   font-size: 16px;
   line-height: 24px;
-  color: #222;
+  color: var(--primary-text-color);
 }
 
 .breakdown-total {
@@ -126,7 +128,7 @@ html {
   margin-top: 24px;
   background: none;
   border: none;
-  color: #222;
+  color: var(--primary-text-color);
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;

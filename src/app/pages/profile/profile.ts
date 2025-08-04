@@ -1,7 +1,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UserService } from '../../core/services/User/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { HandleImgService } from '../../core/services/handleImg.service';
@@ -26,7 +26,8 @@ export class Profile implements OnInit {
     private userService: UserService,
     private router: Router,
     private userBookingService: UserBookingService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private translate: TranslateService
   ) {}
   userId = this.authService.userId;
   roles = this.authService.role;
@@ -175,11 +176,11 @@ export class Profile implements OnInit {
 
   getBookingTypeLabel(booking: BookingDetailsDTO): string {
     if (this.isUpcomingBooking(booking.checkInDate)) {
-      return 'Upcoming';
+      return this.translate.instant('profile.status.upcoming');
     } else if (this.isPastBooking(booking.checkOutDate)) {
-      return 'Past';
+      return this.translate.instant('profile.status.past');
     } else {
-      return 'Current';
+      return this.translate.instant('profile.status.current');
     }
   }
 

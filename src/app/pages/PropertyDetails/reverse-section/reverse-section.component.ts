@@ -308,17 +308,29 @@ export class ReverseSectionComponent implements OnInit, OnChanges {
     //     return false
     //   return true
     // }
+    if (date.isBefore(dayjs(), 'day')) return true;
+    
+        if (this.dateMap) {
+          const dateKey = date.format('YYYY-MM-DD');
+          const availabilityData = this.dateMap.get(dateKey);
+    
+          if (availabilityData && availabilityData.isAvailable === false) {
+            return true;
+          }
+        }
+    
+        return false;
 
-    if (date.isBefore(dayjs())) return true;
-    if (this.dateMap) {
-      // if( !(this.dateMap.get(date.toString())?.isAvailable?? true))
-      // console.log(date, (this.dateMap.get(date.toISOString().slice(0,19))?.isAvailable))
-      return !(
-        this.dateMap.get(date.toISOString().slice(0, 19))?.isAvailable ?? true
-      );
-    }
-    // .some(d => dayjs(d.date).isSame(date, 'day') && d.isAvailable )
-    return false;
+    // if (date.isBefore(dayjs())) return true;
+    // if (this.dateMap) {
+    //   // if( !(this.dateMap.get(date.toString())?.isAvailable?? true))
+    //   // console.log(date, (this.dateMap.get(date.toISOString().slice(0,19))?.isAvailable))
+    //   return !(
+    //     this.dateMap.get(date.toISOString().slice(0, 19))?.isAvailable ?? true
+    //   );
+    // }
+    // // .some(d => dayjs(d.date).isSame(date, 'day') && d.isAvailable )
+    // return false;
   };
 
   onStartDateChange(clickedDate: any) {

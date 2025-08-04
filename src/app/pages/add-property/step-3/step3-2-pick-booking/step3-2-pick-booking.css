@@ -37,12 +37,12 @@ html {
 .page-subtitle {
   font-size: 18px;
   line-height: 24px;
-  color: #6a6a6a;
+  color: var(--secondary-text-color);
   margin: 0;
 }
 
 .learn-more-link {
-  color: #6a6a6a;
+  color: var(--secondary-text-color);
   text-decoration: underline;
   font-weight: 500;
 }
@@ -59,8 +59,8 @@ html {
   align-items: flex-start;
   width: 100%;
   padding: 24px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   cursor: pointer;
   text-align: left;
@@ -69,12 +69,12 @@ html {
 }
 
 .option-card:hover {
-  border-color: #222;
+  border-color: var(--primary-text-color);
 }
 
 .option-card.selected {
-  background-color: #f7f7f7;
-  border: 2px solid #222;
+  background-color: var(--selected-bg);
+  border: 2px solid var(--primary-text-color);
   padding: 23px;
 }
 
@@ -92,13 +92,13 @@ html {
 .option-card__description {
   font-size: 14px;
   line-height: 18px;
-  color: #6a6a6a;
+  color: var(--secondary-text-color);
   margin: 0;
   max-width: 400px;
 }
 
 .option-card__description.recommended {
-  color: #008a05;
+  color: #00b307;
   font-weight: 500;
   margin-bottom: 4px;
 }
@@ -107,7 +107,7 @@ html {
   width: 32px;
   height: 32px;
   flex-shrink: 0;
-  fill: #222;
+  fill: var(--primary-text-color);
 }
 
 .option-card__icon svg {

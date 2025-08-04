@@ -5,15 +5,16 @@
   align-items: center;
   padding: 0px 80px;
   box-sizing: border-box;
-  color: #222;
+  color: var(--primary-text-color);
   font-family: "Airbnb Cereal VF", Circular, -apple-system, BlinkMacSystemFont,
     Roboto, "Helvetica Neue", sans-serif;
   font-size: 14px;
   line-height: 1.4;
-  background-color: #fff;
+  background-color: var(--bg-color);
   /* min-height: 100%; */
   width: 100%;
   overflow: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .steps-header {
@@ -33,15 +34,47 @@
   font-size: 16px;
   font-weight: 600;
   color: #fff;
-  background-color: #FF385C;
+  background-color: var(--airbnb-red);
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .get-started-button:hover {
-  background-color: #E31C5F;
+  background-color: var(--airbnb-dark-red);
+}
+
+/* Dark Mode Styles */
+body.dark .steps-container {
+  background-color: var(--bg-color);
+  color: var(--primary-text-color);
+}
+
+body.dark .step {
+  border-bottom-color: var(--border-color);
+}
+
+body.dark .step__number,
+body.dark .step__title,
+body.dark .steps-main-title {
+  color: var(--primary-text-color);
+}
+
+body.dark .step__description {
+  color: var(--secondary-text-color);
+}
+
+body.dark .step__image {
+  border: 1px solid var(--border-color);
+}
+
+body.dark .get-started-button {
+  color: var(--bg-color);
+}
+
+body.dark .get-started-button:hover {
+  opacity: 0.9;
 }
 
 .steps-main-title {
@@ -50,6 +83,8 @@
   font-weight: 500;
   font-size: 56px;
   line-height: 64px;
+  color: var(--primary-text-color);
+  transition: color 0.3s ease;
 }
 
 .steps-list {
@@ -63,8 +98,9 @@
   flex-direction: row;
   align-items: flex-start;
   padding-bottom: 32px;
-  border-bottom: 1px solid #ebebeb;
+  border-bottom: 1px solid var(--border-color);
   box-sizing: border-box;
+  transition: border-color 0.3s ease;
 }
 
 .step + .step {
@@ -77,12 +113,13 @@
 }
 
 .step__number {
-  color: #222;
+  color: var(--primary-text-color);
   font-size: 22px;
   font-weight: 500;
   line-height: 26px;
   padding-right: 16px;
   box-sizing: border-box;
+  transition: color 0.3s ease;
 }
 
 .step__text-content {
@@ -98,7 +135,8 @@
   font-size: 22px;
   line-height: 26px;
   font-weight: 500;
-  color: #222;
+  color: var(--primary-text-color);
+  transition: color 0.3s ease;
 }
 
 .step__description {
@@ -106,7 +144,8 @@
   font-size: 18px;
   line-height: 24px;
   font-weight: 400;
-  color: #6a6a6a;
+  color: var(--secondary-text-color);
+  transition: color 0.3s ease;
 }
 
 .step__image-container {

@@ -99,6 +99,7 @@
     "timeToDustOff": "Time to dust off your bags and start planning your next adventure",
     "startSearching": "Start searching",
     "checkIn": "Check-in",
+    "checkOut": "Check-out",
     "guests": "Guests",
     "nights": "Nights",
     "bookingId": "Booking ID",
@@ -106,7 +107,12 @@
     "perNight": "per night",
     "manageBooking": "Manage booking",
     "somethingWentWrong": "Something went wrong",
-    "pleaseTryAgain": "Please try again later"
+    "pleaseTryAgain": "Please try again later",
+    "status": {
+      "upcoming": "Upcoming",
+      "past": "Past",
+      "current": "Current"
+    }
   },
   "notifications": {
     "title": "Notifications",

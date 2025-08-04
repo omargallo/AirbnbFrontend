@@ -2,6 +2,7 @@ import {
   PropertyDisplayDTO,
   PropertyService,
 } from './../../core/services/Property/property.service';
+import { PropertyImageService } from './../../core/services/PropertyImage/property-image.service';
 import { UserService } from './../../core/services/Admin/user-service';
 import { AuthService } from './../../core/services/auth.service';
 import {
@@ -20,6 +21,9 @@ import {
   of,
   forkJoin,
   combineLatest,
+  map,
+  mergeMap,
+  timeout,
 } from 'rxjs';
 import { HostReviewDTO } from '../../core/models/ReviewInterfaces/host-review-dto';
 import { IGuestReviewDto } from '../../core/models/ReviewInterfaces/guest-review-dto';
@@ -35,13 +39,7 @@ register();
 
 @Component({
   selector: 'app-user-profile',
-  imports: [
-    DecimalPipe,
-    CommonModule,
-    ProfileCard,
-    PropertImageGalaryComponent,
-    PropertySwiperComponent,
-  ],
+  imports: [DecimalPipe, CommonModule, ProfileCard],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './user-profile.html',
   styleUrl: './user-profile.css',
@@ -92,6 +90,8 @@ export class UserProfile implements OnInit, OnDestroy {
   //didn't use it
   profileLoading: boolean = true;
   reviewsLoading: boolean = true;
+  propertiesLoading: boolean = true;
+  imagesLoading: boolean = false;
   statsCalculated: boolean = false;
 
   // Swiper breakpoints
@@ -192,10 +192,12 @@ export class UserProfile implements OnInit, OnDestroy {
     private router: Router,
     private reviewService: ReviewService,
     private userService: UserService,
-    private PropertyService: PropertyService
-  ) { }
+    private PropertyService: PropertyService,
+    private propertyImageService: PropertyImageService
+  ) {}
 
   ngOnInit(): void {
+    this.debugApiResponse();
     this.userId = this.route.snapshot.params['id'];
 
     if (!this.userId) {
@@ -288,73 +290,159 @@ export class UserProfile implements OnInit, OnDestroy {
     container.style.transition = 'transform 0.3s ease';
   }
 
-  hostProperties: PropertyDisplayDTO[] = [];
+  hostProperties: any[] = [];
 
   private loadAllDataParallel(): void {
-    const userProfile$ = this.userService.getUserProfile(this.userId).pipe(
-      catchError((error) => {
-        console.error('Error fetching user profile:', error);
-        return of(null);
-      })
-    );
-
-    const isHost$ = this.reviewService.isUserHost(this.userId).pipe(
-      catchError((error) => {
-        console.error('Error checking user role:', error);
-        return of(false);
-      })
-    );
-
-    const hostReviews$ = this.reviewService
-      .getHostReviewsWithProperties(this.userId)
-      .pipe(
+    const startTime = performance.now();
+    console.log('🚀 Starting data load...');
+    
+    // Load critical data first (profile, reviews, and basic properties)
+    const criticalData$ = combineLatest([
+      this.userService.getUserProfile(this.userId).pipe(
+        catchError((error) => {
+          console.error('Error fetching user profile:', error);
+          return of(null);
+        })
+      ),
+      this.reviewService.isUserHost(this.userId).pipe(
+        catchError((error) => {
+          console.error('Error checking user role:', error);
+          return of(false);
+        })
+      ),
+      this.reviewService.getHostReviewsWithProperties(this.userId).pipe(
         catchError((error) => {
           console.error('Error loading host data:', error);
           return of([]);
         })
-      );
-
-    const guestReviews$ = this.reviewService
-      .getPublicReviewsByUserId(this.userId)
-      .pipe(
+      ),
+      this.reviewService.getPublicReviewsByUserId(this.userId).pipe(
         catchError((error) => {
           console.error('Error loading guest data:', error);
           return of([]);
         })
-      );
+      ),
+      // Load properties without images first
+      this.PropertyService.getPropertiesByHostId(this.userId).pipe(
+        catchError((error) => {
+          console.error('Error loading properties:', error);
+          return of([]);
+        })
+      )
+    ]);
 
-    const hostProperties$ = this.PropertyService.getPropertiesByHostId(
-      this.userId
-    ).pipe(
-      catchError((error) => {
-        console.error('Error loading host properties:', error);
-        return of([]);
-      })
+    // Load critical data first
+    criticalData$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([profile, isHost, hostReviews, guestReviews, properties]) => {
+        const criticalLoadTime = performance.now() - startTime;
+        console.log(`⚡ Critical data loaded in ${criticalLoadTime.toFixed(2)}ms`);
+        
+        // Set basic data immediately
+        this.userProfile = profile;
+        this.profileLoading = false;
+        this.isHost = isHost;
+        this.hostReviews = hostReviews || [];
+        this.guestReviews = guestReviews || [];
+        this.reviewsLoading = false;
+        
+        // Set properties without images first (faster initial render)
+        this.hostProperties = (properties || []).map(property => ({
+          ...property,
+          images: [] // Start with empty images
+        }));
+        this.propertiesLoading = false; // Allow UI to show basic properties
+        
+        console.log(`✅ UI ready in ${(performance.now() - startTime).toFixed(2)}ms`);
+        
+        this.calculateAllStats();
+        
+        // Load images in background after UI is shown
+        this.loadPropertyImagesInBackground(properties || []);
+      });
+  }
+
+  private loadPropertyImagesInBackground(properties: PropertyDisplayDTO[]): void {
+    if (properties.length === 0) return;
+
+    this.imagesLoading = true;
+    console.log(`🖼️ Loading images for ${properties.length} properties in background`);
+    
+    // Load images for visible properties first (first 8)
+    const visibleProperties = properties.slice(0, 8);
+    const remainingProperties = properties.slice(8);
+    
+    // Load visible property images first
+    this.loadImagesForProperties(visibleProperties).then(() => {
+      // Then load remaining images if any
+      if (remainingProperties.length > 0) {
+        setTimeout(() => {
+          this.loadImagesForProperties(remainingProperties);
+        }, 500); // Small delay to not block UI
+      }
+      this.imagesLoading = false;
+    });
+  }
+
+  private async loadImagesForProperties(properties: PropertyDisplayDTO[]): Promise<void> {
+    if (properties.length === 0) return Promise.resolve();
+
+    interface ImageResult {
+      propertyId: number;
+      images: any[];
+      success: boolean;
+    }
+
+    const imageRequests = properties.map((property, index) =>
+      this.propertyImageService.getAllImagesByPropertyId(property.id).pipe(
+        map((result): ImageResult => ({
+          propertyId: property.id,
+          images: result.isSuccess ? result.data || [] : [],
+          success: true
+        })),
+        catchError((error): any => {
+          console.warn(`⚠️ Failed to load images for property ${property.id}:`, error);
+          return of({ 
+            propertyId: property.id, 
+            images: [], 
+            success: false 
+          } as ImageResult);
+        }),
+        // Add timeout to prevent hanging requests
+        timeout(10000),
+        catchError((): any => of({ 
+          propertyId: property.id, 
+          images: [], 
+          success: false 
+        } as ImageResult))
+      )
     );
 
-    combineLatest([
-      userProfile$,
-      isHost$,
-      hostReviews$,
-      guestReviews$,
-      hostProperties$,
-    ])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        ([profile, isHost, hostReviews, guestReviews, hostProperties]) => {
-          this.userProfile = profile;
-          this.profileLoading = false;
+    return new Promise((resolve) => {
+      forkJoin(imageRequests).subscribe({
+        next: (imageResults: any[]) => {
+          // Update properties with images
+          const imageMap = new Map();
+          imageResults.forEach((result: ImageResult) => {
+            imageMap.set(result.propertyId, result.images);
+          });
 
-          this.isHost = isHost;
-          this.hostReviews = hostReviews || [];
-          this.guestReviews = guestReviews || [];
-          this.hostProperties = hostProperties || []; // NEW: Store all properties
-
-          this.reviewsLoading = false;
-
-          this.calculateAllStats();
+          // Update existing properties with images
+          this.hostProperties = this.hostProperties.map(property => ({
+            ...property,
+            images: imageMap.get(property.id) || property.images || []
+          }));
+          
+          const successCount = imageResults.filter((r: ImageResult) => r.success).length;
+          console.log(`✅ Images loaded: ${successCount}/${imageResults.length} properties`);
+          resolve();
+        },
+        error: (error) => {
+          console.error('❌ Error in batch image loading:', error);
+          resolve(); // Still resolve to continue
         }
-      );
+      });
+    });
   }
 
   private calculateAllStats(): void {
@@ -564,6 +652,8 @@ export class UserProfile implements OnInit, OnDestroy {
   retryLoadData(): void {
     this.profileLoading = true;
     this.reviewsLoading = true;
+    this.propertiesLoading = true;
+    this.imagesLoading = false;
     this.statsCalculated = false;
     this.error = null;
 
@@ -604,6 +694,14 @@ export class UserProfile implements OnInit, OnDestroy {
     );
   }
 
+  get isDataLoading(): boolean {
+    return this.profileLoading || this.reviewsLoading || this.propertiesLoading;
+  }
+
+  get areImagesLoading(): boolean {
+    return this.imagesLoading;
+  }
+
   getAverageRatingForProperty(propertyId: number): number {
     const propertyReviews = this.hostReviews.filter(
       (review) => review.propertyId === propertyId
@@ -626,5 +724,21 @@ export class UserProfile implements OnInit, OnDestroy {
     return this.hostReviews.filter(
       (review) => review.propertyId === propertyId
     );
+  }
+
+  getPropertyImage(property: any): string {
+    const cover = property.images?.find(
+      (img: any) => img.isCover && !img.isDeleted
+    );
+
+    if (cover?.imageUrl) {
+      return `${environment.base}${cover.imageUrl}`;
+    }
+
+    return 'assets/images/deafult.png';
+  }
+
+  isDarkMode(): boolean {
+    return document.body.classList.contains('dark-mode');
   }
 }
