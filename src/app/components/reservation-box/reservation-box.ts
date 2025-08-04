@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, inject, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, inject, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatSessionDto, MessageDto, ReservationRequest, ChatService } from '../../core/services/Message/message.service';
 import { HandleImgService } from '../../core/services/handleImg.service';
@@ -51,6 +51,7 @@ export class ReservationBoxComponent implements OnInit, OnChanges {
     private chatService: ChatService,
     private signalRService: SignalRService,
     private confirm: ConfirmService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -243,7 +244,7 @@ export class ReservationBoxComponent implements OnInit, OnChanges {
           {
             this.confirm.success("Request accepted","")
             this.ReservationWithProperty.latestReservationRequest.requestStatus = 2
-
+            this.cdr.detectChanges()
             return 
           }
           this.confirm.fail(res.message,"")
@@ -265,6 +266,7 @@ export class ReservationBoxComponent implements OnInit, OnChanges {
           {
             this.confirm.success("Request declined","")
             this.ReservationWithProperty.latestReservationRequest.requestStatus = 3
+            this.cdr.detectChanges()
             return 
           }
           this.confirm.fail(res.message,"")

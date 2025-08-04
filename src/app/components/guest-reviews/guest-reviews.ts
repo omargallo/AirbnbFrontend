@@ -41,6 +41,7 @@ import { ProfileCard } from '../../shared/components/profile-card/profile-card';
     //  Modal,
     ReviewsModalComponent,
     ProfileCard,
+    RouterLink
   ],
   templateUrl: './guest-reviews.html',
   styleUrl: './guest-reviews.css',
