@@ -37,14 +37,19 @@ html {
 .page-subtitle {
   font-size: 18px;
   line-height: 24px;
-  color: var(--secondary-text-color);
+  color: #6a6a6a;
   margin: 0;
 }
 
 .learn-more-link {
-  color: var(--secondary-text-color);
+  color: #6a6a6a;
   text-decoration: underline;
   font-weight: 500;
+}
+
+body.dark .page-subtitle,
+body.dark .learn-more-link {
+  color: var(--secondary-text-color);
 }
 
 .welcome-options {
@@ -65,7 +70,7 @@ html {
   cursor: pointer;
   text-align: left;
   transition: border-color 0.2s ease, background-color 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease, color 0.2s ease;
   box-sizing: border-box;
 }
 
@@ -74,9 +79,24 @@ html {
 }
 
 .option-card.selected {
-  background-color: var(--selected-bg);
+  background-color: var(--bg-color);
   border: 2px solid var(--primary-text-color);
   padding: 23px;
+}
+
+body.dark .option-card {
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+  color: var(--primary-text-color);
+}
+
+body.dark .option-card:hover {
+  border-color: var(--primary-text-color);
+}
+
+body.dark .option-card.selected {
+  background-color: var(--selected-bg);
+  border-color: var(--primary-text-color);
 }
 
 .option-content {
@@ -93,8 +113,12 @@ html {
 .option-description {
   font-size: 14px;
   line-height: 18px;
-  color: var(--secondary-text-color);
+  color: #6a6a6a;
   margin: 0;
+}
+
+body.dark .option-description {
+  color: var(--secondary-text-color);
 }
 
 .radio-custom-input {
