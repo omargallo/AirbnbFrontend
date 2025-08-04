@@ -1,5 +1,13 @@
+<div class="container-xl py-4" style="max-width: 1200px" [ngClass]="{ 'dark-mode': isDarkMode() }">
+  <!-- Loading State -->
+  <div class="text-center py-5" *ngIf="isDataLoading && !error">
+    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <h5 class="text-muted">Loading profile...</h5>
+    <p class="text-muted small">Please wait while we fetch the user information</p>
+  </div>
 
-<div class="container-xl py-4" style="max-width: 1200px">
   <div class="alert alert-danger" role="alert" *ngIf="error">
     <h4 class="alert-heading">Error</h4>
     <p>{{ error }}</p>
@@ -8,7 +16,7 @@
     </button>
   </div>
 
-  <div class="w-100" *ngIf="!error && isHost">
+  <div class="w-100" *ngIf="!error && !isDataLoading && isHost">
     <div class="row mb-4"></div>
 
     <!-- Host -->
@@ -94,7 +102,40 @@
 
     <hr class="my-5" />
 
-    <div class="mb-5" *ngIf="canShowReviews && hasHostReviews">
+    <!-- Reviews Loading State -->
+    <div class="mb-5" *ngIf="reviewsLoading">
+      <h3 class="fs-3 fw-bold text-dark mb-4">Reviews</h3>
+      <div class="d-flex gap-3 overflow-hidden">
+        <div class="flex-shrink-0" *ngFor="let item of [1,2,3,4]" style="width: 220px">
+          <div class="card border-0 h-100" style="min-height: 240px">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-3">
+                <div class="placeholder-glow">
+                  <div class="placeholder rounded-circle me-3" style="width: 48px; height: 48px"></div>
+                </div>
+                <div class="flex-fill">
+                  <div class="placeholder-glow">
+                    <span class="placeholder col-7"></span>
+                    <span class="placeholder col-4"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="placeholder-glow mb-3">
+                <span class="placeholder col-8"></span>
+                <span class="placeholder col-3"></span>
+              </div>
+              <div class="placeholder-glow">
+                <span class="placeholder col-12"></span>
+                <span class="placeholder col-10"></span>
+                <span class="placeholder col-8"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-5" *ngIf="canShowReviews && hasHostReviews && !reviewsLoading">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fs-3 fw-bold text-dark mb-0">
           {{ userProfile.firstName || "Host" }}'s reviews
@@ -214,10 +255,33 @@
 
     <hr
       class="my-5"
-      *ngIf="canShowReviews && hasHostReviews && hostProperties.length > 0"
+      *ngIf="(canShowReviews && hasHostReviews && hostProperties.length > 0) || propertiesLoading"
     />
 
-    <div class="mb-5" *ngIf="canShowReviews && hostProperties.length > 0">
+    <!-- Properties Loading State -->
+    <div class="mb-5" *ngIf="propertiesLoading">
+      <h3 class="fs-3 fw-bold text-dark mb-4">
+        {{ userProfile?.firstName || "Host" }}'s listings
+      </h3>
+      <div class="d-flex gap-3 overflow-hidden">
+        <div class="flex-shrink-0" *ngFor="let item of [1,2,3,4]" style="width: 240px">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="placeholder-glow">
+              <div class="placeholder" style="height: 180px; border-radius: 12px 12px 0 0;"></div>
+            </div>
+            <div class="card-body p-3">
+              <div class="placeholder-glow">
+                <span class="placeholder col-8 mb-2"></span>
+                <span class="placeholder col-6 mb-2"></span>
+                <span class="placeholder col-7"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-5" *ngIf="canShowReviews && hostProperties.length > 0 && !propertiesLoading">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fs-3 fw-bold text-dark mb-0">
           {{ userProfile.firstName || "Host" }}'s listings
@@ -264,21 +328,24 @@
               style="width: 240px; cursor: pointer"
               (click)="navigateToProperty(property.id)"
             >
-              <img
-                *ngIf="shouldShowImage(property.images?.[0]?.imageUrl, property.id)"
-                [src]="getImageUrl(property.images?.[0]?.imageUrl)"
-                [alt]="property.title"
-                class="card-img-top"
-                style="height: 160px; object-fit: cover"
-                (error)="onImageError($event, property)"
-                loading="lazy"
-              />
-              <div
-                *ngIf="shouldShowFallback(property.images?.[0]?.imageUrl, property.id)"
-                class="bg-light d-flex align-items-center justify-content-center card-img-top"
-                style="height: 160px"
-              >
-                <i class="fas fa-home text-muted fa-2x"></i>
+              <div class="position-relative">
+                <img
+                  [src]="getPropertyImage(property)"
+                  [alt]="property.title"
+                  class="card-img-top"
+                  style="height: 160px; object-fit: cover"
+                  (error)="onImageError($event, property)"
+                  loading="lazy"
+                />
+                <div 
+                  class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-light"
+                  style="border-radius: 8px 8px 0 0;"
+                  *ngIf="property.imageLoading"
+                >
+                  <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="visually-hidden">Loading image...</span>
+                  </div>
+                </div>
               </div>
               <div class="card-body p-3">
                 <h6
@@ -315,7 +382,7 @@
     </div>
   </div>
 
-  <div class="w-100" *ngIf="!error && !isHost">
+  <div class="w-100" *ngIf="!error && !isDataLoading && !isHost">
     <div class="row mb-4"></div>
 
     <!-- Guest-->
@@ -737,21 +804,13 @@
                 (click)="navigateToProperty(property.id)"
               >
                 <img
-                  *ngIf="shouldShowImage(property.images?.[0]?.imageUrl, property.id)"
-                  [src]="getImageUrl(property.images?.[0]?.imageUrl)"
+                  [src]="getPropertyImage(property)"
                   [alt]="property.title"
                   class="card-img-top"
                   style="height: 200px; object-fit: cover"
                   loading="lazy"
                   (error)="onImageError($event, property)"
                 />
-                <div
-                  *ngIf="shouldShowFallback(property.images?.[0]?.imageUrl, property.id)"
-                  class="bg-light d-flex align-items-center justify-content-center card-img-top"
-                  style="height: 200px"
-                >
-                  <i class="fas fa-home text-muted fa-3x"></i>
-                </div>
                 <div class="card-body p-3">
                   <h6 class="card-title fw-semibold mb-2">
                     {{ property.title }}
