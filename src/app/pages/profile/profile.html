@@ -96,7 +96,7 @@
             <p class="error-message">{{ error }}</p>
             <button class="btn-retry" (click)="refreshBookings()">
               <i class="bi bi-arrow-clockwise"></i>
-              Try again
+              {{ "profile.tryAgain" | translate }}
             </button>
           </div>
         </div>
@@ -171,7 +171,7 @@
                       <i class="bi bi-arrow-right"></i>
                     </div>
                     <div class="date-item">
-                      <span class="date-label">Check-out</span>
+                      <span class="date-label">{{ "profile.checkOut" | translate }}</span>
                       <span class="date-value">{{
                         formatDateWithYear(booking.checkOutDate)
                       }}</span>
@@ -263,7 +263,7 @@
                   </div>
 
                   <div class="booking-actions">
-                    <button
+                    <!-- <button
                       *ngIf="
                         isUpcomingBooking(booking.checkInDate) &&
                         booking.bookingStatus.toLowerCase() === 'confirmed'
@@ -273,7 +273,7 @@
                     >
                       <i class="bi bi-gear-fill"></i>
                       {{ "profile.manageBooking" | translate }}
-                    </button>
+                    </button> -->
                   </div>
                 </div>
               </div>
