@@ -24,7 +24,7 @@ export class UserService {
           // this.authService.setRole(response.roles);
         })
       );
-  }
+  } 
 
   register(payload: { email: string; password: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/register`, payload).pipe(
