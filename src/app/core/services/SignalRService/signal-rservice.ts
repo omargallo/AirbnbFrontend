@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { MessageDto } from '../Message/message.service';
+import { environment } from '../../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalRService {
   private connection!: HubConnection;
-  private readonly hubUrl = 'https://localhost:7025/chatHub';
+  private readonly hubUrl = `${environment.base}/chatHub`;
 
   // Connection status
   private connectionStatusSubject = new BehaviorSubject<HubConnectionState>(HubConnectionState.Disconnected);

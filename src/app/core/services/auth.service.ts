@@ -49,15 +49,18 @@ export class AuthService {
     this.refreshTokenSubject.next(token);
   }
 
-  setUserId(userId: string) {
-    // this.cookieService.set(this.userIdKey, userId, 100, '/');
+  setUserId(userId: string, expiresAt?:Date) {
+    console.log("login response",userId,expiresAt)
+
+    let currentTime = new Date()
+    this.cookieService.set(this.userIdKey, userId, expiresAt? new Date(expiresAt): currentTime.setMinutes(currentTime.getMinutes()+28), '/');
     this.userIdSubject.next(userId);
   }
 
   setRole(roles: { name: string }[]) {
     const names = roles.map((r) => r.name);
-    // sessionStorage.setItem(this.roleKey, JSON.stringify(names));
-    // this.cookieService.set(this.roleKey, JSON.stringify(names), 7, '/');
+    sessionStorage.setItem(this.roleKey, JSON.stringify(names));
+    this.cookieService.set(this.roleKey, JSON.stringify(names), 7, '/');
     this.roleSubject.next(names);
   }
 

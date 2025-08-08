@@ -4,7 +4,7 @@ import {
   provideZoneChangeDetection,
   provideZonelessChangeDetection
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withHashLocation } from '@angular/router';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi ,withFetch} from '@angular/common/http';
 import { routes } from './app.routes';
 import {
@@ -26,7 +26,7 @@ export const appConfig: ApplicationConfig = {
       multi: true
     },CommonPropInfoService,
     provideHttpClient(withInterceptorsFromDi()),
-    provideRouter(routes),
+    provideRouter(routes,withHashLocation()),
     importProvidersFrom(
       TranslateModule.forRoot({
         defaultLanguage: 'en',
