@@ -104,7 +104,7 @@ export class PropertImageGalaryComponent implements OnInit {
 
   private getFullImageUrl(url: string): string {
     if (!url) return '';
-    return url.startsWith('http') ? url : `https://localhost:7025${url}`;
+    return url.startsWith('http') ? url : `${environment.base}${url}`;
   }
 
   onShare() {
