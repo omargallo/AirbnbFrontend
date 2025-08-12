@@ -26,7 +26,7 @@ export const appConfig: ApplicationConfig = {
       multi: true
     },CommonPropInfoService,
     provideHttpClient(withInterceptorsFromDi()),
-    provideRouter(routes,withHashLocation()),
+    provideRouter(routes),
     importProvidersFrom(
       TranslateModule.forRoot({
         defaultLanguage: 'en',
