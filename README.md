@@ -236,6 +236,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Omar Gallo** - [GitHub Profile](https://github.com/omargallo)
 
+**Ahmed Essam** - [GitHub Profile](https://github.com/Ahmed-Aladl)
+
+**Mahmoud Taha** - [GitHub Profile](https://github.com/mahmoud140106)
+
+**Omar Dawood** - [GitHub Profile](https://github.com/dawood74)
+
+**Rawan Bakr** - [GitHub Profile](https://github.com/RawanBakr)
+
+**Kareem Elbalshe** - [GitHub Profile](https://github.com/kareemelbalshe)
+
+**Omar khalid** - [GitHub Profile](https://github.com/omarkhhamad)
+
 ## 🙏 Acknowledgments
 
 - Angular team for the amazing framework
