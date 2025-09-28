@@ -2,7 +2,7 @@
 
 A modern, responsive Airbnb clone built with Angular 20, featuring a comprehensive property rental platform with advanced search capabilities, real-time messaging, and seamless user experience.
 
-👉 **Live Demo:** [AirbnbFrontend](https://omargallo.github.io/AirbnbFrontend/)
+👉 **Live Demo:** [Airbnb](https://omargallo.github.io/AirbnbFrontend/)
 
 ![Angular](https://img.shields.io/badge/Angular-20.1.2-DD0031?style=for-the-badge&logo=angular&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8.2-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
